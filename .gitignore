@@ -1,0 +1,32 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Progress tracking
+progress/tracker.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Notes
+TODO-*.md

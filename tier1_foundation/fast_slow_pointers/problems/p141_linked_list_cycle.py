@@ -1,0 +1,24 @@
+"""P141: Linked List Cycle (Easy)
+
+TODO: Implement solve() below.
+Hint: Use Floyd's cycle-finding algorithm with fast and slow pointers.
+"""
+import sys
+sys.path.insert(0, ".")
+from src.utils import Problem, TestCase, ListNode
+
+
+class Solution(Problem):
+    name = "141. Linked List Cycle"
+    test_cases = [
+        TestCase(input=(ListNode.from_list([3, 2, 0, -4]), 1), expected=True, label="example 1"),
+        TestCase(input=(ListNode.from_list([1, 2]), 0), expected=True, label="example 2"),
+        TestCase(input=(ListNode.from_list([1]), -1), expected=False, label="example 3"),
+    ]
+
+    def solve(self, head: ListNode | None, pos: int) -> bool:
+        raise NotImplementedError("TODO: Implement solve(self, head: ListNode | None, pos: int) -> bool")
+
+
+if __name__ == "__main__":
+    Solution().run()
