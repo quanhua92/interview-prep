@@ -1,6 +1,6 @@
 # Interview Prep
 
-A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, and role-specific topics. Track progress across all 66 topics with a unified CLI dashboard.
+A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, and role-specific topics. Track progress across all 86 topics with a unified CLI dashboard.
 
 ## Quick Start
 
@@ -27,41 +27,41 @@ uv run python tier1_foundation/sliding_window/problems/p003_longest_substring.py
 
 | Pattern | Key Problems |
 |---------|-------------|
-| Sliding Window | P003 Longest Substring, P438 Find All Anagrams |
-| Two Pointers | P167 Two Sum II, P011 Container With Most Water |
-| Fast & Slow Pointers | P141 Linked List Cycle, P202 Happy Number |
-| Merge Intervals | P056 Merge Intervals, P253 Meeting Rooms II |
-| BFS | P102 Binary Tree Level Order, P994 Rotting Oranges |
+| Sliding Window | P003 Longest Substring, P438 Find All Anagrams, P424 Longest Repeating Char |
+| Two Pointers | P167 Two Sum II, P011 Container With Most Water, P015 3Sum |
+| Fast & Slow Pointers | P141 Linked List Cycle, P202 Happy Number, P876 Middle of Linked List |
+| Merge Intervals | P056 Merge Intervals, P253 Meeting Rooms II, P057 Insert Interval |
+| BFS | P102 Binary Tree Level Order, P994 Rotting Oranges, P1091 Shortest Path Binary Matrix |
 
 ### Tier 2: Intermediate (Very Common)
 
 | Pattern | Key Problems |
 |---------|-------------|
-| DFS | P200 Number of Islands, P695 Max Area of Island |
-| Two Heaps | P295 Median Finder |
-| Top K Elements | P215 Kth Largest Element, P347 Top K Frequent Elements |
-| Binary Search | P704 Binary Search, P153 Find Minimum in Rotated Sorted Array |
-| Dynamic Programming | P070 Climbing Stairs, P322 Coin Change |
+| DFS | P200 Number of Islands, P695 Max Area of Island, P1306 Jump Game III |
+| Two Heaps | P295 Median Finder, P480 Sliding Window Median |
+| Top K Elements | P215 Kth Largest Element, P347 Top K Frequent Elements, P973 K Closest Points |
+| Binary Search | P704 Binary Search, P153 Find Minimum in Rotated Sorted Array, P278 First Bad Version |
+| Dynamic Programming | P070 Climbing Stairs, P322 Coin Change, P198 House Robber |
 
 ### Tier 3: Advanced (Important for Top Companies)
 
 | Pattern | Key Problems |
 |---------|-------------|
-| Backtracking | P078 Subsets, P039 Combination Sum |
-| Modified Binary Search | P033 Search in Rotated Sorted Array, P875 Koko Eating Bananas |
-| Cyclic Sort | P442 Find All Duplicates, P268 Missing Number |
-| Subsets | P046 Permutations, P090 Subsets II |
-| Trie | P208 Implement Trie, P212 Word Search II |
+| Backtracking | P078 Subsets, P039 Combination Sum, P017 Letter Combinations |
+| Modified Binary Search | P033 Search in Rotated Sorted Array, P875 Koko Eating Bananas, P410 Split Array Sum |
+| Cyclic Sort | P442 Find All Duplicates, P268 Missing Number, P448 Find Disappeared |
+| Subsets | P046 Permutations, P090 Subsets II, P077 Combinations |
+| Trie | P208 Implement Trie, P212 Word Search II, P211 Design Add and Search Words |
 
 ### Tier 4: Expert (Differentiators)
 
 | Pattern | Key Problems |
 |---------|-------------|
-| Union Find | P323 Connected Components, P684 Redundant Connection |
-| Monotonic Stack | P739 Daily Temperatures, P084 Largest Rectangle in Histogram |
-| Greedy | P055 Jump Game, P455 Assign Cookies |
-| Matrix Traversal | P054 Spiral Matrix, P048 Rotate Image |
-| Graph | P207 Course Schedule, P210 Course Schedule II |
+| Union Find | P323 Connected Components, P684 Redundant Connection, P990 Satisfiability Equations |
+| Monotonic Stack | P739 Daily Temperatures, P084 Largest Rectangle in Histogram, P853 Car Fleet |
+| Greedy | P055 Jump Game, P455 Assign Cookies, P134 Gas Station |
+| Matrix Traversal | P054 Spiral Matrix, P048 Rotate Image, P498 Diagonal Traverse |
+| Graph | P207 Course Schedule, P210 Course Schedule II, P997 Find the Town Judge |
 
 Each pattern contains:
 - `template.py` — Annotated skeleton with variants
@@ -171,7 +171,7 @@ Each topic contains:
 
 ## CLI Dashboard
 
-Track progress across all 66 topics (coding + system design + behavioral + salary + CS fundamentals + resume/career + role-specific):
+Track progress across all 86 topics (coding + system design + behavioral + salary + CS fundamentals + resume/career + role-specific):
 
 ```bash
 # View progress for all topics
@@ -228,7 +228,7 @@ interview-prep/
 │       ├── problems/              # Practice stubs
 │       ├── solutions/             # Answer keys
 │       └── README.md
-├── tests/                         # pytest suite (108 tests)
+├── tests/                         # pytest suite (128 tests)
 ├── src/utils/                     # Shared utilities
 └── progress/tracker.json          # Progress data (gitignored)
 ```

@@ -39,6 +39,7 @@ Look for keywords and problem structures such as:
 | # | Problem | Difficulty |
 |---|---------|------------|
 | 295 | [Find Median from Data Stream](./p295_median_finder.py) | Hard |
+| 480 | [Sliding Window Median](./p480_sliding_window_median.py) | Hard |
 
 ## Common Pitfalls
 

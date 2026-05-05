@@ -31,6 +31,7 @@ The window invariant is what makes it work. Every element is added to the window
 |---------|-----------|---------|
 | P003 Longest Substring Without Repeating Characters | Medium | Variable-size with shrinking |
 | P438 Find All Anagrams in a String | Medium | Fixed-size window |
+| P424 Longest Repeating Character Replacement | Medium | Variable-size with constraint budget |
 
 ## Template Variants
 

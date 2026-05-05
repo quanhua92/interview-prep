@@ -2,6 +2,7 @@
 import sys
 sys.path.insert(0, ".")
 from tier1_foundation.fast_slow_pointers.solutions.p202_happy_number import Solution as P202
+from tier1_foundation.fast_slow_pointers.solutions.p876_middle_of_linked_list import Solution as P876
 from src.utils import ListNode
 
 
@@ -57,3 +58,14 @@ class TestP202HappyNumber:
     def test_example1(self): assert P202().solve(19) == True
     def test_example2(self): assert P202().solve(2) == False
     def test_already_happy(self): assert P202().solve(1) == True
+
+class TestP876MiddleOfLinkedList:
+    def test_odd_length(self):
+        head = ListNode.from_list([1,2,3,4,5])
+        assert P876().solve(head) == [3,4,5]
+    def test_even_length(self):
+        head = ListNode.from_list([1,2,3,4,5,6])
+        assert P876().solve(head) == [4,5,6]
+    def test_single(self):
+        head = ListNode.from_list([1])
+        assert P876().solve(head) == [1]

@@ -3,6 +3,7 @@ import sys
 sys.path.insert(0, ".")
 from tier2_intermediate.top_k_elements.solutions.p215_kth_largest import Solution as P215
 from tier2_intermediate.top_k_elements.solutions.p347_top_k_frequent import Solution as P347
+from tier2_intermediate.top_k_elements.solutions.p973_k_closest_points import Solution as P973
 
 class TestP215KthLargest:
     def test_example1(self): assert P215().solve([3,2,1,5,6,4], 2) == 5
@@ -14,3 +15,11 @@ class TestP347TopKFrequent:
         result = P347().solve([1,1,1,2,2,3], 2)
         assert sorted(result) == [1, 2]
     def test_example2(self): assert P347().solve([1], 1) == [1]
+
+class TestP973KClosestPoints:
+    def test_example1(self):
+        result = P973().solve([[1,3],[-2,2]], 1)
+        assert sorted(result) == [[-2,2]]
+    def test_example2(self):
+        result = P973().solve([[3,3],[5,-1],[-2,4]], 2)
+        assert sorted(result) == [[-2,4],[3,3]]

@@ -41,3 +41,4 @@ def subsets(nums):
 |---------|-----------|-------------|
 | P046 Permutations | Medium | Generate all permutations of distinct integers |
 | P090 Subsets II | Medium | Generate all subsets with duplicate elements |
+| P077 Combinations | Medium | Choose k from n with start-index backtracking |

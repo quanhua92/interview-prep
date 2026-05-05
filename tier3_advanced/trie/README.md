@@ -47,3 +47,4 @@ class Trie:
 |---------|-----------|-------------|
 | P208 Implement Trie (Prefix Tree) | Medium | Build a trie with insert, search, and startsWith |
 | P212 Word Search II | Hard | Find all words from a dictionary on a board using a trie |
+| P211 Design Add and Search Words | Medium | Trie with wildcard '.' DFS search |

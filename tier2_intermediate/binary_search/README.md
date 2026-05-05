@@ -35,6 +35,7 @@ Look for keywords and problem structures such as:
 |---|---------|------------|
 | 704 | [Binary Search](./p704_binary_search.py) | Easy |
 | 153 | [Find Minimum in Rotated Sorted Array](./p153_find_min_rotated.py) | Medium |
+| 278 | [First Bad Version](./p278_first_bad_version.py) | Easy |
 
 ## Common Pitfalls
 

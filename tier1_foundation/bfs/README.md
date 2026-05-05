@@ -41,6 +41,7 @@ queue with all starting positions) is a common optimization.
 |---------|-----------|---------|
 | P102 Binary Tree Level Order Traversal | Medium | Tree level-order traversal |
 | P994 Rotting Oranges | Medium | Grid BFS (multi-source) |
+| P1091 Shortest Path in Binary Matrix | Medium | Grid BFS, 8-directional, single-source shortest path |
 
 ## Template Variants
 

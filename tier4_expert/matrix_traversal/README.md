@@ -22,3 +22,4 @@ Traverse a 2D matrix in non-standard orders: spiral (clockwise/counter-clockwise
 ## Problems
 - P054: Spiral Matrix
 - P048: Rotate Image
+- P498: Diagonal Traverse

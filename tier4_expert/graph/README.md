@@ -23,3 +23,4 @@ Represent relationships as nodes (vertices) and edges. Traverse the graph using 
 ## Problems
 - P207: Course Schedule
 - P210: Course Schedule II
+- P997: Find the Town Judge

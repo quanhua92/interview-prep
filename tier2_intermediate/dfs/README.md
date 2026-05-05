@@ -35,6 +35,7 @@ Look for keywords and problem structures such as:
 |---|---------|------------|
 | 200 | [Number of Islands](./p200_number_of_islands.py) | Medium |
 | 695 | [Max Area of Island](./p695_max_area_island.py) | Medium |
+| 1306 | [Jump Game III](./p1306_jump_game_three.py) | Medium |
 
 ## Common Pitfalls
 

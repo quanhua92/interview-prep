@@ -22,3 +22,4 @@ Track connected components efficiently using two operations: `find` (determine w
 ## Problems
 - P323: Number of Connected Components in an Undirected Graph
 - P684: Redundant Connection
+- P990: Satisfiability of Equality Equations

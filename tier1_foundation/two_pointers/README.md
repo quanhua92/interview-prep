@@ -33,6 +33,7 @@ For sorted arrays, moving a pointer inward is a deliberate decision based on whe
 |---------|-----------|---------|
 | P167 Two Sum II - Input Array Is Sorted | Medium | Two pointers from ends |
 | P011 Container With Most Water | Medium | Two pointers from ends (greedy) |
+| P015 3Sum | Medium | Nested two pointers after sort |
 
 ## Template Variants
 

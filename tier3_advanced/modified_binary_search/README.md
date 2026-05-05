@@ -41,3 +41,4 @@ def binary_search_on_answer(low, high, is_feasible):
 |---------|-----------|-------------|
 | P033 Search in Rotated Sorted Array | Medium | Find target in a rotated sorted array |
 | P875 Koko Eating Bananas | Medium | Minimize eating speed using binary search on answer |
+| P410 Split Array Largest Sum | Hard | Binary search on answer with complex feasibility check |

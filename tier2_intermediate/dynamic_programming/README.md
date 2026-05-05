@@ -35,6 +35,7 @@ Look for keywords and problem structures such as:
 |---|---------|------------|
 | 70  | [Climbing Stairs](./p070_climbing_stairs.py) | Easy |
 | 322 | [Coin Change](./p322_coin_change.py) | Medium |
+| 198 | [House Robber](./p198_house_robber.py) | Medium |
 
 ## Common Pitfalls
 

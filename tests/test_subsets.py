@@ -3,6 +3,7 @@ import sys
 sys.path.insert(0, ".")
 from tier3_advanced.subsets.solutions.p046_permutations import Solution as P046
 from tier3_advanced.subsets.solutions.p090_subsets_ii import Solution as P090
+from tier3_advanced.subsets.solutions.p077_combinations import Solution as P077
 
 class TestP046Permutations:
     def test_example1(self):
@@ -21,3 +22,14 @@ class TestP090SubsetsII:
     def test_example2(self):
         result = P090().solve([0])
         assert sorted(result) == [[], [0]]
+
+class TestP077Combinations:
+    def test_example1(self):
+        result = P077().solve(4, 2)
+        assert sorted(result) == [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]
+    def test_single(self):
+        result = P077().solve(1, 1)
+        assert result == [[1]]
+    def test_k_one(self):
+        result = P077().solve(3, 1)
+        assert sorted(result) == [[1],[2],[3]]

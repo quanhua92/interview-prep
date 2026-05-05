@@ -42,3 +42,4 @@ def cyclic_sort(nums):
 |---------|-----------|-------------|
 | P442 Find All Duplicates in an Array | Medium | Find all elements that appear twice |
 | P268 Missing Number | Easy | Find the missing number in [0..n] |
+| P448 Find All Numbers Disappeared in an Array | Easy | Negation marking variant |
