@@ -1,6 +1,6 @@
 # Interview Prep
 
-A comprehensive interview preparation toolkit covering coding patterns, system design, and behavioral interviews. Track progress across all 40 topics with a unified CLI dashboard.
+A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, and role-specific topics. Track progress across all 66 topics with a unified CLI dashboard.
 
 ## Quick Start
 
@@ -107,9 +107,71 @@ Each theme contains:
 - `discussion.md` — STAR framework guidance, what interviewers look for, story mining prompts
 - `checklist.md` — Story workshop with drafting checkboxes, refinement checks, practice log
 
+## Salary Negotiation (7 topics)
+
+| Topic | Focus |
+|-------|-------|
+| [Market Research](salary_negotiation/market_research/) | Compensation data, leveling, market positioning |
+| [Total Comp Breakdown](salary_negotiation/total_comp_breakdown/) | Base, bonus, equity, benefits, hidden value |
+| [Initial Offer Evaluation](salary_negotiation/initial_offer_eval/) | Reading offer letters, negotiation levers |
+| [Negotiation Tactics](salary_negotiation/negotiation_tactics/) | Anchoring, framing, timing, communication |
+| [Equity & RSU Evaluation](salary_negotiation/equity_rsu_evaluation/) | Stock options, vesting, dilution, tax |
+| [Difficult Scenarios](salary_negotiation/difficult_scenarios/) | Lowball offers, exploding offers, competing offers |
+| [Counteroffer & Staying](salary_negotiation/counteroffer_staying/) | Counteroffer risks, resigning professionally |
+
+Each topic contains:
+- `discussion.md` — Benchmarks, frameworks, scripts, talking points
+- `checklist.md` — Preparation steps, script practice, scenario walkthroughs
+
+## CS Fundamentals (7 topics)
+
+| Topic | Focus |
+|-------|-------|
+| [Operating Systems](cs_fundamentals/operating_systems/) | Processes, threads, memory, file systems |
+| [Computer Networking](cs_fundamentals/computer_networking/) | TCP/IP, HTTP, DNS, TLS, network models |
+| [Databases](cs_fundamentals/databases/) | SQL, indexing, transactions, ACID, normalization |
+| [Concurrency](cs_fundamentals/concurrency/) | Threads, locks, race conditions, deadlocks |
+| [Distributed Systems](cs_fundamentals/distributed_systems/) | CAP, consensus, replication, fault tolerance |
+| [Data Structures & Algos](cs_fundamentals/data_structures_algos/) | Arrays, trees, graphs, hash tables, complexity |
+| [System Security](cs_fundamentals/system_security/) | OWASP, auth, encryption, secure design |
+
+Each topic contains:
+- `discussion.md` — Key concepts, definitions, common questions, reference tables
+- `checklist.md` — Concept self-assessment, explain-out-loud prompts, practice log
+
+## Resume & Career (6 topics)
+
+| Topic | Focus |
+|-------|-------|
+| [Resume Structure](resume_career/resume_structure/) | One-page format, sections, bullet writing |
+| [Elevator Pitch](resume_career/elevator_pitch/) | 30-60 second self-introduction |
+| [Career Narrative](resume_career/career_narrative/) | Connecting experience into a coherent story |
+| [Explaining Gaps](resume_career/explaining_gaps/) | Employment gaps, career changes, layoffs |
+| [Portfolio Showcase](resume_career/portfolio_showcase/) | Presenting projects, GitHub, writing samples |
+| [Questions for Interviewer](resume_career/questions_for_interviewer/) | Strategic questions to ask at interviews |
+
+Each topic contains:
+- `discussion.md` — Best practices, structure, good vs bad examples, common mistakes
+- `checklist.md` — Drafting, refinement, and practice phases with practice log
+
+## Role-Specific (6 topics)
+
+| Topic | Focus |
+|-------|-------|
+| [Backend Engineer](role_specific/backend_engineer/) | APIs, databases, services, scalability |
+| [Frontend Engineer](role_specific/frontend_engineer/) | DOM, frameworks, performance, accessibility |
+| [Data Engineer](role_specific/data_engineer/) | ETL, data pipelines, warehousing, streaming |
+| [ML/AI Engineer](role_specific/ml_ai_engineer/) | ML fundamentals, deployment, evaluation |
+| [DevOps/SRE](role_specific/devops_sre/) | CI/CD, containers, monitoring, reliability |
+| [Full-Stack Engineer](role_specific/full_stack_engineer/) | Frontend + backend breadth, system integration |
+
+Each topic contains:
+- `discussion.md` — Core competencies, common topics, key terminology, cross-references
+- `checklist.md` — Per-competency prep checklist, practice questions, system design bridge
+
 ## CLI Dashboard
 
-Track progress across all 40 topics (coding + system design + behavioral):
+Track progress across all 66 topics (coding + system design + behavioral + salary + CS fundamentals + resume/career + role-specific):
 
 ```bash
 # View progress for all topics
@@ -119,6 +181,10 @@ python main.py status
 python main.py update sliding_window in_progress
 python main.py update url_shortener completed
 python main.py update handling_failure in_progress
+python main.py update market_research in_progress
+python main.py update operating_systems completed
+python main.py update resume_structure in_progress
+python main.py update backend_engineer completed
 
 # Run coding tests (all or specific pattern)
 python main.py test
@@ -138,6 +204,22 @@ interview-prep/
 │       └── checklist.md
 ├── behavioral/                    # 10 behavioral themes
 │   └── <theme>/
+│       ├── discussion.md
+│       └── checklist.md
+├── salary_negotiation/            # 7 salary negotiation topics
+│   └── <topic>/
+│       ├── discussion.md
+│       └── checklist.md
+├── cs_fundamentals/               # 7 CS fundamentals topics
+│   └── <topic>/
+│       ├── discussion.md
+│       └── checklist.md
+├── resume_career/                 # 6 resume & career topics
+│   └── <topic>/
+│       ├── discussion.md
+│       └── checklist.md
+├── role_specific/                 # 6 role-specific topics
+│   └── <topic>/
 │       ├── discussion.md
 │       └── checklist.md
 ├── tier{1-4}_*/                   # 20 coding patterns

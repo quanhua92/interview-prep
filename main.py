@@ -32,6 +32,10 @@ SECTION_KEYS = {
     "coding": "patterns",
     "system_design": "system_design",
     "behavioral": "behavioral",
+    "salary": "salary_negotiation",
+    "cs": "cs_fundamentals",
+    "resume": "resume_career",
+    "role": "role_specific",
 }
 
 ROOT = Path(__file__).parent
@@ -78,7 +82,15 @@ def _sync_section(tracker, array_key, discovered, has_tier=False):
 def load_tracker():
     if not TRACKER_PATH.exists():
         TRACKER_PATH.parent.mkdir(parents=True, exist_ok=True)
-        tracker = {"patterns": [], "system_design": [], "behavioral": []}
+        tracker = {
+            "patterns": [],
+            "system_design": [],
+            "behavioral": [],
+            "salary_negotiation": [],
+            "cs_fundamentals": [],
+            "resume_career": [],
+            "role_specific": [],
+        }
     else:
         tracker = json.loads(TRACKER_PATH.read_text())
 
@@ -86,6 +98,10 @@ def load_tracker():
     _sync_section(tracker, "patterns", _discover_patterns(), has_tier=True)
     _sync_section(tracker, "system_design", _discover_topics("system_design"))
     _sync_section(tracker, "behavioral", _discover_topics("behavioral"))
+    _sync_section(tracker, "salary_negotiation", _discover_topics("salary_negotiation"))
+    _sync_section(tracker, "cs_fundamentals", _discover_topics("cs_fundamentals"))
+    _sync_section(tracker, "resume_career", _discover_topics("resume_career"))
+    _sync_section(tracker, "role_specific", _discover_topics("role_specific"))
 
     save_tracker(tracker)
     return tracker
@@ -116,6 +132,10 @@ def cmd_status():
     patterns = tracker.get("patterns", [])
     sd_items = tracker.get("system_design", [])
     beh_items = tracker.get("behavioral", [])
+    sal_items = tracker.get("salary_negotiation", [])
+    cs_items = tracker.get("cs_fundamentals", [])
+    res_items = tracker.get("resume_career", [])
+    role_items = tracker.get("role_specific", [])
 
     print()
     print(f"{'='*60}")
@@ -144,18 +164,50 @@ def cmd_status():
     for item in beh_items:
         _print_item(item)
 
+    # Salary Negotiation
+    print(f"\n  SECTION: Salary Negotiation")
+    print(f"  {'-'*56}")
+    for item in sal_items:
+        _print_item(item)
+
+    # CS Fundamentals
+    print(f"\n  SECTION: CS Fundamentals")
+    print(f"  {'-'*56}")
+    for item in cs_items:
+        _print_item(item)
+
+    # Resume & Career
+    print(f"\n  SECTION: Resume & Career")
+    print(f"  {'-'*56}")
+    for item in res_items:
+        _print_item(item)
+
+    # Role-Specific
+    print(f"\n  SECTION: Role-Specific")
+    print(f"  {'-'*56}")
+    for item in role_items:
+        _print_item(item)
+
     # Summary
     c_total, c_done, c_prog = _section_stats(patterns)
     s_total, s_done, s_prog = _section_stats(sd_items)
     b_total, b_done, b_prog = _section_stats(beh_items)
-    g_total = c_total + s_total + b_total
-    g_done = c_done + s_done + b_done
-    g_prog = c_prog + s_prog + b_prog
+    sal_total, sal_done, sal_prog = _section_stats(sal_items)
+    cs_total, cs_done, cs_prog = _section_stats(cs_items)
+    res_total, res_done, res_prog = _section_stats(res_items)
+    role_total, role_done, role_prog = _section_stats(role_items)
+    g_total = c_total + s_total + b_total + sal_total + cs_total + res_total + role_total
+    g_done = c_done + s_done + b_done + sal_done + cs_done + res_done + role_done
+    g_prog = c_prog + s_prog + b_prog + sal_prog + cs_prog + res_prog + role_prog
 
     print(f"\n  {'-'*56}")
     print(f"  Coding:         {c_total:>3} total | {c_done:>3} completed | {c_prog:>3} in progress")
     print(f"  System Design:  {s_total:>3} total | {s_done:>3} completed | {s_prog:>3} in progress")
     print(f"  Behavioral:     {b_total:>3} total | {b_done:>3} completed | {b_prog:>3} in progress")
+    print(f"  Salary Neg:     {sal_total:>3} total | {sal_done:>3} completed | {sal_prog:>3} in progress")
+    print(f"  CS Fundamentals:{cs_total:>3} total | {cs_done:>3} completed | {cs_prog:>3} in progress")
+    print(f"  Resume/Career:  {res_total:>3} total | {res_done:>3} completed | {res_prog:>3} in progress")
+    print(f"  Role-Specific:  {role_total:>3} total | {role_done:>3} completed | {role_prog:>3} in progress")
     print(f"  {'-'*56}")
     print(f"  OVERALL:        {g_total:>3} total | {g_done:>3} completed | {g_prog:>3} in progress | {g_total - g_done} remaining")
     print(f"{'='*60}\n")
