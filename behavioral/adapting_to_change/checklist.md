@@ -1,0 +1,34 @@
+# Adapting to Change — Story Workshop
+
+Use this checklist to draft, refine, and practice your STAR story.
+Aim for 90-120 seconds spoken (roughly 200-300 words).
+
+## Story 1: Drafting
+- [ ] Choose one specific situation (see discussion.md for prompts)
+- [ ] Write your Situation (1-2 sentences, context only)
+- [ ] Write your Task (1 sentence, your role/goal)
+- [ ] Write your Action (3-5 sentences, what YOU did specifically)
+  - [ ] Used "I" not "we" throughout
+  - [ ] Included specific technical or professional details
+  - [ ] Showed your thought process, not just the outcome
+- [ ] Write your Result (1-2 sentences, quantified outcome)
+- [ ] Write your Lesson (1 sentence, what you changed afterward)
+
+## Story 1: Refinement
+- [ ] Read aloud and time it — target 90-120 seconds
+- [ ] Cut any details that do not directly support your action/lesson
+- [ ] Ensure the story is honest and specific
+- [ ] Ensure the lesson/growth is concrete and believable
+- [ ] **Do you show your initial reaction to the change AND how you adapted? (Don't skip straight to the happy ending)**
+- [ ] **Is the change external to you (e.g., reorg, pivot, new tech), not something you chose yourself?**
+- [ ] **Do you show how you communicated with stakeholders affected by the change?**
+- [ ] Check: Does this story work for all the question variations in discussion.md?
+
+## Story 2: Drafting (backup story)
+- [ ] Draft a second, different story following the same process
+- [ ] **Verify it emphasizes a DIFFERENT type of change** (e.g., if story 1 is a requirement/scope change, story 2 should be a team/reorg change or a technology migration — pick a contrasting scenario)
+
+## Practice Log
+- Date: _______  Story #: ___  Duration: ___  Notes:
+- Date: _______  Story #: ___  Duration: ___  Notes:
+- Date: _______  Story #: ___  Duration: ___  Notes:

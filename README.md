@@ -1,27 +1,27 @@
 # Interview Prep
 
-A pattern-based coding interview preparation toolkit. Master 20 coding patterns across 4 difficulty tiers, each with template code, key LeetCode problems, and automated tests.
+A comprehensive interview preparation toolkit covering coding patterns, system design, and behavioral interviews. Track progress across all 40 topics with a unified CLI dashboard.
 
 ## Quick Start
 
 ```bash
 # Install dependencies (requires Python >= 3.13)
-pip install -e ".[dev]"
+uv venv && uv pip install -e ".[dev]"
 
 # Run the progress dashboard
 python main.py status
 
-# Run all tests
+# Run all coding tests
 pytest
 
 # Run tests for a specific pattern
 pytest tests/test_sliding_window.py -v
 
 # Run a single problem file directly
-python tier1_foundation/sliding_window/p003_longest_substring.py
+python tier1_foundation/sliding_window/problems/p003_longest_substring.py
 ```
 
-## Patterns
+## Coding Patterns (20 patterns, 4 tiers)
 
 ### Tier 1: Foundation (Must Master)
 
@@ -63,53 +63,66 @@ python tier1_foundation/sliding_window/p003_longest_substring.py
 | Matrix Traversal | P054 Spiral Matrix, P048 Rotate Image |
 | Graph | P207 Course Schedule, P210 Course Schedule II |
 
-## How to Use
+Each pattern contains:
+- `template.py` — Annotated skeleton with variants
+- `problems/` — Practice stubs with test cases (implement `solve()`)
+- `solutions/` — Answer keys
+- `README.md` — Pattern explanation, when to recognize it, complexity table
 
-### Standalone Run
+## System Design (10 topics)
 
-Each problem file is self-contained and can be run directly:
+| Topic | Core Concepts |
+|-------|--------------|
+| [URL Shortener](system_design/url_shortener/) | ID generation, caching, base62, sharding |
+| [Chat System](system_design/chat_system/) | WebSockets, message queues, presence |
+| [Rate Limiter](system_design/rate_limiter/) | Token bucket, sliding window, Redis |
+| [News Feed](system_design/news_feed/) | Fan-out on write/read, graph, ranking |
+| [Notification Service](system_design/notification_service/) | Push/pull, reliability, dedup, priority |
+| [Search Autocomplete](system_design/search_autocomplete/) | Trie, ranking, prefix search at scale |
+| [Distributed Cache](system_design/distributed_cache/) | Consistent hashing, replication, eviction |
+| [Key-Value Store](system_design/key_value_store/) | SSTables, LSM trees, Bloom filters |
+| [Web Crawler](system_design/web_crawler/) | URL frontier, politeness, dedup, BFS |
+| [Ticket Booking](system_design/ticket_booking/) | Concurrency, locks, idempotency, oversell |
+
+Each topic contains:
+- `discussion.md` — Concise reference (key concepts, trade-offs, vocabulary)
+- `checklist.md` — Step-by-step working checklist with 5 phases + practice notes
+
+## Behavioral (10 themes, STAR method)
+
+| Theme | Competency |
+|-------|-----------|
+| [Teamwork Conflict](behavioral/teamwork_conflict/) | Collaboration, empathy |
+| [Handling Failure](behavioral/handling_failure/) | Self-awareness, resilience |
+| [Leadership Without Authority](behavioral/leadership_initiative/) | Influence, ownership |
+| [Difficult Decision](behavioral/difficult_decision/) | Judgment, trade-off analysis |
+| [Adapting to Change](behavioral/adapting_to_change/) | Flexibility, prioritization |
+| [Working Under Pressure](behavioral/meeting_deadline_pressure/) | Time management, composure |
+| [Receiving Feedback](behavioral/receiving_feedback/) | Humility, growth |
+| [Mentoring a Teammate](behavioral/mentoring_other/) | Teaching, patience |
+| [Owning a Mistake](behavioral/owning_mistake/) | Accountability, transparency |
+| [Competing Priorities](behavioral/competing_priorities/) | Prioritization, stakeholder management |
+
+Each theme contains:
+- `discussion.md` — STAR framework guidance, what interviewers look for, story mining prompts
+- `checklist.md` — Story workshop with drafting checkboxes, refinement checks, practice log
+
+## CLI Dashboard
+
+Track progress across all 40 topics (coding + system design + behavioral):
 
 ```bash
-python tier1_foundation/sliding_window/p003_longest_substring.py
-```
-
-### Pytest
-
-Tests live in the `tests/` directory and mirror the pattern names:
-
-```bash
-# Run all tests
-pytest
-
-# Run a specific pattern's tests
-pytest tests/test_sliding_window.py -v
-
-# Run with coverage
-pytest --cov=. --cov-report=term-missing
-```
-
-### CLI Dashboard
-
-Track your progress across all 20 patterns:
-
-```bash
-# View progress for all patterns
+# View progress for all topics
 python main.py status
 
-# Mark a pattern as in progress
+# Mark any topic as in progress / completed / not started
 python main.py update sliding_window in_progress
+python main.py update url_shortener completed
+python main.py update handling_failure in_progress
 
-# Mark a pattern as completed
-python main.py update sliding_window completed
-
-# Reset a pattern to not started
-python main.py update sliding_window not_started
-
-# Run tests for a specific pattern via the CLI
-python main.py test sliding_window
-
-# Run all tests via the CLI
+# Run coding tests (all or specific pattern)
 python main.py test
+python main.py test sliding_window
 ```
 
 Progress is persisted in `progress/tracker.json`.
@@ -118,45 +131,22 @@ Progress is persisted in `progress/tracker.json`.
 
 ```
 interview-prep/
-├── main.py                        # CLI dashboard for progress tracking
-├── pyproject.toml                 # Project config and dependencies
-├── progress/
-│   └── tracker.json               # Persisted progress data
-├── src/
-│   └── utils/                     # Shared utilities
-├── tests/                         # Test files (one per pattern)
-├── tier1_foundation/
-│   ├── sliding_window/
-│   │   ├── __init__.py
-│   │   ├── README.md
-│   │   ├── template.py
-│   │   ├── p003_longest_substring.py
-│   │   └── p438_find_anagrams.py
-│   ├── two_pointers/
-│   ├── fast_slow_pointers/
-│   ├── merge_intervals/
-│   └── bfs/
-├── tier2_intermediate/
-│   ├── dfs/
-│   ├── two_heaps/
-│   ├── top_k_elements/
-│   ├── binary_search/
-│   └── dynamic_programming/
-├── tier3_advanced/
-│   ├── backtracking/
-│   ├── modified_binary_search/
-│   ├── cyclic_sort/
-│   ├── subsets/
-│   └── trie/
-└── tier4_expert/
-    ├── union_find/
-    ├── monotonic_stack/
-    ├── greedy/
-    ├── matrix_traversal/
-    └── graph/
+├── main.py                        # CLI dashboard
+├── system_design/                 # 10 system design topics
+│   └── <topic>/
+│       ├── discussion.md
+│       └── checklist.md
+├── behavioral/                    # 10 behavioral themes
+│   └── <theme>/
+│       ├── discussion.md
+│       └── checklist.md
+├── tier{1-4}_*/                   # 20 coding patterns
+│   └── <pattern>/
+│       ├── template.py
+│       ├── problems/              # Practice stubs
+│       ├── solutions/             # Answer keys
+│       └── README.md
+├── tests/                         # pytest suite (108 tests)
+├── src/utils/                     # Shared utilities
+└── progress/tracker.json          # Progress data (gitignored)
 ```
-
-Each pattern directory contains:
-- `template.py` -- Reusable template code for the pattern
-- `pXXX_problem_name.py` -- Individual problem implementations with examples
-- `README.md` -- Pattern explanation, approach, and complexity analysis
