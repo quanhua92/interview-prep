@@ -4,6 +4,7 @@ sys.path.insert(0, ".")
 from tier4_expert.greedy.solutions.p055_jump_game import Solution as P055
 from tier4_expert.greedy.solutions.p455_assign_cookies import Solution as P455
 from tier4_expert.greedy.solutions.p134_gas_station import Solution as P134
+from tier4_expert.greedy.solutions.p135_candy import Solution as P135
 
 class TestP055JumpGame:
     def test_example1(self): assert P055().solve([2,3,1,1,4]) == True
@@ -19,3 +20,9 @@ class TestP134GasStation:
     def test_example1(self): assert P134().solve([1,2,3,4,5], [3,4,5,1,2]) == 3
     def test_impossible(self): assert P134().solve([2,3,4], [3,4,3]) == -1
     def test_example2(self): assert P134().solve([5,1,2,3,4], [4,4,1,5,1]) == 4
+
+class TestP135Candy:
+    def test_example1(self): assert P135().solve([1,0,2]) == 5
+    def test_example2(self): assert P135().solve([1,2,2]) == 4
+    def test_decreasing_flat(self): assert P135().solve([1,3,2,2,1]) == 7
+    def test_single(self): assert P135().solve([1]) == 1

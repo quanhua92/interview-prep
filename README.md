@@ -1,6 +1,6 @@
 # Interview Prep
 
-A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, and role-specific topics. Track progress across all 86 topics with a unified CLI dashboard.
+A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, and role-specific topics. Track progress across all 90 topics with a unified CLI dashboard.
 
 ## Quick Start
 
@@ -21,7 +21,7 @@ uv run pytest tests/test_sliding_window.py -v
 uv run python tier1_foundation/sliding_window/problems/p003_longest_substring.py
 ```
 
-## Coding Patterns (20 patterns, 4 tiers)
+## Coding Patterns (24 patterns, 4 tiers)
 
 ### Tier 1: Foundation (Must Master)
 
@@ -42,6 +42,10 @@ uv run python tier1_foundation/sliding_window/problems/p003_longest_substring.py
 | Top K Elements | P215 Kth Largest Element, P347 Top K Frequent Elements, P973 K Closest Points |
 | Binary Search | P704 Binary Search, P153 Find Minimum in Rotated Sorted Array, P278 First Bad Version |
 | Dynamic Programming | P070 Climbing Stairs, P322 Coin Change, P198 House Robber |
+| Prefix Sum | P560 Subarray Sum Equals K, P238 Product Except Self, P713 Subarray Product Less Than K |
+| Stack | P020 Valid Parentheses, P394 Decode String, P155 Min Stack |
+| Divide & Conquer | P023 Merge k Sorted Lists, P912 Sort an Array, P169 Majority Element |
+| Bit Manipulation | P191 Number of 1 Bits, P136 Single Number, P338 Counting Bits |
 
 ### Tier 3: Advanced (Important for Top Companies)
 
@@ -58,8 +62,8 @@ uv run python tier1_foundation/sliding_window/problems/p003_longest_substring.py
 | Pattern | Key Problems |
 |---------|-------------|
 | Union Find | P323 Connected Components, P684 Redundant Connection, P990 Satisfiability Equations |
-| Monotonic Stack | P739 Daily Temperatures, P084 Largest Rectangle in Histogram, P853 Car Fleet |
-| Greedy | P055 Jump Game, P455 Assign Cookies, P134 Gas Station |
+| Monotonic Stack | P739 Daily Temperatures, P084 Largest Rectangle in Histogram, P853 Car Fleet, P907 Sum of Subarray Minimums |
+| Greedy | P055 Jump Game, P455 Assign Cookies, P134 Gas Station, P135 Candy |
 | Matrix Traversal | P054 Spiral Matrix, P048 Rotate Image, P498 Diagonal Traverse |
 | Graph | P207 Course Schedule, P210 Course Schedule II, P997 Find the Town Judge |
 
@@ -222,13 +226,13 @@ interview-prep/
 │   └── <topic>/
 │       ├── discussion.md
 │       └── checklist.md
-├── tier{1-4}_*/                   # 20 coding patterns
+├── tier{1-4}_*/                   # 24 coding patterns
 │   └── <pattern>/
 │       ├── template.py
 │       ├── problems/              # Practice stubs
 │       ├── solutions/             # Answer keys
 │       └── README.md
-├── tests/                         # pytest suite (128 tests)
+├── tests/                         # pytest suite (231 tests)
 ├── src/utils/                     # Shared utilities
 └── progress/tracker.json          # Progress data (gitignored)
 ```

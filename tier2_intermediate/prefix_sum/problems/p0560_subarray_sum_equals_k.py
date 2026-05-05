@@ -1,0 +1,22 @@
+"""P0560: Subarray Sum Equals K (Medium)
+
+TODO: Implement solve() below.
+Hint: Use a hash map with prefix sums to count subarrays summing to k.
+"""
+import sys
+sys.path.insert(0, ".")
+from src.utils import Problem, TestCase
+
+class Solution(Problem):
+    name = "560. Subarray Sum Equals K"
+    test_cases = [
+        TestCase(input=([1,1,1], 2), expected=2, label="example 1"),
+        TestCase(input=([1,2,3], 3), expected=2, label="example 2"),
+        TestCase(input=([], 0), expected=0, label="empty array"),
+    ]
+
+    def solve(self, nums: list[int], k: int) -> int:
+        raise NotImplementedError("TODO: Implement solve(self, nums: list[int], k: int) -> int")
+
+if __name__ == "__main__":
+    Solution().run()
