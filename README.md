@@ -5,20 +5,20 @@ A comprehensive interview preparation toolkit covering coding patterns, system d
 ## Quick Start
 
 ```bash
-# Install dependencies (requires Python >= 3.13)
-uv venv && uv pip install -e ".[dev]"
+# Install dependencies
+uv sync
 
 # Run the progress dashboard
-python main.py status
+uv run python main.py status
 
 # Run all coding tests
-pytest
+uv run pytest
 
 # Run tests for a specific pattern
-pytest tests/test_sliding_window.py -v
+uv run pytest tests/test_sliding_window.py -v
 
 # Run a single problem file directly
-python tier1_foundation/sliding_window/problems/p003_longest_substring.py
+uv run python tier1_foundation/sliding_window/problems/p003_longest_substring.py
 ```
 
 ## Coding Patterns (20 patterns, 4 tiers)
@@ -175,20 +175,20 @@ Track progress across all 66 topics (coding + system design + behavioral + salar
 
 ```bash
 # View progress for all topics
-python main.py status
+uv run python main.py status
 
 # Mark any topic as in progress / completed / not started
-python main.py update sliding_window in_progress
-python main.py update url_shortener completed
-python main.py update handling_failure in_progress
-python main.py update market_research in_progress
-python main.py update operating_systems completed
-python main.py update resume_structure in_progress
-python main.py update backend_engineer completed
+uv run python main.py update sliding_window in_progress
+uv run python main.py update url_shortener completed
+uv run python main.py update handling_failure in_progress
+uv run python main.py update market_research in_progress
+uv run python main.py update operating_systems completed
+uv run python main.py update resume_structure in_progress
+uv run python main.py update backend_engineer completed
 
 # Run coding tests (all or specific pattern)
-python main.py test
-python main.py test sliding_window
+uv run python main.py test
+uv run python main.py test sliding_window
 ```
 
 Progress is persisted in `progress/tracker.json`.
