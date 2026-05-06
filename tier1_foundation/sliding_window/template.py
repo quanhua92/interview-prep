@@ -7,8 +7,6 @@ Three common variants of the sliding window technique:
 3. Variable-size window (exact count): Count the number of subarrays that satisfy a condition.
 """
 
-from collections import Counter
-
 
 def sliding_window_max(nums: list[int], k: int) -> int:
     """Variant 1: Fixed-size window.

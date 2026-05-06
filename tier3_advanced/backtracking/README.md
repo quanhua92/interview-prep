@@ -43,3 +43,5 @@ def backtrack(candidate):
 | P078 Subsets | Medium | Generate all subsets of a set |
 | P039 Combination Sum | Medium | Find all combinations that sum to target |
 | P017 Letter Combinations of a Phone Number | Medium | Combinations with digit-to-letter mapping |
+| P473 Matchsticks to Square | Medium | Backtracking + pruning (sort desc) |
+| P491 Non-decreasing Subsequences | Medium | Backtracking with local dedup |

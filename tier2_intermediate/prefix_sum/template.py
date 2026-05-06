@@ -7,12 +7,11 @@ Variant 3: Prefix product for product-of-array problems
 
 from __future__ import annotations
 
-from typing import Any
-
 
 # ---------------------------------------------------------------------------
 # Variant 1: Standard prefix sum for range sum queries
 # ---------------------------------------------------------------------------
+
 
 def prefix_sum_array(nums: list[int]) -> list[int]:
     """Build a prefix sum array where prefix[i] = sum(nums[0:i]).
@@ -47,6 +46,7 @@ def range_sum(prefix: list[int], left: int, right: int) -> int:
 # Variant 2: Prefix sum with hash map for subarray sum counting
 # ---------------------------------------------------------------------------
 
+
 def subarray_sum_equals_k(nums: list[int], k: int) -> int:
     """Count the number of subarrays whose sum equals k.
 
@@ -78,6 +78,7 @@ def subarray_sum_equals_k(nums: list[int], k: int) -> int:
 # ---------------------------------------------------------------------------
 # Variant 3: Prefix product for product-of-array problems
 # ---------------------------------------------------------------------------
+
 
 def product_except_self(nums: list[int]) -> list[int]:
     """Return an array where output[i] is the product of all elements

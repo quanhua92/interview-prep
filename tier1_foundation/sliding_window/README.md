@@ -32,6 +32,14 @@ The window invariant is what makes it work. Every element is added to the window
 | P003 Longest Substring Without Repeating Characters | Medium | Variable-size with shrinking |
 | P438 Find All Anagrams in a String | Medium | Fixed-size window |
 | P424 Longest Repeating Character Replacement | Medium | Variable-size with constraint budget |
+| P434 Number of Segments in a String | Easy | String iteration |
+| P395 Longest Substring with At Least K Repeating Characters | Medium | Divide and conquer on char count |
+| P482 License Key Formatting | Medium | String reformat from right |
+| P495 Teemo Attacking | Medium | Merge intervals |
+| P500 Keyboard Row | Easy | Set membership |
+| P520 Detect Capital | Easy | Case comparison |
+| P521 Longest Uncommon Subsequence I | Easy | Equality check |
+| P567 Permutation in String | Medium | Fixed-size sliding window + counter |
 
 ## Template Variants
 

@@ -9,12 +9,12 @@ from __future__ import annotations
 
 import heapq
 from collections import Counter
-from typing import Any
 
 
 # ---------------------------------------------------------------------------
 # Variant 1: Kth largest with min-heap
 # ---------------------------------------------------------------------------
+
 
 def kth_largest(nums: list[int], k: int) -> int:
     """Find the *k*-th largest element using a min-heap of size *k*.
@@ -52,6 +52,7 @@ def top_k(nums: list[int], k: int) -> int:
 # Variant 2: Top K frequent elements
 # ---------------------------------------------------------------------------
 
+
 def top_k_frequent(nums: list[int], k: int) -> list[int]:
     """Return the *k* most frequent elements.
 
@@ -64,15 +65,13 @@ def top_k_frequent(nums: list[int], k: int) -> list[int]:
     """
     count: Counter = Counter(nums)
     # ``heapq.nlargest`` is O(n log k) internally.
-    return [
-        item
-        for item, _ in heapq.nlargest(k, count.items(), key=lambda x: x[1])
-    ]
+    return [item for item, _ in heapq.nlargest(k, count.items(), key=lambda x: x[1])]
 
 
 # ---------------------------------------------------------------------------
 # Variant 3: K closest points to origin
 # ---------------------------------------------------------------------------
+
 
 def k_closest_points(
     points: list[tuple[int, int]],

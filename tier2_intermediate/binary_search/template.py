@@ -7,12 +7,11 @@ Variant 3: Binary search on rotated sorted array
 
 from __future__ import annotations
 
-from typing import Any
-
 
 # ---------------------------------------------------------------------------
 # Variant 1: Standard binary search
 # ---------------------------------------------------------------------------
+
 
 def binary_search(nums: list[int], target: int) -> int:
     """Find *target* in a sorted list using standard binary search.
@@ -43,6 +42,7 @@ def binary_search(nums: list[int], target: int) -> int:
 # Variant 2: Leftmost binary search (lower bound)
 # ---------------------------------------------------------------------------
 
+
 def binary_search_leftmost(nums: list[int], target: int) -> int:
     """Return the **leftmost** index at which *target* appears.
 
@@ -72,6 +72,7 @@ def binary_search_leftmost(nums: list[int], target: int) -> int:
 # ---------------------------------------------------------------------------
 # Variant 3: Binary search on rotated sorted array
 # ---------------------------------------------------------------------------
+
 
 def binary_search_rotated_min(nums: list[int]) -> int:
     """Find the minimum element in a rotated sorted array.

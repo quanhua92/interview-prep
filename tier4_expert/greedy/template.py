@@ -8,6 +8,7 @@ Variant 3: Gas station — find the starting station
 
 # ── Variant 1: Jump game (can we reach the end?) ─────────────────────────────
 
+
 def jump_game(nums: list[int]) -> bool:
     """Determine if you can reach the last index.
 
@@ -25,6 +26,7 @@ def jump_game(nums: list[int]) -> bool:
 
 
 # ── Variant 2: Activity selection / interval scheduling ──────────────────────
+
 
 def activity_selection(intervals: list[tuple[int, int]]) -> int:
     """Find the maximum number of non-overlapping intervals.
@@ -47,6 +49,7 @@ def activity_selection(intervals: list[tuple[int, int]]) -> int:
 
 
 # ── Variant 3: Gas station ──────────────────────────────────────────────────
+
 
 def gas_station(gas: list[int], cost: list[int]) -> int:
     """Find the starting gas station index to complete the circuit.

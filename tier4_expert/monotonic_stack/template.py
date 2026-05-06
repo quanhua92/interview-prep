@@ -10,6 +10,7 @@ from collections import deque
 
 # ── Variant 1: Next greater element (ascending stack) ────────────────────────
 
+
 def daily_temperatures(temperatures: list[int]) -> list[int]:
     """Find how many days until a warmer temperature for each day.
 
@@ -30,6 +31,7 @@ def daily_temperatures(temperatures: list[int]) -> list[int]:
 
 
 # ── Variant 2: Previous smaller element (descending stack) ───────────────────
+
 
 def previous_smaller_element(nums: list[int]) -> list[int]:
     """Find the index of the previous smaller element for each position.
@@ -52,6 +54,7 @@ def previous_smaller_element(nums: list[int]) -> list[int]:
 
 
 # ── Variant 3: Sliding window maximum (monotonic deque) ─────────────────────
+
 
 def sliding_window_maximum(nums: list[int], k: int) -> list[int]:
     """Find the maximum in each sliding window of size k.

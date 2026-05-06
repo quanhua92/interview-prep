@@ -45,7 +45,9 @@ def merge_intervals(intervals: list[list[int]]) -> list[list[int]]:
     return merged
 
 
-def insert_interval(intervals: list[list[int]], new_interval: list[int]) -> list[list[int]]:
+def insert_interval(
+    intervals: list[list[int]], new_interval: list[int]
+) -> list[list[int]]:
     """Variant 2: Insert interval into a sorted list.
 
     Insert new_interval into intervals (already sorted by start time)
@@ -135,7 +137,11 @@ def min_meeting_rooms(intervals: list[list[int]]) -> int:
 
 if __name__ == "__main__":
     # Quick smoke tests
-    assert merge_intervals([[1, 3], [2, 6], [8, 10], [15, 18]]) == [[1, 6], [8, 10], [15, 18]]
+    assert merge_intervals([[1, 3], [2, 6], [8, 10], [15, 18]]) == [
+        [1, 6],
+        [8, 10],
+        [15, 18],
+    ]
     assert merge_intervals([[1, 4], [4, 5]]) == [[1, 5]]
 
     assert insert_interval([[1, 3], [6, 9]], [2, 5]) == [[1, 5], [6, 9]]

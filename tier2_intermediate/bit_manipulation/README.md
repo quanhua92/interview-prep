@@ -26,6 +26,8 @@ Directly manipulate individual bits of integers using bitwise operators: AND (`&
 | 191 | [Number of 1 Bits](./problems/p0191_number_of_1_bits.py) | Easy |
 | 136 | [Single Number](./problems/p136_single_number.py) | Easy |
 | 338 | [Counting Bits](./problems/p338_counting_bits.py) | Medium |
+| 470 | [Implement Rand10() Using Rand7()](./solutions/p470_implement_rand10_using_rand7.py) | Medium |
+| 476 | [Number Complement](./solutions/p476_number_complement.py) | Easy |
 
 ## Common Pitfalls
 - Not masking to 32 bits when working with negative numbers (Python integers are arbitrary precision).

@@ -25,3 +25,5 @@ Maintain a stack whose elements are always in monotonic (increasing or decreasin
 - P084: Largest Rectangle in Histogram
 - P853: Car Fleet
 - P907: Sum of Subarray Minimums
+- P456: 132 Pattern
+- P503: Next Greater Element II

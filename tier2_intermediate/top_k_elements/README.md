@@ -35,6 +35,7 @@ Look for keywords and problem structures such as:
 | 215 | [Kth Largest Element in an Array](./p215_kth_largest.py) | Medium |
 | 347 | [Top K Frequent Elements](./p347_top_k_frequent.py) | Medium |
 | 973 | [K Closest Points to Origin](./p973_k_closest_points.py) | Medium |
+| 407 | [Trapping Rain Water II](./solutions/p407_trapping_rain_water_ii.py) | Hard |
 
 ## Common Pitfalls
 

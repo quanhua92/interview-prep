@@ -12,6 +12,7 @@ from __future__ import annotations
 # Variant 1: Matching brackets
 # ---------------------------------------------------------------------------
 
+
 def is_valid_parentheses(s: str) -> bool:
     """Check if a string of brackets is valid (properly nested and closed).
 
@@ -36,6 +37,7 @@ def is_valid_parentheses(s: str) -> bool:
 # ---------------------------------------------------------------------------
 # Variant 2: Nested structure decoding
 # ---------------------------------------------------------------------------
+
 
 def decode_string(s: str) -> str:
     """Decode a string encoded with k[encoded_string] pattern.
@@ -73,6 +75,7 @@ def decode_string(s: str) -> str:
 # ---------------------------------------------------------------------------
 # Variant 3: Min stack
 # ---------------------------------------------------------------------------
+
 
 class MinStack:
     """Stack that supports push, pop, top, and retrieving the minimum in O(1)."""

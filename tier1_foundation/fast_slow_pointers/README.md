@@ -39,6 +39,7 @@ iteration). They are guaranteed to meet within O(cycle_length) steps.
 | P141 Linked List Cycle | Easy | Cycle detection in linked list |
 | P202 Happy Number | Easy | Happy number (number theory cycle) |
 | P876 Middle of the Linked List | Easy | Find middle node (non-cycle variant) |
+| P382 Linked List Random Node | Medium | Reservoir sampling |
 
 ## Template Variants
 

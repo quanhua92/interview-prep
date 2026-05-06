@@ -1,17 +1,46 @@
-"""P078: Subsets (Medium)
+"""
+P78: Subsets (Medium)
+https://leetcode.com/problems/subsets/
+Topics: Array, Backtracking, Bit Manipulation
 
-TODO: Implement solve() below.
+Given an integer array nums of unique elements, return all possible subsets (the power set).
+The solution set must not contain duplicate subsets. Return the solution in any order.
+
+Example 1:
+    Input: nums = [1,2,3]
+    Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+
+Example 2:
+    Input: nums = [0]
+    Output: [[],[0]]
+
+Constraints:
+    - 1 <= nums.length <= 10
+    - -10 <= nums[i] <= 10
+    - All the numbers of nums are unique.
+
+Template (python3):
+    class Solution:
+        def subsets(self, nums: List[int]) -> List[List[int]]:
+
 Hint: Use backtracking to generate all possible subsets by including/excluding each element.
 """
+
 import sys
+
 sys.path.insert(0, ".")
 from src.utils import Problem, TestCase
+
 
 class Solution(Problem):
     name = "78. Subsets"
     test_cases = [
-        TestCase(input=[1,2,3], expected=[[],[1],[1,2],[1,2,3],[1,3],[2],[2,3],[3]], label="example 1"),
-        TestCase(input=[0], expected=[[],[0]], label="example 2"),
+        TestCase(
+            input=[1, 2, 3],
+            expected=[[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]],
+            label="example 1",
+        ),
+        TestCase(input=[0], expected=[[], [0]], label="example 2"),
     ]
 
     def solve(self, nums: list[int]) -> list[list[int]]:
@@ -26,6 +55,7 @@ class Solution(Problem):
 
         backtrack(0, [])
         return result
+
 
 if __name__ == "__main__":
     Solution().run()

@@ -26,6 +26,9 @@ Build a running cumulative sum array where `prefix[i]` = sum of all elements fro
 | 560 | [Subarray Sum Equals K](./problems/p0560_subarray_sum_equals_k.py) | Medium |
 | 238 | [Product of Array Except Self](./problems/p0238_product_except_self.py) | Medium |
 | 713 | [Subarray Product Less Than K](./problems/p0713_subarray_product_less_than_k.py) | Medium |
+| 523 | [Continuous Subarray Sum](./solutions/p523_continuous_subarray_sum.py) | Medium |
+| 525 | [Contiguous Array](./solutions/p525_contiguous_array.py) | Medium |
+| 528 | [Random Pick with Weight](./solutions/p528_random_pick_with_weight.py) | Medium |
 
 ## Common Pitfalls
 - Forgetting that `prefix[0] = 0` (off-by-one errors).

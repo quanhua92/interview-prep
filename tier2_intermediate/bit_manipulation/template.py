@@ -12,6 +12,7 @@ from __future__ import annotations
 # Variant 1: Brian Kernighan's algorithm
 # ---------------------------------------------------------------------------
 
+
 def count_bits_kernighan(n: int) -> int:
     """Count the number of 1-bits in an integer using Brian Kernighan's algorithm.
 
@@ -35,6 +36,7 @@ def count_bits_kernighan(n: int) -> int:
 # Variant 2: XOR trick for finding single numbers
 # ---------------------------------------------------------------------------
 
+
 def single_number(nums: list[int]) -> int:
     """Find the element that appears exactly once (all others appear twice).
 
@@ -56,6 +58,7 @@ def single_number(nums: list[int]) -> int:
 # ---------------------------------------------------------------------------
 # Variant 3: DP + bit manipulation for counting bits
 # ---------------------------------------------------------------------------
+
 
 def count_bits_dp(n: int) -> list[int]:
     """Return an array ans where ans[i] is the number of 1-bits in i.

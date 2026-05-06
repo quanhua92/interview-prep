@@ -40,7 +40,7 @@ def has_cycle(head) -> bool:
     return False
 
 
-def find_middle(head) -> "type(head) | None":
+def find_middle(head) -> None:
     """Variant 2: Find the middle node of a linked list.
 
     When fast reaches the end, slow will be at the middle.
@@ -97,6 +97,7 @@ def is_happy(n: int) -> bool:
         >>> is_happy(2)
         False
     """
+
     def get_next(num: int) -> int:
         """Compute the sum of squares of digits."""
         total = 0

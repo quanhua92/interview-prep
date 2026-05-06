@@ -13,6 +13,7 @@ from collections import deque
 # Note: This variant uses a simple adjacency-list representation (dict[int, list[int]])
 # rather than a Node class, to keep the template dependency-free.
 
+
 def clone_graph_bfs(adj: dict[int, list[int]]) -> dict[int, list[int]]:
     """Clone an undirected graph using BFS.
 
@@ -42,6 +43,7 @@ def clone_graph_bfs(adj: dict[int, list[int]]) -> dict[int, list[int]]:
 
 
 # ── Variant 2: DFS graph traversal with cycle detection ──────────────────────
+
 
 def has_cycle_dfs(n: int, edges: list[tuple[int, int]]) -> bool:
     """Detect if a directed graph has a cycle using DFS with three states.
@@ -75,6 +77,7 @@ def has_cycle_dfs(n: int, edges: list[tuple[int, int]]) -> bool:
 
 
 # ── Variant 3: Topological sort (Kahn's algorithm) ──────────────────────────
+
 
 def topological_sort(n: int, edges: list[tuple[int, int]]) -> list[int]:
     """Return a topological ordering of a directed graph using Kahn's algorithm.

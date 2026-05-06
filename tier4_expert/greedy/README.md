@@ -25,3 +25,7 @@ Make the locally optimal choice at each step, hoping it leads to a globally opti
 - P455: Assign Cookies
 - P134: Gas Station
 - P135: Candy
+- P452: Minimum Number of Arrows to Burst Balloons
+- P502: IPO
+- P556: Next Greater Element III
+- P564: Find the Closest Palindrome

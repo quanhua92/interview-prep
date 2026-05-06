@@ -8,12 +8,12 @@ Variant 3: K closest elements
 from __future__ import annotations
 
 import heapq
-from typing import Any
 
 
 # ---------------------------------------------------------------------------
 # Variant 1: Running median with two heaps
 # ---------------------------------------------------------------------------
+
 
 class MedianStream:
     """Maintain a running median over a stream of numbers using two heaps.
@@ -72,6 +72,7 @@ def median_stream(values: list[int]) -> list[float]:
 # Variant 2: Max of sliding window (heap approach)
 # ---------------------------------------------------------------------------
 
+
 def sliding_window_max(nums: list[int], k: int) -> list[int]:
     """Return the max of each sliding window of size *k* using a max-heap.
 
@@ -108,6 +109,7 @@ def sliding_window_max(nums: list[int], k: int) -> list[int]:
 # ---------------------------------------------------------------------------
 # Variant 3: K closest elements
 # ---------------------------------------------------------------------------
+
 
 def k_closest_elements(
     arr: list[int],

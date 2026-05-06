@@ -1,6 +1,6 @@
 # Interview Prep
 
-A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, and role-specific topics. Track progress across all 90 topics with a unified CLI dashboard.
+A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, and role-specific topics. Track progress across all 116 coding problems and 86 topics with a unified CLI dashboard.
 
 ## Quick Start
 
@@ -27,45 +27,45 @@ uv run python tier1_foundation/sliding_window/problems/p003_longest_substring.py
 
 | Pattern | Key Problems |
 |---------|-------------|
-| Sliding Window | P003 Longest Substring, P438 Find All Anagrams, P424 Longest Repeating Char |
-| Two Pointers | P167 Two Sum II, P011 Container With Most Water, P015 3Sum |
-| Fast & Slow Pointers | P141 Linked List Cycle, P202 Happy Number, P876 Middle of Linked List |
+| Sliding Window | P003 Longest Substring, P438 Find All Anagrams, P424 Longest Repeating Char, P567 Permutation in String, P395 Longest Substring K Repeating, P495 Teemo Attacking |
+| Two Pointers | P167 Two Sum II, P011 Container With Most Water, P015 3Sum, P392 Is Subsequence, P524 Longest Word through Deleting |
+| Fast & Slow Pointers | P141 Linked List Cycle, P202 Happy Number, P876 Middle of Linked List, P382 Linked List Random Node |
 | Merge Intervals | P056 Merge Intervals, P253 Meeting Rooms II, P057 Insert Interval |
-| BFS | P102 Binary Tree Level Order, P994 Rotting Oranges, P1091 Shortest Path Binary Matrix |
+| BFS | P102 Binary Tree Level Order, P994 Rotting Oranges, P1091 Shortest Path Binary Matrix, P513 Find Bottom Left Tree Value, P515 Find Largest Value in Each Tree Row |
 
 ### Tier 2: Intermediate (Very Common)
 
 | Pattern | Key Problems |
 |---------|-------------|
-| DFS | P200 Number of Islands, P695 Max Area of Island, P1306 Jump Game III |
+| DFS | P200 Number of Islands, P695 Max Area of Island, P1306 Jump Game III, P572 Subtree of Another Tree, P538 Convert BST to Greater Tree, P508 Most Frequent Subtree Sum |
 | Two Heaps | P295 Median Finder, P480 Sliding Window Median |
-| Top K Elements | P215 Kth Largest Element, P347 Top K Frequent Elements, P973 K Closest Points |
-| Binary Search | P704 Binary Search, P153 Find Minimum in Rotated Sorted Array, P278 First Bad Version |
-| Dynamic Programming | P070 Climbing Stairs, P322 Coin Change, P198 House Robber |
-| Prefix Sum | P560 Subarray Sum Equals K, P238 Product Except Self, P713 Subarray Product Less Than K |
+| Top K Elements | P215 Kth Largest Element, P347 Top K Frequent Elements, P973 K Closest Points, P407 Trapping Rain Water II |
+| Binary Search | P704 Binary Search, P153 Find Minimum in Rotated Sorted Array, P278 First Bad Version, P493 Reverse Pairs, P354 Russian Doll Envelopes, P450 Delete Node in a BST |
+| Dynamic Programming | P070 Climbing Stairs, P322 Coin Change, P198 House Robber, P516 Longest Palindromic Subsequence, P518 Coin Change II, P514 Freedom Trail, P552 Student Attendance Record II, P576 Out of Boundary Paths |
+| Prefix Sum | P560 Subarray Sum Equals K, P238 Product Except Self, P713 Subarray Product Less Than K, P523 Continuous Subarray Sum, P525 Contiguous Array |
 | Stack | P020 Valid Parentheses, P394 Decode String, P155 Min Stack |
-| Divide & Conquer | P023 Merge k Sorted Lists, P912 Sort an Array, P169 Majority Element |
-| Bit Manipulation | P191 Number of 1 Bits, P136 Single Number, P338 Counting Bits |
+| Divide & Conquer | P023 Merge k Sorted Lists, P912 Sort an Array, P169 Majority Element, P427 Construct Quad Tree |
+| Bit Manipulation | P191 Number of 1 Bits, P136 Single Number, P338 Counting Bits, P470 Implement Rand10 Using Rand7, P476 Number Complement |
 
 ### Tier 3: Advanced (Important for Top Companies)
 
 | Pattern | Key Problems |
 |---------|-------------|
-| Backtracking | P078 Subsets, P039 Combination Sum, P017 Letter Combinations |
+| Backtracking | P078 Subsets, P039 Combination Sum, P017 Letter Combinations, P473 Matchsticks to Square, P491 Non-decreasing Subsequences |
 | Modified Binary Search | P033 Search in Rotated Sorted Array, P875 Koko Eating Bananas, P410 Split Array Sum |
 | Cyclic Sort | P442 Find All Duplicates, P268 Missing Number, P448 Find Disappeared |
 | Subsets | P046 Permutations, P090 Subsets II, P077 Combinations |
-| Trie | P208 Implement Trie, P212 Word Search II, P211 Design Add and Search Words |
+| Trie | P208 Implement Trie, P212 Word Search II, P211 Design Add and Search Words, P472 Concatenated Words |
 
 ### Tier 4: Expert (Differentiators)
 
 | Pattern | Key Problems |
 |---------|-------------|
 | Union Find | P323 Connected Components, P684 Redundant Connection, P990 Satisfiability Equations |
-| Monotonic Stack | P739 Daily Temperatures, P084 Largest Rectangle in Histogram, P853 Car Fleet, P907 Sum of Subarray Minimums |
-| Greedy | P055 Jump Game, P455 Assign Cookies, P134 Gas Station, P135 Candy |
-| Matrix Traversal | P054 Spiral Matrix, P048 Rotate Image, P498 Diagonal Traverse |
-| Graph | P207 Course Schedule, P210 Course Schedule II, P997 Find the Town Judge |
+| Monotonic Stack | P739 Daily Temperatures, P084 Largest Rectangle in Histogram, P853 Car Fleet, P907 Sum of Subarray Minimums, P456 132 Pattern, P503 Next Greater Element II |
+| Greedy | P055 Jump Game, P455 Assign Cookies, P134 Gas Station, P135 Candy, P452 Min Arrows to Burst Balloons, P502 IPO, P556 Next Greater Element III, P564 Find the Closest Palindrome |
+| Matrix Traversal | P054 Spiral Matrix, P048 Rotate Image, P498 Diagonal Traverse, P542 01 Matrix, P391 Perfect Rectangle |
+| Graph | P207 Course Schedule, P210 Course Schedule II, P997 Find the Town Judge, P488 Zuma Game |
 
 Each pattern contains:
 - `template.py` — Annotated skeleton with variants

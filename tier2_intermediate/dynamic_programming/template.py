@@ -7,12 +7,11 @@ Variant 3: 2D DP (Knapsack / Coin Change)
 
 from __future__ import annotations
 
-from typing import Any
-
 
 # ---------------------------------------------------------------------------
 # Variant 1: 1D DP — Fibonacci / Climbing Stairs
 # ---------------------------------------------------------------------------
+
 
 def climb_stairs(n: int) -> int:
     """Return the number of distinct ways to climb *n* stairs.
@@ -59,6 +58,7 @@ def fibonacci(n: int) -> int:
 # Variant 2: 1D DP with full scan — House Robber
 # ---------------------------------------------------------------------------
 
+
 def house_robber(nums: list[int]) -> int:
     """Return the maximum amount that can be robbed without alerting police.
 
@@ -76,8 +76,8 @@ def house_robber(nums: list[int]) -> int:
         return nums[0]
 
     # dp[i] = max money robbing houses[0..i]
-    prev2: int = 0          # dp[i-2]
-    prev1: int = nums[0]    # dp[i-1]
+    prev2: int = 0  # dp[i-2]
+    prev1: int = nums[0]  # dp[i-1]
 
     for i in range(1, len(nums)):
         current = max(prev1, prev2 + nums[i])
@@ -89,6 +89,7 @@ def house_robber(nums: list[int]) -> int:
 # ---------------------------------------------------------------------------
 # Variant 3: 2D DP — Coin Change
 # ---------------------------------------------------------------------------
+
 
 def coin_change(coins: list[int], amount: int) -> int:
     """Return the fewest coins needed to make *amount*, or -1 if impossible.

@@ -42,6 +42,9 @@ queue with all starting positions) is a common optimization.
 | P102 Binary Tree Level Order Traversal | Medium | Tree level-order traversal |
 | P994 Rotting Oranges | Medium | Grid BFS (multi-source) |
 | P1091 Shortest Path in Binary Matrix | Medium | Grid BFS, 8-directional, single-source shortest path |
+| P463 Island Perimeter | Easy | Count cell edges on grid |
+| P513 Find Bottom Left Tree Value | Medium | BFS level order, first of last row |
+| P515 Find Largest Value in Each Tree Row | Medium | BFS level order, max per level |
 
 ## Template Variants
 

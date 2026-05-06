@@ -7,12 +7,11 @@ Variant 3: Merge k sorted lists via divide & conquer
 
 from __future__ import annotations
 
-from typing import Any
-
 
 # ---------------------------------------------------------------------------
 # Variant 1: Merge sort
 # ---------------------------------------------------------------------------
+
 
 def merge_sort(nums: list[int]) -> list[int]:
     """Sort an array using merge sort (divide & conquer).
@@ -51,6 +50,7 @@ def merge_sort(nums: list[int]) -> list[int]:
 # Variant 2: Majority element (Boyer-Moore voting)
 # ---------------------------------------------------------------------------
 
+
 def majority_element(nums: list[int]) -> int:
     """Find the majority element (appears more than n/2 times).
 
@@ -78,6 +78,7 @@ def majority_element(nums: list[int]) -> int:
 # ---------------------------------------------------------------------------
 # Variant 3: Merge k sorted lists (simplified with lists)
 # ---------------------------------------------------------------------------
+
 
 def merge_k_sorted_lists(lists: list[list[int]]) -> list[int]:
     """Merge k sorted lists into one sorted list using divide & conquer.

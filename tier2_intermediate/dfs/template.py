@@ -14,6 +14,7 @@ from typing import Any
 # Variant 1: Tree DFS — pre-order, in-order, post-order
 # ---------------------------------------------------------------------------
 
+
 def dfs_tree_preorder(
     root: Any | None,
     visit_fn=None,
@@ -101,6 +102,7 @@ def dfs_tree(root: Any | None, order: str = "pre") -> list[Any]:
 # Variant 2: Island / connected components DFS (grid)
 # ---------------------------------------------------------------------------
 
+
 def dfs_island_count(grid: list[list[str]]) -> int:
     """Count the number of islands in a 2-D character grid.
 
@@ -142,6 +144,7 @@ def dfs_island_count(grid: list[list[str]]) -> int:
 # ---------------------------------------------------------------------------
 # Variant 3: Path-finding DFS (all paths)
 # ---------------------------------------------------------------------------
+
 
 def dfs_all_paths(
     graph: dict[int, list[int]],

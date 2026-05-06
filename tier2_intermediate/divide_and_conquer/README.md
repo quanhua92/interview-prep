@@ -26,6 +26,7 @@ Break the problem into smaller subproblems, solve each recursively, then combine
 | 23 | [Merge k Sorted Lists](./problems/p023_merge_k_sorted_lists.py) | Hard |
 | 912 | [Sort an Array](./problems/p912_sort_an_array.py) | Medium |
 | 169 | [Majority Element](./problems/p169_majority_element.py) | Easy |
+| 427 | [Construct Quad Tree](./solutions/p427_construct_quad_tree.py) | Medium |
 
 ## Common Pitfalls
 - Not handling the base case correctly (arrays of length 0 or 1).

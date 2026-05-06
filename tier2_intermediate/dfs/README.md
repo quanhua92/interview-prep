@@ -36,6 +36,12 @@ Look for keywords and problem structures such as:
 | 200 | [Number of Islands](./p200_number_of_islands.py) | Medium |
 | 695 | [Max Area of Island](./p695_max_area_island.py) | Medium |
 | 1306 | [Jump Game III](./p1306_jump_game_three.py) | Medium |
+| 385 | [Mini Parser](./solutions/p385_mini_parser.py) | Medium |
+| 388 | [Longest Absolute File Path](./solutions/p388_longest_absolute_file_path.py) | Medium |
+| 508 | [Most Frequent Subtree Sum](./solutions/p508_most_frequent_subtree_sum.py) | Medium |
+| 538 | [Convert BST to Greater Tree](./solutions/p538_convert_bst_to_greater_tree.py) | Medium |
+| 565 | [Array Nesting](./solutions/p565_array_nesting.py) | Medium |
+| 572 | [Subtree of Another Tree](./solutions/p572_subtree_of_another_tree.py) | Easy |
 
 ## Common Pitfalls
 

@@ -8,6 +8,7 @@ Variant 3: Union-Find with component counting (for tracking number of groups)
 
 # ── Variant 1: Union-Find with path compression + union by rank ──────────────
 
+
 class UnionFind:
     """Standard union-find with path compression and union by rank.
 
@@ -50,6 +51,7 @@ class UnionFind:
 
 # ── Variant 2: Union-Find with size tracking ────────────────────────────────
 
+
 class UnionFindBySize:
     """Union-find that tracks the size of each component.
 
@@ -83,6 +85,7 @@ class UnionFindBySize:
 
 
 # ── Variant 3: Union-Find with component counting ────────────────────────────
+
 
 class UnionFindByCount:
     """Union-find that maintains a count of disjoint components.

@@ -8,6 +8,7 @@ Variant 3: Diagonal traversal
 
 # ── Variant 1: Spiral order traversal ────────────────────────────────────────
 
+
 def spiral_order(matrix: list[list[int]]) -> list[int]:
     """Traverse an m x n matrix in clockwise spiral order.
 
@@ -49,6 +50,7 @@ def spiral_order(matrix: list[list[int]]) -> list[int]:
 
 # ── Variant 2: Rotate image 90 degrees clockwise ────────────────────────────
 
+
 def rotate_image(matrix: list[list[int]]) -> list[list[int]]:
     """Rotate an n x n matrix 90 degrees clockwise in-place.
 
@@ -69,6 +71,7 @@ def rotate_image(matrix: list[list[int]]) -> list[list[int]]:
 
 
 # ── Variant 3: Diagonal traversal ────────────────────────────────────────────
+
 
 def diagonal_traverse(matrix: list[list[int]]) -> list[int]:
     """Traverse an m x n matrix in diagonal zigzag order.
