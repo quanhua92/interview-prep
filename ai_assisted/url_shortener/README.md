@@ -90,3 +90,13 @@ Your interviewer will progressively add these constraints during the session.
 - How would you make the check-and-insert atomic? (database unique constraints, `INSERT ... ON CONFLICT`, compare-and-swap)
 - Does the same TOCTOU issue exist for the idempotency check in `url_to_alias`? What if two requests for the same long URL arrive simultaneously?
 - How do these concerns change in a distributed, multi-instance deployment?
+
+### Follow-Up 6: Auto-Increment vs. Hash-Based Aliases
+> "The current design uses an auto-increment counter to generate aliases. What if we switched to a hash-based approach — compute `hash(long_url)[:7]` as the alias? Walk me through the trade-offs."
+
+- Hash gives **free idempotency** — same URL always produces the same alias without a reverse lookup table. Is that worth the trade-off?
+- With auto-increment, idempotency requires a separate `url_to_alias` mapping, which introduces TOCTOU concerns, locking complexity, and extra memory. Does hash eliminate that entire problem?
+- What's the collision probability with 7-char Base62 hashes at 1 billion URLs? (~14% via the birthday problem — what's your retry/salting strategy?)
+- Auto-increment produces **sequential, predictable** aliases. Is that a security concern? Does hash-based give better unpredictability?
+- In a **distributed** system, auto-increment requires coordination (a centralized counter or ticket server). Hash-based is stateless — each node can generate aliases independently. How does that change the architecture?
+- Are there hybrid approaches? (e.g., hash for idempotency detection, auto-increment for the actual alias)
