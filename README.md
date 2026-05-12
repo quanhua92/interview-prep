@@ -1,6 +1,6 @@
 # Interview Prep
 
-A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, and role-specific topics. Track progress across all 116 coding problems and 86 topics with a unified CLI dashboard.
+A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, and AI-assisted interview scenarios. Track progress across all 116 coding problems and 86 topics with a unified CLI dashboard.
 
 ## Quick Start
 
@@ -173,6 +173,25 @@ Each topic contains:
 - `discussion.md` — Core competencies, common topics, key terminology, cross-references
 - `checklist.md` — Per-competency prep checklist, practice questions, system design bridge
 
+## AI-Assisted Interview Scenarios (6 scenarios)
+
+Practice modern project-based interviews where you collaborate with an AI assistant to build, debug, or extend production-like systems — the format used by Meta, LinkedIn, and Google.
+
+| Scenario | Difficulty | Key Skills |
+|----------|-----------|------------|
+| [URL Shortener](ai_assisted/url_shortener/) | Medium | Encoding, caching, database trade-offs |
+| [Spreadsheet Application](ai_assisted/spreadsheet/) | Hard | Dependency graphs, cycle detection, concurrency |
+| [Distributed Rate Limiter](ai_assisted/rate_limiter/) | Hard | Throttling algorithms, distributed state, resilience |
+| [Maze Solver / Pathfinder](ai_assisted/maze_solver/) | Medium | Graph traversal, pathfinding, memory optimization |
+| [Card Game Logic](ai_assisted/card_game/) | Medium | Game rules, extensibility, input validation |
+| [Notification Service](ai_assisted/notification_service/) | Hard | Async processing, idempotency, priority queuing |
+
+Each scenario contains:
+- `README.md` — Realistic interview prompt with requirements, starter code, and 4 progressive follow-up questions
+- `TIPS.md` — Key concepts, common mistakes, AI prompting strategy, and what interviewers look for
+
+See [ai_assisted/README.md](ai_assisted/) for the full guide including interview formats, evaluation rubric, and prompting strategy.
+
 ## CLI Dashboard
 
 Track progress across all 86 topics (coding + system design + behavioral + salary + CS fundamentals + resume/career + role-specific):
@@ -232,6 +251,10 @@ interview-prep/
 │       ├── problems/              # Practice stubs
 │       ├── solutions/             # Answer keys
 │       └── README.md
+├── ai_assisted/                   # 6 AI-assisted interview scenarios
+│   └── <scenario>/
+│       ├── README.md              # Interview prompt + follow-ups
+│       └── TIPS.md                # Concepts, mistakes, AI strategy
 ├── tests/                         # pytest suite (231 tests)
 ├── src/utils/                     # Shared utilities
 └── progress/tracker.json          # Progress data (gitignored)
