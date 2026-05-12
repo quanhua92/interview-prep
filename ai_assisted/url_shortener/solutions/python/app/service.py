@@ -1,15 +1,29 @@
 """Business logic layer orchestrating storage, cache, and analytics."""
 
+from __future__ import annotations
+
+from typing import Protocol
+
 from app.analytics import AnalyticsTracker
 from app.cache import LRUCache
 from app.storage import URLStorage
+
+
+class StorageBackend(Protocol):
+    alias_to_url: dict[str, str]
+
+    def store(self, long_url: str) -> str: ...
+    def retrieve(self, alias: str) -> str | None: ...
+    def store_custom(self, long_url: str, alias: str) -> str: ...
+    def exists(self, alias: str) -> bool: ...
+
 
 BASE_SHORT_URL = "https://short.url"
 
 
 class URLShortenerService:
-    def __init__(self) -> None:
-        self.storage = URLStorage()
+    def __init__(self, storage: StorageBackend | None = None) -> None:
+        self.storage: StorageBackend = storage or URLStorage()
         self.cache = LRUCache(capacity=10_000, ttl=300.0)
         self.analytics = AnalyticsTracker()
 

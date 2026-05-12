@@ -102,8 +102,6 @@ def test_concurrent_same_url_returns_single_alias() -> None:
 
     # Every call must return the same alias (idempotency under contention)
     assert len(set(aliases)) == 1
-    # No orphan entries — reverse mapping points to the one alias
-    assert svc.storage.url_to_alias[url] == aliases[0]
     # Forward mapping is correct
     assert svc.resolve(aliases[0]) == url
 

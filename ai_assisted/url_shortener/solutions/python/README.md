@@ -23,7 +23,8 @@ app/
 ├── main.py        # FastAPI routes and app setup
 ├── models.py      # Pydantic request/response schemas
 ├── base62.py      # Base62 encoding/decoding
-├── storage.py     # In-memory URL storage
+├── storage.py     # In-memory URL storage (auto-increment)
+├── storage_hash.py # In-memory URL storage (hash-based, Follow-up 6)
 ├── cache.py       # LRU cache with TTL
 ├── analytics.py   # Click tracking with buffered writes
 └── service.py     # Business logic orchestrator
@@ -34,6 +35,7 @@ tests/
 ├── test_cache.py  # LRU cache unit tests
 ├── test_analytics.py  # Analytics unit tests
 └── test_service.py    # Service layer unit tests
+├── test_storage_hash.py # Hash-based storage tests (Follow-up 6)
 ```
 
 ## API Endpoints
@@ -106,13 +108,37 @@ The original implementation had a classic Time-of-Check-to-Time-of-Use vulnerabi
 
 **Production note**: A `threading.Lock` protects within a single process. In a multi-instance deployment, you'd need database-level atomicity (`INSERT ... ON CONFLICT` with a `UNIQUE` constraint) or distributed locking.
 
+### Follow-Up 6: Auto-Increment vs. Hash-Based Aliases
+
+Implemented in `storage_hash.py` as an alternative `HashURLStorage` backend. The service is storage-agnostic — swap backends via `URLShortenerService(storage=HashURLStorage())`.
+
+**How it works**: `SHA-256(long_url)` → take first 8 bytes as integer → mod 62^7 → Base62 encode. If two different URLs produce the same hash, retry with a deterministic salt (`SHA-256(long_url + "1")`, etc.).
+
+**Comparison**:
+
+| | Auto-Increment (`storage.py`) | Hash-Based (`storage_hash.py`) |
+|---|---|---|
+| Idempotency | Requires `url_to_alias` dict + lock | **Free** — same URL always hashes to same alias |
+| Dicts needed | 2 (`alias_to_url` + `url_to_alias`) | **1** (`alias_to_url` only) |
+| Collisions | Impossible by design | Possible (birthday problem) — handled by salt-based retry |
+| TOCTOU complexity | Lock needed for both check-and-insert paths | Lock only needed for insert; idempotency detection is lock-free |
+| Predictability | Sequential (`0000001`, `0000002`...) | Unpredictable |
+| Distributed | Needs centralized counter or Snowflake ID | **Stateless** — any node can generate aliases independently |
+
+**When hash is better**: Distributed systems where nodes can't coordinate a counter. Hash-based aliases are generated purely from the URL — no shared state required. The `url_to_alias` dict and its TOCTOU concerns vanish entirely.
+
+**When auto-increment is better**: Single-instance systems where zero collisions matter more than the extra dict. Simpler mental model — no collision retry logic, no hashing, just a counter.
+
+**The key insight**: The hash approach eliminates the entire class of TOCTOU bugs around idempotency because there's no reverse mapping to protect. The lock in `HashURLStorage` only guards the insert path against the rare collision case — not the idempotency check.
+
 ## Test Coverage
 
-39 tests covering:
+51 tests covering:
 
 - **Base62**: encode/decode roundtrip, zero-padding, 7-char invariant
 - **LRU Cache**: get/put, eviction, TTL expiration, update existing keys
 - **Analytics**: click recording, buffer flush, top-N ranking
 - **Service**: full shorten→resolve flow, cache hit/miss, idempotency, custom aliases
 - **Concurrency (TOCTOU)**: multi-threaded idempotency, custom alias contention, counter uniqueness
+- **Hash-based storage**: idempotency, collision handling, custom aliases, concurrency, service integration
 - **API**: all HTTP endpoints, status codes (200/302/404/409/422), redirect behavior
