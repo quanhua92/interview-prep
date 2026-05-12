@@ -82,3 +82,11 @@ Your interviewer will progressively add these constraints during the session.
 - Discuss retry strategies with different encodings.
 - What's the probability of collision with 7 characters and 1 billion URLs? (Birthday problem)
 - Would you pre-generate aliases or generate on-the-fly?
+
+### Follow-Up 5: TOCTOU Race Conditions
+> "The current implementation checks if a custom alias exists, then inserts it. What happens if two concurrent requests try to claim the same custom alias at the same time? Is there a TOCTOU vulnerability?"
+
+- Identify the Time-of-Check-to-Time-of-Use gap in `store_custom()`.
+- How would you make the check-and-insert atomic? (database unique constraints, `INSERT ... ON CONFLICT`, compare-and-swap)
+- Does the same TOCTOU issue exist for the idempotency check in `url_to_alias`? What if two requests for the same long URL arrive simultaneously?
+- How do these concerns change in a distributed, multi-instance deployment?
