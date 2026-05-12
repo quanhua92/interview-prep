@@ -14,12 +14,11 @@ class URLShortenerService:
         self.analytics = AnalyticsTracker()
 
     def shorten(self, long_url: str, custom_alias: str | None = None) -> str:
-        """Create or retrieve a short alias for the given URL."""
-        # Check idempotency first
-        existing = self.storage.url_to_alias.get(long_url)
-        if existing:
-            return existing
+        """Create or retrieve a short alias for the given URL.
 
+        Idempotency is handled atomically inside storage.store() / store_custom()
+        under a lock, so there's no TOCTOU gap here.
+        """
         if custom_alias:
             alias = self.storage.store_custom(long_url, custom_alias)
         else:

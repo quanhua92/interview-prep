@@ -1,6 +1,6 @@
 # URL Shortener — FastAPI Implementation
 
-A full URL shortener service built with FastAPI, implementing the core requirements and all four follow-ups from the interview problem.
+A full URL shortener service built with FastAPI, implementing the core requirements and all five follow-ups from the interview problem.
 
 ## Quick Start
 
@@ -93,12 +93,26 @@ The auto-increment ID approach in `storage.py` makes collisions impossible by de
 - **Birthday problem**: With 7-character Base62 aliases (62^7 ≈ 3.5 trillion), even at 1 billion URLs the collision probability with random generation would be ~14%. The auto-increment approach eliminates this risk entirely.
 - **Pre-generation vs. on-the-fly**: This implementation generates on-the-fly. Pre-generating a pool of aliases (e.g., via a key-derivation service) would reduce write latency in a distributed setup but adds operational complexity.
 
+### Follow-Up 5: TOCTOU Race Conditions
+
+The original implementation had a classic Time-of-Check-to-Time-of-Use vulnerability: `store_custom()` checked `if alias in alias_to_url` and then inserted in two separate steps. Under concurrent requests, two threads could both pass the check and one would silently overwrite the other. The same gap existed in `store()` for the idempotency check, and in `_next_id()` for the counter increment.
+
+**Fix**: `storage.py` now uses a `threading.Lock` that wraps the check-and-insert in a single `with self._lock:` block in both `store()` and `store_custom()`. The redundant pre-check in `service.py` was removed — idempotency is now handled entirely inside `storage.store()` under the lock.
+
+**Concurrency tests** (in `test_service.py`):
+- 50 threads shorten the same URL → all get the identical alias
+- 50 threads race to claim one custom alias → exactly 1 wins, 49 get `ValueError`
+- 100 threads shorten different URLs → all 100 aliases are unique (no counter collision)
+
+**Production note**: A `threading.Lock` protects within a single process. In a multi-instance deployment, you'd need database-level atomicity (`INSERT ... ON CONFLICT` with a `UNIQUE` constraint) or distributed locking.
+
 ## Test Coverage
 
-36 tests covering:
+39 tests covering:
 
 - **Base62**: encode/decode roundtrip, zero-padding, 7-char invariant
 - **LRU Cache**: get/put, eviction, TTL expiration, update existing keys
 - **Analytics**: click recording, buffer flush, top-N ranking
 - **Service**: full shorten→resolve flow, cache hit/miss, idempotency, custom aliases
+- **Concurrency (TOCTOU)**: multi-threaded idempotency, custom alias contention, counter uniqueness
 - **API**: all HTTP endpoints, status codes (200/302/404/409/422), redirect behavior
