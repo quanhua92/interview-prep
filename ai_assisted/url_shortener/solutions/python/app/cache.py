@@ -21,7 +21,6 @@ class LRUCache:
             del self._cache[key]
             return None
 
-        # Move to end (most recently used)
         self._cache.move_to_end(key)
         return value
 
@@ -33,7 +32,7 @@ class LRUCache:
             return
 
         if len(self._cache) >= self.capacity:
-            self._cache.popitem(last=False)  # evict oldest
+            self._cache.popitem(last=False)
 
         self._cache[key] = (value, time.monotonic())
 

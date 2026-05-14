@@ -99,14 +99,12 @@ The auto-increment ID approach in `storage.py` makes collisions impossible by de
 
 The original implementation had a classic Time-of-Check-to-Time-of-Use vulnerability: `store_custom()` checked `if alias in alias_to_url` and then inserted in two separate steps. Under concurrent requests, two threads could both pass the check and one would silently overwrite the other. The same gap existed in `store()` for the idempotency check, and in `_next_id()` for the counter increment.
 
-**Fix**: `storage.py` now uses a `threading.Lock` that wraps the check-and-insert in a single `with self._lock:` block in both `store()` and `store_custom()`. The redundant pre-check in `service.py` was removed — idempotency is now handled entirely inside `storage.store()` under the lock.
+**Fix**: No locks needed. FastAPI runs `async def` handlers on a single-threaded event loop. Dict operations complete synchronously without any `await` yield point, so the event loop cannot interleave two request handlers mid-check-and-insert. The entire check-then-insert sequence is effectively atomic. This is different from Rust's Tokio, where multiple OS threads share memory and `Arc<Mutex<T>>` is required — Python's asyncio has no such parallelism within a single process.
 
-**Concurrency tests** (in `test_service.py`):
-- 50 threads shorten the same URL → all get the identical alias
-- 50 threads race to claim one custom alias → exactly 1 wins, 49 get `ValueError`
-- 100 threads shorten different URLs → all 100 aliases are unique (no counter collision)
-
-**Production note**: A `threading.Lock` protects within a single process. In a multi-instance deployment, you'd need database-level atomicity (`INSERT ... ON CONFLICT` with a `UNIQUE` constraint) or distributed locking.
+**When you would need locks**:
+- **Sync handlers** (`def` instead of `async def`): FastAPI offloads these to a thread pool, where multiple threads share state and `threading.Lock` is necessary.
+- **Multi-worker** (`uvicorn --workers N`): Separate processes don't share memory at all. Use database-level atomicity (`INSERT ... ON CONFLICT` with a `UNIQUE` constraint) or distributed locking (Redis `SETNX`).
+- **Await inside critical section**: If you `await` a database call between check and insert, the event loop can switch to another coroutine. Use `asyncio.Lock` in that case.
 
 ### Follow-Up 6: Auto-Increment vs. Hash-Based Aliases
 
@@ -121,7 +119,7 @@ Implemented in `storage_hash.py` as an alternative `HashURLStorage` backend. The
 | Idempotency | Requires `url_to_alias` dict + lock | **Free** — same URL always hashes to same alias |
 | Dicts needed | 2 (`alias_to_url` + `url_to_alias`) | **1** (`alias_to_url` only) |
 | Collisions | Impossible by design | Possible (birthday problem) — handled by salt-based retry |
-| TOCTOU complexity | Lock needed for both check-and-insert paths | Lock only needed for insert; idempotency detection is lock-free |
+| TOCTOU complexity | No lock needed (single-threaded event loop) | No lock needed — idempotency is implicit |
 | Predictability | Sequential (`0000001`, `0000002`...) | Unpredictable |
 | Distributed | Needs centralized counter or Snowflake ID | **Stateless** — any node can generate aliases independently |
 
@@ -129,7 +127,7 @@ Implemented in `storage_hash.py` as an alternative `HashURLStorage` backend. The
 
 **When auto-increment is better**: Single-instance systems where zero collisions matter more than the extra dict. Simpler mental model — no collision retry logic, no hashing, just a counter.
 
-**The key insight**: The hash approach eliminates the entire class of TOCTOU bugs around idempotency because there's no reverse mapping to protect. The lock in `HashURLStorage` only guards the insert path against the rare collision case — not the idempotency check.
+**The key insight**: The hash approach eliminates the entire class of TOCTOU bugs around idempotency because there's no reverse mapping to protect. The insert path is equally safe on a single-threaded event loop — no interleaving is possible without an `await` yield point.
 
 ## Test Coverage
 
@@ -139,6 +137,6 @@ Implemented in `storage_hash.py` as an alternative `HashURLStorage` backend. The
 - **LRU Cache**: get/put, eviction, TTL expiration, update existing keys
 - **Analytics**: click recording, buffer flush, top-N ranking
 - **Service**: full shorten→resolve flow, cache hit/miss, idempotency, custom aliases
-- **Concurrency (TOCTOU)**: multi-threaded idempotency, custom alias contention, counter uniqueness
+- **TOCTOU**: documented as a real concern in multi-threaded languages (Rust, Go, Java); not applicable here due to Python's single-threaded event loop
 - **Hash-based storage**: idempotency, collision handling, custom aliases, concurrency, service integration
 - **API**: all HTTP endpoints, status codes (200/302/404/409/422), redirect behavior

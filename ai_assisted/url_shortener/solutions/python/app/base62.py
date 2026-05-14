@@ -8,6 +8,9 @@ ALIAS_LENGTH = 7
 
 def encode(num: int) -> str:
     """Encode a non-negative integer to a zero-padded 7-character Base62 string."""
+    if num < 0:
+        msg = f"encode() requires a non-negative integer, got {num}"
+        raise ValueError(msg)
     if num == 0:
         return "0" * ALIAS_LENGTH
 

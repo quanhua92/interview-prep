@@ -42,3 +42,12 @@ def test_get_top_fewer_than_n() -> None:
     tracker.record_click("only")
     top = tracker.get_top(n=10)
     assert len(top) == 1
+
+
+def test_buffer_overflow_does_not_lose_clicks() -> None:
+    """Clicks beyond buffer_size are not dropped — buffer auto-flushes when full."""
+    tracker = AnalyticsTracker(buffer_size=5)
+    # Record 15 clicks — buffer should auto-flush 3 times
+    for _ in range(15):
+        tracker.record_click("alias")
+    assert tracker.get_clicks("alias") == 15

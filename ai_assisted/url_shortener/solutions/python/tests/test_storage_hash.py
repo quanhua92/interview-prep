@@ -1,7 +1,5 @@
 """Tests for hash-based URL storage."""
 
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
 import pytest
 
 from app.storage_hash import HashURLStorage
@@ -66,37 +64,6 @@ def test_no_url_to_alias_dict_needed() -> None:
     assert not hasattr(s, "url_to_alias")
     s.store("https://example.com")
     assert len(s.alias_to_url) == 1
-
-
-def test_concurrent_same_url_idempotent() -> None:
-    """50 threads shorten the same URL — all get the same alias."""
-    s = HashURLStorage()
-    with ThreadPoolExecutor(max_workers=50) as pool:
-        futures = [pool.submit(s.store, "https://race.test") for _ in range(50)]
-        aliases = [f.result() for f in as_completed(futures)]
-    assert len(set(aliases)) == 1
-
-
-def test_concurrent_custom_alias_only_one_wins() -> None:
-    """50 threads race for same custom alias — exactly 1 wins."""
-    s = HashURLStorage()
-    errors: list[Exception] = []
-    successes: list[str] = []
-
-    with ThreadPoolExecutor(max_workers=50) as pool:
-        futures = [
-            pool.submit(s.store_custom, f"https://t-{i}.test", "contended")
-            for i in range(50)
-        ]
-        for f in as_completed(futures):
-            try:
-                successes.append(f.result())
-            except ValueError as exc:
-                errors.append(exc)
-
-    assert len(successes) == 1
-    assert len(errors) == 49
-    assert all("already taken" in str(e) for e in errors)
 
 
 def test_hash_service_integration() -> None:

@@ -107,3 +107,11 @@ async def test_info_returns_json(client: AsyncClient) -> None:
 async def test_empty_url_returns_422(client: AsyncClient) -> None:
     resp = await client.post("/shorten", json={"long_url": "  "})
     assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_invalid_url_format_returns_422(client: AsyncClient) -> None:
+    resp = await client.post("/shorten", json={"long_url": "not-a-url"})
+    assert resp.status_code == 422
+    resp = await client.post("/shorten", json={"long_url": "ftp://example.com"})
+    assert resp.status_code == 422

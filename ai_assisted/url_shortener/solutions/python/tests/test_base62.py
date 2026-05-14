@@ -1,5 +1,7 @@
 """Unit tests for Base62 encoding/decoding."""
 
+import pytest
+
 from app.base62 import ALIAS_LENGTH, decode, encode
 
 
@@ -27,3 +29,8 @@ def test_decode_all_charsets() -> None:
     assert decode("000000a") == 10
     assert decode("000000Z") == 61
     assert decode("0000010") == 62
+
+
+def test_encode_negative_raises() -> None:
+    with pytest.raises(ValueError, match="non-negative"):
+        encode(-1)

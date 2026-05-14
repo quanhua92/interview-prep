@@ -22,9 +22,6 @@ app.state.service = URLShortenerService()
 @app.post("/shorten", response_model=ShortenResponse, responses={409: {"model": ErrorResponse}})
 async def shorten_url(req: ShortenRequest) -> ShortenResponse:
     """Create a short alias for a long URL."""
-    if not req.long_url.strip():
-        raise HTTPException(status_code=422, detail="long_url must not be empty")
-
     if req.custom_alias and (len(req.custom_alias) > 7 or not req.custom_alias.isalnum()):
         raise HTTPException(
             status_code=422,

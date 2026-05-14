@@ -1,7 +1,5 @@
 """Unit tests for URLShortenerService business logic."""
 
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
 from app.service import URLShortenerService
 
 
@@ -88,67 +86,3 @@ def test_top_urls() -> None:
     assert top[0][1] == 10
     assert top[1][0] == a2
     assert top[1][1] == 3
-
-
-def test_concurrent_same_url_returns_single_alias() -> None:
-    """Many threads shorten the same URL concurrently — must all get the same alias."""
-    svc = URLShortenerService()
-    url = "https://race.test/concurrent"
-    num_threads = 50
-
-    with ThreadPoolExecutor(max_workers=num_threads) as pool:
-        futures = [pool.submit(svc.shorten, url) for _ in range(num_threads)]
-        aliases = [f.result() for f in as_completed(futures)]
-
-    # Every call must return the same alias (idempotency under contention)
-    assert len(set(aliases)) == 1
-    # Forward mapping is correct
-    assert svc.resolve(aliases[0]) == url
-
-
-def test_concurrent_custom_alias_only_one_wins() -> None:
-    """Two threads race to claim the same custom alias — exactly one must win."""
-    svc = URLShortenerService()
-    num_threads = 50
-    errors: list[Exception] = []
-    successes: list[str] = []
-
-    with ThreadPoolExecutor(max_workers=num_threads) as pool:
-        futures = [
-            pool.submit(
-                svc.shorten,
-                f"https://thread-{i}.test",
-                custom_alias="contended",
-            )
-            for i in range(num_threads)
-        ]
-        for f in as_completed(futures):
-            try:
-                successes.append(f.result())
-            except ValueError as exc:
-                errors.append(exc)
-
-    # Exactly one thread should have succeeded
-    assert len(successes) == 1
-    assert successes[0] == "contended"
-    # All others must have gotten a ValueError
-    assert len(errors) == num_threads - 1
-    assert all("already taken" in str(e) for e in errors)
-    # The winning URL is correctly stored
-    assert svc.resolve("contended") is not None
-
-
-def test_concurrent_different_urls_get_unique_aliases() -> None:
-    """Many threads shorten different URLs — each must get a unique alias."""
-    svc = URLShortenerService()
-    num_threads = 100
-
-    with ThreadPoolExecutor(max_workers=num_threads) as pool:
-        futures = [
-            pool.submit(svc.shorten, f"https://unique-{i}.test")
-            for i in range(num_threads)
-        ]
-        aliases = [f.result() for f in as_completed(futures)]
-
-    # All aliases must be unique (no counter collision)
-    assert len(set(aliases)) == num_threads
