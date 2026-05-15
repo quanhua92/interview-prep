@@ -3,16 +3,16 @@ P621b: Task Scheduler with Multiple Machines (Hard)
 Extension of LeetCode 621 - Task Scheduler
 https://leetcode.com/problems/task-scheduler/
 
-Topics: Array, Hash Table, Greedy, Heap (Priority Queue), Counting
+Topics: Array, Hash Table, Greedy, Counting
 
 You are given an array of CPU tasks, each labeled with a letter from A to Z,
 a cooldown period n, and m identical parallel machines.
 
 Each machine can execute at most one task per time interval. Tasks can be
-completed in any order across the machines, but there is a global cooldown
-constraint: the same task label cannot run on ANY machine within n intervals
-of its last execution on any machine. In other words, if task A runs at
-time t on any machine, no machine can execute task A until time t + n + 1.
+completed in any order across the machines. Cooldown is tracked per-machine:
+if machine M runs task A at time t, that machine M cannot run task A again
+until time t + n + 1. Other machines are unaffected and may run task A at
+any time (including simultaneously with M).
 
 Return the minimum number of time intervals required to complete all tasks
 across all m machines.
@@ -25,11 +25,10 @@ Example 1:
 
 Example 2:
     Input: tasks = ["A","A","A","B","B","B"], n = 2, m = 2
-    Output: 7
-    Explanation: With 2 machines, both A and B can run in parallel.
-    t=0: M1=A, M2=B | t=1: idle | t=2: idle
-    t=3: M1=A, M2=B | t=4: idle | t=5: idle
-    t=6: M1=A, M2=B | Done in 7 intervals.
+    Output: 4
+    Explanation: Cooldown is per-machine, so machines can swap tasks.
+    t=0: M1=A, M2=B | t=1: M1=B, M2=A | t=2: idle | t=3: M1=A, M2=B
+    At t=1, M1 can run B (M1 never ran B) and M2 can run A (M2 never ran A).
 
 Example 3:
     Input: tasks = ["A","C","A","B","D","B"], n = 1, m = 2
@@ -39,9 +38,9 @@ Example 3:
 
 Example 4:
     Input: tasks = ["A","A","A","B","B","B"], n = 3, m = 2
-    Output: 9
-    Explanation: With n=3, after running A and B at t=0, both are blocked
-    until t=4. t=0: A,B | t=1-3: idle | t=4: A,B | t=5-7: idle | t=8: A,B.
+    Output: 5
+    Explanation: Machines swap tasks at t=1, then wait for cooldown.
+    t=0: M1=A, M2=B | t=1: M1=B, M2=A | t=2-3: idle | t=4: M1=A, M2=B
 
 Example 5:
     Input: tasks = ["A"], n = 5, m = 3
@@ -59,13 +58,11 @@ Template (python3):
     class Solution:
         def leastInterval(self, tasks: List[str], n: int, m: int) -> int:
 
-Hint: Use a max-heap to always pick the most frequent available tasks.
-At each time step, schedule up to m tasks. Track cooldown with a separate
-min-heap keyed by availability time. When no tasks are available, jump
-directly to the next cooldown expiry (avoid simulating idle ticks).
+Hint: At each time step, greedily assign the highest-frequency remaining task
+to each machine, respecting that machine's per-task cooldown. When no machine
+can run any remaining task, jump directly to the next cooldown expiry.
 """
 
-import heapq
 import sys
 from collections import Counter
 
@@ -102,10 +99,10 @@ class Solution(Problem):
             expected=4,
             label="single task type m=1",
         ),
-        # ── m > 1: parallel speedup ──
+        # ── m > 1: per-machine cooldown parallel speedup ──
         TestCase(
             input=(["A", "A", "A", "B", "B", "B"], 2, 2),
-            expected=7,
+            expected=4,
             label="basic parallelism m=2",
         ),
         TestCase(
@@ -115,12 +112,12 @@ class Solution(Problem):
         ),
         TestCase(
             input=(["A", "A", "A", "B", "B", "B"], 3, 2),
-            expected=9,
+            expected=5,
             label="large cooldown m=2",
         ),
         TestCase(
             input=(["A", "A", "A", "B", "B", "B"], 2, 10),
-            expected=7,
+            expected=1,
             label="very many machines m=10",
         ),
         # ── Edge cases ──
@@ -141,8 +138,8 @@ class Solution(Problem):
         ),
         TestCase(
             input=(["A", "A", "A", "A"], 0, 2),
-            expected=4,
-            label="n=0 same task m=2 (cooldown is per-label)",
+            expected=2,
+            label="n=0 same task m=2 (per-machine cooldown)",
         ),
         TestCase(
             input=(["A", "B", "C", "D"], 1, 3),
@@ -153,41 +150,36 @@ class Solution(Problem):
 
     def solve(self, tasks: list[str], n: int, m: int) -> int:
         freq = Counter(tasks)
-        max_heap = [(-count, task) for task, count in freq.items()]
-        heapq.heapify(max_heap)
+        # cooldown[machine][task] = earliest time that machine can run task again
+        cooldown = [dict() for _ in range(m)]
 
-        cooldown_queue: list[tuple[int, int, str]] = []
-        time_elapsed = 0
-        completed = 0
-        total = len(tasks)
+        time = 0
+        remaining = len(tasks)
 
-        while completed < total:
-            while cooldown_queue and cooldown_queue[0][0] <= time_elapsed:
-                _, neg_count, task = heapq.heappop(cooldown_queue)
-                heapq.heappush(max_heap, (neg_count, task))
+        while remaining > 0:
+            assigned = False
+            for i in range(m):
+                # Pick highest-frequency task not in this machine's cooldown
+                best_task, best_count = None, 0
+                for task, count in freq.items():
+                    if count > best_count and cooldown[i].get(task, 0) <= time:
+                        best_task, best_count = task, count
+                if best_task:
+                    freq[best_task] -= 1
+                    cooldown[i][best_task] = time + n + 1
+                    remaining -= 1
+                    assigned = True
 
-            scheduled = []
-            for _ in range(m):
-                if not max_heap:
-                    break
-                neg_count, task = heapq.heappop(max_heap)
-                scheduled.append((-neg_count, task))
-
-            if scheduled:
-                for count, task in scheduled:
-                    completed += 1
-                    if count - 1 > 0:
-                        heapq.heappush(
-                            cooldown_queue,
-                            (time_elapsed + n + 1, -(count - 1), task),
-                        )
-                time_elapsed += 1
-            elif cooldown_queue:
-                time_elapsed = cooldown_queue[0][0]
+            if assigned:
+                time += 1
             else:
-                break
+                # Jump to next cooldown expiry across all machines
+                next_time = min(
+                    t for mc in cooldown for t in mc.values() if t > time
+                )
+                time = next_time
 
-        return time_elapsed
+        return time
 
 
 if __name__ == "__main__":

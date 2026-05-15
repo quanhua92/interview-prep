@@ -34,12 +34,12 @@ class TestP621bTaskSchedulerMultiMachine:
     def test_lc621_ex3_m1(self): assert P621b().solve(["A","A","A","B","B","B"], 3, 1) == 10
     def test_fill_idle_m1(self): assert P621b().solve(["A","A","A","B","B","B","C","C","D"], 2, 1) == 9
     def test_single_type_m1(self): assert P621b().solve(["A","A"], 2, 1) == 4
-    def test_parallel_m2(self): assert P621b().solve(["A","A","A","B","B","B"], 2, 2) == 7
+    def test_parallel_m2(self): assert P621b().solve(["A","A","A","B","B","B"], 2, 2) == 4
     def test_unique_m2(self): assert P621b().solve(["A","C","A","B","D","B"], 1, 2) == 3
-    def test_large_n_m2(self): assert P621b().solve(["A","A","A","B","B","B"], 3, 2) == 9
-    def test_many_machines(self): assert P621b().solve(["A","A","A","B","B","B"], 2, 10) == 7
+    def test_large_n_m2(self): assert P621b().solve(["A","A","A","B","B","B"], 3, 2) == 5
+    def test_many_machines(self): assert P621b().solve(["A","A","A","B","B","B"], 2, 10) == 1
     def test_single_task_m1(self): assert P621b().solve(["A"], 5, 1) == 1
     def test_single_task_m3(self): assert P621b().solve(["A"], 5, 3) == 1
     def test_more_machines_than_tasks(self): assert P621b().solve(["A","B","C"], 0, 5) == 1
-    def test_n0_same_task(self): assert P621b().solve(["A","A","A","A"], 0, 2) == 4
+    def test_n0_same_task(self): assert P621b().solve(["A","A","A","A"], 0, 2) == 2
     def test_m3_n1_four_tasks(self): assert P621b().solve(["A","B","C","D"], 1, 3) == 2
