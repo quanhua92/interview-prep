@@ -52,6 +52,18 @@ class Solution(Problem):
     ]
 
     def solve(self, candyType: list[int]) -> int:
+        candyType.sort()
+        unique = 1
+        limit = len(candyType) // 2
+        left, right = 0, 1
+        while right < len(candyType) and unique < limit:
+            if candyType[right] != candyType[left]:
+                unique += 1
+                left = right
+            right += 1
+        return min(unique, limit)
+
+    def solve_alternative(self, candyType: list[int]) -> int:
         return min(len(set(candyType)), len(candyType) // 2)
 
 

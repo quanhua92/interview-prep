@@ -57,6 +57,44 @@ class Solution(Problem):
     ]
 
     def solve(self, words: list[str]) -> list[str]:
+        class TrieNode:
+            def __init__(self):
+                self.children: dict[str, "TrieNode"] = {}
+                self.is_end = False
+
+        root = TrieNode()
+
+        def insert(word: str):
+            node = root
+            for ch in word:
+                if ch not in node.children:
+                    node.children[ch] = TrieNode()
+                node = node.children[ch]
+            node.is_end = True
+
+        def can_concatenate(word: str, start: int, count: int) -> bool:
+            node = root
+            for i in range(start, len(word)):
+                ch = word[i]
+                if ch not in node.children:
+                    return False
+                node = node.children[ch]
+                if node.is_end:
+                    if i == len(word) - 1:
+                        return count >= 1
+                    if can_concatenate(word, i + 1, count + 1):
+                        return True
+            return False
+
+        words_sorted = sorted(words, key=len)
+        result = []
+        for word in words_sorted:
+            if can_concatenate(word, 0, 0):
+                result.append(word)
+            insert(word)
+        return sorted(result)
+
+    def solve_alternative(self, words: list[str]) -> list[str]:
         word_set = set(words)
 
         def can_form(word: str) -> bool:

@@ -42,20 +42,65 @@ Template (python3):
 import sys
 
 sys.path.insert(0, ".")
-from src.utils import Problem
+from src.utils import Problem, TestCase
 
 
 class Solution(Problem):
     name = "478. Generate Random Point in a Circle"
     test_cases = [
-        # example 1: ["Solution", "randPoint", "randPoint", "randPoint"]
-        # [[1.0, 0.0, 0.0], [], [], []] -> [null, [-0.02493, -0.38077], [0.82314, 0.38945], [0.36572, 0.17248]]
-        # TODO: Add test cases from examples
+        TestCase(
+            input={"radius": 1.0, "x_center": 0.0, "y_center": 0.0, "count": 1000},
+            expected="in_circle",
+            label="points within unit circle",
+        ),
+        TestCase(
+            input={"radius": 0.5, "x_center": 1.0, "y_center": 2.0, "count": 1000},
+            expected="in_circle",
+            label="points within offset circle",
+        ),
     ]
 
-    def solve(self) -> None:
-        # Premium problem - implement solution here
-        pass
+    def solve(self, radius: float, x_center: float, y_center: float, count: int) -> list[list[float]]:
+        import random
+
+        points = []
+        for _ in range(count):
+            while True:
+                x = random.uniform(-1, 1)
+                y = random.uniform(-1, 1)
+                if x * x + y * y <= 1:
+                    break
+            points.append([x_center + x * radius, y_center + y * radius])
+        return points
+
+    def run(self) -> bool:
+        print(f"\n{'=' * 60}")
+        print(f"  {self.name}")
+        print(f"{'=' * 60}")
+
+        all_passed = True
+        for i, tc in enumerate(self.test_cases, 1):
+            label = f" ({tc.label})" if tc.label else ""
+            inp = tc.input
+            points = self.solve(inp["radius"], inp["x_center"], inp["y_center"], inp["count"])
+            r = inp["radius"]
+            cx, cy = inp["x_center"], inp["y_center"]
+            in_circle = all(
+                (p[0] - cx) ** 2 + (p[1] - cy) ** 2 <= r * r + 1e-9 for p in points
+            )
+            passed = in_circle and len(points) == inp["count"]
+            status = "PASS" if passed else "FAIL"
+            if not passed:
+                all_passed = False
+            print(f"  Test {i}{label}: {status}")
+            if not in_circle:
+                print("    Some points outside circle!")
+
+        total = len(self.test_cases)
+        passed_count = total if all_passed else 0
+        print(f"\n  {passed_count}/{total} passed")
+        print(f"{'=' * 60}\n")
+        return all_passed
 
 
 if __name__ == "__main__":

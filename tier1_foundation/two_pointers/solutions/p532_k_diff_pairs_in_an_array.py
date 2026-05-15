@@ -47,6 +47,29 @@ class Solution(Problem):
     ]
 
     def solve(self, nums: list[int], k: int) -> int:
+        if k < 0:
+            return 0
+        nums.sort()
+        count = 0
+        left, right = 0, 1
+        while right < len(nums):
+            diff = nums[right] - nums[left]
+            if diff < k:
+                right += 1
+            elif diff > k:
+                left += 1
+            else:
+                count += 1
+                left_val, right_val = nums[left], nums[right]
+                while left < len(nums) and nums[left] == left_val:
+                    left += 1
+                while right < len(nums) and nums[right] == right_val:
+                    right += 1
+            if left == right:
+                right += 1
+        return count
+
+    def solve_alternative(self, nums: list[int], k: int) -> int:
         from collections import Counter
 
         if k < 0:

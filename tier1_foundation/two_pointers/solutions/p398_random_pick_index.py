@@ -63,6 +63,20 @@ class Solution(Problem):
     ]
 
     def solve(self, nums: list[int], target: int) -> list[int]:
+
+        result = []
+        left = 0
+        while left < len(nums):
+            if nums[left] == target:
+                right = left
+                while right < len(nums) and nums[right] == target:
+                    result.append(right)
+                    right += 1
+                return result
+            left += 1
+        return result
+
+    def solve_alternative(self, nums: list[int], target: int) -> list[int]:
         index_map: dict[int, list[int]] = defaultdict(list)
         for i, num in enumerate(nums):
             index_map[num].append(i)

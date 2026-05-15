@@ -72,15 +72,15 @@ class Solution(Problem):
     name = "155. Min Stack"
     test_cases = [
         TestCase(
-            input=[
+            input=(
                 ["MinStack", "push", "push", "push", "getMin", "pop", "top", "getMin"],
                 [[], [5], [-2], [3], [], [], [], []],
-            ],
+            ),
             expected=[None, None, None, None, -2, None, -2, -2],
             label="example 1",
         ),
         TestCase(
-            input=[
+            input=(
                 [
                     "MinStack",
                     "push",
@@ -95,7 +95,7 @@ class Solution(Problem):
                     "getMin",
                 ],
                 [[], [0], [1], [], [], [-3], [], [], [], [], []],
-            ],
+            ),
             expected=[None, None, None, 0, 0, None, -3, -3, -3, None, 0],
             label="negative values",
         ),

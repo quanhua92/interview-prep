@@ -60,18 +60,27 @@ class Solution(Problem):
     test_cases = [
         TestCase(
             input=ListNode.from_list([1, 2, 3]),
-            expected=[1, 2, 3],
-            label="convert linked list to list of values",
+            expected=2,
+            label="middle of odd-length list",
+        ),
+        TestCase(
+            input=ListNode.from_list([1, 2, 3, 4]),
+            expected=3,
+            label="middle of even-length list",
         ),
         TestCase(
             input=ListNode.from_list([4]),
-            expected=[4],
+            expected=4,
             label="single node",
         ),
     ]
 
-    def solve(self, head: ListNode) -> list[int]:
-        return head.to_list()
+    def solve(self, head: ListNode) -> int:
+        slow = fast = head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow.val
 
 
 if __name__ == "__main__":

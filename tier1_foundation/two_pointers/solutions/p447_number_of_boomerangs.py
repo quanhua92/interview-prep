@@ -45,6 +45,27 @@ class Solution(Problem):
     ]
 
     def solve(self, points: list[list[int]]) -> int:
+        result = 0
+        for p in points:
+            dists = []
+            for q in points:
+                if p is q:
+                    continue
+                dx = p[0] - q[0]
+                dy = p[1] - q[1]
+                dists.append(dx * dx + dy * dy)
+            dists.sort()
+            left = 0
+            while left < len(dists):
+                right = left
+                while right < len(dists) and dists[right] == dists[left]:
+                    right += 1
+                count = right - left
+                result += count * (count - 1)
+                left = right
+        return result
+
+    def solve_alternative(self, points: list[list[int]]) -> int:
         from collections import defaultdict
 
         result = 0

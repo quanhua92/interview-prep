@@ -45,6 +45,21 @@ class Solution(Problem):
     def solve(self, intervals: list[list[int]]) -> int:
         if not intervals:
             return 0
+        events = []
+        for start, end in intervals:
+            events.append((start, 1))
+            events.append((end, -1))
+        events.sort(key=lambda x: (x[0], x[1]))
+        concurrent = 0
+        max_rooms = 0
+        for _, delta in events:
+            concurrent += delta
+            max_rooms = max(max_rooms, concurrent)
+        return max_rooms
+
+    def solve_alternative(self, intervals: list[list[int]]) -> int:
+        if not intervals:
+            return 0
         starts = sorted(i[0] for i in intervals)
         ends = sorted(i[1] for i in intervals)
         rooms = 0

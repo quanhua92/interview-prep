@@ -50,20 +50,90 @@ Template (python3):
 import sys
 
 sys.path.insert(0, ".")
-from src.utils import Problem
+from src.utils import Problem, TestCase
 
 
 class Solution(Problem):
     name = "449. Serialize and Deserialize BST"
     test_cases = [
-        # example 1: root = [2,1,3]... -> [2,1,3]
-        # example 2: root = []... -> []
-        # TODO: Add test cases from examples
+        TestCase(input={"vals": [2, 1, 3]}, expected=[2, 1, 3], label="example 1"),
+        TestCase(input={"vals": []}, expected=[], label="empty tree"),
+        TestCase(input={"vals": [1]}, expected=[1], label="single node"),
     ]
 
-    def solve(self) -> None:
-        # Premium problem - implement solution here
-        pass
+    def solve(self, vals: list[int]) -> list[int | None]:
+        from collections import deque
+        from src.utils import TreeNode
+
+        if not vals:
+            return []
+        root = TreeNode(vals[0])
+        queue: deque = deque([root])
+        i = 1
+        while queue and i < len(vals):
+            node = queue.popleft()
+            if i < len(vals) and vals[i] is not None:
+                node.left = TreeNode(vals[i])
+                queue.append(node.left)
+            i += 1
+            if i < len(vals) and vals[i] is not None:
+                node.right = TreeNode(vals[i])
+                queue.append(node.right)
+            i += 1
+
+        serialized: list[int | None] = []
+        queue = deque([root])
+        while queue:
+            node = queue.popleft()
+            if node:
+                serialized.append(node.val)
+                if node.left or node.right:
+                    queue.append(node.left)
+                    queue.append(node.right)
+            else:
+                serialized.append(None)
+        while serialized and serialized[-1] is None:
+            serialized.pop()
+        return serialized
+
+    def _serialize(self, root) -> str:
+        from collections import deque
+
+        if not root:
+            return ""
+        result = []
+        queue = deque([root])
+        while queue:
+            node = queue.popleft()
+            if node:
+                result.append(str(node.val))
+                queue.append(node.left)
+                queue.append(node.right)
+            else:
+                result.append("#")
+        return ",".join(result)
+
+    def _deserialize(self, data: str):
+        from collections import deque
+        from src.utils import TreeNode
+
+        if not data:
+            return None
+        vals = data.split(",")
+        root = TreeNode(int(vals[0]))
+        queue = deque([root])
+        i = 1
+        while queue and i < len(vals):
+            node = queue.popleft()
+            if vals[i] != "#":
+                node.left = TreeNode(int(vals[i]))
+                queue.append(node.left)
+            i += 1
+            if i < len(vals) and vals[i] != "#":
+                node.right = TreeNode(int(vals[i]))
+                queue.append(node.right)
+            i += 1
+        return root
 
 
 if __name__ == "__main__":

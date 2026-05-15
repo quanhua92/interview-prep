@@ -49,6 +49,19 @@ class Solution(Problem):
         if not timeSeries:
             return 0
         total = 0
+        left = 0
+        for right in range(len(timeSeries)):
+            if right == len(timeSeries) - 1 or timeSeries[right + 1] >= timeSeries[right] + duration:
+                total += timeSeries[right] + duration - timeSeries[left]
+                left = right + 1
+            elif timeSeries[right + 1] > timeSeries[left]:
+                pass
+        return total
+
+    def solve_alternative(self, timeSeries: list[int], duration: int) -> int:
+        if not timeSeries:
+            return 0
+        total = 0
         for i in range(len(timeSeries) - 1):
             total += min(duration, timeSeries[i + 1] - timeSeries[i])
         return total + duration

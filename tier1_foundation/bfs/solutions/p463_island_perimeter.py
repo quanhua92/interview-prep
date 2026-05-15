@@ -50,6 +50,30 @@ class Solution(Problem):
     ]
 
     def solve(self, grid: list[list[int]]) -> int:
+        from collections import deque
+
+        rows, cols = len(grid), len(grid[0])
+        visited = set()
+        perimeter = 0
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        for r in range(rows):
+            for c in range(cols):
+                if grid[r][c] == 1:
+                    queue = deque([(r, c)])
+                    visited.add((r, c))
+                    while queue:
+                        cr, cc = queue.popleft()
+                        for dr, dc in directions:
+                            nr, nc = cr + dr, cc + dc
+                            if nr < 0 or nr >= rows or nc < 0 or nc >= cols or grid[nr][nc] == 0:
+                                perimeter += 1
+                            elif (nr, nc) not in visited:
+                                visited.add((nr, nc))
+                                queue.append((nr, nc))
+                    return perimeter
+        return 0
+
+    def solve_alternative(self, grid: list[list[int]]) -> int:
         rows, cols = len(grid), len(grid[0])
         perimeter = 0
         for r in range(rows):

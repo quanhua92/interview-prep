@@ -54,6 +54,20 @@ class Solution(Problem):
     ]
 
     def solve(self, nums: list[int]) -> int:
+        i = 0
+        n = len(nums)
+        while i < n:
+            correct = nums[i]
+            if correct < n and nums[i] != nums[correct]:
+                nums[i], nums[correct] = nums[correct], nums[i]
+            else:
+                i += 1
+        for i in range(n):
+            if nums[i] != i:
+                return i
+        return n
+
+    def solve_alternative(self, nums: list[int]) -> int:
         n = len(nums)
         expected = n * (n + 1) // 2
         return expected - sum(nums)

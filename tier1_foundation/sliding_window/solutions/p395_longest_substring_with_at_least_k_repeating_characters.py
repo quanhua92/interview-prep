@@ -39,6 +39,32 @@ class Solution(Problem):
     ]
 
     def solve(self, s: str, k: int) -> int:
+        max_len = 0
+        for t in range(1, 27):
+            freq: dict[str, int] = {}
+            left = 0
+            unique = 0
+            at_least_k = 0
+            for right in range(len(s)):
+                ch = s[right]
+                freq[ch] = freq.get(ch, 0) + 1
+                if freq[ch] == 1:
+                    unique += 1
+                if freq[ch] == k:
+                    at_least_k += 1
+                while unique > t:
+                    lc = s[left]
+                    if freq[lc] == k:
+                        at_least_k -= 1
+                    freq[lc] -= 1
+                    if freq[lc] == 0:
+                        unique -= 1
+                    left += 1
+                if unique == t and at_least_k == t:
+                    max_len = max(max_len, right - left + 1)
+        return max_len
+
+    def solve_alternative(self, s: str, k: int) -> int:
         def helper(sub: str, k: int) -> int:
             if len(sub) < k:
                 return 0
