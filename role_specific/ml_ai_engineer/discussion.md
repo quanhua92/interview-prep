@@ -14,11 +14,15 @@ Building, evaluating, and deploying machine learning models that solve real-worl
 | Neural Networks | CNNs, RNNs/Transformers, backpropagation, activation functions, regularization | Explain architecture choices; debug training issues |
 | NLP & CV Basics | Tokenization, embeddings, attention mechanism, image preprocessing, transfer learning | Apply pre-trained models; fine-tune for specific tasks |
 | Bias & Fairness | Fairness metrics, disparate impact, data bias detection, interpretability, responsible AI | Identify and mitigate bias; explain model decisions |
+| Recommender Systems | Two-tower retrieval, multi-stage ranking, cold-start, exploration-exploitation, NDCG | Design end-to-end recommendation pipelines from retrieval to serving |
 
 ## Common Interview Topics
 
 - Explain the bias-variance trade-off and how you diagnose each
 - Walk through how you would build a recommendation system
+- How do you handle the cold-start problem in recommendations?
+- Explain two-tower retrieval and why it scales better than cross-encoder approaches
+- Your recommender's CTR improved 5% but retention dropped 2%. What do you investigate?
 - How do you handle imbalanced datasets?
 - Describe your approach to feature engineering for a tabular dataset
 - How would you deploy a model to production and monitor it?
@@ -38,8 +42,13 @@ Building, evaluating, and deploying machine learning models that solve real-worl
 - **Embeddings** -- Dense vector representations that capture semantic relationships between items
 - **Confusion matrix** -- Table showing true/false positives and negatives for classification evaluation
 - **Drift detection** -- Monitoring for changes in data distribution or model performance over time
+- **Two-Tower model** -- Dual-encoder architecture that separately embeds users and items into a shared space for efficient ANN retrieval
+- **NDCG** -- Normalized Discounted Cumulative Gain; ranking quality metric that discounts relevance by log of position
+- **Cold-start** -- Challenge of making recommendations for new users or items with no interaction history
+- **Hard negatives** -- Items similar to positives but not engaged by the user; critical for fine-grained discrimination in retrieval training
+- **Multi-task ranking** -- Single model predicting multiple engagement signals (click, watch-time, satisfaction) with task-specific heads
 
 ## Cross-References
 
-- **System Design**: [Search Autocomplete](../../system_design/search_autocomplete/) (ranking models, ML inference), [News Feed](../../system_design/news_feed/) (recommendation models), [Notification Service](../../system_design/notification_service/) (send-time optimization)
+- **System Design**: [Search Autocomplete](../../system_design/search_autocomplete/) (ranking models, ML inference), [News Feed](../../system_design/news_feed/) (recommendation models), [Recommender System](../../system_design/recommender_system/) (two-tower retrieval, multi-stage ranking, cold-start), [Notification Service](../../system_design/notification_service/) (send-time optimization)
 - **CS Fundamentals**: Algorithms (gradient descent, dynamic programming), Linear Algebra (matrices, vectors), Probability & Statistics (distributions, hypothesis testing), Optimization

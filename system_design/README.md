@@ -19,6 +19,7 @@ Topic-based practice for system design interviews. Each topic has:
 | [Key-Value Store](key_value_store/) | SSTables, LSM trees, Bloom filters |
 | [Web Crawler](web_crawler/) | URL frontier, politeness, dedup, BFS |
 | [Ticket Booking](ticket_booking/) | Concurrency, locks, idempotency, oversell |
+| [Recommender System](recommender_system/) | Two-tower retrieval, multi-stage ranking, ANN, re-ranking |
 
 ## How to Practice
 
