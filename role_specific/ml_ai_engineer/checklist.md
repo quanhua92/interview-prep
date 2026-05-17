@@ -14,6 +14,7 @@ Use this checklist to track your preparation progress across core machine learni
 - [ ] **Computer Vision**: Be familiar with image classification, object detection (YOLO), segmentation, and transfer learning with pretrained models.
 - [ ] **Bias and Fairness**: Review fairness metrics (disparate impact, equal opportunity), data bias detection techniques, interpretability methods (SHAP, LIME), and responsible AI principles.
 - [ ] **Recommender Systems**: Practice two-tower retrieval architecture, multi-stage ranking (GBDT light + DNN heavy), negative sampling strategies (random, batch, hard negatives), cold-start handling, exploration-exploitation (epsilon-greedy, Thompson Sampling), and evaluation (NDCG, Recall@K, guardrail metrics).
+- [ ] **Decision Trees & Ensembles**: Understand CART's greedy recursive binary splitting, Gini vs entropy vs MSE split criteria (and why the choice rarely matters, Raileanu 2004), cost-complexity pruning with the 1-SE rule, surrogate splits for missing values, Fisher's optimal partition trick for categoricals, MDI bias (Strobl 2007) and fixes (permutation importance, TreeSHAP), oblivious trees (CatBoost), and why single trees are never deployed in production.
 - [ ] **Experiment Tracking and Evaluation**: Prepare to discuss experiment management, hyperparameter tuning, statistical significance testing, and model monitoring in production.
 
 ## Practice Questions
@@ -37,6 +38,13 @@ Use this checklist to track your preparation progress across core machine learni
 17. Explain two-tower retrieval and why hard negatives matter more than random negatives.
 18. Your recommender's CTR improved 5% but D7 retention dropped 2%. What would you investigate?
 19. Design the full architecture for a video recommendation system like YouTube. Walk through retrieval, ranking, and re-ranking with latency budgets.
+20. Walk through CART's greedy recursive binary splitting. Why binary and not multi-way? Why greedy instead of globally optimal?
+21. Compare Gini impurity vs entropy as split criteria. When does the choice actually matter?
+22. Explain cost-complexity pruning: what is alpha, how do you select it, and why do Random Forest and XGBoost skip pruning entirely?
+23. Why is sklearn's default feature_importances_ biased? What should you use instead and why (cite Strobl 2007)?
+24. How does CART handle a categorical feature with 50 unique values? Explain Fisher's partition trick and why one-hot encoding is wrong for trees.
+25. Your tree model trained on 2020 housing data cannot predict prices above the 2020 maximum. Why, and what should you use instead?
+26. What are oblivious trees? Why does CatBoost use them and what inference speedup do they provide?
 
 ## System Design Bridge Items
 

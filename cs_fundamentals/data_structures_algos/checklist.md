@@ -26,6 +26,36 @@ Use this checklist to gauge your readiness for DSA-related interview questions. 
 - [ ] What is a heap and how is it used in a priority queue?
 - [ ] Explain topological sort and give a real-world application for it.
 
+## The 8 Core DSA Patterns (CalibreOS)
+
+Source: [The 8 Core DSA Patterns (CalibreOS)](https://www.calibreos.com/learn/dsa-patterns)
+
+### Pattern Recognition Self-Assessment
+
+- [ ] Given a new problem, can I identify signal words and map them to one of the 8 pattern families within 2 minutes?
+- [ ] Can I explain when to use Sliding Window vs Two Pointers vs Binary Search?
+- [ ] Can I explain the "binary search on answer space" pattern and when it applies?
+- [ ] Can I implement the variable-size sliding window template from scratch?
+- [ ] Can I implement the two-heap running median pattern?
+- [ ] Can I implement top-K frequent elements using a min-heap of size k?
+- [ ] Can I build a prefix sum array and answer range sum queries in O(1)?
+
+### Decision Framework Drill
+
+- [ ] Input is sorted? -> Binary Search or Two Pointers
+- [ ] Asks about a window/substring? -> Sliding Window
+- [ ] Asks for max/min/count of some property? -> DP or Greedy
+- [ ] Graph structure present? -> BFS/DFS
+- [ ] Need to repeatedly pull the best item? -> Heap
+
+### Interview Execution Checklist
+
+- [ ] Read problem -> identify signal words
+- [ ] State the pattern out loud
+- [ ] State time and space complexity before coding
+- [ ] Code the template first, then fill in problem-specific logic
+- [ ] Test with the given example plus one edge case
+
 ## Practice Log
 
 - [ ] 2026-05-06 — Reviewed hash table collisions and graph traversal; practiced LRU cache explanation.

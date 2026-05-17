@@ -44,3 +44,5 @@ Look for keywords and problem structures such as:
 - Using ``heapq.nlargest`` on the entire array when a manual size-k heap would
   save memory for very large inputs.
 - Forgetting to handle edge cases where ``k`` equals the array length.
+
+Source: [Heaps & Priority Queues: Top-K, Merge K Lists, and Two-Heap Patterns (CalibreOS)](https://www.calibreos.com/learn/dsa-heaps)

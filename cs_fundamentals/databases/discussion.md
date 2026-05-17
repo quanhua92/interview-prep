@@ -67,3 +67,61 @@ SQL vs NoSQL, ACID properties, indexing, normalization, joins, transactions, and
 | Transactions | Full ACID support | Varies (some support multi-document) |
 | Data model | Tables with relations | Documents, key-value, graph, column-family |
 | Examples | PostgreSQL, MySQL, Oracle | MongoDB, Redis, Cassandra, Neo4j |
+
+## Storage Engines — B-Tree vs LSM-Tree
+
+- **B-Tree** (PostgreSQL, MySQL, SQLite): data organized as a balanced tree of fixed-size pages (4-8 KB each). Pages hold sorted key-value pairs; writes update pages *in-place*. Reads and writes are both O(log n) -- traverse from root to leaf, write to WAL first, then update in-place. Strengths: fast point and range queries, ideal for OLTP read/write balance. Weaknesses: random writes cause write amplification and disk seeks on HDDs.
+- **LSM-Tree** (Cassandra, RocksDB, LevelDB, ClickHouse): Log-Structured Merge tree. All writes land in an in-memory **MemTable**, flushed to immutable SSTables on disk when full. A background compaction process merges SSTables, purging duplicates and tombstones. Writes are always sequential -- no random I/O -- for extremely high write throughput. Reads must check MemTable + all SSTables; Bloom filters eliminate most unnecessary lookups. Strengths: write-optimized, perfect for time-series, logs, and append-heavy workloads. Weaknesses: read amplification -- multiple SSTables must be checked per read.
+
+### B-Tree vs LSM-Tree Comparison
+
+| Aspect | B-Tree (PostgreSQL / MySQL) | LSM-Tree (Cassandra / RocksDB) |
+|---|---|---|
+| Write pattern | Random in-place page writes | Sequential writes (MemTable to SSTables) |
+| Read pattern | O(log n) single lookup | MemTable + multiple SSTables (mitigated by Bloom filters) |
+| Write amplification | Low-Medium (WAL + page update) | High (data written multiple times through compaction levels) |
+| Read amplification | Low (1-2 disk reads typically) | Moderate (several SSTables checked per read) |
+| Space amplification | Low-Medium (dead rows via MVCC, vacuumed) | Moderate (compaction lag leaves duplicates temporarily) |
+| Best workload | OLTP: balanced read/write, complex queries | Write-heavy: time-series, logs, IoT, large-scale append |
+| Examples | PostgreSQL, MySQL, SQLite, Oracle | Cassandra, ScyllaDB, RocksDB, LevelDB, ClickHouse (parts) |
+
+## Advanced Indexing Strategies
+
+- **Composite Index**: an index on `(A, B, C)` satisfies queries on `(A)`, `(A, B)`, or `(A, B, C)` -- but *cannot* be used for queries on `(B)` or `(C)` alone (the **leftmost prefix rule**). Put the most selective (highest-cardinality) column first, equality-filtered columns next, range-filtered columns last. Example: for `WHERE country = 'US' AND age BETWEEN 18 AND 25`, index on `(country, age)` is optimal; `(age, country)` would not be used.
+- **Covering Index**: an index that contains *all* columns the query needs, so the database answers the query from the index alone (**index-only scan**), without touching the main table. Example: `SELECT user_id, email FROM users WHERE created_at > '2024-01-01'` is covered by `CREATE INDEX ON users(created_at, user_id, email)`. Result: 3-10x faster for read-heavy workloads. Trade-off: larger index size on disk.
+- **Partial Index**: index only a *subset* of rows using a `WHERE` clause on the index definition. Example: `CREATE INDEX ON users(email) WHERE is_active = TRUE` -- indexes only ~10% of rows, making it far smaller and faster than a full index. Limitation: only used when the query predicate matches the index's `WHERE` clause exactly.
+- **Hash Index**: in-memory hash table providing O(1) equality lookups. Cannot support range queries or `ORDER BY` -- purely for exact-match access. Use only for very hot exact-match columns where range queries are never needed.
+- **Full-Text Search Index (GIN/GiST)**: for queries like "find all documents containing the word X." **GIN** (Generalized Inverted Index) maps each word to the rows containing it; fast reads, slow to update. **GiST** is better for spatial data and custom operators. For production full-text search at scale, Elasticsearch is usually a better fit than PostgreSQL's built-in FTS.
+
+## Sharding Strategies
+
+- **Hash sharding** (most common): `shard = hash(partition_key) % N` -- distributes keys evenly across N shards. Good for user data (`user_id`), session data, key-value access patterns. Pitfalls: adding/removing shards requires rehashing *all* keys (use **consistent hashing** to reduce remapping to O(K/N)); cross-shard range queries require *scatter-gather* -- fan out to all N shards and merge results.
+- **Range sharding**: keys divided into sorted ranges (e.g., shard 1 handles `user_id` 1-10M, shard 2 handles 10M-20M). Good for time-series data (partition by date range), sorted scans. Pitfall -- hotspot: all new writes go to the "current" shard (today's timestamp). Fix: *salting* -- prepend a random prefix to keys to spread writes across multiple shards.
+- **Choosing the partition key** -- three required properties: (1) **high cardinality** -- distributes data evenly; avoid booleans or low-cardinality enums, (2) **present in most queries** -- otherwise you cannot route without a full scatter-gather, (3) **no natural hotspots** -- avoid keys that concentrate traffic (celebrity IDs, trending items). Common choices: `user_id` for user-centric apps, `content_id` for content, `timestamp + random salt` for event streams.
+- **Handling hotspot shards**: (1) **shard key salting** -- append a random suffix (0-99) to spread the key across virtual shards (reads must fan-out and merge), (2) **dedicated shard** -- route known hot accounts to a high-capacity dedicated shard cluster, (3) **application-layer caching** -- put Redis in front of the hot shard; serve 99%+ of reads from cache, (4) **read replicas** -- add replicas specifically to the hot shard to distribute read load.
+
+## Replication Patterns
+
+- **Synchronous replication**: the primary waits for *at least one* replica to confirm the write before acknowledging success to the client. Guarantees: zero data loss on primary failure. Trade-off: higher write latency (replica network round-trip); reduced availability if a replica is slow or down. Use for: financial transactions, any workload where losing even one write is unacceptable.
+- **Asynchronous replication**: the primary acknowledges the write immediately after writing locally. Replicas catch up in the background, potentially seconds behind. Guarantees: lowest possible write latency. Trade-off: replication lag means replicas may serve stale data; data loss possible if primary fails before replicas catch up. Use for: read replicas for analytics, content delivery, non-critical data.
+- **Semi-synchronous**: wait for exactly *one* replica (out of N) to confirm. Guarantees at least one copy always exists. Middle ground between full sync (wait all) and async (wait none). MySQL's default mode.
+- **RPO (Recovery Point Objective)**: the maximum tolerable data loss. RPO = 0 means synchronous replication is required. RPO = seconds means async is fine. RPO = minutes means eventual consistency is acceptable. Always ask "what is the RPO?" before designing the replication topology.
+
+### Replication Topologies
+
+| Topology | Description | Use Case | Trade-offs |
+|---|---|---|---|
+| Single-leader | One primary accepts writes. N replicas serve reads. | Read-heavy OLTP: 90% reads, 10% writes | Write bottleneck on single primary. Primary failure requires leader election (Raft/Paxos). |
+| Multi-leader | Multiple primaries each accept writes. Leaders sync with each other. | Multi-datacenter active-active, offline-capable apps | Write conflicts must be resolved (last-write-wins, CRDTs, application logic). Complex. |
+| Leaderless (Quorum) | Any node accepts reads and writes. Quorum W + R > N guarantees overlap. | Cassandra, DynamoDB. Ultra-high write throughput. | Eventual consistency (may read stale data). Last-write-wins creates risk. Anti-entropy for repair. |
+| Quorum reads/writes | Write to W of N nodes. Read from R of N nodes. W + R > N ensures at least one node has latest write. | Configurable consistency/availability tradeoff | W=N, R=1: strong consistency, slow writes. W=1, R=N: fast writes, slow reads. |
+
+## Interview Scenario: Design Database for Instagram
+
+Scale: 1B users, 100M photos/day, 5B likes/day.
+
+- **User profiles and follows** -> PostgreSQL + read replicas. Structured data with complex queries (mutual followers, graph traversal). Shard by `user_id`. Replicate to 3 read replicas per region.
+- **Photo metadata** -> Cassandra. Wide-column schema: `(user_id, photo_id, timestamp, url, likes_count)`. Partition by `user_id` so all of a user's photos are on one shard for fast timeline lookups. LSM-tree handles 100M photos/day (~1,200 writes/sec) without write bottleneck.
+- **Likes** -> Cassandra + Redis. Counter stored in Cassandra (`COUNTER` column for exact count). Redis `ZADD` maintains a sorted set of recent likers per photo. `INCR` in Redis for hot photos, batch-write to Cassandra every 10 seconds.
+- **Feed generation** -> DynamoDB. Pre-materialized feed (fan-out on write). Partition key = `user_id`, sort key = `timestamp`. Low-latency reads; high write throughput for fan-out.
+- **Celebrity fan-out problem**: a celebrity with 100M followers posts a photo. Naive fan-out = 100M writes. Solution: **hybrid fan-out** -- push to regular users' feeds at write time, but serve celebrity posts on-demand at read time. Redis caches celebrity posts separately to absorb read spikes.
