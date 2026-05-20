@@ -27,6 +27,16 @@ uv run python main.py report --serve
 
 Progress is persisted in `progress/tracker.json` (gitignored).
 
+Generate a visual progress report with dark-themed Tailwind CSS dashboard — overall progress ring, stats cards, and per-section breakdowns:
+
+```bash
+uv run python main.py report --serve   # serves at http://0.0.0.0:8888
+```
+
+![Report Dashboard](screenshot_top.jpeg)
+
+[See full screenshot](screenshot.jpeg)
+
 ## Project Structure
 
 ```
