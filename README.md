@@ -1,6 +1,6 @@
 # Interview Prep
 
-A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, and AI-assisted interview scenarios. Track progress across all 116 coding problems and 86 topics with a unified CLI dashboard.
+A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, AI-assisted interview scenarios, data analytics, low-level design, and production engineering. Track progress across 144 coding problems and 139 topics with a unified CLI dashboard.
 
 ## Quick Start
 
@@ -8,17 +8,76 @@ A comprehensive interview preparation toolkit covering coding patterns, system d
 # Install dependencies
 uv sync
 
-# Run the progress dashboard
+# View progress dashboard
 uv run python main.py status
 
-# Run all coding tests
-uv run pytest
-
-# Run tests for a specific pattern
-uv run pytest tests/test_sliding_window.py -v
-
-# Run a single problem file directly
+# Run a problem file directly
 uv run python tier1_foundation/sliding_window/problems/p003_longest_substring.py
+
+# Mark topic progress
+uv run python main.py update sliding_window in_progress
+uv run python main.py update url_shortener completed
+
+# Record a practice attempt
+uv run python main.py attempt sliding_window
+```
+
+Progress is persisted in `progress/tracker.json` (gitignored).
+
+## Project Structure
+
+```
+interview-prep/
+├── main.py                        # CLI dashboard
+├── tier{1-4}_*/                   # 24 coding patterns
+│   └── <pattern>/
+│       ├── template.py
+│       ├── problems/              # Practice stubs
+│       ├── solutions/             # Answer keys
+│       └── README.md
+├── system_design/                 # 25 system design topics
+│   └── <topic>/
+│       ├── discussion.md
+│       └── checklist.md
+├── behavioral/                    # 12 behavioral themes
+│   └── <theme>/
+│       ├── discussion.md
+│       └── checklist.md
+├── salary_negotiation/            # 7 salary negotiation topics
+│   └── <topic>/
+│       ├── discussion.md
+│       └── checklist.md
+├── cs_fundamentals/               # 22 CS fundamentals topics
+│   └── <topic>/
+│       ├── discussion.md
+│       └── checklist.md
+├── resume_career/                 # 6 resume & career topics
+│   └── <topic>/
+│       ├── discussion.md
+│       └── checklist.md
+├── role_specific/                 # 6 role-specific topics
+│   └── <topic>/
+│       ├── discussion.md
+│       └── checklist.md
+├── ai_assisted/                   # 6 AI-assisted interview scenarios
+│   └── <scenario>/
+│       ├── README.md              # Interview prompt + follow-ups
+│       └── TIPS.md                # Concepts, mistakes, AI strategy
+├── data_analytics/                # 9 data analytics topics
+│   └── <topic>/
+│       ├── discussion.md
+│       └── checklist.md
+├── low_level_design/              # 12 low-level design topics
+│   └── <topic>/
+│       ├── discussion.md
+│       └── checklist.md
+├── production_engineering/        # 10 production engineering topics
+│   └── <topic>/
+│       ├── discussion.md
+│       └── checklist.md
+├── tests/                         # pytest suite
+├── src/utils/                     # Shared utilities
+└── progress/tracker.json          # Progress data (gitignored)
 ```
 
 ## Coding Patterns (24 patterns, 4 tiers)
@@ -73,7 +132,7 @@ Each pattern contains:
 - `solutions/` — Answer keys
 - `README.md` — Pattern explanation, when to recognize it, complexity table
 
-## System Design (10 topics)
+## System Design (25 topics)
 
 | Topic | Core Concepts |
 |-------|--------------|
@@ -92,7 +151,7 @@ Each topic contains:
 - `discussion.md` — Concise reference (key concepts, trade-offs, vocabulary)
 - `checklist.md` — Step-by-step working checklist with 5 phases + practice notes
 
-## Behavioral (10 themes, STAR method)
+## Behavioral (12 themes, STAR method)
 
 | Theme | Competency |
 |-------|-----------|
@@ -127,7 +186,7 @@ Each topic contains:
 - `discussion.md` — Benchmarks, frameworks, scripts, talking points
 - `checklist.md` — Preparation steps, script practice, scenario walkthroughs
 
-## CS Fundamentals (7 topics)
+## CS Fundamentals (22 topics)
 
 | Topic | Focus |
 |-------|-------|
@@ -191,71 +250,3 @@ Each scenario contains:
 - `TIPS.md` — Key concepts, common mistakes, AI prompting strategy, and what interviewers look for
 
 See [ai_assisted/README.md](ai_assisted/) for the full guide including interview formats, evaluation rubric, and prompting strategy.
-
-## CLI Dashboard
-
-Track progress across all 86 topics (coding + system design + behavioral + salary + CS fundamentals + resume/career + role-specific):
-
-```bash
-# View progress for all topics
-uv run python main.py status
-
-# Mark any topic as in progress / completed / not started
-uv run python main.py update sliding_window in_progress
-uv run python main.py update url_shortener completed
-uv run python main.py update handling_failure in_progress
-uv run python main.py update market_research in_progress
-uv run python main.py update operating_systems completed
-uv run python main.py update resume_structure in_progress
-uv run python main.py update backend_engineer completed
-
-# Run coding tests (all or specific pattern)
-uv run python main.py test
-uv run python main.py test sliding_window
-```
-
-Progress is persisted in `progress/tracker.json`.
-
-## Project Structure
-
-```
-interview-prep/
-├── main.py                        # CLI dashboard
-├── system_design/                 # 10 system design topics
-│   └── <topic>/
-│       ├── discussion.md
-│       └── checklist.md
-├── behavioral/                    # 10 behavioral themes
-│   └── <theme>/
-│       ├── discussion.md
-│       └── checklist.md
-├── salary_negotiation/            # 7 salary negotiation topics
-│   └── <topic>/
-│       ├── discussion.md
-│       └── checklist.md
-├── cs_fundamentals/               # 7 CS fundamentals topics
-│   └── <topic>/
-│       ├── discussion.md
-│       └── checklist.md
-├── resume_career/                 # 6 resume & career topics
-│   └── <topic>/
-│       ├── discussion.md
-│       └── checklist.md
-├── role_specific/                 # 6 role-specific topics
-│   └── <topic>/
-│       ├── discussion.md
-│       └── checklist.md
-├── tier{1-4}_*/                   # 24 coding patterns
-│   └── <pattern>/
-│       ├── template.py
-│       ├── problems/              # Practice stubs
-│       ├── solutions/             # Answer keys
-│       └── README.md
-├── ai_assisted/                   # 6 AI-assisted interview scenarios
-│   └── <scenario>/
-│       ├── README.md              # Interview prompt + follow-ups
-│       └── TIPS.md                # Concepts, mistakes, AI strategy
-├── tests/                         # pytest suite (231 tests)
-├── src/utils/                     # Shared utilities
-└── progress/tracker.json          # Progress data (gitignored)
-```

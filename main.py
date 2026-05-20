@@ -36,6 +36,10 @@ SECTION_KEYS = {
     "cs": "cs_fundamentals",
     "resume": "resume_career",
     "role": "role_specific",
+    "ai_assisted": "ai_assisted",
+    "data_analytics": "data_analytics",
+    "lld": "low_level_design",
+    "prod_eng": "production_engineering",
 }
 
 ROOT = Path(__file__).parent
@@ -90,6 +94,10 @@ def load_tracker():
             "cs_fundamentals": [],
             "resume_career": [],
             "role_specific": [],
+            "ai_assisted": [],
+            "data_analytics": [],
+            "low_level_design": [],
+            "production_engineering": [],
         }
     else:
         tracker = json.loads(TRACKER_PATH.read_text())
@@ -102,6 +110,10 @@ def load_tracker():
     _sync_section(tracker, "cs_fundamentals", _discover_topics("cs_fundamentals"))
     _sync_section(tracker, "resume_career", _discover_topics("resume_career"))
     _sync_section(tracker, "role_specific", _discover_topics("role_specific"))
+    _sync_section(tracker, "ai_assisted", _discover_topics("ai_assisted"))
+    _sync_section(tracker, "data_analytics", _discover_topics("data_analytics"))
+    _sync_section(tracker, "low_level_design", _discover_topics("low_level_design"))
+    _sync_section(tracker, "production_engineering", _discover_topics("production_engineering"))
 
     save_tracker(tracker)
     return tracker
@@ -136,14 +148,18 @@ def cmd_status():
     cs_items = tracker.get("cs_fundamentals", [])
     res_items = tracker.get("resume_career", [])
     role_items = tracker.get("role_specific", [])
+    ai_items = tracker.get("ai_assisted", [])
+    da_items = tracker.get("data_analytics", [])
+    lld_items = tracker.get("low_level_design", [])
+    pe_items = tracker.get("production_engineering", [])
 
     print()
     print(f"{'='*60}")
-    print(f"  Interview Prep Progress Dashboard")
+    print("  Interview Prep Progress Dashboard")
     print(f"{'='*60}")
 
     # Coding Patterns
-    print(f"\n  SECTION: Coding Patterns")
+    print("\n  SECTION: Coding Patterns")
     print(f"  {'-'*56}")
     for tier in range(1, 5):
         tier_label = TIER_NAMES[tier]
@@ -153,39 +169,63 @@ def cmd_status():
             _print_item(p)
 
     # System Design
-    print(f"\n  SECTION: System Design")
+    print("\n  SECTION: System Design")
     print(f"  {'-'*56}")
     for item in sd_items:
         _print_item(item)
 
     # Behavioral
-    print(f"\n  SECTION: Behavioral")
+    print("\n  SECTION: Behavioral")
     print(f"  {'-'*56}")
     for item in beh_items:
         _print_item(item)
 
     # Salary Negotiation
-    print(f"\n  SECTION: Salary Negotiation")
+    print("\n  SECTION: Salary Negotiation")
     print(f"  {'-'*56}")
     for item in sal_items:
         _print_item(item)
 
     # CS Fundamentals
-    print(f"\n  SECTION: CS Fundamentals")
+    print("\n  SECTION: CS Fundamentals")
     print(f"  {'-'*56}")
     for item in cs_items:
         _print_item(item)
 
     # Resume & Career
-    print(f"\n  SECTION: Resume & Career")
+    print("\n  SECTION: Resume & Career")
     print(f"  {'-'*56}")
     for item in res_items:
         _print_item(item)
 
     # Role-Specific
-    print(f"\n  SECTION: Role-Specific")
+    print("\n  SECTION: Role-Specific")
     print(f"  {'-'*56}")
     for item in role_items:
+        _print_item(item)
+
+    # AI-Assisted
+    print("\n  SECTION: AI-Assisted")
+    print(f"  {'-'*56}")
+    for item in ai_items:
+        _print_item(item)
+
+    # Data Analytics
+    print("\n  SECTION: Data Analytics")
+    print(f"  {'-'*56}")
+    for item in da_items:
+        _print_item(item)
+
+    # Low-Level Design
+    print("\n  SECTION: Low-Level Design")
+    print(f"  {'-'*56}")
+    for item in lld_items:
+        _print_item(item)
+
+    # Production Engineering
+    print("\n  SECTION: Production Engineering")
+    print(f"  {'-'*56}")
+    for item in pe_items:
         _print_item(item)
 
     # Summary
@@ -196,9 +236,13 @@ def cmd_status():
     cs_total, cs_done, cs_prog = _section_stats(cs_items)
     res_total, res_done, res_prog = _section_stats(res_items)
     role_total, role_done, role_prog = _section_stats(role_items)
-    g_total = c_total + s_total + b_total + sal_total + cs_total + res_total + role_total
-    g_done = c_done + s_done + b_done + sal_done + cs_done + res_done + role_done
-    g_prog = c_prog + s_prog + b_prog + sal_prog + cs_prog + res_prog + role_prog
+    ai_total, ai_done, ai_prog = _section_stats(ai_items)
+    da_total, da_done, da_prog = _section_stats(da_items)
+    lld_total, lld_done, lld_prog = _section_stats(lld_items)
+    pe_total, pe_done, pe_prog = _section_stats(pe_items)
+    g_total = c_total + s_total + b_total + sal_total + cs_total + res_total + role_total + ai_total + da_total + lld_total + pe_total
+    g_done = c_done + s_done + b_done + sal_done + cs_done + res_done + role_done + ai_done + da_done + lld_done + pe_done
+    g_prog = c_prog + s_prog + b_prog + sal_prog + cs_prog + res_prog + role_prog + ai_prog + da_prog + lld_prog + pe_prog
 
     print(f"\n  {'-'*56}")
     print(f"  Coding:         {c_total:>3} total | {c_done:>3} completed | {c_prog:>3} in progress")
@@ -208,6 +252,10 @@ def cmd_status():
     print(f"  CS Fundamentals:{cs_total:>3} total | {cs_done:>3} completed | {cs_prog:>3} in progress")
     print(f"  Resume/Career:  {res_total:>3} total | {res_done:>3} completed | {res_prog:>3} in progress")
     print(f"  Role-Specific:  {role_total:>3} total | {role_done:>3} completed | {role_prog:>3} in progress")
+    print(f"  AI-Assisted:    {ai_total:>3} total | {ai_done:>3} completed | {ai_prog:>3} in progress")
+    print(f"  Data Analytics: {da_total:>3} total | {da_done:>3} completed | {da_prog:>3} in progress")
+    print(f"  Low-Level Design:{lld_total:>3} total | {lld_done:>3} completed | {lld_prog:>3} in progress")
+    print(f"  Prod Eng:       {pe_total:>3} total | {pe_done:>3} completed | {pe_prog:>3} in progress")
     print(f"  {'-'*56}")
     print(f"  OVERALL:        {g_total:>3} total | {g_done:>3} completed | {g_prog:>3} in progress | {g_total - g_done} remaining")
     print(f"{'='*60}\n")
@@ -257,6 +305,20 @@ def cmd_update(item_name):
     print(f"Updated {item_name} ({section_key}): {old_status} -> {new_status}")
 
 
+def cmd_attempt(item_name):
+    tracker = load_tracker()
+    section_key, item = _find_item(tracker, item_name)
+
+    if not item:
+        print(f"Error: Unknown item '{item_name}'")
+        sys.exit(1)
+
+    item["attempts"] = item.get("attempts", 0) + 1
+    item["last_attempt"] = date.today().isoformat()
+    save_tracker(tracker)
+    print(f"Recorded attempt for {item_name} ({section_key}): {item['attempts']} total attempts")
+
+
 def cmd_test(pattern_name=None):
     if pattern_name:
         tracker = load_tracker()
@@ -296,12 +358,17 @@ def main():
             print("Usage: python main.py update <topic> [completed|in_progress|not_started]")
             sys.exit(1)
         cmd_update(sys.argv[2])
+    elif command == "attempt":
+        if len(sys.argv) < 3:
+            print("Usage: python main.py attempt <topic>")
+            sys.exit(1)
+        cmd_attempt(sys.argv[2])
     elif command == "test":
         pattern_name = sys.argv[2] if len(sys.argv) > 2 else None
         cmd_test(pattern_name)
     else:
         print(f"Unknown command: {command}")
-        print("Usage: python main.py [status|update|test]")
+        print("Usage: python main.py [status|update|attempt|test]")
         sys.exit(1)
 
 
