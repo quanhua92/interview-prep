@@ -20,6 +20,9 @@ uv run python main.py update url_shortener completed
 
 # Record a practice attempt
 uv run python main.py attempt sliding_window
+
+# Generate and open HTML progress report
+uv run python main.py report --serve
 ```
 
 Progress is persisted in `progress/tracker.json` (gitignored).

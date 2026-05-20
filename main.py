@@ -4,6 +4,9 @@
 Usage:
     python main.py status              Show all topics with progress
     python main.py update <topic>      Mark topic as completed/in_progress/not_started
+    python main.py attempt <topic>     Record a practice attempt
+    python main.py report              Generate HTML progress report
+    python main.py report --serve      Serve report on http://0.0.0.0:8888
     python main.py test [pattern]      Run coding tests (all or specific pattern)
 """
 import json
@@ -319,6 +322,258 @@ def cmd_attempt(item_name):
     print(f"Recorded attempt for {item_name} ({section_key}): {item['attempts']} total attempts")
 
 
+REPORT_PATH = ROOT / "progress" / "report.html"
+
+SECTION_META = {
+    "patterns": {"label": "Coding Patterns", "icon": "💻", "has_tiers": True},
+    "system_design": {"label": "System Design", "icon": "🏗️", "has_tiers": False},
+    "behavioral": {"label": "Behavioral", "icon": "🧠", "has_tiers": False},
+    "salary_negotiation": {"label": "Salary Negotiation", "icon": "💰", "has_tiers": False},
+    "cs_fundamentals": {"label": "CS Fundamentals", "icon": "📚", "has_tiers": False},
+    "resume_career": {"label": "Resume & Career", "icon": "📄", "has_tiers": False},
+    "role_specific": {"label": "Role-Specific", "icon": "🎯", "has_tiers": False},
+    "ai_assisted": {"label": "AI-Assisted", "icon": "🤖", "has_tiers": False},
+    "data_analytics": {"label": "Data Analytics", "icon": "📊", "has_tiers": False},
+    "low_level_design": {"label": "Low-Level Design", "icon": "🔧", "has_tiers": False},
+    "production_engineering": {"label": "Production Engineering", "icon": "🚀", "has_tiers": False},
+}
+
+
+def _status_badge(status):
+    colors = {"completed": "bg-emerald-500", "in_progress": "bg-amber-500", "not_started": "bg-zinc-600"}
+    return colors.get(status, "bg-zinc-600")
+
+
+def _status_text_color(status):
+    colors = {"completed": "text-emerald-400", "in_progress": "text-amber-400", "not_started": "text-zinc-500"}
+    return colors.get(status, "text-zinc-500")
+
+
+def _progress_ring(pct, size=80, stroke=6):
+    r = (size - stroke) / 2
+    c = 2 * 3.14159265 * r
+    offset = c * (1 - pct / 100)
+    return f'''<svg width="{size}" height="{size}" class="-rotate-90">
+      <circle cx="{size/2}" cy="{size/2}" r="{r}" fill="none" stroke="#27272a" stroke-width="{stroke}"/>
+      <circle cx="{size/2}" cy="{size/2}" r="{r}" fill="none" stroke="url(#grad)" stroke-width="{stroke}"
+        stroke-dasharray="{c}" stroke-dashoffset="{offset}" stroke-linecap="round"/>
+      <defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#10b981"/><stop offset="100%" style="stop-color:#3b82f6"/>
+      </linearGradient></defs>
+    </svg>'''
+
+
+def _build_section_html(key, items, meta):
+    total, done, prog = _section_stats(items)
+    remaining = total - done
+    pct = round(done / total * 100) if total else 0
+
+    rows = ""
+    if meta["has_tiers"]:
+        for tier in range(1, 5):
+            tier_items = [i for i in items if i.get("tier") == tier]
+            if not tier_items:
+                continue
+            rows += f'''<div class="col-span-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider mt-4 mb-1">
+              Tier {tier}: {TIER_NAMES[tier]}
+            </div>'''
+            for item in tier_items:
+                rows += _build_item_row(item)
+    else:
+        for item in items:
+            rows += _build_item_row(item)
+
+    return f'''
+    <div class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+      <div class="px-6 py-5 border-b border-zinc-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">{meta['icon']}</span>
+          <div>
+            <h2 class="text-lg font-bold text-white">{meta['label']}</h2>
+            <p class="text-sm text-zinc-400">{done}/{total} completed &middot; {remaining} remaining</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-32 h-2 bg-zinc-800 rounded-full overflow-hidden">
+            <div class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-blue-500" style="width:{pct}%"></div>
+          </div>
+          <span class="text-sm font-mono text-zinc-300">{pct}%</span>
+        </div>
+      </div>
+      <div class="px-6 py-4 grid grid-cols-3 gap-x-6 gap-y-2 text-sm">
+        <div class="col-span-1 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Topic</div>
+        <div class="col-span-1 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Status</div>
+        <div class="col-span-1 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Attempts</div>
+        {rows}
+      </div>
+    </div>'''
+
+
+def _build_item_row(item):
+    status = item["status"]
+    badge = _status_badge(status)
+    label = status.replace("_", " ").title()
+    text_color = _status_text_color(status)
+    attempts = item.get("attempts", 0)
+    last = item.get("last_attempt", "")
+    last_str = f'<span class="text-zinc-600 ml-1">&middot; {last}</span>' if last else ""
+    name = item["name"].replace("_", " ").title()
+
+    return f'''
+        <div class="col-span-1 text-zinc-200 py-1">{name}</div>
+        <div class="col-span-1 py-1"><span class="inline-block w-2 h-2 rounded-full {badge} mr-2"></span><span class="{text_color}">{label}</span></div>
+        <div class="col-span-1 text-zinc-400 py-1">{attempts}{last_str}</div>'''
+
+
+def cmd_report():
+    tracker = load_tracker()
+
+    all_sections = []
+    totals = {"total": 0, "done": 0, "prog": 0}
+    section_summaries = []
+
+    for key, meta in SECTION_META.items():
+        items = tracker.get(key, [])
+        total, done, prog = _section_stats(items)
+        totals["total"] += total
+        totals["done"] += done
+        totals["prog"] += prog
+        all_sections.append(_build_section_html(key, items, meta))
+        pct = round(done / total * 100) if total else 0
+        section_summaries.append({
+            "label": meta["label"], "icon": meta["icon"],
+            "total": total, "done": done, "prog": prog, "pct": pct,
+        })
+
+    g_pct = round(totals["done"] / totals["total"] * 100) if totals["total"] else 0
+    sections_html = "\n".join(all_sections)
+
+    summary_cards = ""
+    for s in section_summaries:
+        bar_color = "from-emerald-500 to-emerald-600" if s["pct"] >= 100 else "from-blue-500 to-blue-600" if s["pct"] >= 50 else "from-amber-500 to-amber-600" if s["prog"] > 0 else "from-zinc-600 to-zinc-700"
+        summary_cards += f'''
+          <div class="bg-zinc-900 rounded-xl border border-zinc-800 p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-lg">{s['icon']}</span>
+              <span class="text-xs font-mono text-zinc-500">{s['pct']}%</span>
+            </div>
+            <div class="text-sm font-semibold text-white mb-1">{s['label']}</div>
+            <div class="text-xs text-zinc-400 mb-3">{s['done']}/{s['total']} completed</div>
+            <div class="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r {bar_color}" style="width:{s['pct']}%"></div>
+            </div>
+          </div>'''
+
+    today = date.today().strftime("%B %d, %Y")
+    remaining = totals["total"] - totals["done"]
+
+    html = f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interview Prep Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {{
+      --color-bg: #09090b;
+    }}
+  </style>
+</head>
+<body class="bg-bg min-h-screen text-white antialiased">
+  <div class="max-w-6xl mx-auto px-6 py-12">
+
+    <!-- Header -->
+    <div class="flex items-start justify-between mb-12">
+      <div>
+        <h1 class="text-4xl font-extrabold tracking-tight mb-2">Interview Prep</h1>
+        <p class="text-zinc-400">Progress Report &middot; {today}</p>
+      </div>
+      <div class="relative flex items-center justify-center">
+        {_progress_ring(g_pct, 100, 8)}
+        <div class="absolute text-center">
+          <div class="text-2xl font-bold">{g_pct}%</div>
+          <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Overall</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="grid grid-cols-4 gap-4 mb-10">
+      <div class="bg-zinc-900 rounded-xl border border-zinc-800 p-5 text-center">
+        <div class="text-3xl font-extrabold text-white">{totals['total']}</div>
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mt-1">Total Topics</div>
+      </div>
+      <div class="bg-zinc-900 rounded-xl border border-zinc-800 p-5 text-center">
+        <div class="text-3xl font-extrabold text-emerald-400">{totals['done']}</div>
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mt-1">Completed</div>
+      </div>
+      <div class="bg-zinc-900 rounded-xl border border-zinc-800 p-5 text-center">
+        <div class="text-3xl font-extrabold text-amber-400">{totals['prog']}</div>
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mt-1">In Progress</div>
+      </div>
+      <div class="bg-zinc-900 rounded-xl border border-zinc-800 p-5 text-center">
+        <div class="text-3xl font-extrabold text-zinc-400">{remaining}</div>
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mt-1">Remaining</div>
+      </div>
+    </div>
+
+    <!-- Section Summary Cards -->
+    <div class="grid grid-cols-4 gap-4 mb-12">
+      {summary_cards}
+    </div>
+
+    <!-- Sections Detail -->
+    <div class="space-y-8">
+      {sections_html}
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-16 text-center text-xs text-zinc-600">
+      Generated by <span class="text-zinc-400">interview-prep</span> CLI &middot; {today}
+    </div>
+
+  </div>
+</body>
+</html>'''
+
+    REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    REPORT_PATH.write_text(html)
+
+    if "--serve" in sys.argv:
+        import http.server
+
+        html_content = html
+
+        class _Handler(http.server.BaseHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html")
+                self.end_headers()
+                self.wfile.write(html_content.encode())
+
+            def log_message(self, format, *args):
+                pass
+
+        port = 8888
+
+        class _QuietServer(http.server.HTTPServer):
+            def server_bind(self):
+                import socketserver
+                socketserver.TCPServer.server_bind(self)
+
+        httpd = _QuietServer(("0.0.0.0", port), _Handler)
+        print(f"Serving report at http://0.0.0.0:{port}")
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            print("\nStopped.")
+            httpd.server_close()
+    else:
+        print(f"Report generated: {REPORT_PATH}")
+        print("Serve with: python main.py report --serve")
+
+
 def cmd_test(pattern_name=None):
     if pattern_name:
         tracker = load_tracker()
@@ -363,12 +618,14 @@ def main():
             print("Usage: python main.py attempt <topic>")
             sys.exit(1)
         cmd_attempt(sys.argv[2])
+    elif command == "report":
+        cmd_report()
     elif command == "test":
         pattern_name = sys.argv[2] if len(sys.argv) > 2 else None
         cmd_test(pattern_name)
     else:
         print(f"Unknown command: {command}")
-        print("Usage: python main.py [status|update|attempt|test]")
+        print("Usage: python main.py [status|update|attempt|report|test]")
         sys.exit(1)
 
 
