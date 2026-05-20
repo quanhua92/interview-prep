@@ -30,6 +30,24 @@ uv run python main.py start
 
 Progress is persisted in `progress/tracker.json` (gitignored).
 
+### Docker
+
+```bash
+docker compose up -d        # start dashboard at http://0.0.0.0:8888
+docker compose down          # stop
+docker compose logs -f       # view logs
+```
+
+Or use the published image directly:
+
+```bash
+docker run -d -p 8888:8888 -v $(pwd)/progress:/app/progress quanhua92/interview-prep:latest
+```
+
+`docker run` mounts the local `progress/` folder so data persists on your host. `docker compose` uses a named Docker volume instead.
+
+### Web Dashboard
+
 Generate a visual progress report with dark-themed Tailwind CSS dashboard — overall progress ring, stats cards, and per-section breakdowns:
 
 ```bash
@@ -45,7 +63,13 @@ uv run python main.py start             # interactive dashboard at http://0.0.0.
 
 ```
 interview-prep/
-├── main.py                        # CLI dashboard
+├── main.py                        # CLI entry point
+├── tracker.py                     # Data layer (CRUD on tracker.json)
+├── web.py                         # FastAPI server + HTML dashboard
+├── index.html                     # HTML template (Tailwind CSS)
+├── static/app.js                  # Client-side JS (filters, API calls)
+├── Dockerfile                     # Docker image (Python 3.14-slim)
+├── docker-compose.yml             # Docker Compose with named volume
 ├── tier{1-4}_*/                   # 24 coding patterns
 │   └── <pattern>/
 │       ├── template.py
