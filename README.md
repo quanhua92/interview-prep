@@ -21,8 +21,11 @@ uv run python main.py update url_shortener completed
 # Record a practice attempt
 uv run python main.py attempt sliding_window
 
-# Generate and open HTML progress report
-uv run python main.py report --serve
+# Generate static HTML progress report
+uv run python main.py report
+
+# Launch interactive web dashboard (0.0.0.0:8888)
+uv run python main.py start
 ```
 
 Progress is persisted in `progress/tracker.json` (gitignored).
@@ -30,7 +33,8 @@ Progress is persisted in `progress/tracker.json` (gitignored).
 Generate a visual progress report with dark-themed Tailwind CSS dashboard — overall progress ring, stats cards, and per-section breakdowns:
 
 ```bash
-uv run python main.py report --serve   # serves at http://0.0.0.0:8888
+uv run python main.py report            # generates static HTML
+uv run python main.py start             # interactive dashboard at http://0.0.0.0:8888
 ```
 
 ![Report Dashboard](screenshot_top.jpeg)

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interview Prep Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {{
+      --color-bg: #09090b;
+    }}
+  </style>
+</head>
+<body class="bg-bg min-h-screen text-white antialiased">
+  <div class="max-w-6xl mx-auto px-6 py-12">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-start justify-between mb-12 gap-4">
+      <div>
+        <h1 class="text-4xl font-extrabold tracking-tight mb-2">Interview Prep</h1>
+        <p class="text-zinc-400">{subtitle}</p>
+      </div>
+      <div class="relative flex items-center justify-center w-full sm:w-auto">
+        {progress_ring}
+        <div class="absolute text-center">
+          <div class="text-4xl sm:text-2xl font-bold">{pct}%</div>
+          <div class="text-sm sm:text-[10px] text-zinc-500 uppercase tracking-wider">Overall</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+      <div class="bg-zinc-900 rounded-xl border border-zinc-800 p-5 text-center">
+        <div class="text-3xl font-extrabold text-white">{total}</div>
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mt-1">Total Topics</div>
+      </div>
+      <div class="bg-zinc-900 rounded-xl border border-zinc-800 p-5 text-center">
+        <div class="text-3xl font-extrabold text-emerald-400">{done}</div>
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mt-1">Completed</div>
+      </div>
+      <div class="bg-zinc-900 rounded-xl border border-zinc-800 p-5 text-center">
+        <div class="text-3xl font-extrabold text-amber-400">{prog}</div>
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mt-1">In Progress</div>
+      </div>
+      <div class="bg-zinc-900 rounded-xl border border-zinc-800 p-5 text-center">
+        <div class="text-3xl font-extrabold text-zinc-400">{remaining}</div>
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mt-1">Remaining</div>
+      </div>
+    </div>
+
+    <!-- Section Summary Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
+      {summary_cards}
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="flex items-center gap-3 mb-6 text-xs sm:text-sm overflow-x-auto">
+      <span class="text-zinc-500 font-medium whitespace-nowrap">Filter:</span>
+      <label class="flex items-center gap-1 cursor-pointer whitespace-nowrap">
+        <input type="checkbox" checked onchange="filterByStatus()" value="completed" class="status-filter accent-emerald-500 w-3.5 h-3.5">
+        <span class="text-emerald-400">Done</span>
+      </label>
+      <label class="flex items-center gap-1 cursor-pointer whitespace-nowrap">
+        <input type="checkbox" checked onchange="filterByStatus()" value="in_progress" class="status-filter accent-amber-500 w-3.5 h-3.5">
+        <span class="text-amber-400">WIP</span>
+      </label>
+      <label class="flex items-center gap-1 cursor-pointer whitespace-nowrap">
+        <input type="checkbox" checked onchange="filterByStatus()" value="not_started" class="status-filter accent-zinc-500 w-3.5 h-3.5">
+        <span class="text-zinc-400">New</span>
+      </label>
+    </div>
+
+    <!-- Sections Detail -->
+    <div class="space-y-8">
+      {sections_html}
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-16 text-center text-xs text-zinc-600">
+      {footer}
+    </div>
+
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
