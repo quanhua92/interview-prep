@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+.git/
+.env
+progress/
+*.jpeg
+node_modules/

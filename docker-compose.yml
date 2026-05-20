@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8888:8888"
+    volumes:
+      - progress-data:/app/progress
+
+volumes:
+  progress-data:

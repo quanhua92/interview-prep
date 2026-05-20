@@ -162,7 +162,7 @@ def _build_dashboard_html():
         remaining=remaining,
         summary_cards=summary_cards,
         sections_html=sections_html,
-        footer=f"Hover over a row to update status or record an attempt &middot; {today}",
+        footer=f"Use the buttons below each topic to update status or record an attempt &middot; {today}",
     )
 
 
