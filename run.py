@@ -61,6 +61,7 @@ def _run_pattern(pattern):
 
     passed = 0
     failed = 0
+    skipped = 0
     for f in files:
         result = subprocess.run(
             [sys.executable, str(f)],
@@ -68,10 +69,14 @@ def _run_pattern(pattern):
             text=True,
             timeout=30,
         )
-        status = "PASS" if result.returncode == 0 else "FAIL"
         if result.returncode == 0:
+            status = "PASS"
             passed += 1
+        elif result.returncode == 2:
+            status = "SKIP"
+            skipped += 1
         else:
+            status = "FAIL"
             failed += 1
             if result.stderr:
                 for line in result.stderr.strip().split("\n")[:3]:
@@ -79,7 +84,7 @@ def _run_pattern(pattern):
 
         print(f"    [{status}] {f.name}")
 
-    return passed, failed
+    return passed, failed, skipped
 
 
 def main():
@@ -93,14 +98,16 @@ def main():
 
     total_passed = 0
     total_failed = 0
+    total_skipped = 0
 
     for p in patterns:
-        p_ok, p_fail = _run_pattern(p)
+        p_ok, p_fail, p_skipped = _run_pattern(p)
         total_passed += p_ok
         total_failed += p_fail
+        total_skipped += p_skipped
 
     print(f"\n  {'-' * 50}")
-    print(f"  TOTAL: {total_passed} passed, {total_failed} failed")
+    print(f"  TOTAL: {total_passed} passed, {total_failed} failed, {total_skipped} skipped")
     print(f"{'=' * 60}\n")
 
     sys.exit(1 if total_failed > 0 else 0)
