@@ -57,6 +57,8 @@ uv run python main.py start             # interactive dashboard at http://0.0.0.
 
 ![Report Dashboard](screenshot_top.jpeg)
 
+![Code Editor](screenshot_editor.jpeg)
+
 [See full screenshot](screenshot.jpeg)
 
 ## Project Structure

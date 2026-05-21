@@ -134,6 +134,24 @@ def _find_item(tracker, item_name):
     return None, None
 
 
+def resolve_item_dir(item_name):
+    tracker = load_tracker()
+    section_key, item = _find_item(tracker, item_name)
+    if not item:
+        raise ValueError(f"Unknown item: {item_name}")
+
+    if section_key == "coding":
+        tier = item.get("tier", 1)
+        tier_dir = TIER_DIRS.get(tier)
+        if not tier_dir:
+            return section_key, None
+        base = ROOT / tier_dir / item_name / "problems"
+    else:
+        base = ROOT / section_key / item_name
+
+    return section_key, base if base.exists() else None
+
+
 def update_item_status(item_name, new_status):
     if new_status not in ("completed", "in_progress", "not_started"):
         raise ValueError(f"Invalid status: {new_status}")

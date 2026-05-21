@@ -72,13 +72,8 @@ async function downloadTracker() {
 
 // biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
 async function runProblems() {
-	const btn = document.getElementById("run-btn");
-	const spinner = document.getElementById("run-spinner");
-	const body = document.getElementById("terminal-body");
-
-	btn.disabled = true;
-	spinner.classList.remove("hidden");
-	body.innerHTML = '<div class="text-zinc-500 animate-pulse">Running problems...</div>';
+	const termBody = document.getElementById("terminal-body");
+	termBody.innerHTML = '<div class="text-zinc-500 animate-pulse">Running problems...</div>';
 
 	try {
 		const res = await fetch("/api/run", { method: "POST" });
@@ -87,13 +82,11 @@ async function runProblems() {
 			renderTerminalOutput(data.output);
 		} else {
 			const msg = data.detail || data.output || "Unknown error";
-			body.innerHTML = `<div class="text-red-400">Error: ${msg}</div>`;
+			termBody.innerHTML = `<div class="text-red-400">Error: ${msg}</div>`;
 		}
 	} catch (err) {
-		body.innerHTML = `<div class="text-red-400">Error: ${err.message}</div>`;
+		termBody.innerHTML = `<div class="text-red-400">Error: ${err.message}</div>`;
 	} finally {
-		btn.disabled = false;
-		spinner.classList.add("hidden");
 	}
 }
 
@@ -131,3 +124,170 @@ function renderTerminalOutput(output) {
 
 _restoreFilters();
 filterItems();
+
+// --- Editor ---
+
+let cmEditor = null;
+let currentFile = { item: null, filename: null };
+let fileTreeOpen = false;
+
+function toggleFileTree() {
+	fileTreeOpen = !fileTreeOpen;
+	document.getElementById("file-tree").classList.toggle("hidden", !fileTreeOpen);
+	document.getElementById("explorer-btn").classList.toggle("text-blue-400", fileTreeOpen);
+	document.getElementById("explorer-btn").classList.toggle("border-l-2", fileTreeOpen);
+	document.getElementById("explorer-btn").classList.toggle("border-blue-400", fileTreeOpen);
+}
+
+function _fileKey(item, filename) {
+	return `${item}/${filename}`;
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
+async function openEditor(itemName) {
+	const res = await fetch(`/api/files/ls?name=${encodeURIComponent(itemName)}`);
+	const data = await res.json();
+
+	if (!data.has_files || data.files.length === 0) {
+		showToast("No editable files for this topic");
+		return;
+	}
+
+	const files = data.files.map((f) => ({ item: itemName, name: f.name }));
+	_openEditorWithFiles(files, itemName.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()));
+}
+
+async function openAllInProgress() {
+	const res = await fetch("/api/files/in-progress");
+	const data = await res.json();
+
+	if (!data.files || data.files.length === 0) return;
+	_openEditorWithFiles(data.files, "Code Editor");
+}
+
+function _openEditorWithFiles(files, title) {
+	const card = document.getElementById("editor-card");
+	card.classList.remove("hidden");
+
+	document.getElementById("editor-title").textContent = title;
+
+	_renderFileTree(files);
+	if (!fileTreeOpen) toggleFileTree();
+
+	if (!cmEditor) {
+		cmEditor = CodeMirror(document.getElementById("code-editor"), {
+			value: "",
+			mode: "python",
+			theme: "material-darker",
+			lineNumbers: true,
+			indentUnit: 4,
+			tabSize: 4,
+			lineWrapping: true,
+		});
+	}
+
+	loadFile(files[0].item, files[0].name);
+}
+
+function _renderFileTree(files) {
+	const tree = document.getElementById("file-tree");
+	const grouped = {};
+	for (const f of files) {
+		if (!grouped[f.item]) grouped[f.item] = [];
+		grouped[f.item].push(f.name);
+	}
+
+	let html = "";
+	for (const [item, names] of Object.entries(grouped)) {
+		const label = item.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+		html += `<div class="tree-group">${label}</div>`;
+		for (const name of names) {
+			const key = _fileKey(item, name);
+			html += `<div class="tree-item" data-file="${key}" onclick="loadFile('${item}','${name}')">${name}</div>`;
+		}
+	}
+	tree.innerHTML = html;
+}
+
+async function loadFile(itemName, filename) {
+	const key = _fileKey(itemName, filename);
+	const res = await fetch(
+		`/api/files/read?name=${encodeURIComponent(itemName)}&file=${encodeURIComponent(filename)}`,
+	);
+	const data = await res.json();
+
+	cmEditor.setValue(data.content);
+	const modeMap = { python: "python", markdown: "markdown" };
+	cmEditor.setOption("mode", modeMap[data.language] || "python");
+	cmEditor.clearHistory();
+
+	document.querySelectorAll("#file-tree .tree-item").forEach((el) => {
+		el.classList.toggle("active", el.dataset.file === key);
+	});
+
+	currentFile = { item: itemName, filename: filename };
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
+function toggleEditorBody() {
+	const body = document.getElementById("editor-body");
+	const actions = document.getElementById("editor-actions");
+	const hidden = body.classList.toggle("hidden");
+	actions.querySelectorAll("button:not(#editor-toggle-btn)").forEach((b) => {
+		b.classList.toggle("hidden", hidden);
+	});
+	document.getElementById("toggle-icon").innerHTML = hidden
+		? '<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>'
+		: '<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/>';
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
+async function saveFile() {
+	if (!currentFile.item || !currentFile.filename) return;
+
+	const btn = document.getElementById("save-btn");
+	const label = document.getElementById("save-label");
+	btn.disabled = true;
+	label.textContent = "Saving...";
+
+	try {
+		const res = await fetch(
+			`/api/files/write?name=${encodeURIComponent(currentFile.item)}&file=${encodeURIComponent(currentFile.filename)}`,
+			{
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ content: cmEditor.getValue() }),
+			},
+		);
+		if (res.ok) {
+			showToast("File saved");
+		} else {
+			const data = await res.json();
+			showToast("Error: " + (data.detail || "Save failed"));
+		}
+	} catch (err) {
+		showToast("Error: " + err.message);
+	} finally {
+		btn.disabled = false;
+		label.textContent = "Save";
+	}
+}
+
+function showToast(message) {
+	const existing = document.getElementById("toast");
+	if (existing) existing.remove();
+
+	const toast = document.createElement("div");
+	toast.id = "toast";
+	toast.className =
+		"fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-zinc-700 text-white text-sm rounded-lg shadow-lg z-50 transition-opacity duration-300";
+	toast.textContent = message;
+	document.body.appendChild(toast);
+	setTimeout(() => {
+		toast.style.opacity = "0";
+		setTimeout(() => toast.remove(), 300);
+	}, 2000);
+}
+
+// Auto-open editor with all in-progress files
+openAllInProgress();

@@ -5,11 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Interview Prep Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/theme/material-darker.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/markdown/markdown.min.js"></script>
   <style type="text/tailwindcss">
     @theme {{
       --color-bg: #09090b;
     }}
   </style>
+  <link rel="stylesheet" href="/static/app.css">
 </head>
 <body class="bg-bg min-h-screen text-white antialiased">
   <div class="max-w-6xl mx-auto px-6 py-12">
@@ -61,17 +67,60 @@
           <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
           <h2 class="text-lg font-bold text-white">Terminal</h2>
         </div>
-        <button id="run-btn" onclick="runProblems()"
-          class="px-4 py-2 rounded-lg text-sm bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-          <svg id="run-spinner" class="hidden animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-          </svg>
-          Run
-        </button>
       </div>
       <div id="terminal-body" class="px-4 sm:px-6 py-4 max-h-96 overflow-y-auto font-mono text-sm leading-relaxed">
         <div class="text-zinc-500">Click "Run" to execute in-progress problem files...</div>
+      </div>
+    </div>
+
+    <!-- Code Editor -->
+    <div id="editor-card" class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden mb-8 hidden">
+      <div class="px-4 sm:px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+          <h2 class="text-lg font-bold text-white" id="editor-title">Editor</h2>
+          <button onclick="toggleEditorBody()" id="editor-toggle-btn" title="Collapse"
+            class="w-6 h-6 flex items-center justify-center rounded text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" id="toggle-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/>
+            </svg>
+          </button>
+        </div>
+        <div class="flex items-center gap-2" id="editor-actions">
+          <button id="save-btn" onclick="saveFile()"
+            class="px-4 py-2 rounded-lg text-sm bg-blue-600 hover:bg-blue-500 text-white cursor-pointer font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 17H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v7a2 2 0 01-2 2z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 3v4h4"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 17v4"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h6"/>
+            </svg>
+            <span id="save-label">Save</span>
+          </button>
+          <button onclick="runProblems()"
+            class="px-4 py-2 rounded-lg text-sm bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+            Run
+          </button>
+        </div>
+      </div>
+      <div id="editor-body" class="flex">
+        <!-- Activity bar (VS Code style) -->
+        <div id="activity-bar" class="w-10 shrink-0 border-r border-zinc-800 flex flex-col items-center py-2 gap-1">
+          <button onclick="toggleFileTree()" title="Explorer"
+            id="explorer-btn"
+            class="w-8 h-8 flex items-center justify-center rounded cursor-pointer text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/>
+            </svg>
+          </button>
+        </div>
+        <!-- File tree panel -->
+        <div id="file-tree" class="w-48 shrink-0 border-r border-zinc-800 py-2 overflow-y-auto text-xs font-mono hidden"></div>
+        <!-- Editor -->
+        <div class="flex-1 p-4">
+          <div id="code-editor"></div>
+        </div>
       </div>
     </div>
 

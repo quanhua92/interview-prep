@@ -1,6 +1,7 @@
 """Interactive web dashboard for interview-prep progress tracker."""
 
 from datetime import date
+from pathlib import Path
 import subprocess
 import sys
 
@@ -54,7 +55,7 @@ def _build_item_row(item):
     return f'''
       <div data-status="{status}" data-name="{display_name.lower()}" class="contents">
         <div class="col-span-1 sm:col-span-1 text-zinc-200 py-1.5 flex items-center gap-2">
-          <span>{display_name}</span>
+          <a href="javascript:void(0)" onclick="openEditor('{name}')" class="hover:text-blue-400 transition-colors cursor-pointer">{display_name}</a>
           <span class="inline-block w-2 h-2 rounded-full {badge}"></span>
           <span class="{text_color} text-xs">{label}</span>
         </div>
@@ -180,6 +181,10 @@ class AttemptRequest(BaseModel):
     name: str
 
 
+class SaveFileRequest(BaseModel):
+    content: str
+
+
 # --- Routes ---
 
 
@@ -227,6 +232,96 @@ def run_problems():
         return {"output": output, "exit_code": result.returncode}
     except subprocess.TimeoutExpired:
         raise HTTPException(status_code=408, detail="Run timed out after 120 seconds")
+
+
+# --- File editor helpers ---
+
+
+def _validate_fs_name(name: str):
+    if ".." in name or "/" in name or "\\" in name or "\0" in name:
+        raise HTTPException(status_code=400, detail="Invalid name")
+
+
+def _resolve_safe_path(item_name: str, filename: str) -> Path | None:
+    try:
+        _, base_dir = tracker.resolve_item_dir(item_name)
+    except ValueError:
+        return None
+    if not base_dir:
+        return None
+    resolved = (base_dir / filename).resolve()
+    if not resolved.is_relative_to(base_dir.resolve()):
+        return None
+    return resolved
+
+
+@app.get("/api/files/ls")
+def list_files(name: str):
+    _validate_fs_name(name)
+    try:
+        section_key, base_dir = tracker.resolve_item_dir(name)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+    if not base_dir:
+        return {"has_files": False, "files": []}
+
+    files = []
+    for f in sorted(base_dir.iterdir()):
+        if f.is_file() and not f.name.startswith("_") and not f.name.startswith("."):
+            if f.suffix.lower() in (".py", ".md"):
+                files.append({"name": f.name, "size": f.stat().st_size})
+    return {"has_files": len(files) > 0, "files": files}
+
+
+@app.get("/api/files/read")
+def read_file(name: str, file: str):
+    _validate_fs_name(name)
+    _validate_fs_name(file)
+    file_path = _resolve_safe_path(name, file)
+    if not file_path or not file_path.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+
+    ext_map = {".py": "python", ".md": "markdown"}
+    language = ext_map.get(file_path.suffix.lower(), "text")
+    return {"content": file_path.read_text(), "language": language}
+
+
+@app.post("/api/files/write")
+def write_file(name: str, file: str, req: SaveFileRequest):
+    _validate_fs_name(name)
+    _validate_fs_name(file)
+    file_path = _resolve_safe_path(name, file)
+    if not file_path:
+        raise HTTPException(status_code=404, detail="Item directory not found")
+
+    file_path.write_text(req.content)
+    return {"ok": True, "size": len(req.content)}
+
+
+@app.get("/api/files/in-progress")
+def list_in_progress_files():
+    tracker_data = tracker.load_tracker()
+    files = []
+    for section_key, array_key in tracker.SECTION_KEYS.items():
+        for item in tracker_data.get(array_key, []):
+            if item["status"] != "in_progress":
+                continue
+            try:
+                _, base_dir = tracker.resolve_item_dir(item["name"])
+            except ValueError:
+                continue
+            if not base_dir:
+                continue
+            for f in sorted(base_dir.iterdir()):
+                if f.is_file() and not f.name.startswith("_") and not f.name.startswith("."):
+                    if f.suffix.lower() in (".py", ".md"):
+                        files.append({
+                            "item": item["name"],
+                            "name": f.name,
+                            "size": f.stat().st_size,
+                        })
+    return {"files": files}
 
 
 # --- Static files (mounted after routes to avoid conflicts) ---
