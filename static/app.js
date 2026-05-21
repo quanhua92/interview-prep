@@ -14,15 +14,24 @@ function _restoreFilters() {
 	});
 }
 
-function filterByStatus() {
+function filterItems() {
 	_saveFilters();
 	const checked = new Set(
 		[...document.querySelectorAll(".status-filter:checked")].map(
 			(c) => c.value,
 		),
 	);
-	document.querySelectorAll("[data-status]").forEach((el) => {
-		el.style.display = checked.has(el.dataset.status) ? "" : "none";
+	const query = (document.getElementById("search-input")?.value || "").toLowerCase().trim();
+	document.querySelectorAll("[data-section]").forEach((section) => {
+		const rows = section.querySelectorAll("[data-status][data-name]");
+		let visible = 0;
+		rows.forEach((el) => {
+			const matchStatus = checked.has(el.dataset.status);
+			const matchSearch = !query || el.dataset.name.includes(query);
+			el.style.display = matchStatus && matchSearch ? "" : "none";
+			if (matchStatus && matchSearch) visible++;
+		});
+		section.style.display = visible ? "" : "none";
 	});
 }
 
@@ -121,4 +130,4 @@ function renderTerminalOutput(output) {
 }
 
 _restoreFilters();
-filterByStatus();
+filterItems();

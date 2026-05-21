@@ -54,23 +54,6 @@
       {summary_cards}
     </div>
 
-    <!-- Filter Bar -->
-    <div class="flex items-center gap-3 mb-6 text-xs sm:text-sm overflow-x-auto">
-      <span class="text-zinc-500 font-medium whitespace-nowrap">Filter:</span>
-      <label class="flex items-center gap-1 cursor-pointer whitespace-nowrap">
-        <input type="checkbox" checked onchange="filterByStatus()" value="completed" class="status-filter accent-emerald-500 w-3.5 h-3.5">
-        <span class="text-emerald-400">Done</span>
-      </label>
-      <label class="flex items-center gap-1 cursor-pointer whitespace-nowrap">
-        <input type="checkbox" checked onchange="filterByStatus()" value="in_progress" class="status-filter accent-amber-500 w-3.5 h-3.5">
-        <span class="text-amber-400">WIP</span>
-      </label>
-      <label class="flex items-center gap-1 cursor-pointer whitespace-nowrap">
-        <input type="checkbox" checked onchange="filterByStatus()" value="not_started" class="status-filter accent-zinc-500 w-3.5 h-3.5">
-        <span class="text-zinc-400">New</span>
-      </label>
-    </div>
-
     <!-- Run Terminal -->
     <div class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden mb-8">
       <div class="px-4 sm:px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
@@ -89,6 +72,30 @@
       </div>
       <div id="terminal-body" class="px-4 sm:px-6 py-4 max-h-96 overflow-y-auto font-mono text-sm leading-relaxed">
         <div class="text-zinc-500">Click "Run" to execute in-progress problem files...</div>
+      </div>
+    </div>
+
+    <!-- Filter & Search Card -->
+    <div class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden mb-8">
+      <div class="px-4 sm:px-6 py-4 border-b border-zinc-800">
+        <input id="search-input" type="text" placeholder="Search topics..."
+          oninput="filterItems()"
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500">
+      </div>
+      <div class="px-4 sm:px-6 py-3 flex items-center gap-3 text-xs sm:text-sm overflow-x-auto">
+        <span class="text-zinc-500 font-medium whitespace-nowrap">Filter:</span>
+        <label class="flex items-center gap-1 cursor-pointer whitespace-nowrap">
+          <input type="checkbox" checked onchange="filterItems()" value="completed" class="status-filter accent-emerald-500 w-3.5 h-3.5">
+          <span class="text-emerald-400">Done</span>
+        </label>
+        <label class="flex items-center gap-1 cursor-pointer whitespace-nowrap">
+          <input type="checkbox" checked onchange="filterItems()" value="in_progress" class="status-filter accent-amber-500 w-3.5 h-3.5">
+          <span class="text-amber-400">WIP</span>
+        </label>
+        <label class="flex items-center gap-1 cursor-pointer whitespace-nowrap">
+          <input type="checkbox" checked onchange="filterItems()" value="not_started" class="status-filter accent-zinc-500 w-3.5 h-3.5">
+          <span class="text-zinc-400">New</span>
+        </label>
       </div>
     </div>
 

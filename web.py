@@ -52,7 +52,7 @@ def _build_item_row(item):
     display_name = name.replace("_", " ").title()
 
     return f'''
-      <div data-status="{status}" class="contents">
+      <div data-status="{status}" data-name="{display_name.lower()}" class="contents">
         <div class="col-span-1 sm:col-span-1 text-zinc-200 py-1.5 flex items-center gap-2">
           <span>{display_name}</span>
           <span class="inline-block w-2 h-2 rounded-full {badge}"></span>
@@ -98,7 +98,7 @@ def _build_section_html(section):
             rows += _build_item_row(item)
 
     return f'''
-    <div class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+    <div data-section class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
       <div class="px-4 sm:px-6 py-5 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-3">
           <span class="text-2xl">{meta['icon']}</span>
