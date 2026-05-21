@@ -38,12 +38,12 @@ from typing import Any
 class Solution(Problem):
     name = "508. Most Frequent Subtree Sum"
     test_cases = [
-        TestCase(input=[5, 2, -3], expected=[2, -3, 4], label="example 1"),
-        TestCase(input=[5, 2, -5], expected=[2], label="example 2"),
+        TestCase(input=TreeNode.from_list([5, 2, -3]), expected=[-3, 2, 4], label="example 1"),
+        TestCase(input=TreeNode.from_list([5, 2, -5]), expected=[2], label="example 2"),
     ]
 
-    def solve(self, root: TreeNode | None) -> Any:
-        raise NotImplementedError("TODO: Implement solve(self, root) -> Any")
+    def solve(self, root: TreeNode) -> list[int]:
+        raise NotImplementedError("TODO: Implement solve(self, root: TreeNode) -> list[int]")
 
 
 if __name__ == "__main__":

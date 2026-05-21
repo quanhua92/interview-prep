@@ -46,16 +46,23 @@ from typing import Any
 class Solution(Problem):
     name = "572. Subtree of Another Tree"
     test_cases = [
-        TestCase(input=([3, 4, 5, 1, 2], [4, 1, 2]), expected=True, label="example 1"),
         TestCase(
-            input=("[3,4,5,1,2,null,null,null,null,0]", [4, 1, 2]),
+            input=(TreeNode.from_list([3, 4, 5, 1, 2]), TreeNode.from_list([4, 1, 2])),
+            expected=True,
+            label="example 1",
+        ),
+        TestCase(
+            input=(
+                TreeNode.from_list([3, 4, 5, 1, 2, None, None, None, None, 0]),
+                TreeNode.from_list([4, 1, 2]),
+            ),
             expected=False,
             label="example 2",
         ),
     ]
 
-    def solve(self, root: TreeNode | None, subRoot: TreeNode | None) -> Any:
-        raise NotImplementedError("TODO: Implement solve(self, root, subRoot) -> Any")
+    def solve(self, root: TreeNode, subRoot: TreeNode) -> bool:
+        raise NotImplementedError("TODO: Implement solve(self, root: TreeNode, subRoot: TreeNode) -> bool")
 
 
 if __name__ == "__main__":

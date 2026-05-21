@@ -54,19 +54,24 @@ Template (python3):
 import sys
 
 sys.path.insert(0, ".")
-from src.utils import Problem
+from src.utils import Problem, TestCase
 
 
 class Solution(Problem):
     name = "380. Insert Delete GetRandom O(1)"
     test_cases = [
-        # example 1: ["RandomizedSet", "insert", "remove", "insert", "getRandom",... ->
-        # example 1: ["RandomizedSet", "insert", "remove", "insert", "getRandom",... ->
-        # TODO: Add test cases from examples
+        TestCase(
+            input={
+                "ops": ["insert", "remove", "insert", "remove", "insert", "getRandom"],
+                "args": [[1], [2], [2], [1], [2], []],
+            },
+            expected=[True, False, True, True, False, 2],
+            label="example 1",
+        ),
     ]
 
-    def solve(self) -> None:
-        raise NotImplementedError("TODO: Implement solve(self) -> None")
+    def solve(self, ops: list[str], args: list) -> list:
+        raise NotImplementedError("TODO: Implement solve(self, ops: list[str], args: list) -> list")
 
 
 if __name__ == "__main__":

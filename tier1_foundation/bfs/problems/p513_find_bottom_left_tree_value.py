@@ -37,12 +37,12 @@ from typing import Any
 class Solution(Problem):
     name = "513. Find Bottom Left Tree Value"
     test_cases = [
-        TestCase(input=[2, 1, 3], expected=1, label="example 1"),
-        TestCase(input="[1,2,3,4,null,5,6,null,null,7]", expected=7, label="example 2"),
+        TestCase(input=TreeNode.from_list([2, 1, 3]), expected=1, label="example 1"),
+        TestCase(input=TreeNode.from_list([1, 2, 3, 4, None, 5, 6, None, None, 7]), expected=7, label="example 2"),
     ]
 
-    def solve(self, root: TreeNode | None) -> Any:
-        raise NotImplementedError("TODO: Implement solve(self, root) -> Any")
+    def solve(self, root: TreeNode) -> int:
+        raise NotImplementedError("TODO: Implement solve(self, root: TreeNode) -> int")
 
 
 if __name__ == "__main__":

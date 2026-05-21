@@ -73,29 +73,24 @@ class Solution(Problem):
     name = "528. Random Pick with Weight"
     test_cases = [
         TestCase(
-            input='["Solution","pickIndex"]\n[[[1]],[]]',
-            expected=None,
-            label="example 1",
+            input=[1],
+            expected=[1],
+            label="prefix sum for [1]",
         ),
         TestCase(
-            input='["Solution","pickIndex"]\n[[[1]],[]]',
-            expected=None,
-            label="example 1",
+            input=[1, 3],
+            expected=[1, 4],
+            label="prefix sum for [1, 3]",
         ),
         TestCase(
-            input='["Solution","pickIndex","pickIndex","pickIndex","pickIndex","pickIndex"]\n[[[1,3]],[],[],[],[],[]]',
-            expected=None,
-            label="example 2",
-        ),
-        TestCase(
-            input='["Solution","pickIndex","pickIndex","pickIndex","pickIndex","pickIndex"]\n[[[1,3]],[],[],[],[],[]]',
-            expected=None,
-            label="example 2",
+            input=[3, 14, 1, 7],
+            expected=[3, 17, 18, 25],
+            label="prefix sum for [3, 14, 1, 7]",
         ),
     ]
 
-    def solve(self) -> Any:
-        raise NotImplementedError("TODO: Implement solve(self) -> Any")
+    def solve(self, w: list[int]) -> list[int]:
+        raise NotImplementedError("TODO: Implement solve(self, w: list[int]) -> list[int]")
 
 
 if __name__ == "__main__":

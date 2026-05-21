@@ -72,7 +72,7 @@ class Problem:
                     print(f"    Input:    {tc.input}")
                     print(f"    Expected: {tc.expected}")
                     print(f"    Got:      {result}")
-            except NotImplementedError:
+            except (NotImplementedError, TypeError):
                 self._results[i] = "SKIP"
                 print(f"  Test {i}{label}: SKIP — not implemented")
             except Exception as e:

@@ -52,20 +52,20 @@ class Solution(Problem):
     name = "450. Delete Node in a BST"
     test_cases = [
         TestCase(
-            input=("[5,3,6,2,4,null,7]", 3),
-            expected="[5,4,6,2,null,null,7]",
+            input=(TreeNode.from_list([5, 3, 6, 2, 4, None, 7]), 3),
+            expected=TreeNode.from_list([5, 4, 6, 2, None, None, 7]),
             label="example 1",
         ),
         TestCase(
-            input=("[5,3,6,2,4,null,7]", 0),
-            expected="[5,3,6,2,4,null,7]",
+            input=(TreeNode.from_list([5, 3, 6, 2, 4, None, 7]), 0),
+            expected=TreeNode.from_list([5, 3, 6, 2, 4, None, 7]),
             label="example 2",
         ),
-        TestCase(input=([], 0), expected=[], label="example 3"),
+        TestCase(input=(TreeNode.from_list([]), 0), expected=TreeNode.from_list([]), label="example 3"),
     ]
 
-    def solve(self, root: TreeNode | None, key: int) -> Any:
-        raise NotImplementedError("TODO: Implement solve(self, root, key) -> Any")
+    def solve(self, root: TreeNode | None, key: int) -> TreeNode | None:
+        raise NotImplementedError("TODO: Implement solve(self, root: TreeNode | None, key: int) -> TreeNode | None")
 
 
 if __name__ == "__main__":

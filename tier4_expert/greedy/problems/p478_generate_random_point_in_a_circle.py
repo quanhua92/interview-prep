@@ -42,19 +42,26 @@ Template (python3):
 import sys
 
 sys.path.insert(0, ".")
-from src.utils import Problem
+from src.utils import Problem, TestCase
 
 
 class Solution(Problem):
     name = "478. Generate Random Point in a Circle"
     test_cases = [
-        # example 1: ["Solution", "randPoint", "randPoint", "randPoint"]
-        # [[1.0, 0.0, 0.0], [], [], []] -> [null, [-0.02493, -0.38077], [0.82314, 0.38945], [0.36572, 0.17248]]
-        # TODO: Add test cases from examples
+        TestCase(
+            input={"radius": 1.0, "x_center": 0.0, "y_center": 0.0, "count": 1000},
+            expected="in_circle",
+            label="points within unit circle",
+        ),
+        TestCase(
+            input={"radius": 0.5, "x_center": 1.0, "y_center": 2.0, "count": 1000},
+            expected="in_circle",
+            label="points within offset circle",
+        ),
     ]
 
-    def solve(self) -> None:
-        raise NotImplementedError("TODO: Implement solve(self) -> None")
+    def solve(self, radius: float, x_center: float, y_center: float, count: int) -> list[list[float]]:
+        raise NotImplementedError("TODO: Implement solve(self, radius, x_center, y_center, count) -> list[list[float]]")
 
 
 if __name__ == "__main__":

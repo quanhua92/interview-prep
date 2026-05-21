@@ -71,6 +71,27 @@
       </label>
     </div>
 
+    <!-- Run Terminal -->
+    <div class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden mb-8">
+      <div class="px-4 sm:px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+          <h2 class="text-lg font-bold text-white">Terminal</h2>
+        </div>
+        <button id="run-btn" onclick="runProblems()"
+          class="px-4 py-2 rounded-lg text-sm bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+          <svg id="run-spinner" class="hidden animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+          </svg>
+          Run
+        </button>
+      </div>
+      <div id="terminal-body" class="px-4 sm:px-6 py-4 max-h-96 overflow-y-auto font-mono text-sm leading-relaxed">
+        <div class="text-zinc-500">Click "Run" to execute in-progress problem files...</div>
+      </div>
+    </div>
+
     <!-- Sections Detail -->
     <div class="space-y-8">
       {sections_html}

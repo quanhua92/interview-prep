@@ -61,5 +61,64 @@ async function downloadTracker() {
 	URL.revokeObjectURL(url);
 }
 
+// biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
+async function runProblems() {
+	const btn = document.getElementById("run-btn");
+	const spinner = document.getElementById("run-spinner");
+	const body = document.getElementById("terminal-body");
+
+	btn.disabled = true;
+	spinner.classList.remove("hidden");
+	body.innerHTML = '<div class="text-zinc-500 animate-pulse">Running problems...</div>';
+
+	try {
+		const res = await fetch("/api/run", { method: "POST" });
+		const data = await res.json();
+		if (res.ok && data.output) {
+			renderTerminalOutput(data.output);
+		} else {
+			const msg = data.detail || data.output || "Unknown error";
+			body.innerHTML = `<div class="text-red-400">Error: ${msg}</div>`;
+		}
+	} catch (err) {
+		body.innerHTML = `<div class="text-red-400">Error: ${err.message}</div>`;
+	} finally {
+		btn.disabled = false;
+		spinner.classList.add("hidden");
+	}
+}
+
+function renderTerminalOutput(output) {
+	const body = document.getElementById("terminal-body");
+	if (!output) {
+		body.innerHTML = '<div class="text-zinc-500">No output.</div>';
+		return;
+	}
+
+	const lines = output.split("\n");
+	let html = "";
+	for (const line of lines) {
+		if (!line.trim()) {
+			html += '<div class="h-3"></div>';
+			continue;
+		}
+		let colorClass = "text-zinc-300";
+		if (line.includes("[PASS]")) colorClass = "text-emerald-400";
+		else if (line.includes("[FAIL]")) colorClass = "text-red-400";
+		else if (line.includes("[SKIP]")) colorClass = "text-amber-400";
+		else if (line.startsWith("  !")) colorClass = "text-red-300/70";
+		else if (line.includes("TOTAL:")) colorClass = "text-white font-bold";
+
+		const escaped = line
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;");
+		html += `<div class="${colorClass}">${escaped}</div>`;
+	}
+
+	body.innerHTML = html;
+	body.scrollTop = body.scrollHeight;
+}
+
 _restoreFilters();
 filterByStatus();

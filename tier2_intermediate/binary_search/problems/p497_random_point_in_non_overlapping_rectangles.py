@@ -59,19 +59,19 @@ class Solution(Problem):
     name = "497. Random Point in Non-overlapping Rectangles"
     test_cases = [
         TestCase(
-            input='["Solution", "pick", "pick", "pick", "pick", "pick"]\n[[[[-2, -2, 1, 1], [2, 2, 4, 6]]], [], [], [], [], []]',
-            expected=None,
-            label="example 1",
+            input=[[-2, -2, 1, 1], [2, 2, 4, 6]],
+            expected=[16, 31],
+            label="area sum for two rectangles",
         ),
         TestCase(
-            input='["Solution", "pick", "pick", "pick", "pick", "pick"]\n[[[[-2, -2, 1, 1], [2, 2, 4, 6]]], [], [], [], [], []]',
-            expected=None,
-            label="example 1",
+            input=[[0, 0, 2, 2]],
+            expected=[9],
+            label="area for single 3x3 rectangle",
         ),
     ]
 
-    def solve(self) -> Any:
-        raise NotImplementedError("TODO: Implement solve(self) -> Any")
+    def solve(self, rects: list[list[int]]) -> list[int]:
+        raise NotImplementedError("TODO: Implement solve(self, rects: list[list[int]]) -> list[int]")
 
 
 if __name__ == "__main__":

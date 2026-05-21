@@ -43,15 +43,15 @@ class Solution(Problem):
     name = "538. Convert BST to Greater Tree"
     test_cases = [
         TestCase(
-            input="[4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]",
-            expected="[30,36,21,36,35,26,15,null,null,null,33,null,null,null,8]",
+            input=TreeNode.from_list([4, 1, 6, 0, 2, 5, 7, None, None, None, 3, None, None, None, 8]),
+            expected=TreeNode.from_list([30, 36, 21, 36, 35, 26, 15, None, None, None, 33, None, None, None, 8]),
             label="example 1",
         ),
-        TestCase(input="[0,null,1]", expected="[1,null,1]", label="example 2"),
+        TestCase(input=TreeNode.from_list([0, None, 1]), expected=TreeNode.from_list([1, None, 1]), label="example 2"),
     ]
 
-    def solve(self, root: TreeNode | None) -> Any:
-        raise NotImplementedError("TODO: Implement solve(self, root) -> Any")
+    def solve(self, root: TreeNode | None) -> TreeNode | None:
+        raise NotImplementedError("TODO: Implement solve(self, root: TreeNode | None) -> TreeNode | None")
 
 
 if __name__ == "__main__":

@@ -98,10 +98,10 @@ class Solution(Problem):
             expected=4,
             label="single task type m=1",
         ),
-        # ── m > 1: parallel speedup ──
+        # ── m > 1: per-machine cooldown parallel speedup ──
         TestCase(
             input=(["A", "A", "A", "B", "B", "B"], 2, 2),
-            expected=7,
+            expected=4,
             label="basic parallelism m=2",
         ),
         TestCase(
@@ -111,12 +111,12 @@ class Solution(Problem):
         ),
         TestCase(
             input=(["A", "A", "A", "B", "B", "B"], 3, 2),
-            expected=9,
+            expected=5,
             label="large cooldown m=2",
         ),
         TestCase(
             input=(["A", "A", "A", "B", "B", "B"], 2, 10),
-            expected=7,
+            expected=1,
             label="very many machines m=10",
         ),
         # ── Edge cases ──
@@ -137,8 +137,8 @@ class Solution(Problem):
         ),
         TestCase(
             input=(["A", "A", "A", "A"], 0, 2),
-            expected=4,
-            label="n=0 same task m=2 (cooldown is per-label)",
+            expected=2,
+            label="n=0 same task m=2 (per-machine cooldown)",
         ),
         TestCase(
             input=(["A", "B", "C", "D"], 1, 3),

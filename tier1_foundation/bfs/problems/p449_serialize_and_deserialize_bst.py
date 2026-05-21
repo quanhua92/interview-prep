@@ -50,19 +50,19 @@ Template (python3):
 import sys
 
 sys.path.insert(0, ".")
-from src.utils import Problem
+from src.utils import Problem, TestCase
 
 
 class Solution(Problem):
     name = "449. Serialize and Deserialize BST"
     test_cases = [
-        # example 1: root = [2,1,3]... -> [2,1,3]
-        # example 2: root = []... -> []
-        # TODO: Add test cases from examples
+        TestCase(input={"vals": [2, 1, 3]}, expected=[2, 1, 3], label="example 1"),
+        TestCase(input={"vals": []}, expected=[], label="empty tree"),
+        TestCase(input={"vals": [1]}, expected=[1], label="single node"),
     ]
 
-    def solve(self) -> None:
-        raise NotImplementedError("TODO: Implement solve(self) -> None")
+    def solve(self, vals: list[int]) -> list[int | None]:
+        raise NotImplementedError("TODO: Implement solve(self, vals: list[int]) -> list[int | None]")
 
 
 if __name__ == "__main__":

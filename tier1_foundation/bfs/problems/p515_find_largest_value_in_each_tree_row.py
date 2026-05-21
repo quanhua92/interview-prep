@@ -37,12 +37,12 @@ from typing import Any
 class Solution(Problem):
     name = "515. Find Largest Value in Each Tree Row"
     test_cases = [
-        TestCase(input="[1,3,2,5,3,null,9]", expected=[1, 3, 9], label="example 1"),
-        TestCase(input=[1, 2, 3], expected=[1, 3], label="example 2"),
+        TestCase(input=TreeNode.from_list([1, 3, 2, 5, 3, None, 9]), expected=[1, 3, 9], label="example 1"),
+        TestCase(input=TreeNode.from_list([1, 2, 3]), expected=[1, 3], label="example 2"),
     ]
 
-    def solve(self, root: TreeNode | None) -> Any:
-        raise NotImplementedError("TODO: Implement solve(self, root) -> Any")
+    def solve(self, root: TreeNode) -> list[int]:
+        raise NotImplementedError("TODO: Implement solve(self, root: TreeNode) -> list[int]")
 
 
 if __name__ == "__main__":

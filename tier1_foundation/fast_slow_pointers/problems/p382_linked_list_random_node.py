@@ -51,7 +51,7 @@ Template (python3):
 import sys
 
 sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.utils import ListNode, Problem, TestCase
 from typing import Any
 
 
@@ -59,19 +59,24 @@ class Solution(Problem):
     name = "382. Linked List Random Node"
     test_cases = [
         TestCase(
-            input='["Solution", "getRandom", "getRandom", "getRandom", "getRandom", "getRandom"]\n[[[1, 2, 3]], [], [], [], [], []]',
-            expected=None,
-            label="example 1",
+            input=ListNode.from_list([1, 2, 3]),
+            expected=2,
+            label="middle of odd-length list",
         ),
         TestCase(
-            input='["Solution", "getRandom", "getRandom", "getRandom", "getRandom", "getRandom"]\n[[[1, 2, 3]], [], [], [], [], []]',
-            expected=None,
-            label="example 1",
+            input=ListNode.from_list([1, 2, 3, 4]),
+            expected=3,
+            label="middle of even-length list",
+        ),
+        TestCase(
+            input=ListNode.from_list([4]),
+            expected=4,
+            label="single node",
         ),
     ]
 
-    def solve(self) -> Any:
-        raise NotImplementedError("TODO: Implement solve(self) -> Any")
+    def solve(self, head: ListNode) -> int:
+        raise NotImplementedError("TODO: Implement solve(self, head: ListNode) -> int")
 
 
 if __name__ == "__main__":

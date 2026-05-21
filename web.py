@@ -1,6 +1,8 @@
 """Interactive web dashboard for interview-prep progress tracker."""
 
 from datetime import date
+import subprocess
+import sys
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
@@ -207,6 +209,24 @@ def record_attempt(req: AttemptRequest):
         return {"ok": True, **result}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/run")
+def run_problems():
+    try:
+        result = subprocess.run(
+            [sys.executable, str(tracker.ROOT / "run.py")],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            cwd=str(tracker.ROOT),
+        )
+        output = result.stdout
+        if result.stderr:
+            output += "\n" + result.stderr
+        return {"output": output, "exit_code": result.returncode}
+    except subprocess.TimeoutExpired:
+        raise HTTPException(status_code=408, detail="Run timed out after 120 seconds")
 
 
 # --- Static files (mounted after routes to avoid conflicts) ---

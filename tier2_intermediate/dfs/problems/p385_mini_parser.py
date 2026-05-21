@@ -90,8 +90,8 @@ class Solution(Problem):
         ),
     ]
 
-    def solve(self) -> Any:
-        raise NotImplementedError("TODO: Implement solve(self) -> Any")
+    def solve(self, s: str) -> Any:
+        raise NotImplementedError("TODO: Implement solve(self, s: str) -> Any")
 
 
 if __name__ == "__main__":

@@ -51,19 +51,19 @@ class Solution(Problem):
     name = "398. Random Pick Index"
     test_cases = [
         TestCase(
-            input='["Solution", "pick", "pick", "pick"]\n[[[1, 2, 3, 3, 3]], [3], [1], [3]]',
-            expected=None,
-            label="example 1",
+            input=([1, 2, 3, 3, 3], 3),
+            expected=[2, 3, 4],
+            label="returns valid indices for target 3",
         ),
         TestCase(
-            input='["Solution", "pick", "pick", "pick"]\n[[[1, 2, 3, 3, 3]], [3], [1], [3]]',
-            expected=None,
-            label="example 1",
+            input=([1, 2, 3, 3, 3], 1),
+            expected=[0],
+            label="returns valid indices for target 1",
         ),
     ]
 
-    def solve(self, target: int) -> Any:
-        raise NotImplementedError("TODO: Implement solve(self, target) -> Any")
+    def solve(self, nums: list[int], target: int) -> list[int]:
+        raise NotImplementedError("TODO: Implement solve(self, nums: list[int], target: int) -> list[int]")
 
 
 if __name__ == "__main__":
