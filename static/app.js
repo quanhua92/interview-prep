@@ -46,5 +46,20 @@ async function recordAttempt(name) {
 	location.reload();
 }
 
+// biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
+async function downloadTracker() {
+	const res = await fetch("/api/tracker");
+	const data = await res.json();
+	const blob = new Blob([JSON.stringify(data, null, 2)], {
+		type: "application/json",
+	});
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement("a");
+	a.href = url;
+	a.download = "tracker.json";
+	a.click();
+	URL.revokeObjectURL(url);
+}
+
 _restoreFilters();
 filterByStatus();

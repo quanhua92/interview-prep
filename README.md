@@ -44,7 +44,7 @@ Or use the published image directly:
 docker run -d -p 8888:8888 -v $(pwd)/progress:/app/progress quanhua92/interview-prep:latest
 ```
 
-`docker run` mounts the local `progress/` folder so data persists on your host. `docker compose` uses a named Docker volume instead.
+Both `docker run` and `docker compose` mount the local `progress/` folder so data persists on your host.
 
 ### Web Dashboard
 

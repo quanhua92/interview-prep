@@ -4,7 +4,4 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - progress-data:/app/progress
-
-volumes:
-  progress-data:
+      - ./progress:/app/progress

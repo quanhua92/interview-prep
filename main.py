@@ -7,6 +7,7 @@ Usage:
     python main.py attempt <topic>               Record a practice attempt
     python main.py report                        Generate static HTML progress report
     python main.py start                         Launch interactive web dashboard on :8888
+    python main.py run [pattern|--all]           Run WIP problem files
     python main.py test [pattern]                Run coding tests (all or specific pattern)
 """
 import subprocess
@@ -180,6 +181,10 @@ def main():
     elif command == "start":
         from web import serve_dashboard
         serve_dashboard()
+    elif command == "run":
+        from run import main as run_main
+        sys.argv = sys.argv[1:]
+        run_main()
     elif command == "test":
         pattern_name = sys.argv[2] if len(sys.argv) > 2 else None
         cmd_test(pattern_name)
