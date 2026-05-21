@@ -143,7 +143,10 @@ def update_item_status(item_name, new_status):
         raise ValueError(f"Unknown item: {item_name}")
     old_status = item["status"]
     item["status"] = new_status
-    if new_status in ("completed", "in_progress"):
+    if new_status == "not_started":
+        item["attempts"] = 0
+        item.pop("last_attempt", None)
+    elif new_status == "completed":
         item["attempts"] = item.get("attempts", 0) + 1
         item["last_attempt"] = date.today().isoformat()
     save_tracker(tracker)

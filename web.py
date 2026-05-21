@@ -64,12 +64,12 @@ def _build_item_row(item):
             class="px-1.5 py-1 rounded text-xs bg-blue-900/50 hover:bg-blue-700 text-blue-300 cursor-pointer">+1</button>
         </div>
         <div class="col-span-1 sm:col-span-3 col-start-1 py-1 pb-3 mb-1 flex gap-2 border-b border-zinc-700">
-          <button onclick="updateStatus('{name}','completed')"
-            class="flex-1 py-2 rounded text-sm bg-emerald-900/50 hover:bg-emerald-700 text-emerald-300 cursor-pointer font-medium">Done</button>
-          <button onclick="updateStatus('{name}','in_progress')"
-            class="flex-1 py-2 rounded text-sm bg-amber-900/50 hover:bg-amber-700 text-amber-300 cursor-pointer font-medium">WIP</button>
           <button onclick="updateStatus('{name}','not_started')"
             class="flex-1 py-2 rounded text-sm bg-zinc-800/50 hover:bg-zinc-600 text-zinc-400 cursor-pointer font-medium">Reset</button>
+          <button onclick="updateStatus('{name}','in_progress')"
+            class="flex-1 py-2 rounded text-sm {"bg-amber-600 hover:bg-amber-500 text-amber-100" if status == "in_progress" else "bg-amber-900/50 hover:bg-amber-700 text-amber-300"} cursor-pointer font-medium">{"In Progress" if status == "in_progress" else "Start"}</button>
+          <button onclick="updateStatus('{name}','completed')"
+            class="flex-1 py-2 rounded text-sm {"bg-emerald-600 hover:bg-emerald-500 text-emerald-100" if status == "completed" else "bg-emerald-900/50 hover:bg-emerald-700 text-emerald-300"} cursor-pointer font-medium">Done</button>
         </div>
       </div>'''
 

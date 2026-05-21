@@ -85,16 +85,16 @@
       <div class="px-4 sm:px-6 py-3 flex items-center gap-3 text-xs sm:text-sm overflow-x-auto">
         <span class="text-zinc-500 font-medium whitespace-nowrap">Filter:</span>
         <label class="flex items-center gap-1 cursor-pointer whitespace-nowrap">
-          <input type="checkbox" checked onchange="filterItems()" value="completed" class="status-filter accent-emerald-500 w-3.5 h-3.5">
-          <span class="text-emerald-400">Done</span>
+          <input type="checkbox" checked onchange="filterItems()" value="not_started" class="status-filter accent-zinc-500 w-3.5 h-3.5">
+          <span class="text-zinc-400">New</span>
         </label>
         <label class="flex items-center gap-1 cursor-pointer whitespace-nowrap">
           <input type="checkbox" checked onchange="filterItems()" value="in_progress" class="status-filter accent-amber-500 w-3.5 h-3.5">
-          <span class="text-amber-400">WIP</span>
+          <span class="text-amber-400">In Progress</span>
         </label>
         <label class="flex items-center gap-1 cursor-pointer whitespace-nowrap">
-          <input type="checkbox" checked onchange="filterItems()" value="not_started" class="status-filter accent-zinc-500 w-3.5 h-3.5">
-          <span class="text-zinc-400">New</span>
+          <input type="checkbox" checked onchange="filterItems()" value="completed" class="status-filter accent-emerald-500 w-3.5 h-3.5">
+          <span class="text-emerald-400">Done</span>
         </label>
       </div>
     </div>
