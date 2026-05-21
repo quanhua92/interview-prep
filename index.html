@@ -4,12 +4,12 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Interview Prep Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/theme/material-darker.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/python/python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/markdown/markdown.min.js"></script>
+  <script src="/static/tailwind-browser.js"></script>
+  <link rel="stylesheet" href="/static/codemirror/codemirror.min.css">
+  <link rel="stylesheet" href="/static/codemirror/material-darker.min.css">
+  <script src="/static/codemirror/codemirror.min.js"></script>
+  <script src="/static/codemirror/python.min.js"></script>
+  <script src="/static/codemirror/markdown.min.js"></script>
   <style type="text/tailwindcss">
     @theme {{
       --color-bg: #09090b;
@@ -112,6 +112,13 @@
             class="w-8 h-8 flex items-center justify-center rounded cursor-pointer text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/>
+            </svg>
+          </button>
+          <button onclick="revertFile()" title="Version history"
+            id="history-btn"
+            class="w-8 h-8 flex items-center justify-center rounded cursor-pointer text-zinc-500 hover:text-orange-300 hover:bg-zinc-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/>
             </svg>
           </button>
         </div>

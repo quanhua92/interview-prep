@@ -130,13 +130,107 @@ filterItems();
 let cmEditor = null;
 let currentFile = { item: null, filename: null };
 let fileTreeOpen = false;
+let activePanel = "explorer";
+
+function _setActivePanel(panel) {
+	activePanel = panel;
+	const explorer = document.getElementById("explorer-btn");
+	const history = document.getElementById("history-btn");
+	explorer.classList.toggle("text-blue-400", panel === "explorer");
+	explorer.classList.toggle("border-l-2", panel === "explorer");
+	explorer.classList.toggle("border-blue-400", panel === "explorer");
+	history.classList.toggle("text-orange-400", panel === "history");
+	history.classList.toggle("border-l-2", panel === "history");
+	history.classList.toggle("border-orange-400", panel === "history");
+}
 
 function toggleFileTree() {
-	fileTreeOpen = !fileTreeOpen;
-	document.getElementById("file-tree").classList.toggle("hidden", !fileTreeOpen);
-	document.getElementById("explorer-btn").classList.toggle("text-blue-400", fileTreeOpen);
-	document.getElementById("explorer-btn").classList.toggle("border-l-2", fileTreeOpen);
-	document.getElementById("explorer-btn").classList.toggle("border-blue-400", fileTreeOpen);
+	if (!fileTreeOpen) {
+		fileTreeOpen = true;
+		document.getElementById("file-tree").classList.remove("hidden");
+		_setActivePanel("explorer");
+		_reRenderFileTree();
+	} else if (activePanel === "explorer") {
+		fileTreeOpen = false;
+		document.getElementById("file-tree").classList.add("hidden");
+		_setActivePanel(null);
+	} else {
+		_setActivePanel("explorer");
+		_reRenderFileTree();
+	}
+}
+
+async function _reRenderFileTree() {
+	const res = await fetch("/api/files/in-progress");
+	const data = await res.json();
+	if (data.files && data.files.length > 0) {
+		_renderFileTree(data.files);
+		if (currentFile.item && currentFile.filename) {
+			const key = _fileKey(currentFile.item, currentFile.filename);
+			document.querySelectorAll("#file-tree .tree-item").forEach((el) => {
+				el.classList.toggle("active", el.dataset.file === key);
+			});
+		}
+	}
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
+async function revertFile() {
+	if (!currentFile.item || !currentFile.filename) {
+		showToast("No file open");
+		return;
+	}
+
+	try {
+		const res = await fetch(
+			`/api/files/history?name=${encodeURIComponent(currentFile.item)}&file=${encodeURIComponent(currentFile.filename)}`,
+		);
+		const data = await res.json();
+		if (!data.versions || data.versions.length === 0) {
+			showToast("No versions available");
+			return;
+		}
+		_showHistoryPanel(data.versions);
+	} catch (err) {
+		showToast("Error: " + err.message);
+	}
+}
+
+function _showHistoryPanel(versions) {
+	const tree = document.getElementById("file-tree");
+	if (!fileTreeOpen) {
+		fileTreeOpen = true;
+		tree.classList.remove("hidden");
+	}
+	_setActivePanel("history");
+
+	let html = `<div class="tree-group">History</div>`;
+	versions.forEach((v, i) => {
+		const idx = versions.length - 1 - i;
+		html += `<div class="tree-item" data-history="${idx}" onclick="revertToVersion(${idx})">${v.label}</div>`;
+	});
+	tree.innerHTML = html;
+}
+
+async function revertToVersion(idx) {
+	if (!currentFile.item || !currentFile.filename) return;
+
+	try {
+		const res = await fetch(
+			`/api/files/revert?name=${encodeURIComponent(currentFile.item)}&file=${encodeURIComponent(currentFile.filename)}&version=${idx}`,
+			{ method: "POST" },
+		);
+		if (res.ok) {
+			await loadFile(currentFile.item, currentFile.filename);
+			showToast("Reverted");
+			revertFile();
+		} else {
+			const data = await res.json();
+			showToast("Error: " + (data.detail || "Revert failed"));
+		}
+	} catch (err) {
+		showToast("Error: " + err.message);
+	}
 }
 
 function _fileKey(item, filename) {
@@ -172,7 +266,11 @@ function _openEditorWithFiles(files, title) {
 	document.getElementById("editor-title").textContent = title;
 
 	_renderFileTree(files);
-	if (!fileTreeOpen) toggleFileTree();
+	if (!fileTreeOpen) {
+		fileTreeOpen = true;
+		document.getElementById("file-tree").classList.remove("hidden");
+	}
+	_setActivePanel("explorer");
 
 	if (!cmEditor) {
 		cmEditor = CodeMirror(document.getElementById("code-editor"), {
@@ -261,6 +359,7 @@ async function saveFile() {
 		);
 		if (res.ok) {
 			showToast("File saved");
+			if (activePanel === "history") revertFile();
 		} else {
 			const data = await res.json();
 			showToast("Error: " + (data.detail || "Save failed"));
@@ -291,3 +390,11 @@ function showToast(message) {
 
 // Auto-open editor with all in-progress files
 openAllInProgress();
+
+// Ctrl/Cmd+S to save file
+document.addEventListener("keydown", (e) => {
+	if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+		e.preventDefault();
+		saveFile();
+	}
+});

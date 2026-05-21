@@ -1,6 +1,6 @@
 """Interactive web dashboard for interview-prep progress tracker."""
 
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 import subprocess
 import sys
@@ -236,6 +236,8 @@ def run_problems():
 
 # --- File editor helpers ---
 
+_file_snapshots: dict[str, list[dict]] = {}
+
 
 def _validate_fs_name(name: str):
     if ".." in name or "/" in name or "\\" in name or "\0" in name:
@@ -284,7 +286,11 @@ def read_file(name: str, file: str):
 
     ext_map = {".py": "python", ".md": "markdown"}
     language = ext_map.get(file_path.suffix.lower(), "text")
-    return {"content": file_path.read_text(), "language": language}
+    content = file_path.read_text()
+    key = f"{name}/{file}"
+    if key not in _file_snapshots:
+        _file_snapshots[key] = [{"label": "Original", "content": content}]
+    return {"content": content, "language": language}
 
 
 @app.post("/api/files/write")
@@ -296,6 +302,11 @@ def write_file(name: str, file: str, req: SaveFileRequest):
         raise HTTPException(status_code=404, detail="Item directory not found")
 
     file_path.write_text(req.content)
+    key = f"{name}/{file}"
+    ts = datetime.now().strftime("%H:%M:%S")
+    if key not in _file_snapshots:
+        _file_snapshots[key] = [{"label": "Original", "content": req.content}]
+    _file_snapshots[key].append({"label": f"Save @ {ts}", "content": req.content})
     return {"ok": True, "size": len(req.content)}
 
 
@@ -322,6 +333,40 @@ def list_in_progress_files():
                             "size": f.stat().st_size,
                         })
     return {"files": files}
+
+
+@app.get("/api/files/history")
+def file_history(name: str, file: str):
+    _validate_fs_name(name)
+    _validate_fs_name(file)
+    key = f"{name}/{file}"
+    versions = _file_snapshots.get(key, [])
+    return {"versions": [{"label": v["label"]} for v in versions]}
+
+
+@app.post("/api/files/revert")
+def revert_file(name: str, file: str, version: int = -1):
+    _validate_fs_name(name)
+    _validate_fs_name(file)
+    file_path = _resolve_safe_path(name, file)
+    if not file_path or not file_path.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+
+    key = f"{name}/{file}"
+    versions = _file_snapshots.get(key, [])
+    if not versions:
+        raise HTTPException(status_code=400, detail="No versions available — open the file first")
+
+    idx = version if version >= 0 else len(versions) - 1
+    if idx >= len(versions):
+        raise HTTPException(status_code=400, detail="Invalid version")
+
+    content = versions[idx]["content"]
+    current = file_path.read_text()
+    if content == current:
+        return {"ok": True, "skipped": True}
+    file_path.write_text(content)
+    return {"ok": True}
 
 
 # --- Static files (mounted after routes to avoid conflicts) ---
