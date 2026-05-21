@@ -2,41 +2,27 @@
 
 A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, AI-assisted interview scenarios, data analytics, low-level design, and production engineering. Track progress across 144 coding problems and 139 topics with a unified CLI dashboard.
 
-## Quick Start
-
-```bash
-docker compose up -d        # start dashboard at http://localhost:8888
-```
-
-Open http://localhost:8888 — click a topic name to open its files in the editor, edit, save, and run.
-
-Progress is persisted in `progress/tracker.json` (gitignored). File edits are saved back to the mounted source directories.
-
-### Docker
-
-```bash
-docker compose up -d        # start at http://localhost:8888
-docker compose down          # stop
-docker compose logs -f       # view logs
-```
-
-Or use the published image directly:
-
-```bash
-docker run -d -p 8888:8888 -v $(pwd)/progress:/app/progress quanhua92/interview-prep:latest
-```
-
-### Web Dashboard
-
 **Features:**
 - Progress ring, stats cards, and per-section breakdowns
-- Terminal card showing PASS/FAIL/SKIP results
 - **Code Editor** — auto-loads all in-progress problem files with CodeMirror syntax highlighting
-- **File tree sidebar** — activity bar with collapsible file explorer
 - **Save & Run** — edit code in the browser, save (`Cmd/Ctrl+S`), and run directly from the editor header
+- **Terminal** card showing PASS/FAIL/SKIP results
+- **File tree sidebar** — activity bar with collapsible file explorer
 - **Version history** — every save creates a version snapshot; revert to any previous version
 - Click any topic name to open its files in the editor
 - Filter by status (New / In Progress / Done) and instant search
+
+![Dashboard](screenshot-top-editor.jpeg)
+
+[See full screenshot](screenshot.jpeg)
+
+## Quick Start
+
+```bash
+docker run -d -p 8888:8888 -v $(pwd)/progress:/app/progress quanhua92/interview-prep
+```
+
+Use `docker compose up -d` to also mount tier directories for persistent file editing.
 
 ### CLI
 
@@ -64,11 +50,6 @@ uv run python main.py report
 uv run python main.py start
 ```
 
-![Report Dashboard](screenshot_top.jpeg)
-
-![Code Editor](screenshot_editor.jpeg)
-
-[See full screenshot](screenshot.jpeg)
 
 ## Project Structure
 
