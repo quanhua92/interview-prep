@@ -206,18 +206,17 @@ function _showHistoryPanel(versions) {
 
 	let html = `<div class="tree-group">History</div>`;
 	versions.forEach((v, i) => {
-		const idx = versions.length - 1 - i;
-		html += `<div class="tree-item" data-history="${idx}" onclick="revertToVersion(${idx})">${v.label}</div>`;
+		html += `<div class="tree-item" onclick="revertToVersion('${v.label}')">${v.label}</div>`;
 	});
 	tree.innerHTML = html;
 }
 
-async function revertToVersion(idx) {
+async function revertToVersion(label) {
 	if (!currentFile.item || !currentFile.filename) return;
 
 	try {
 		const res = await fetch(
-			`/api/files/revert?name=${encodeURIComponent(currentFile.item)}&file=${encodeURIComponent(currentFile.filename)}&version=${idx}`,
+			`/api/files/revert?name=${encodeURIComponent(currentFile.item)}&file=${encodeURIComponent(currentFile.filename)}&label=${encodeURIComponent(label)}`,
 			{ method: "POST" },
 		);
 		if (res.ok) {

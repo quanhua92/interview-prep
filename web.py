@@ -239,6 +239,26 @@ def run_problems():
 _file_snapshots: dict[str, list[dict]] = {}
 
 
+def _snapshot_all_files():
+    tracker_data = tracker.load_tracker()
+    for section_key, array_key in tracker.SECTION_KEYS.items():
+        for item in tracker_data.get(array_key, []):
+            try:
+                _, base_dir = tracker.resolve_item_dir(item["name"])
+            except ValueError:
+                continue
+            if not base_dir:
+                continue
+            for f in sorted(base_dir.iterdir()):
+                if f.is_file() and not f.name.startswith("_") and not f.name.startswith("."):
+                    if f.suffix.lower() in (".py", ".md"):
+                        key = f"{item['name']}/{f.name}"
+                        _file_snapshots[key] = [{"label": "Original", "content": f.read_text()}]
+
+
+_snapshot_all_files()
+
+
 def _validate_fs_name(name: str):
     if ".." in name or "/" in name or "\\" in name or "\0" in name:
         raise HTTPException(status_code=400, detail="Invalid name")
@@ -287,9 +307,6 @@ def read_file(name: str, file: str):
     ext_map = {".py": "python", ".md": "markdown"}
     language = ext_map.get(file_path.suffix.lower(), "text")
     content = file_path.read_text()
-    key = f"{name}/{file}"
-    if key not in _file_snapshots:
-        _file_snapshots[key] = [{"label": "Original", "content": content}]
     return {"content": content, "language": language}
 
 
@@ -303,10 +320,12 @@ def write_file(name: str, file: str, req: SaveFileRequest):
 
     file_path.write_text(req.content)
     key = f"{name}/{file}"
-    ts = datetime.now().strftime("%H:%M:%S")
-    if key not in _file_snapshots:
-        _file_snapshots[key] = [{"label": "Original", "content": req.content}]
-    _file_snapshots[key].append({"label": f"Save @ {ts}", "content": req.content})
+    versions = _file_snapshots.get(key, [])
+    if not versions or versions[-1]["content"] != req.content:
+        ts = datetime.now().strftime("%H:%M:%S")
+        if key not in _file_snapshots:
+            _file_snapshots[key] = [{"label": "Original", "content": req.content}]
+        _file_snapshots[key].append({"label": f"Save @ {ts}", "content": req.content})
     return {"ok": True, "size": len(req.content)}
 
 
@@ -341,11 +360,11 @@ def file_history(name: str, file: str):
     _validate_fs_name(file)
     key = f"{name}/{file}"
     versions = _file_snapshots.get(key, [])
-    return {"versions": [{"label": v["label"]} for v in versions]}
+    return {"versions": [{"label": v["label"], "key": v["label"]} for v in versions]}
 
 
 @app.post("/api/files/revert")
-def revert_file(name: str, file: str, version: int = -1):
+def revert_file(name: str, file: str, label: str):
     _validate_fs_name(name)
     _validate_fs_name(file)
     file_path = _resolve_safe_path(name, file)
@@ -354,14 +373,11 @@ def revert_file(name: str, file: str, version: int = -1):
 
     key = f"{name}/{file}"
     versions = _file_snapshots.get(key, [])
-    if not versions:
-        raise HTTPException(status_code=400, detail="No versions available — open the file first")
+    matched = next((v for v in versions if v["label"] == label), None)
+    if not matched:
+        raise HTTPException(status_code=400, detail="Version not found")
 
-    idx = version if version >= 0 else len(versions) - 1
-    if idx >= len(versions):
-        raise HTTPException(status_code=400, detail="Invalid version")
-
-    content = versions[idx]["content"]
+    content = matched["content"]
     current = file_path.read_text()
     if content == current:
         return {"ok": True, "skipped": True}

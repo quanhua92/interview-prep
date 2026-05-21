@@ -33,7 +33,8 @@ docker run -d -p 8888:8888 -v $(pwd)/progress:/app/progress quanhua92/interview-
 - Terminal card showing PASS/FAIL/SKIP results
 - **Code Editor** — auto-loads all in-progress problem files with CodeMirror syntax highlighting
 - **File tree sidebar** — activity bar with collapsible file explorer
-- **Save & Run** — edit code in the browser, save, and run directly from the editor header
+- **Save & Run** — edit code in the browser, save (`Cmd/Ctrl+S`), and run directly from the editor header
+- **Version history** — every save creates a version snapshot; revert to any previous version
 - Click any topic name to open its files in the editor
 - Filter by status (New / In Progress / Done) and instant search
 
@@ -79,6 +80,8 @@ interview-prep/
 ├── index.html                     # HTML template (Tailwind CSS)
 ├── static/app.js                  # Client-side JS (filters, API calls)
 ├── static/app.css                 # Editor and sidebar styles
+├── static/codemirror/             # Vendored CodeMirror (syntax highlighting)
+├── static/tailwind-browser.js    # Vendored Tailwind CSS runtime
 ├── Dockerfile                     # Docker image (Python 3.14-slim)
 ├── docker-compose.yml             # Docker Compose with volume mounts for progress + tier dirs
 ├── tier{1-4}_*/                   # 24 coding patterns
