@@ -5,6 +5,41 @@ A comprehensive interview preparation toolkit covering coding patterns, system d
 ## Quick Start
 
 ```bash
+docker compose up -d        # start dashboard at http://localhost:8888
+```
+
+Open http://localhost:8888 — click a topic name to open its files in the editor, edit, save, and run.
+
+Progress is persisted in `progress/tracker.json` (gitignored). File edits are saved back to the mounted source directories.
+
+### Docker
+
+```bash
+docker compose up -d        # start at http://localhost:8888
+docker compose down          # stop
+docker compose logs -f       # view logs
+```
+
+Or use the published image directly:
+
+```bash
+docker run -d -p 8888:8888 -v $(pwd)/progress:/app/progress quanhua92/interview-prep:latest
+```
+
+### Web Dashboard
+
+**Features:**
+- Progress ring, stats cards, and per-section breakdowns
+- Terminal card showing PASS/FAIL/SKIP results
+- **Code Editor** — auto-loads all in-progress problem files with CodeMirror syntax highlighting
+- **File tree sidebar** — activity bar with collapsible file explorer
+- **Save & Run** — edit code in the browser, save, and run directly from the editor header
+- Click any topic name to open its files in the editor
+- Filter by status (New / In Progress / Done) and instant search
+
+### CLI
+
+```bash
 # Install dependencies
 uv sync
 
@@ -28,33 +63,6 @@ uv run python main.py report
 uv run python main.py start
 ```
 
-Progress is persisted in `progress/tracker.json` (gitignored).
-
-### Docker
-
-```bash
-docker compose up -d        # start dashboard at http://0.0.0.0:8888
-docker compose down          # stop
-docker compose logs -f       # view logs
-```
-
-Or use the published image directly:
-
-```bash
-docker run -d -p 8888:8888 -v $(pwd)/progress:/app/progress quanhua92/interview-prep:latest
-```
-
-Both `docker run` and `docker compose` mount the local `progress/` folder so data persists on your host.
-
-### Web Dashboard
-
-Generate a visual progress report with dark-themed Tailwind CSS dashboard — overall progress ring, stats cards, and per-section breakdowns:
-
-```bash
-uv run python main.py report            # generates static HTML
-uv run python main.py start             # interactive dashboard at http://0.0.0.0:8888
-```
-
 ![Report Dashboard](screenshot_top.jpeg)
 
 ![Code Editor](screenshot_editor.jpeg)
@@ -70,8 +78,9 @@ interview-prep/
 ├── web.py                         # FastAPI server + HTML dashboard
 ├── index.html                     # HTML template (Tailwind CSS)
 ├── static/app.js                  # Client-side JS (filters, API calls)
+├── static/app.css                 # Editor and sidebar styles
 ├── Dockerfile                     # Docker image (Python 3.14-slim)
-├── docker-compose.yml             # Docker Compose with named volume
+├── docker-compose.yml             # Docker Compose with volume mounts for progress + tier dirs
 ├── tier{1-4}_*/                   # 24 coding patterns
 │   └── <pattern>/
 │       ├── template.py
