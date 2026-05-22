@@ -5,7 +5,7 @@ A comprehensive interview preparation toolkit covering coding patterns, system d
 **Features:**
 - Progress ring, stats cards, and per-section breakdowns
 - **Code Editor** — auto-loads all in-progress problem files with CodeMirror syntax highlighting
-- **Save & Run** — edit code in the browser, save (`Cmd/Ctrl+S`), and run directly from the editor header
+- **Save & Run** — edit code in the browser, save (`Ctrl+S`), and run (`Ctrl+R`) directly from the editor header
 - **Terminal** card showing PASS/FAIL/SKIP results
 - **File tree sidebar** — activity bar with collapsible file explorer
 - **Version history** — every save creates a version snapshot; revert to any previous version

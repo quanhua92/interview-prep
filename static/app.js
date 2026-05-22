@@ -280,6 +280,12 @@ function _openEditorWithFiles(files, title) {
 			indentUnit: 4,
 			tabSize: 4,
 			lineWrapping: true,
+			extraKeys: {
+				"Ctrl-S": () => saveFile(),
+				"Cmd-S": () => saveFile(),
+				"Ctrl-R": () => runProblems(),
+				"Cmd-R": () => runProblems(),
+			},
 		});
 	}
 
@@ -390,10 +396,14 @@ function showToast(message) {
 // Auto-open editor with all in-progress files
 openAllInProgress();
 
-// Ctrl/Cmd+S to save file
+// Ctrl/Cmd+S to save, Ctrl/Cmd+R to run (also bound in CodeMirror extraKeys)
 document.addEventListener("keydown", (e) => {
 	if ((e.ctrlKey || e.metaKey) && e.key === "s") {
 		e.preventDefault();
 		saveFile();
+	}
+	if ((e.ctrlKey || e.metaKey) && e.key === "r") {
+		e.preventDefault();
+		runProblems();
 	}
 });
