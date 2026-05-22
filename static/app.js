@@ -109,6 +109,7 @@ function renderTerminalOutput(output) {
 		else if (line.includes("[FAIL]")) colorClass = "text-red-400";
 		else if (line.includes("[SKIP]")) colorClass = "text-amber-400";
 		else if (line.startsWith("  !")) colorClass = "text-red-300/70";
+		else if (line.includes("Timed out")) colorClass = "text-red-400 font-bold";
 		else if (line.includes("TOTAL:")) colorClass = "text-white font-bold";
 
 		const escaped = line

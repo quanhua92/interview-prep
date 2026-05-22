@@ -63,12 +63,19 @@ def _run_pattern(pattern):
     failed = 0
     skipped = 0
     for f in files:
-        result = subprocess.run(
-            [sys.executable, str(f)],
-            capture_output=True,
-            text=True,
-            timeout=30,
-        )
+        try:
+            result = subprocess.run(
+                [sys.executable, str(f)],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+        except subprocess.TimeoutExpired:
+            status = "FAIL"
+            failed += 1
+            print(f"    [{status}] {f.name}")
+            print(f"    │ Timed out after 10s — possible infinite loop")
+            continue
         if result.returncode == 0:
             status = "PASS"
             passed += 1
