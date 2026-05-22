@@ -261,6 +261,7 @@ async function openAllInProgress() {
 function _openEditorWithFiles(files, title) {
 	const card = document.getElementById("editor-card");
 	card.classList.remove("hidden");
+	card.scrollIntoView({ behavior: "smooth", block: "start" });
 
 	document.getElementById("editor-title").textContent = title;
 
