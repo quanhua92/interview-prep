@@ -78,11 +78,11 @@ def _run_pattern(pattern):
         else:
             status = "FAIL"
             failed += 1
-            if result.stderr:
-                for line in result.stderr.strip().split("\n")[:3]:
-                    print(f"    ! {line}")
 
         print(f"    [{status}] {f.name}")
+        if status == "FAIL" and result.stdout:
+            for line in result.stdout.strip().split("\n"):
+                print(f"    │ {line}")
 
     return passed, failed, skipped
 
