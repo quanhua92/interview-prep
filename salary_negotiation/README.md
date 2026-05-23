@@ -16,6 +16,7 @@ Preparation for compensation negotiation at every stage of the interview process
 | [Equity & RSU Evaluation](equity_rsu_evaluation/) | Stock options, RSUs, vesting, strike price, and dilution |
 | [Difficult Scenarios](difficult_scenarios/) | Lowball offers, exploding offers, competing offers, pay cuts |
 | [Counteroffer & Staying](counteroffer_staying/) | When to accept a counteroffer, risks of staying |
+| [Cross-Border Remote Negotiation](remote_negotiation/) | Remote pay models, employment structure, currency, benefits gaps for Vietnam-based engineers |
 
 ## How to Practice
 
