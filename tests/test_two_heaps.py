@@ -5,6 +5,8 @@ from tier2_intermediate.two_heaps.solutions.p295_median_finder import Solution a
 from tier2_intermediate.two_heaps.solutions.p480_sliding_window_median import Solution as P480
 
 class TestP295MedianFinder:
+    def test_all(self): assert P295().run_quiet()
+
     def test_example1(self):
         result = P295().solve([5,15,1,3], "median")
         assert result == [5.0, 10.0, 5.0, 4.0]
@@ -12,6 +14,8 @@ class TestP295MedianFinder:
         assert P295().solve([1,2], "median") == [1.0, 1.5]
 
 class TestP480SlidingWindowMedian:
+    def test_all(self): assert P480().run_quiet()
+
     def test_example1(self):
         assert P480().solve([1,3,-1,-3,5,3,6,7], 3) == [1.0,-1.0,-1.0,3.0,5.0,6.0]
     def test_window_one(self):

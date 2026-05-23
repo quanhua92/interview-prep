@@ -37,8 +37,23 @@ class Problem:
     EXIT_FAIL = 1
     EXIT_WIP = 2
 
-    def run(self) -> bool:
+    def _run(self, quiet: bool = False) -> bool:
         """Run all test cases, print results, return True if all pass."""
+        if quiet:
+            if not self.test_cases:
+                return False
+            all_passed = True
+            for tc in self.test_cases:
+                if isinstance(tc.input, tuple):
+                    result = self.solve(*tc.input)
+                elif isinstance(tc.input, dict):
+                    result = self.solve(**tc.input)
+                else:
+                    result = self.solve(tc.input)
+                if not (result == tc.expected):
+                    all_passed = False
+            return all_passed
+
         print(f"\n{'='*60}")
         print(f"  {self.name}")
         print(f"{'='*60}")
@@ -89,6 +104,12 @@ class Problem:
         if all_skipped:
             sys.exit(self.EXIT_WIP)
         sys.exit(self.EXIT_PASS if all_passed else self.EXIT_FAIL)
+
+    def run(self) -> bool:
+        self._run(quiet=False)
+
+    def run_quiet(self) -> bool:
+        return self._run(quiet=True)
 
 
 if __name__ == "__main__":

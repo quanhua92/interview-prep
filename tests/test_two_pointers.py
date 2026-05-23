@@ -6,19 +6,26 @@ from tier1_foundation.two_pointers.solutions.p011_container_water import Solutio
 from tier1_foundation.two_pointers.solutions.p015_three_sum import Solution as P015
 
 class TestP167TwoSum:
-    def test_example1(self): assert P167().solve([2,7,11,15], 9) == [1, 2]
-    def test_example2(self): assert P167().solve([2,3,4], 6) == [1, 3]
-    def test_example3(self): assert P167().solve([-1,0], -1) == [1, 2]
+    def test_all(self): assert P167().run_quiet()
 
 class TestP011ContainerWater:
-    def test_example1(self): assert P011().solve([1,8,6,2,5,4,8,3,7]) == 49
-    def test_example2(self): assert P011().solve([1,1]) == 1
-    def test_symmetric(self): assert P011().solve([4,3,2,1,4]) == 16
+    def test_all(self): assert P011().run_quiet()
 
 class TestP015ThreeSum:
-    def test_example1(self):
-        result = P015().solve([-1,0,1,2,-1,-4])
-        assert sorted([sorted(t) for t in result]) == [[-1,-1,2],[-1,0,1]]
-    def test_example2(self): assert P015().solve([0,1,1]) == []
-    def test_all_zeros(self): assert P015().solve([0,0,0]) == [[0,0,0]]
-    def test_empty(self): assert P015().solve([]) == []
+    def test_all(self): assert P015().run_quiet()
+
+    def test_adjacent_duplicate_pairs(self):
+        result = P015().solve([-2, 0, 0, 2, 2])
+        assert sorted([sorted(t) for t in result]) == [[-2, 0, 2]]
+
+    def test_all_identical_values(self):
+        result = P015().solve([0, 0, 0, 0, 0])
+        assert sorted([sorted(t) for t in result]) == [[0, 0, 0]]
+
+    def test_skip_i_with_left_right_dup(self):
+        result = P015().solve([-3, -3, 0, 1, 1, 2, 2])
+        assert sorted([sorted(t) for t in result]) == [[-3, 1, 2]]
+
+    def test_triple_duplicate(self):
+        result = P015().solve([-2, 0, 0, 0, 2, 2, 2])
+        assert sorted([sorted(t) for t in result]) == [[-2, 0, 2], [0, 0, 0]]

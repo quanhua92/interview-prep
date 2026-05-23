@@ -1,6 +1,7 @@
 """Tests for tier1_foundation/fast_slow_pointers"""
 import sys
 sys.path.insert(0, ".")
+from tier1_foundation.fast_slow_pointers.solutions.p141_linked_list_cycle import Solution as P141
 from tier1_foundation.fast_slow_pointers.solutions.p202_happy_number import Solution as P202
 from tier1_foundation.fast_slow_pointers.solutions.p876_middle_of_linked_list import Solution as P876
 from src.utils import ListNode
@@ -37,6 +38,8 @@ def has_cycle(head):
 
 
 class TestP141LinkedListCycle:
+    def test_all(self): assert P141().run_quiet()
+
     def test_has_cycle(self):
         head = create_cycle([3, 2, 0, -4], 1)
         assert has_cycle(head) is True
@@ -55,11 +58,15 @@ class TestP141LinkedListCycle:
 
 
 class TestP202HappyNumber:
+    def test_all(self): assert P202().run_quiet()
+
     def test_example1(self): assert P202().solve(19) == True
     def test_example2(self): assert P202().solve(2) == False
     def test_already_happy(self): assert P202().solve(1) == True
 
 class TestP876MiddleOfLinkedList:
+    def test_all(self): assert P876().run_quiet()
+
     def test_odd_length(self):
         head = ListNode.from_list([1,2,3,4,5])
         assert P876().solve(head) == [3,4,5]

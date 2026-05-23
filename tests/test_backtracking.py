@@ -6,6 +6,8 @@ from tier3_advanced.backtracking.solutions.p039_combination_sum import Solution 
 from tier3_advanced.backtracking.solutions.p017_letter_combinations import Solution as P017
 
 class TestP078Subsets:
+    def test_all(self): assert P078().run_quiet()
+
     def test_example1(self):
         result = P078().solve([1,2,3])
         assert len(result) == 8
@@ -15,6 +17,8 @@ class TestP078Subsets:
         assert sorted(result) == [[], [0]]
 
 class TestP039CombinationSum:
+    def test_all(self): assert P039().run_quiet()
+
     def test_example1(self):
         result = P039().solve([2,3,6,7], 7)
         assert sorted(result) == [[2,2,3],[7]]
@@ -24,6 +28,8 @@ class TestP039CombinationSum:
     def test_no_solution(self): assert P039().solve([2], 1) == []
 
 class TestP017LetterCombinations:
+    def test_all(self): assert P017().run_quiet()
+
     def test_example1(self):
         result = P017().solve("23")
         assert sorted(result) == ["ad","ae","af","bd","be","bf","cd","ce","cf"]

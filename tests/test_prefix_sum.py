@@ -6,6 +6,8 @@ from tier2_intermediate.prefix_sum.solutions.p0238_product_except_self import So
 from tier2_intermediate.prefix_sum.solutions.p0713_subarray_product_less_than_k import Solution as P713
 
 class TestP560SubarraySumEqualsK:
+    def test_all(self): assert P560().run_quiet()
+
     def test_example1(self):
         assert P560().solve([1,1,1], 2) == 2
     def test_example2(self):
@@ -16,6 +18,8 @@ class TestP560SubarraySumEqualsK:
         assert P560().solve([0,0,0], 0) == 6
 
 class TestP238ProductExceptSelf:
+    def test_all(self): assert P238().run_quiet()
+
     def test_example1(self):
         assert P238().solve([1,2,3,4]) == [24,12,8,6]
     def test_example2(self):
@@ -24,6 +28,8 @@ class TestP238ProductExceptSelf:
         assert P238().solve([1,2]) == [2,1]
 
 class TestP713SubarrayProductLessThanK:
+    def test_all(self): assert P713().run_quiet()
+
     def test_example1(self):
         assert P713().solve([10,5,2,6], 100) == 8
     def test_zero_k(self):

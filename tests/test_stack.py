@@ -6,6 +6,8 @@ from tier2_intermediate.stack.solutions.p394_decode_string import Solution as P3
 from tier2_intermediate.stack.solutions.p155_min_stack import Solution as P155
 
 class TestP020ValidParentheses:
+    def test_all(self): assert P020().run_quiet()
+
     def test_simple_pair(self): assert P020().solve("()") == True
     def test_mixed(self): assert P020().solve("()[]{}") == True
     def test_mismatched(self): assert P020().solve("(]") == False
@@ -15,6 +17,8 @@ class TestP020ValidParentheses:
     def test_single_open(self): assert P020().solve("(") == False
 
 class TestP394DecodeString:
+    def test_all(self): assert P394().run_quiet()
+
     def test_example1(self): assert P394().solve("3[a]2[bc]") == "aaabcbc"
     def test_nested(self): assert P394().solve("3[a2[c]]") == "accaccacc"
     def test_multiple(self): assert P394().solve("2[abc]3[cd]ef") == "abcabccdcdcdef"
@@ -22,6 +26,8 @@ class TestP394DecodeString:
     def test_deep_nesting(self): assert P394().solve("2[2[2[a]]]") == "aaaaaaaa"
 
 class TestP155MinStack:
+    def test_all(self): assert P155().run_quiet()
+
     def test_example1(self):
         result = P155().solve(
             ["MinStack","push","push","push","getMin","pop","top","getMin"],
