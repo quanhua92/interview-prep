@@ -41,6 +41,9 @@ class Solution(Problem):
         TestCase(input=2, expected=8, label="example 1"),
         TestCase(input=1, expected=3, label="example 2"),
         TestCase(input=10101, expected=183236316, label="example 3"),
+        TestCase(input=3, expected=19, label="n=3"),
+        TestCase(input=4, expected=43, label="n=4"),
+        TestCase(input=10, expected=3536, label="n=10"),
     ]
 
     def solve(self, n: int) -> int:

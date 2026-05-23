@@ -87,6 +87,16 @@ class Solution(Problem):
             expected=[3, 17, 18, 25],
             label="prefix sum for [3, 14, 1, 7]",
         ),
+        TestCase(
+            input=[5],
+            expected=[5],
+            label="single large weight",
+        ),
+        TestCase(
+            input=[10, 10, 10],
+            expected=[10, 20, 30],
+            label="equal weights",
+        ),
     ]
 
     def solve(self, w: list[int]) -> list[int]:

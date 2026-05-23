@@ -47,6 +47,12 @@ class Solution(Problem):
             expected=[[-2, 4], [3, 3]],
             label="example 2 (sorted)",
         ),
+        TestCase(input=([[0, 0]], 1), expected=[[0, 0]], label="origin itself"),
+        TestCase(input=([[1, 0], [0, 1], [2, 0]], 2), expected=[[0, 1], [1, 0]], label="tie on distance"),
+        TestCase(input=([[-1, -1], [2, 2], [3, 3]], 1), expected=[[-1, -1]], label="negative coords"),
+        TestCase(input=([[1, 0], [0, 1], [2, 0]], 2), expected=[[0, 1], [1, 0]], label="two tied closest"),
+        TestCase(input=([[1, 1], [1, 1], [1, 1]], 2), expected=[[1, 1], [1, 1]], label="all same point"),
+        TestCase(input=([[3, 4], [0, 0], [1, 1]], 1), expected=[[0, 0]], label="origin is closest"),
     ]
 
     def solve(self, points: list[list[int]], k: int) -> list[list[int]]:

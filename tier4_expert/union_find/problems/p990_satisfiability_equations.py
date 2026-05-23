@@ -45,6 +45,10 @@ class Solution(Problem):
         TestCase(input=["b==a", "a==b"], expected=True, label="example 2"),
         TestCase(input=["a==b", "b==c", "a==c"], expected=True, label="example 3"),
         TestCase(input=["a!=a"], expected=False, label="contradiction"),
+        TestCase(input=["a!=b", "b!=c", "c!=a"], expected=True, label="all different no contradiction"),
+        TestCase(input=["a==b", "b==c", "c==d", "a!=d"], expected=False, label="chain equality then inequality"),
+        TestCase(input=["a==b", "c!=d"], expected=True, label="independent groups"),
+        TestCase(input=["a==a"], expected=True, label="self equality"),
     ]
 
     def solve(self, equations: list[str]) -> bool:

@@ -43,6 +43,10 @@ class Solution(Problem):
         TestCase(input=[4, 3, 2, 7, 8, 2, 3, 1], expected=[2, 3], label="example 1"),
         TestCase(input=[1, 1, 2], expected=[1], label="example 2"),
         TestCase(input=[1], expected=[], label="single"),
+        TestCase(input=[2, 2], expected=[2], label="all same, n=2"),
+        TestCase(input=[1, 2, 2, 1], expected=[2, 1], label="all duplicates, n=4"),
+        TestCase(input=[1, 2], expected=[], label="no duplicates"),
+        TestCase(input=[10, 2, 5, 10, 9, 1, 1, 7, 9, 6], expected=[10, 1, 9], label="large, multiple duplicates"),
     ]
 
     def solve(self, nums: list[int]) -> list[int]:

@@ -51,6 +51,17 @@ class Solution(Problem):
             expected=10,
             label="example 2",
         ),
+        TestCase(input=[[1]], expected=0, label="1x1 no trap"),
+        TestCase(
+            input=[[5, 5, 5], [5, 1, 5], [5, 5, 5]],
+            expected=4,
+            label="3x3 basin",
+        ),
+        TestCase(
+            input=[[5, 5, 5, 5], [5, 5, 5, 5]],
+            expected=0,
+            label="2x4 no interior",
+        ),
     ]
 
     def solve(self, heightMap: list[list[int]]) -> int:

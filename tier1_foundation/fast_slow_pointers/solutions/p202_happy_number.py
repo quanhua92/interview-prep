@@ -42,6 +42,10 @@ class Solution(Problem):
         TestCase(input=19, expected=True, label="example 1"),
         TestCase(input=2, expected=False, label="example 2"),
         TestCase(input=1, expected=True, label="already happy"),
+        TestCase(input=7, expected=True, label="small happy number"),
+        TestCase(input=4, expected=False, label="enters 4-16 cycle"),
+        TestCase(input=100, expected=True, label="power of 10"),
+        TestCase(input=999999999, expected=False, label="large unhappy number"),
     ]
 
     def solve(self, n: int) -> bool:

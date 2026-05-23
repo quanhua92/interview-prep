@@ -59,6 +59,14 @@ class Solution(Problem):
         TestCase(
             input=([5, 1, 2, 3, 4], [4, 4, 1, 5, 1]), expected=4, label="example 3"
         ),
+        TestCase(input=([5], [4]), expected=0, label="single station possible"),
+        TestCase(input=([3], [4]), expected=-1, label="single station impossible"),
+        TestCase(input=([0, 0, 0], [0, 0, 0]), expected=0, label="all zeros"),
+        TestCase(
+            input=([10, 0, 0, 0, 0], [1, 1, 1, 1, 1]),
+            expected=0,
+            label="large surplus at start",
+        ),
     ]
 
     def solve(self, gas: list[int], cost: list[int]) -> int:

@@ -35,6 +35,10 @@ class Solution(Problem):
     test_cases = [
         TestCase(input="Hello, my name is John", expected=5, label="example 1"),
         TestCase(input="Hello", expected=1, label="example 2"),
+        TestCase(input="", expected=0, label="empty string"),
+        TestCase(input="   ", expected=0, label="only spaces"),
+        TestCase(input="    foo    bar   ", expected=2, label="leading/trailing/multiple spaces"),
+        TestCase(input="a b c d e", expected=5, label="single char segments"),
     ]
 
     def solve(self, s: str) -> int:

@@ -58,6 +58,21 @@ class Solution(Problem):
             expected="in_circle",
             label="points within offset circle",
         ),
+        TestCase(
+            input={"radius": 0.01, "x_center": 0.0, "y_center": 0.0, "count": 100},
+            expected="in_circle",
+            label="tiny circle",
+        ),
+        TestCase(
+            input={"radius": 5.0, "x_center": -100.0, "y_center": 200.0, "count": 500},
+            expected="in_circle",
+            label="large offset center",
+        ),
+        TestCase(
+            input={"radius": 1.0, "x_center": 0.0, "y_center": 0.0, "count": 1},
+            expected="in_circle",
+            label="single point",
+        ),
     ]
 
     def solve(self, radius: float, x_center: float, y_center: float, count: int) -> list[list[float]]:

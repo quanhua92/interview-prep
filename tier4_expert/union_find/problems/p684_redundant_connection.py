@@ -46,6 +46,17 @@ class Solution(Problem):
             expected=[1, 4],
             label="example 2",
         ),
+        TestCase(input=[[1, 2], [2, 3], [3, 1]], expected=[3, 1], label="triangle of 3"),
+        TestCase(
+            input=[[1, 2], [1, 3], [1, 4], [1, 5], [2, 3]],
+            expected=[2, 3],
+            label="redundant at end star",
+        ),
+        TestCase(
+            input=[[1, 2], [1, 3], [1, 4], [2, 3]],
+            expected=[2, 3],
+            label="last edge closes triangle",
+        ),
     ]
 
     def solve(self, edges: list[list[int]]) -> list[int]:

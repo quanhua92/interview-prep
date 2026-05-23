@@ -45,6 +45,14 @@ class Solution(Problem):
             label="example 1",
         ),
         TestCase(input=[4, 4, 3, 2, 1], expected=[[4, 4]], label="example 2"),
+        TestCase(input=[2, 2, 2], expected=[[2, 2], [2, 2, 2]], label="all same elements"),
+        TestCase(input=[5, 4, 3, 2, 1], expected=[], label="strictly decreasing"),
+        TestCase(
+            input=[1, 2, 3],
+            expected=[[1, 2], [1, 2, 3], [1, 3], [2, 3]],
+            label="strictly increasing",
+        ),
+        TestCase(input=[1], expected=[], label="single element"),
     ]
 
     def solve(self, nums: list[int]) -> list[list[int]]:

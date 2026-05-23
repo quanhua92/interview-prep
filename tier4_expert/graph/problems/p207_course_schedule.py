@@ -49,6 +49,10 @@ class Solution(Problem):
         TestCase(input=(2, [[1, 0]]), expected=True, label="example 1"),
         TestCase(input=(2, [[1, 0], [0, 1]]), expected=False, label="example 2"),
         TestCase(input=(1, []), expected=True, label="no prerequisites"),
+        TestCase(input=(3, [[0, 1], [1, 2], [2, 0]]), expected=False, label="3-node cycle"),
+        TestCase(input=(5, [[0, 1], [1, 2], [2, 3]]), expected=True, label="linear chain disconnected node"),
+        TestCase(input=(3, [[1, 0], [2, 0]]), expected=True, label="two deps on one course"),
+        TestCase(input=(4, [[0, 1], [1, 2], [2, 3], [3, 1]]), expected=False, label="self-contained cycle"),
     ]
 
     def solve(self, num_courses: int, prerequisites: list[list[int]]) -> bool:

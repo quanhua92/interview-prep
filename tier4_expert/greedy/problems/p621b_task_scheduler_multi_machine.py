@@ -145,6 +145,21 @@ class Solution(Problem):
             expected=2,
             label="m=3 n=1 four unique tasks",
         ),
+        TestCase(
+            input=(["A", "A", "A", "A"], 1, 2),
+            expected=3,
+            label="all same task m=2",
+        ),
+        TestCase(
+            input=(["A", "A", "A", "A", "A", "A"], 1, 3),
+            expected=3,
+            label="all same task m=3",
+        ),
+        TestCase(
+            input=(["A", "B", "C", "D", "E"], 0, 2),
+            expected=3,
+            label="unique tasks no cooldown m=2",
+        ),
     ]
 
     def solve(self, tasks: list[str], n: int, m: int) -> int:

@@ -51,6 +51,10 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=(4, 15, 15), expected=2, label="example 1"),
         TestCase(input=(4, 15, 30), expected=2, label="example 2"),
+        TestCase(input=(1, 100, 100), expected=0, label="single bucket"),
+        TestCase(input=(125, 1, 1), expected=7, label="single test round"),
+        TestCase(input=(1000, 15, 60), expected=5, label="large buckets"),
+        TestCase(input=(8, 15, 30), expected=2, label="medium buckets"),
     ]
 
     def solve(self, buckets: int, minutesToDie: int, minutesToTest: int) -> int:

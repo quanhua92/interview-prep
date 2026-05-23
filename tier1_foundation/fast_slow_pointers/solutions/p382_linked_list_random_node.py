@@ -73,6 +73,21 @@ class Solution(Problem):
             expected=4,
             label="single node",
         ),
+        TestCase(
+            input=ListNode.from_list([1, 2]),
+            expected=2,
+            label="two nodes",
+        ),
+        TestCase(
+            input=ListNode.from_list([5, 6, 7]),
+            expected=6,
+            label="three nodes",
+        ),
+        TestCase(
+            input=ListNode.from_list([1, 2, 3, 4, 5]),
+            expected=3,
+            label="five nodes",
+        ),
     ]
 
     def solve(self, head: ListNode) -> int:

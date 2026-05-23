@@ -74,6 +74,26 @@ class Solution(Problem):
             expected=[True, False, True],
             label="example 2",
         ),
+        TestCase(
+            input=(["abc"], ["...", ".."]),
+            expected=[True, False],
+            label="all dots pattern",
+        ),
+        TestCase(
+            input=(["a", "b"], ["."]),
+            expected=[True],
+            label="single char dot matches multiple",
+        ),
+        TestCase(
+            input=(["abc", "xbc"], [".bc"]),
+            expected=[True],
+            label="dot at beginning",
+        ),
+        TestCase(
+            input=(["abc"], ["a.c", "a.."]),
+            expected=[True, True],
+            label="dot in middle and at end",
+        ),
     ]
 
     def solve(self, words: list[str], search_words: list[str]) -> list[bool]:

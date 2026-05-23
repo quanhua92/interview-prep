@@ -35,6 +35,10 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=["aba", "cdc", "eae"], expected=3, label="example 1"),
         TestCase(input=["aaa", "aaa", "aa"], expected=-1, label="example 2"),
+        TestCase(input=["a", "b", "c", "d"], expected=1, label="all length 1 different"),
+        TestCase(input=["abc", "abc", "abc"], expected=-1, label="all identical"),
+        TestCase(input=["a", "a", "ab", "abc"], expected=3, label="one string longer than rest"),
+        TestCase(input=["abc", "abd", "abe"], expected=3, label="same length different chars"),
     ]
 
     def solve(self, strs: list[str]) -> int:

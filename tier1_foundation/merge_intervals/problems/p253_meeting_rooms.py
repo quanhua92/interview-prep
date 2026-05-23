@@ -40,6 +40,27 @@ class Solution(Problem):
         TestCase(input=[[0, 30], [5, 10], [15, 20]], expected=2, label="example 1"),
         TestCase(input=[[7, 10], [2, 4]], expected=1, label="example 2"),
         TestCase(input=[], expected=0, label="no meetings"),
+        TestCase(input=[[0, 1]], expected=1, label="single meeting"),
+        TestCase(
+            input=[[0, 10], [1, 9], [2, 8], [3, 7]],
+            expected=4,
+            label="all meetings overlap",
+        ),
+        TestCase(
+            input=[[0, 5], [5, 10], [5, 10]],
+            expected=2,
+            label="meetings end and start at same time",
+        ),
+        TestCase(
+            input=[[0, 30], [0, 30], [0, 30]],
+            expected=3,
+            label="all same start time",
+        ),
+        TestCase(
+            input=[[0, 1], [1, 2], [2, 3]],
+            expected=1,
+            label="no overlap sequential",
+        ),
     ]
 
     def solve(self, intervals: list[list[int]]) -> int:

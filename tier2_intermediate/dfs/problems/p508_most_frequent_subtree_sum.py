@@ -40,6 +40,9 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=TreeNode.from_list([5, 2, -3]), expected=[-3, 2, 4], label="example 1"),
         TestCase(input=TreeNode.from_list([5, 2, -5]), expected=[2], label="example 2"),
+        TestCase(input=TreeNode.from_list([1]), expected=[1], label="single node"),
+        TestCase(input=TreeNode.from_list([1, 2, 3]), expected=[2, 3, 6], label="balanced tree"),
+        TestCase(input=TreeNode.from_list([-1, -2, -3]), expected=[-6, -3, -2], label="all negative values"),
     ]
 
     def solve(self, root: TreeNode) -> list[int]:

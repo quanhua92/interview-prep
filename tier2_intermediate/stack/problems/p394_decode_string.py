@@ -48,6 +48,10 @@ class Solution(Problem):
             input="2[abc]3[cd]ef", expected="abcabccdcdcdef", label="multiple segments"
         ),
         TestCase(input="abc", expected="abc", label="no encoding"),
+        TestCase(input="10[a]", expected="aaaaaaaaaa", label="multi-digit multiplier"),
+        TestCase(input="2[2[2[a]]]", expected="aaaaaaaa", label="deep nesting"),
+        TestCase(input="3[a]b", expected="aaab", label="encoded then plain"),
+        TestCase(input="a2[b]c", expected="abbc", label="plain-enc-plain"),
     ]
 
     def solve(self, s: str) -> str:

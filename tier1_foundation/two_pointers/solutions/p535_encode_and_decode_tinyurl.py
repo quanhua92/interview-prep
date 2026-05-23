@@ -50,6 +50,21 @@ class Solution(Problem):
             expected="https://leetcode.com/problems/design-tinyurl",
             label="example 1",
         ),
+        TestCase(
+            input="https://example.com/path/to/resource?query=1&param=2#section",
+            expected="https://example.com/path/to/resource?query=1&param=2#section",
+            label="URL with query and fragment",
+        ),
+        TestCase(
+            input="http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u",
+            expected="http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u",
+            label="URL with many path segments",
+        ),
+        TestCase(
+            input="https://site.com",
+            expected="https://site.com",
+            label="minimal URL",
+        ),
     ]
 
     def solve(self, longUrl: str) -> str:

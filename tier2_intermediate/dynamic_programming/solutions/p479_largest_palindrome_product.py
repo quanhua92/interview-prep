@@ -32,6 +32,9 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=2, expected=987, label="example 1"),
         TestCase(input=1, expected=9, label="example 2"),
+        TestCase(input=3, expected=123, label="3 digits"),
+        TestCase(input=4, expected=597, label="4 digits"),
+        TestCase(input=8, expected=475, label="8 digits (max n)"),
     ]
 
     def solve(self, n: int) -> int:

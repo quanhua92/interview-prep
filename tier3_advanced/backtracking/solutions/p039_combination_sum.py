@@ -52,6 +52,15 @@ class Solution(Problem):
             label="example 2",
         ),
         TestCase(input=([2], 1), expected=[], label="no solution"),
+        TestCase(input=([5], 5), expected=[[5]], label="single candidate equals target"),
+        TestCase(input=([2], 4), expected=[[2, 2]], label="reuse single candidate"),
+        TestCase(
+            input=([8, 7, 4, 3], 11),
+            expected=[[3, 4, 4], [3, 8], [4, 7]],
+            label="unsorted candidates multiple combos",
+        ),
+        TestCase(input=([3, 5], 7), expected=[], label="no valid combination"),
+        TestCase(input=([3], 9), expected=[[3, 3, 3]], label="triple reuse"),
     ]
 
     def solve(self, candidates: list[int], target: int) -> list[list[int]]:

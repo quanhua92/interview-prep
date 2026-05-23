@@ -47,6 +47,26 @@ class Solution(Problem):
             label="example 2",
         ),
         TestCase(input=[[1]], expected=[1], label="single element"),
+        TestCase(
+            input=[[1, 2, 3, 4]],
+            expected=[1, 2, 3, 4],
+            label="single row",
+        ),
+        TestCase(
+            input=[[1], [2], [3], [4]],
+            expected=[1, 2, 3, 4],
+            label="single column",
+        ),
+        TestCase(
+            input=[[1, 2, 3, 4], [5, 6, 7, 8]],
+            expected=[1, 2, 5, 6, 3, 4, 7, 8],
+            label="2x4 rectangular",
+        ),
+        TestCase(
+            input=[[-1, -2], [3, 4]],
+            expected=[-1, -2, 3, 4],
+            label="negative values 2x2",
+        ),
     ]
 
     def solve(self, mat: list[list[int]]) -> list[int]:

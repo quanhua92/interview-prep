@@ -53,6 +53,23 @@ class Solution(Problem):
             label="example 1",
         ),
         TestCase(input=[[0, 0, 0, 0, 0, 0, 0, 0]], expected=0, label="example 2"),
+        TestCase(input=[[1]], expected=1, label="single cell land"),
+        TestCase(input=[[0]], expected=0, label="single cell water"),
+        TestCase(
+            input=[[1, 1, 1], [1, 1, 1], [1, 1, 1]],
+            expected=9,
+            label="all land 3x3",
+        ),
+        TestCase(
+            input=[[1, 0, 1, 0, 1]],
+            expected=1,
+            label="single row alternating",
+        ),
+        TestCase(
+            input=[[1], [0], [1], [0], [1]],
+            expected=1,
+            label="single column alternating",
+        ),
     ]
 
     def solve(self, grid: list[list[int]]) -> int:

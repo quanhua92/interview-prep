@@ -48,6 +48,11 @@ class Solution(Problem):
         TestCase(input="bbbbb", expected=1, label="example 2"),
         TestCase(input="pwwkew", expected=3, label="example 3"),
         TestCase(input="", expected=0, label="empty string"),
+        TestCase(input="a", expected=1, label="single character"),
+        TestCase(input=" ", expected=1, label="single space"),
+        TestCase(input="au", expected=2, label="two unique chars"),
+        TestCase(input="dvdf", expected=3, label="reset from duplicate after unique prefix"),
+        TestCase(input="tmmzuxt", expected=5, label="char seen before current window"),
     ]
 
     def solve(self, s: str) -> int:

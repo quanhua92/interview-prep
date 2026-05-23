@@ -67,6 +67,21 @@ class Solution(Problem):
             expected=[9],
             label="area for single 3x3 rectangle",
         ),
+        TestCase(
+            input=[[0, 0, 0, 0]],
+            expected=[1],
+            label="single point rectangle",
+        ),
+        TestCase(
+            input=[[-5, -5, -3, -3], [1, 1, 3, 3]],
+            expected=[9, 18],
+            label="negative and positive rects same size",
+        ),
+        TestCase(
+            input=[[1, 1, 2, 2], [3, 3, 5, 5]],
+            expected=[4, 13],
+            label="different sized rects",
+        ),
     ]
 
     def solve(self, rects: list[list[int]]) -> list[int]:

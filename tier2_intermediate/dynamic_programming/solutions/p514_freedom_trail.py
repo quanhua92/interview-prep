@@ -41,6 +41,9 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=("godding", "gd"), expected=4, label="example 1"),
         TestCase(input=("godding", "godding"), expected=13, label="example 2"),
+        TestCase(input=("a", "a"), expected=1, label="single char ring and key"),
+        TestCase(input=("abc", "cba"), expected=6, label="reverse order key"),
+        TestCase(input=("aaaaa", "aaa"), expected=3, label="repeated chars"),
     ]
 
     def solve(self, ring: str, key: str) -> int:

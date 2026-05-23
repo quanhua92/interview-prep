@@ -67,6 +67,10 @@ class Solution(Problem):
             label="fully connected",
         ),
         TestCase(input=(3, []), expected=3, label="no edges"),
+        TestCase(input=(1, []), expected=1, label="single node no edges"),
+        TestCase(input=(4, [[0, 1], [2, 3]]), expected=2, label="two disjoint pairs"),
+        TestCase(input=(6, [[0, 1], [1, 2], [2, 0], [3, 4], [4, 5], [5, 3]]), expected=2, label="two triangles"),
+        TestCase(input=(7, [[0, 1], [1, 2], [3, 4], [5, 6]]), expected=3, label="three components with chain and pairs"),
     ]
 
     def solve(self, n: int, edges: list[list[int]]) -> int:

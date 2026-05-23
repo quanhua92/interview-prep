@@ -44,6 +44,10 @@ class Solution(Problem):
         TestCase(input=([1, 2, 3], [1, 1]), expected=1, label="example 1"),
         TestCase(input=([1, 2], [1, 2, 3]), expected=2, label="example 2"),
         TestCase(input=([], [1, 2, 3]), expected=0, label="no children"),
+        TestCase(input=([1, 2], []), expected=0, label="no cookies"),
+        TestCase(input=([10, 11], [1, 2, 3]), expected=0, label="all cookies too small"),
+        TestCase(input=([1, 2, 3], [3, 3, 3]), expected=3, label="all satisfied"),
+        TestCase(input=([5], [5]), expected=1, label="exact match"),
     ]
 
     def solve(self, g: list[int], s: list[int]) -> int:

@@ -61,6 +61,21 @@ class Solution(Problem):
             expected=False,
             label="example 3",
         ),
+        TestCase(
+            input=[[0, 0, 1, 1]],
+            expected=True,
+            label="single rectangle",
+        ),
+        TestCase(
+            input=[[0, 0, 1, 2], [1, 0, 2, 2]],
+            expected=True,
+            label="two rects side by side",
+        ),
+        TestCase(
+            input=[[0, 0, 2, 2], [1, 1, 3, 3]],
+            expected=False,
+            label="overlapping rectangles",
+        ),
     ]
 
     def solve(self, rectangles: list[list[int]]) -> bool:

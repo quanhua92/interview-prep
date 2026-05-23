@@ -58,6 +58,10 @@ class Solution(Problem):
             label="example 2",
         ),
         TestCase(input=(1, []), expected=[0], label="no prerequisites"),
+        TestCase(input=(2, [[1, 0], [0, 1]]), expected=[], label="cycle returns empty"),
+        TestCase(input=(3, [[0, 1], [1, 2], [2, 0]]), expected=[], label="3-node cycle"),
+        TestCase(input=(4, [[0, 1], [0, 2], [0, 3]]), expected=[1, 2, 3, 0], label="all depend on course 0"),
+        TestCase(input=(3, [[2, 1], [1, 0]]), expected=[0, 1, 2], label="linear chain"),
     ]
 
     def solve(self, num_courses: int, prerequisites: list[list[int]]) -> list[int]:

@@ -55,6 +55,36 @@ class Solution(Problem):
             label="example 1",
         ),
         TestCase(input=([1, 2], 1), expected=[1.0, 2.0], label="window size 1"),
+        TestCase(
+            input=([1, 2, 3, 4, 2, 3, 1, 4, 2], 3),
+            expected=[2.0, 3.0, 3.0, 3.0, 2.0, 3.0, 2.0],
+            label="example 2",
+        ),
+        TestCase(
+            input=([2147483647, -2147483648], 2),
+            expected=[-0.5],
+            label="large int boundary",
+        ),
+        TestCase(
+            input=([1, 1, 1, 1], 2),
+            expected=[1.0, 1.0, 1.0],
+            label="all same values",
+        ),
+        TestCase(
+            input=([5, 5, 5, 5, 5], 5),
+            expected=[5.0],
+            label="window equals array",
+        ),
+        TestCase(
+            input=([-5, -4, -3, -2, -1], 3),
+            expected=[-4.0, -3.0, -2.0],
+            label="all negative ascending",
+        ),
+        TestCase(
+            input=([10, 9, 8, 7, 6], 3),
+            expected=[9.0, 8.0, 7.0],
+            label="descending order",
+        ),
     ]
 
     def solve(self, nums: list[int], k: int) -> list[float]:

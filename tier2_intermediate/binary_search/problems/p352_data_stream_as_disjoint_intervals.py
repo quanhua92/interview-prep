@@ -54,15 +54,17 @@ Template (python3):
 import sys
 
 sys.path.insert(0, ".")
-from src.utils import Problem
+from src.utils import Problem, TestCase
 
 
 class Solution(Problem):
     name = "352. Data Stream as Disjoint Intervals"
     test_cases = [
-        # example 1: ["SummaryRanges", "addNum", "getIntervals", "addNum", "getIn... ->
-        # example 1: ["SummaryRanges", "addNum", "getIntervals", "addNum", "getIn... ->
-        # TODO: Add test cases from examples
+        TestCase(input=[1, 3, 7, 2, 6], expected=[[1, 3], [6, 7]], label="example from problem"),
+        TestCase(input=[1, 0], expected=[[0, 1]], label="adjacent values merge"),
+        TestCase(input=[0], expected=[[0, 0]], label="single zero"),
+        TestCase(input=[100, 1, 50], expected=[[1, 1], [50, 50], [100, 100]], label="no merges sorted output"),
+        TestCase(input=[], expected=[], label="empty stream"),
     ]
 
     def solve(self) -> None:

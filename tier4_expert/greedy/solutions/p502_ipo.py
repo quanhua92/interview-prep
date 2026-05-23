@@ -46,6 +46,10 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=(2, 0, [1, 2, 3], [0, 1, 1]), expected=4, label="example 1"),
         TestCase(input=(3, 0, [1, 2, 3], [0, 1, 2]), expected=6, label="example 2"),
+        TestCase(input=(1, 0, [1, 2, 3], [0, 0, 0]), expected=3, label="k less than projects"),
+        TestCase(input=(10, 0, [1, 2], [0, 0]), expected=3, label="k more than projects"),
+        TestCase(input=(1, 1, [5], [1]), expected=6, label="single project"),
+        TestCase(input=(2, 5, [3, 4], [1, 2]), expected=12, label="all affordable"),
     ]
 
     def solve(self, k: int, w: int, profits: list[int], capital: list[int]) -> int:

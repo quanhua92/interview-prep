@@ -36,6 +36,10 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=("acb", 4, "ab", 2), expected=2, label="example 1"),
         TestCase(input=("acb", 1, "acb", 1), expected=1, label="example 2"),
+        TestCase(input=("a", 100, "a", 1), expected=100, label="single char repeated"),
+        TestCase(input=("a", 1, "b", 1), expected=0, label="impossible char"),
+        TestCase(input=("abc", 10, "ac", 1), expected=10, label="each s1 yields one s2 match"),
+        TestCase(input=("aba", 3, "ab", 1), expected=3, label="overlap matching"),
     ]
 
     def solve(self, s1: str, n1: int, s2: str, n2: int) -> int:
@@ -62,9 +66,8 @@ class Solution(Problem):
                 remaining = n1 - 1 - i
                 full_cycles = remaining // cycle_len
                 count += full_cycles * cycle_count
-                remaining_idx = prev_i + cycle_len * full_cycles
-                # Continue from where cycles ended
-                for ii in range(remaining_idx + 1, n1):
+                processed = i + full_cycles * cycle_len + 1
+                for ii in range(processed, n1):
                     for jj in range(s1_len):
                         if s1[jj] == s2[s2_index]:
                             s2_index += 1

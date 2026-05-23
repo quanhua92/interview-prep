@@ -44,6 +44,11 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=[1, 3, 2, 3, 1], expected=2, label="example 1"),
         TestCase(input=[2, 4, 3, 5, 1], expected=3, label="example 2"),
+        TestCase(input=[1], expected=0, label="single element"),
+        TestCase(input=[5, 4, 3, 2, 1], expected=4, label="all descending"),
+        TestCase(input=[1, 2, 3, 4, 5], expected=0, label="sorted ascending"),
+        TestCase(input=[2, 1, -1], expected=2, label="negative numbers"),
+        TestCase(input=[1, 1, 1, 1], expected=0, label="all equal"),
     ]
 
     def solve(self, nums: list[int]) -> int:

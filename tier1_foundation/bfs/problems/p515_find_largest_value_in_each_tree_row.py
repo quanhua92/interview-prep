@@ -39,6 +39,26 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=TreeNode.from_list([1, 3, 2, 5, 3, None, 9]), expected=[1, 3, 9], label="example 1"),
         TestCase(input=TreeNode.from_list([1, 2, 3]), expected=[1, 3], label="example 2"),
+        TestCase(
+            input=TreeNode.from_list([]),
+            expected=[],
+            label="empty tree",
+        ),
+        TestCase(
+            input=TreeNode.from_list([-1, -2, -3, -4]),
+            expected=[-1, -2, -4],
+            label="negative values",
+        ),
+        TestCase(
+            input=TreeNode.from_list([1, 2, None, 3]),
+            expected=[1, 2, 3],
+            label="left chain",
+        ),
+        TestCase(
+            input=TreeNode.from_list([5]),
+            expected=[5],
+            label="single node",
+        ),
     ]
 
     def solve(self, root: TreeNode) -> list[int]:

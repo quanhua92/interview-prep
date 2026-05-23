@@ -60,6 +60,26 @@ class Solution(Problem):
             expected=[0],
             label="returns valid indices for target 1",
         ),
+        TestCase(
+            input=([5], 5),
+            expected=[0],
+            label="single element array",
+        ),
+        TestCase(
+            input=([1, 2, 1, 2, 1], 1),
+            expected=[0, 2, 4],
+            label="non-contiguous duplicates",
+        ),
+        TestCase(
+            input=([-1, -2, -1, -3, -1], -1),
+            expected=[0, 2, 4],
+            label="negative numbers with duplicates",
+        ),
+        TestCase(
+            input=([1, 1, 1, 1, 1], 1),
+            expected=[0, 1, 2, 3, 4],
+            label="all same elements",
+        ),
     ]
 
     def solve(self, nums: list[int], target: int) -> list[int]:

@@ -99,6 +99,42 @@ class Solution(Problem):
             expected=[None, None, None, 0, 0, None, -3, -3, -3, None, 0],
             label="negative values",
         ),
+        TestCase(
+            input=(
+                ["MinStack", "push", "getMin", "top", "pop", "push", "getMin"],
+                [[], [42], [], [], [], [7], []],
+            ),
+            expected=[None, None, 42, 42, None, None, 7],
+            label="single push then replace",
+        ),
+        TestCase(
+            input=(
+                [
+                    "MinStack",
+                    "push",
+                    "push",
+                    "push",
+                    "push",
+                    "pop",
+                    "getMin",
+                    "pop",
+                    "getMin",
+                    "pop",
+                    "getMin",
+                ],
+                [[], [2], [1], [3], [1], [], [], [], [], [], []],
+            ),
+            expected=[None, None, None, None, None, None, 1, None, 1, None, 2],
+            label="duplicate min values",
+        ),
+        TestCase(
+            input=(
+                ["MinStack", "push", "push", "getMin", "pop", "getMin"],
+                [[], [-2147483648], [2147483647], [], [], []],
+            ),
+            expected=[None, None, None, -2147483648, None, -2147483648],
+            label="INT boundary values",
+        ),
     ]
 
     def solve(self, ops: list[str], values: list[list[int]]) -> list[int | None]:

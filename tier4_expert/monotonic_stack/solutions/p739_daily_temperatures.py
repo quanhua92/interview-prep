@@ -47,6 +47,10 @@ class Solution(Problem):
         ),
         TestCase(input=[30, 40, 50, 60], expected=[1, 1, 1, 0], label="example 2"),
         TestCase(input=[30, 60, 90], expected=[1, 1, 0], label="example 3"),
+        TestCase(input=[50], expected=[0], label="single element"),
+        TestCase(input=[50, 50, 50], expected=[0, 0, 0], label="all same temps"),
+        TestCase(input=[90, 80, 70, 60], expected=[0, 0, 0, 0], label="strictly decreasing"),
+        TestCase(input=[50, 50, 50, 60], expected=[3, 2, 1, 0], label="all same then warmer"),
     ]
 
     def solve(self, temperatures: list[int]) -> list[int]:

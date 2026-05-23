@@ -66,6 +66,34 @@ class Solution(Problem):
         TestCase(
             input=([["a", "b"], ["c", "d"]], ["abcb"]), expected=[], label="example 2"
         ),
+        TestCase(
+            input=([["a"]], ["a"]),
+            expected=["a"],
+            label="1x1 board single char",
+        ),
+        TestCase(
+            input=([["a", "b"], ["c", "d"]], ["xyz"]),
+            expected=[],
+            label="word not on board",
+        ),
+        TestCase(
+            input=([["a", "a"], ["a", "a"]], ["aaaa"]),
+            expected=["aaaa"],
+            label="same letter grid",
+        ),
+        TestCase(
+            input=(
+                [
+                    ["o", "a", "a", "n"],
+                    ["e", "t", "a", "e"],
+                    ["i", "h", "k", "r"],
+                    ["i", "f", "l", "v"],
+                ],
+                ["oath", "oat"],
+            ),
+            expected=["oat", "oath"],
+            label="prefix is also a word",
+        ),
     ]
 
     def solve(self, board: list[list[str]], words: list[str]) -> list[str]:

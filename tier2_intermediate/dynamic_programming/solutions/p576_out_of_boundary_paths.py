@@ -41,6 +41,9 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=(2, 2, 2, 0, 0), expected=6, label="example 1"),
         TestCase(input=(1, 3, 3, 0, 1), expected=12, label="example 2"),
+        TestCase(input=(1, 1, 1, 0, 0), expected=4, label="1x1 grid single move"),
+        TestCase(input=(2, 2, 1, 0, 0), expected=2, label="corner 1 move"),
+        TestCase(input=(3, 3, 0, 1, 1), expected=0, label="zero moves"),
     ]
 
     def solve(

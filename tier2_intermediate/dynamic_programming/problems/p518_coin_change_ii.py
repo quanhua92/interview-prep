@@ -48,6 +48,9 @@ class Solution(Problem):
         TestCase(input=(5, [1, 2, 5]), expected=4, label="example 1"),
         TestCase(input=(3, [2]), expected=0, label="example 2"),
         TestCase(input=(10, [10]), expected=1, label="example 3"),
+        TestCase(input=(0, [1, 2, 5]), expected=1, label="zero amount"),
+        TestCase(input=(1, [1]), expected=1, label="single coin exact amount"),
+        TestCase(input=(500, [1, 2, 5]), expected=12701, label="large amount"),
     ]
 
     def solve(self, amount: int, coins: list[int]) -> int:

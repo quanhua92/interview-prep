@@ -38,6 +38,10 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=("5F3Z-2e-9-w", 4), expected="5F3Z-2E9W", label="example 1"),
         TestCase(input=("2-5g-3-J", 2), expected="2-5G-3J", label="example 2"),
+        TestCase(input=("a", 1), expected="A", label="single char no dash"),
+        TestCase(input=("---", 3), expected="", label="only dashes"),
+        TestCase(input=("2-4A0r7-4k", 4), expected="24A0-R74K", label="even groups no short first"),
+        TestCase(input=("aa-aa-aa-aa-aa-aa", 1), expected="A-A-A-A-A-A-A-A-A-A-A-A", label="k=1"),
     ]
 
     def solve(self, s: str, k: int) -> str:

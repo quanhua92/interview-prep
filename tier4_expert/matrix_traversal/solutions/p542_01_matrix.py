@@ -47,6 +47,27 @@ class Solution(Problem):
             expected=[[0, 0, 0], [0, 1, 0], [1, 2, 1]],
             label="example 2",
         ),
+        TestCase(input=[[0]], expected=[[0]], label="single zero"),
+        TestCase(
+            input=[[1], [0], [1]],
+            expected=[[1], [0], [1]],
+            label="single column",
+        ),
+        TestCase(
+            input=[[0, 1, 1, 1]],
+            expected=[[0, 1, 2, 3]],
+            label="single row",
+        ),
+        TestCase(
+            input=[[1, 1, 1], [1, 0, 1], [1, 1, 1]],
+            expected=[[2, 1, 2], [1, 0, 1], [2, 1, 2]],
+            label="cross of ones around center zero",
+        ),
+        TestCase(
+            input=[[1, 1, 0], [1, 1, 1], [0, 1, 1]],
+            expected=[[2, 1, 0], [1, 2, 1], [0, 1, 2]],
+            label="corner zeros",
+        ),
     ]
 
     def solve(self, mat: list[list[int]]) -> list[list[int]]:

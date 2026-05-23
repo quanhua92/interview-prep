@@ -52,6 +52,9 @@ class Solution(Problem):
             label="even length",
         ),
         TestCase(input=(ListNode.from_list([1]),), expected=[1], label="single node"),
+        TestCase(input=(ListNode.from_list([1, 2]),), expected=[2], label="two nodes"),
+        TestCase(input=(ListNode.from_list([1, 2, 3]),), expected=[2, 3], label="three nodes"),
+        TestCase(input=(ListNode.from_list([1, -2, 3, -4, 5]),), expected=[3, -4, 5], label="negative values"),
     ]
 
     def solve(self, head: ListNode | None) -> list[int]:

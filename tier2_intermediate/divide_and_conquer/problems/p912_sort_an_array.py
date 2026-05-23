@@ -42,6 +42,10 @@ class Solution(Problem):
         ),
         TestCase(input=[1], expected=[1], label="single element"),
         TestCase(input=[], expected=[], label="empty array"),
+        TestCase(input=[1, 2, 3, 4, 5], expected=[1, 2, 3, 4, 5], label="already sorted"),
+        TestCase(input=[5, 4, 3, 2, 1], expected=[1, 2, 3, 4, 5], label="reverse sorted"),
+        TestCase(input=[7, 7, 7, 7], expected=[7, 7, 7, 7], label="all same elements"),
+        TestCase(input=[-5, -3, -8, -1], expected=[-8, -5, -3, -1], label="negative numbers"),
     ]
 
     def solve(self, nums: list[int]) -> list[int]:

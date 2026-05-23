@@ -45,6 +45,9 @@ class Solution(Problem):
             expected="999999999999999999",
             label="example 3",
         ),
+        TestCase(input="3", expected="2", label="smallest n equals 11 base 2"),
+        TestCase(input="7", expected="2", label="111 base 2"),
+        TestCase(input="31", expected="2", label="11111 base 2"),
     ]
 
     def solve(self, n: str) -> str:

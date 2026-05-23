@@ -48,6 +48,9 @@ class Solution(Problem):
             input=[1000, 100, 10, 2], expected="1000/(100/10/2)", label="example 1"
         ),
         TestCase(input=[2, 3, 4], expected="2/(3/4)", label="example 2"),
+        TestCase(input=[2, 3], expected="2/3", label="two elements no parens"),
+        TestCase(input=[2], expected="2", label="single element"),
+        TestCase(input=[10, 2, 5], expected="10/(2/5)", label="three elements"),
     ]
 
     def solve(self, nums: list[int]) -> str:

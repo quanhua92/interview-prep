@@ -38,6 +38,10 @@ class Solution(Problem):
             label="example 1",
         ),
         TestCase(input=("abpcplea", ["a", "b", "c"]), expected="a", label="example 2"),
+        TestCase(input=("abpcplea", []), expected="", label="empty dictionary"),
+        TestCase(input=("abc", ["xyz", "def"]), expected="", label="no match"),
+        TestCase(input=("abpcplea", ["apple", "ale", "abpple"]), expected="abpple", label="same length lexicographical tie"),
+        TestCase(input=("a", ["a", "aa", "aaa"]), expected="a", label="longer dict words than s"),
     ]
 
     def solve(self, s: str, dictionary: list[str]) -> str:

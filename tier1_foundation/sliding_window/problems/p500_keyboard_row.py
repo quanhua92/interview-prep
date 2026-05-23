@@ -46,6 +46,9 @@ class Solution(Problem):
         ),
         TestCase(input=["omk"], expected=[], label="example 2"),
         TestCase(input=["adsdf", "sfd"], expected=["adsdf", "sfd"], label="example 3"),
+        TestCase(input=["a", "b", "c"], expected=["a", "b", "c"], label="single letter words"),
+        TestCase(input=["qz", "asdf", "qzxc"], expected=["asdf"], label="mixed row words"),
+        TestCase(input=["typewriter"], expected=["typewriter"], label="entire top row word"),
     ]
 
     def solve(self, words: list[str]) -> list[str]:

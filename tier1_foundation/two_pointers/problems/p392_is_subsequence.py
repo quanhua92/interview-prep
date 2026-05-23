@@ -34,6 +34,10 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=("abc", "ahbgdc"), expected=True, label="example 1"),
         TestCase(input=("axc", "ahbgdc"), expected=False, label="example 2"),
+        TestCase(input=("", "ahbgdc"), expected=True, label="empty s is subsequence"),
+        TestCase(input=("abc", "abc"), expected=True, label="s equals t"),
+        TestCase(input=("abcd", "abc"), expected=False, label="s longer than t"),
+        TestCase(input=("z", "aaaaa"), expected=False, label="single char not found"),
     ]
 
     def solve(self, s: str, t: str) -> bool:

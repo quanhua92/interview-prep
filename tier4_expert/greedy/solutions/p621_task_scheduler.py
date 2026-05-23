@@ -60,6 +60,10 @@ class Solution(Problem):
             label="tasks fill all idle slots",
         ),
         TestCase(input=(["A", "A"], 2), expected=4, label="single task type with long cooldown"),
+        TestCase(input=(["A", "A", "B", "B"], 0), expected=4, label="no cooldown"),
+        TestCase(input=(["A"], 5), expected=1, label="single task"),
+        TestCase(input=(["A", "A", "A", "A"], 2), expected=10, label="all same task"),
+        TestCase(input=(["A", "B", "C"], 100), expected=3, label="unique tasks large n"),
     ]
 
     def solve(self, tasks: list[str], n: int) -> int:

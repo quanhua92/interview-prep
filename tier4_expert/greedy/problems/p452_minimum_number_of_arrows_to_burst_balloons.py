@@ -49,6 +49,18 @@ class Solution(Problem):
         ),
         TestCase(input=[[1, 2], [3, 4], [5, 6], [7, 8]], expected=4, label="example 2"),
         TestCase(input=[[1, 2], [2, 3], [3, 4], [4, 5]], expected=2, label="example 3"),
+        TestCase(input=[[1, 2]], expected=1, label="single balloon"),
+        TestCase(
+            input=[[1, 10], [2, 9], [3, 8]], expected=1, label="all overlapping"
+        ),
+        TestCase(
+            input=[[1, 5], [2, 3]], expected=1, label="nested intervals"
+        ),
+        TestCase(
+            input=[[-2147483646, -2147483645], [2147483646, 2147483647]],
+            expected=2,
+            label="far apart balloons",
+        ),
     ]
 
     def solve(self, points: list[list[int]]) -> int:

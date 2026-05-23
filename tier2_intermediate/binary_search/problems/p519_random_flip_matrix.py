@@ -49,15 +49,15 @@ Template (python3):
 import sys
 
 sys.path.insert(0, ".")
-from src.utils import Problem
+from src.utils import Problem, TestCase
 
 
 class Solution(Problem):
     name = "519. Random Flip Matrix"
     test_cases = [
-        # example 1: ["Solution", "flip", "flip", "flip", "reset", "flip"]
-        # [[3, 1], [], [], [], [], []] -> [null, [1, 0], [2, 0], [0, 0], null, [2, 0]]
-        # TODO: Add test cases from examples
+        TestCase(input=(1, 1, 1), expected=1, label="single cell one flip"),
+        TestCase(input=(2, 2, 4), expected=4, label="flip all cells in 2x2"),
+        TestCase(input=(3, 1, 3), expected=3, label="column matrix flip all"),
     ]
 
     def solve(self) -> None:

@@ -39,6 +39,10 @@ class Solution(Problem):
         TestCase(input=[2, 3, 1, 1, 4], expected=True, label="example 1"),
         TestCase(input=[3, 2, 1, 0, 4], expected=False, label="example 2"),
         TestCase(input=[0], expected=True, label="single element"),
+        TestCase(input=[1, 1, 1, 1, 1], expected=True, label="all ones"),
+        TestCase(input=[5, 0, 0, 0, 0], expected=True, label="big jump from start"),
+        TestCase(input=[0, 1], expected=False, label="stuck at start"),
+        TestCase(input=[2, 0], expected=True, label="two elements reachable"),
     ]
 
     def solve(self, nums: list[int]) -> bool:

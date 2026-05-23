@@ -36,6 +36,10 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=("acb", 4, "ab", 2), expected=2, label="example 1"),
         TestCase(input=("acb", 1, "acb", 1), expected=1, label="example 2"),
+        TestCase(input=("a", 100, "a", 1), expected=100, label="single char repeated"),
+        TestCase(input=("a", 1, "b", 1), expected=0, label="impossible char"),
+        TestCase(input=("abc", 10, "ac", 1), expected=10, label="each s1 yields one s2 match"),
+        TestCase(input=("aba", 3, "ab", 1), expected=3, label="overlap matching"),
     ]
 
     def solve(self, s1: str, n1: int, s2: str, n2: int) -> int:

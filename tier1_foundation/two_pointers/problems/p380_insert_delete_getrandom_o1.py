@@ -68,6 +68,30 @@ class Solution(Problem):
             expected=[True, False, True, True, False, 2],
             label="example 1",
         ),
+        TestCase(
+            input={
+                "ops": ["insert", "insert", "insert", "getRandom", "remove", "getRandom"],
+                "args": [[10], [20], [30], [], [20], []],
+            },
+            expected=[True, True, True, 30, True, 10],
+            label="insert multiple then remove middle",
+        ),
+        TestCase(
+            input={
+                "ops": ["insert", "getRandom", "remove", "insert", "getRandom"],
+                "args": [[5], [], [5], [5], []],
+            },
+            expected=[True, 5, True, True, 5],
+            label="single element cycle",
+        ),
+        TestCase(
+            input={
+                "ops": ["insert", "insert", "remove", "remove", "insert", "getRandom"],
+                "args": [[1], [2], [1], [2], [3], []],
+            },
+            expected=[True, True, True, True, True, 3],
+            label="remove all then insert new",
+        ),
     ]
 
     def solve(self, ops: list[str], args: list) -> list:

@@ -56,6 +56,11 @@ class Solution(Problem):
             input=([4, 2, 3, 0, 3, 1, 2], 0), expected=True, label="start at index 0"
         ),
         TestCase(input=([3, 0, 2, 1, 2], 2), expected=False, label="cannot reach zero"),
+        TestCase(input=([0], 0), expected=True, label="single element zero"),
+        TestCase(input=([2], 0), expected=False, label="single element non-zero"),
+        TestCase(input=([0, 1], 1), expected=True, label="start next to zero"),
+        TestCase(input=([1, 1, 1, 1, 0], 0), expected=True, label="linear path to zero"),
+        TestCase(input=([7, 0, 0, 0, 0, 0, 0, 0], 0), expected=True, label="jump directly to zero"),
     ]
 
     def solve(self, arr: list[int], start: int) -> bool:

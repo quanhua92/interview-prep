@@ -39,6 +39,26 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=TreeNode.from_list([2, 1, 3]), expected=1, label="example 1"),
         TestCase(input=TreeNode.from_list([1, 2, 3, 4, None, 5, 6, None, None, 7]), expected=7, label="example 2"),
+        TestCase(
+            input=TreeNode.from_list([1]),
+            expected=1,
+            label="single node",
+        ),
+        TestCase(
+            input=TreeNode.from_list([1, 2]),
+            expected=2,
+            label="left child only",
+        ),
+        TestCase(
+            input=TreeNode.from_list([1, None, 2]),
+            expected=2,
+            label="right child only",
+        ),
+        TestCase(
+            input=TreeNode.from_list([1, 2, None, 3, None, 4]),
+            expected=4,
+            label="left skewed deep",
+        ),
     ]
 
     def solve(self, root: TreeNode) -> int:

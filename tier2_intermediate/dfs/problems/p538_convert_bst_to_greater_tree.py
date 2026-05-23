@@ -48,6 +48,18 @@ class Solution(Problem):
             label="example 1",
         ),
         TestCase(input=TreeNode.from_list([0, None, 1]), expected=TreeNode.from_list([1, None, 1]), label="example 2"),
+        TestCase(
+            input=TreeNode.from_list([2, 1, 3]),
+            expected=TreeNode.from_list([5, 6, 3]),
+            label="small balanced BST",
+        ),
+        TestCase(input=TreeNode.from_list([1]), expected=TreeNode.from_list([1]), label="single node"),
+        TestCase(
+            input=TreeNode.from_list([1, None, 2, None, 3]),
+            expected=TreeNode.from_list([6, None, 5, None, 3]),
+            label="right-skewed BST",
+        ),
+        TestCase(input=None, expected=None, label="empty tree"),
     ]
 
     def solve(self, root: TreeNode | None) -> TreeNode | None:

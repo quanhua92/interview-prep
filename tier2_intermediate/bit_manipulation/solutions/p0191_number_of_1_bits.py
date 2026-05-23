@@ -49,9 +49,12 @@ class Solution(Problem):
             input=0b00000000000000000000000010000000, expected=1, label="power of two"
         ),
         TestCase(
-            input=0b11111111111111111111111111111101, expected=31, label="all but one"
+            input=2147483645, expected=30, label="leetcode example 3"
         ),
         TestCase(input=0, expected=0, label="zero"),
+        TestCase(input=1, expected=1, label="single bit"),
+        TestCase(input=0x55555555, expected=16, label="alternating bits"),
+        TestCase(input=(1 << 31) - 1, expected=31, label="max value all bits set"),
     ]
 
     def solve(self, n: int) -> int:

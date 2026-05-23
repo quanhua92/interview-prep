@@ -42,6 +42,10 @@ class Solution(Problem):
         TestCase(input=([1, 2, 3], [2]), expected=1, label="example 1"),
         TestCase(input=([1, 2, 3, 4], [1, 4]), expected=1, label="example 2"),
         TestCase(input=([1, 5], [2]), expected=3, label="example 3"),
+        TestCase(input=([1], [1]), expected=0, label="house at heater position"),
+        TestCase(input=([1, 2, 3, 4, 5, 6], [1, 6]), expected=2, label="houses between heaters"),
+        TestCase(input=([10, 20, 30], [15]), expected=15, label="single heater center"),
+        TestCase(input=([1, 2, 3], [4, 5, 6]), expected=3, label="all houses before heaters"),
     ]
 
     def solve(self, houses: list[int], heaters: list[int]) -> int:

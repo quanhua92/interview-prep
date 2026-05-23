@@ -56,18 +56,47 @@ class Solution(Problem):
             label="example 1",
         ),
         TestCase(input=([1, 2], 1), expected=[1.0, 2.0], label="window size 1"),
+        TestCase(
+            input=([1, 2, 3, 4, 2, 3, 1, 4, 2], 3),
+            expected=[2.0, 3.0, 3.0, 3.0, 2.0, 3.0, 2.0],
+            label="example 2",
+        ),
+        TestCase(
+            input=([2147483647, -2147483648], 2),
+            expected=[-0.5],
+            label="large int boundary",
+        ),
+        TestCase(
+            input=([1, 1, 1, 1], 2),
+            expected=[1.0, 1.0, 1.0],
+            label="all same values",
+        ),
+        TestCase(
+            input=([5, 5, 5, 5, 5], 5),
+            expected=[5.0],
+            label="window equals array",
+        ),
+        TestCase(
+            input=([-5, -4, -3, -2, -1], 3),
+            expected=[-4.0, -3.0, -2.0],
+            label="all negative ascending",
+        ),
+        TestCase(
+            input=([10, 9, 8, 7, 6], 3),
+            expected=[9.0, 8.0, 7.0],
+            label="descending order",
+        ),
     ]
 
     def solve(self, nums: list[int], k: int) -> list[float]:
-        # small is a max-heap (negated values), large is a min-heap
-        small: list[tuple[int, int]] = []  # (-value, index)
-        large: list[tuple[int, int]] = []  # (value, index)
-        delayed: dict[int, int] = {}  # index -> count of lazy deletions
-        small_size = 0  # effective size of small (excluding delayed)
-        large_size = 0  # effective size of large (excluding delayed)
+        small: list[tuple[int, int]] = []
+        large: list[tuple[int, int]] = []
+        delayed: dict[int, int] = {}
+        in_small: dict[int, bool] = {}
+        small_size = 0
+        large_size = 0
 
         def prune(heap: list[tuple[int, int]]) -> None:
-            """Remove top elements that are marked for lazy deletion."""
             while heap:
                 _, idx = heap[0]
                 if idx in delayed:
@@ -79,17 +108,20 @@ class Solution(Problem):
                     break
 
         def make_balanced() -> None:
-            """Rebalance: small_size == large_size or small_size+1 == large_size."""
             nonlocal small_size, large_size
             if small_size > large_size + 1:
+                prune(small)
                 val, idx = heapq.heappop(small)
                 heapq.heappush(large, (-val, idx))
+                in_small[idx] = False
                 small_size -= 1
                 large_size += 1
                 prune(small)
             elif small_size < large_size:
+                prune(large)
                 val, idx = heapq.heappop(large)
                 heapq.heappush(small, (-val, idx))
+                in_small[idx] = True
                 large_size -= 1
                 small_size += 1
                 prune(large)
@@ -103,37 +135,32 @@ class Solution(Problem):
         result: list[float] = []
 
         for i in range(len(nums)):
-            # Add nums[i]
+            prune(small)
+            prune(large)
+
             if not small or nums[i] <= -small[0][0]:
                 heapq.heappush(small, (-nums[i], i))
+                in_small[i] = True
                 small_size += 1
             else:
                 heapq.heappush(large, (nums[i], i))
+                in_small[i] = False
                 large_size += 1
 
-            # Balance
             make_balanced()
 
-            # Remove element leaving the window
             if i >= k:
                 out_idx = i - k
-                out_val = nums[out_idx]
                 delayed[out_idx] = delayed.get(out_idx, 0) + 1
-                if out_val <= -small[0][0]:
+                if in_small.get(out_idx, True):
                     small_size -= 1
-                    # Prune small if the top is delayed
-                    if small and small[0][1] == out_idx:
-                        prune(small)
                 else:
                     large_size -= 1
-                    # Prune large if the top is delayed
-                    if large and large[0][1] == out_idx:
-                        prune(large)
-                # Rebalance after removal
                 make_balanced()
 
-            # Record median
             if i >= k - 1:
+                prune(small)
+                prune(large)
                 result.append(get_median())
 
         return result

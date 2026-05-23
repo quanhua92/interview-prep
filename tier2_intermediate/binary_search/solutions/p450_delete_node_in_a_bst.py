@@ -65,6 +65,26 @@ class Solution(Problem):
             expected=TreeNode.from_list([]),
             label="example 3",
         ),
+        TestCase(
+            input=(TreeNode.from_list([5]), 5),
+            expected=TreeNode.from_list([]),
+            label="delete single node root",
+        ),
+        TestCase(
+            input=(TreeNode.from_list([3, 1, 4]), 3),
+            expected=TreeNode.from_list([4, 1]),
+            label="delete root with two children",
+        ),
+        TestCase(
+            input=(TreeNode.from_list([2, 1, 3]), 1),
+            expected=TreeNode.from_list([2, None, 3]),
+            label="delete left leaf",
+        ),
+        TestCase(
+            input=(TreeNode.from_list([5, 3, None, 2, None, 1]), 3),
+            expected=TreeNode.from_list([5, 2, None, 1]),
+            label="delete node with only left child",
+        ),
     ]
 
     def solve(self, root: TreeNode | None, key: int) -> TreeNode | None:

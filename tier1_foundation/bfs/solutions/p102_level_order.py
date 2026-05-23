@@ -54,6 +54,31 @@ class Solution(Problem):
         ),
         TestCase(input=TreeNode.from_list([1]), expected=[[1]], label="example 2"),
         TestCase(input=TreeNode.from_list([]), expected=[], label="empty"),
+        TestCase(
+            input=TreeNode.from_list([1, None, 2]),
+            expected=[[1], [2]],
+            label="right child only",
+        ),
+        TestCase(
+            input=TreeNode.from_list([1, 2, None]),
+            expected=[[1], [2]],
+            label="left child only",
+        ),
+        TestCase(
+            input=TreeNode.from_list([5, 3, 8, 1, 4, 7, 9]),
+            expected=[[5], [3, 8], [1, 4, 7, 9]],
+            label="full binary tree depth 2",
+        ),
+        TestCase(
+            input=TreeNode.from_list([-1, -2, -3]),
+            expected=[[-1], [-2, -3]],
+            label="negative values",
+        ),
+        TestCase(
+            input=TreeNode.from_list([1, 1, 1, 1, 1, 1, 1]),
+            expected=[[1], [1, 1], [1, 1, 1, 1]],
+            label="all same value",
+        ),
     ]
 
     def solve(self, root: TreeNode | None) -> list[list[int]]:

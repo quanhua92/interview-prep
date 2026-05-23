@@ -48,6 +48,9 @@ class Solution(Problem):
         TestCase(input=(3, [[1, 3], [2, 3]]), expected=3, label="example 2"),
         TestCase(input=(3, [[1, 3], [2, 3], [3, 1]]), expected=-1, label="no judge"),
         TestCase(input=(1, []), expected=1, label="single person"),
+        TestCase(input=(4, [[1, 3], [2, 3], [4, 3], [3, 4]]), expected=-1, label="judge candidate trusts someone"),
+        TestCase(input=(3, []), expected=-1, label="no trust relationships n>1"),
+        TestCase(input=(2, [[1, 2], [2, 1]]), expected=-1, label="mutual trust no judge"),
     ]
 
     def solve(self, n: int, trust: list[list[int]]) -> int:

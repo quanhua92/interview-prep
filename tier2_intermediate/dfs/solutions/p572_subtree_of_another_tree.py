@@ -58,6 +58,29 @@ class Solution(Problem):
             expected=False,
             label="example 2",
         ),
+        TestCase(
+            input=(TreeNode.from_list([1, 2, 3]), TreeNode.from_list([1, 2, 3])),
+            expected=True,
+            label="identical trees",
+        ),
+        TestCase(
+            input=(TreeNode.from_list([1]), TreeNode.from_list([1])),
+            expected=True,
+            label="single node match",
+        ),
+        TestCase(
+            input=(
+                TreeNode.from_list([1, None, 2, None, 3]),
+                TreeNode.from_list([2, None, 3]),
+            ),
+            expected=True,
+            label="right-skewed subtree",
+        ),
+        TestCase(
+            input=(TreeNode.from_list([1, 2]), TreeNode.from_list([3])),
+            expected=False,
+            label="no matching value",
+        ),
     ]
 
     def solve(self, root: TreeNode, subRoot: TreeNode) -> bool:

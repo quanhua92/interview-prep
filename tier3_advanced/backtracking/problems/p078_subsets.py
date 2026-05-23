@@ -41,6 +41,21 @@ class Solution(Problem):
             label="example 1",
         ),
         TestCase(input=[0], expected=[[], [0]], label="example 2"),
+        TestCase(input=[1, 2], expected=[[], [1], [1, 2], [2]], label="two elements"),
+        TestCase(
+            input=[-1, 0, 1],
+            expected=[[], [-1], [-1, 0], [-1, 0, 1], [-1, 1], [0], [0, 1], [1]],
+            label="negative numbers",
+        ),
+        TestCase(
+            input=[1, 2, 3, 4],
+            expected=[
+                [], [1], [1, 2], [1, 2, 3], [1, 2, 3, 4], [1, 2, 4], [1, 3],
+                [1, 3, 4], [1, 4], [2], [2, 3], [2, 3, 4], [2, 4], [3], [3, 4], [4],
+            ],
+            label="four elements",
+        ),
+        TestCase(input=[3, 1], expected=[[], [3], [3, 1], [1]], label="unsorted input"),
     ]
 
     def solve(self, nums: list[int]) -> list[list[int]]:

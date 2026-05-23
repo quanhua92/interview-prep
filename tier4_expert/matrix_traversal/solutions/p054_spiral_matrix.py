@@ -52,6 +52,26 @@ class Solution(Problem):
             label="example 2",
         ),
         TestCase(input=[[7]], expected=[7], label="single element"),
+        TestCase(
+            input=[[1, 2, 3, 4]],
+            expected=[1, 2, 3, 4],
+            label="single row",
+        ),
+        TestCase(
+            input=[[1], [2], [3], [4]],
+            expected=[1, 2, 3, 4],
+            label="single column",
+        ),
+        TestCase(
+            input=[[1, 2], [3, 4]],
+            expected=[1, 2, 4, 3],
+            label="2x2 matrix",
+        ),
+        TestCase(
+            input=[[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]],
+            expected=[1, 2, 3, 4, 5, 10, 9, 8, 7, 6],
+            label="2 rows many columns",
+        ),
     ]
 
     def solve(self, matrix: list[list[int]]) -> list[int]:

@@ -38,6 +38,10 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=[0, 1, 3, 5, 6, 8, 12, 17], expected=True, label="example 1"),
         TestCase(input=[0, 1, 2, 3, 4, 8, 9, 11], expected=False, label="example 2"),
+        TestCase(input=[0, 1], expected=True, label="minimum 2 stones"),
+        TestCase(input=[0, 2], expected=False, label="gap too large for first jump"),
+        TestCase(input=[0, 1, 3, 6, 10, 15, 21], expected=True, label="increasing jumps 1,2,3,4,5,6"),
+        TestCase(input=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expected=True, label="consecutive stones"),
     ]
 
     def solve(self, stones: list[int]) -> bool:

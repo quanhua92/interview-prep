@@ -67,6 +67,18 @@ class Solution(Problem):
             label="example 3",
         ),
         TestCase(input="a", expected=0, label="example 4"),
+        TestCase(input="file.txt", expected=8, label="file at root level"),
+        TestCase(
+            input="dir\n\tsubdir\n\t\tfile.name.ext",
+            expected=24,
+            label="file with multiple dots",
+        ),
+        TestCase(
+            input="dir\n\tsubdir1\n\tsubdir2",
+            expected=0,
+            label="no files only dirs",
+        ),
+        TestCase(input="a\n\tb.txt", expected=7, label="single level nesting"),
     ]
 
     def solve(self, input: str) -> int:

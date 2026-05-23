@@ -126,6 +126,11 @@ class Solution(Problem):
         TestCase(
             input="[123,[456,[789]]]", expected=[123, [456, [789]]], label="example 2"
         ),
+        TestCase(input="[-1]", expected=[-1], label="negative in list"),
+        TestCase(input="[]", expected=[], label="empty list"),
+        TestCase(input="[[]]", expected=[[]], label="nested empty list"),
+        TestCase(input="[1,2,3]", expected=[1, 2, 3], label="flat list"),
+        TestCase(input="-42", expected=-42, label="negative integer"),
     ]
 
     def solve(self, s: str) -> NestedInteger:

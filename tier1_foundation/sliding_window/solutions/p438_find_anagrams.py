@@ -43,6 +43,10 @@ class Solution(Problem):
         TestCase(input=("cbaebabacd", "abc"), expected=[0, 6], label="example 1"),
         TestCase(input=("abab", "ab"), expected=[0, 1, 2], label="example 2"),
         TestCase(input=("af", "bf"), expected=[], label="no anagrams"),
+        TestCase(input=("abc", "abc"), expected=[0], label="exact match single"),
+        TestCase(input=("aaaaaaaaaa", "aa"), expected=[0, 1, 2, 3, 4, 5, 6, 7, 8], label="all same chars"),
+        TestCase(input=("abacbabc", "abc"), expected=[1, 2, 3, 5], label="overlapping anagrams"),
+        TestCase(input=("a", "aa"), expected=[], label="pattern longer than string"),
     ]
 
     def solve(self, s: str, p: str) -> list[int]:

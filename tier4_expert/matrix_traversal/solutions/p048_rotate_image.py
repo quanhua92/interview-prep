@@ -48,6 +48,17 @@ class Solution(Problem):
             expected=[[15, 13, 2, 5], [14, 3, 4, 1], [12, 6, 8, 9], [16, 7, 10, 11]],
             label="example 2",
         ),
+        TestCase(input=[[1]], expected=[[1]], label="single element"),
+        TestCase(
+            input=[[1, 2], [3, 4]],
+            expected=[[3, 1], [4, 2]],
+            label="2x2 matrix",
+        ),
+        TestCase(
+            input=[[-1, -2, -3], [-4, -5, -6], [-7, -8, -9]],
+            expected=[[-7, -4, -1], [-8, -5, -2], [-9, -6, -3]],
+            label="negative values",
+        ),
     ]
 
     def solve(self, matrix: list[list[int]]) -> list[list[int]]:

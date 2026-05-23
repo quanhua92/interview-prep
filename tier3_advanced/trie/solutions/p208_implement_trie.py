@@ -107,6 +107,53 @@ class Solution(Problem):
             expected=[None, True, False, True, None, True],
             label="full sequence",
         ),
+        TestCase(
+            input=[
+                ("insert", "a"),
+                ("search", "a"),
+                ("search", "b"),
+                ("starts_with", "a"),
+                ("starts_with", "b"),
+            ],
+            expected=[None, True, False, True, False],
+            label="single character",
+        ),
+        TestCase(
+            input=[
+                ("insert", "hello"),
+                ("search", "world"),
+                ("starts_with", "world"),
+                ("search", "hel"),
+                ("starts_with", "hel"),
+            ],
+            expected=[None, False, False, False, True],
+            label="search non-existent word/prefix",
+        ),
+        TestCase(
+            input=[
+                ("insert", "a"),
+                ("insert", "ab"),
+                ("insert", "abc"),
+                ("search", "a"),
+                ("search", "ab"),
+                ("search", "abc"),
+                ("search", "abcd"),
+                ("starts_with", "ab"),
+                ("starts_with", "abcd"),
+            ],
+            expected=[None, None, None, True, True, True, False, True, False],
+            label="overlapping prefixes",
+        ),
+        TestCase(
+            input=[
+                ("insert", "test"),
+                ("insert", "test"),
+                ("search", "test"),
+                ("starts_with", "te"),
+            ],
+            expected=[None, None, True, True],
+            label="duplicate insert",
+        ),
     ]
 
     def solve(self, operations: list[tuple[str, str]], expected: list = None) -> list:

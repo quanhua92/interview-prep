@@ -45,6 +45,16 @@ class Solution(Problem):
         ),
         TestCase(input="", expected=[], label="empty input"),
         TestCase(input="2", expected=["a", "b", "c"], label="single digit"),
+        TestCase(input="7", expected=["p", "q", "r", "s"], label="digit with 4 letters"),
+        TestCase(input="9", expected=["w", "x", "y", "z"], label="digit 9"),
+        TestCase(
+            input="79",
+            expected=[
+                "pw", "px", "py", "pz", "qw", "qx", "qy", "qz",
+                "rw", "rx", "ry", "rz", "sw", "sx", "sy", "sz",
+            ],
+            label="two 4-letter digits",
+        ),
     ]
 
     def solve(self, digits: str) -> list[str]:

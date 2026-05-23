@@ -51,6 +51,21 @@ class Solution(Problem):
         ),
         TestCase(input=[[1, 0], [0, 1]], expected=-1, label="blocked"),
         TestCase(input=[[0]], expected=1, label="single cell"),
+        TestCase(
+            input=[[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+            expected=3,
+            label="3x3 all open (diagonal)",
+        ),
+        TestCase(
+            input=[[0, 0], [0, 0]],
+            expected=2,
+            label="2x2 all open (diagonal)",
+        ),
+        TestCase(
+            input=[[0, 1, 1], [1, 1, 1], [1, 1, 0]],
+            expected=-1,
+            label="3x3 only corners open",
+        ),
     ]
 
     def solve(self, grid: list[list[int]]) -> int:

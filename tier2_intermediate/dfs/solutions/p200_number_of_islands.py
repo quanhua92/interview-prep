@@ -73,6 +73,47 @@ class Solution(Problem):
             expected=0,
             label="empty grid",
         ),
+        TestCase(
+            input=[
+                ["0"],
+            ],
+            expected=0,
+            label="single cell water",
+        ),
+        TestCase(
+            input=[
+                ["1"],
+            ],
+            expected=1,
+            label="single cell land",
+        ),
+        TestCase(
+            input=[
+                ["1", "0", "1", "0", "1"],
+            ],
+            expected=3,
+            label="single row",
+        ),
+        TestCase(
+            input=[
+                ["1"],
+                ["0"],
+                ["1"],
+                ["0"],
+                ["1"],
+            ],
+            expected=3,
+            label="single column",
+        ),
+        TestCase(
+            input=[
+                ["1", "1", "1"],
+                ["1", "1", "1"],
+                ["1", "1", "1"],
+            ],
+            expected=1,
+            label="all land 3x3",
+        ),
     ]
 
     def solve(self, grid: list[list[str]]) -> int:

@@ -41,6 +41,10 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=("ab", "eidbaooo"), expected=True, label="example 1"),
         TestCase(input=("ab", "eidboaoo"), expected=False, label="example 2"),
+        TestCase(input=("a", "a"), expected=True, label="single char match"),
+        TestCase(input=("adc", "dcda"), expected=True, label="permutation at end"),
+        TestCase(input=("abc", "ccccbbbbaaaa"), expected=False, label="no match large string"),
+        TestCase(input=("ab", "a"), expected=False, label="s1 longer than s2"),
     ]
 
     def solve(self, s1: str, s2: str) -> bool:

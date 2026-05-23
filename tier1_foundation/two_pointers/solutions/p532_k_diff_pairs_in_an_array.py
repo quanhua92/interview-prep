@@ -44,6 +44,10 @@ class Solution(Problem):
         TestCase(input=([3, 1, 4, 1, 5], 2), expected=2, label="example 1"),
         TestCase(input=([1, 2, 3, 4, 5], 1), expected=4, label="example 2"),
         TestCase(input=([1, 3, 1, 5, 4], 0), expected=1, label="example 3"),
+        TestCase(input=([1], 1), expected=0, label="single element"),
+        TestCase(input=([1, 1, 1, 1], 0), expected=1, label="all same k=0"),
+        TestCase(input=([1, 2, 3, 4, 5], 100), expected=0, label="k larger than range"),
+        TestCase(input=([-1, -2, -3, -4, -5], 1), expected=4, label="all negatives"),
     ]
 
     def solve(self, nums: list[int], k: int) -> int:

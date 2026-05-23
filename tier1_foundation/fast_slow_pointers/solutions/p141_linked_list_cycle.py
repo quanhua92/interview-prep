@@ -63,6 +63,21 @@ class Solution(Problem):
         TestCase(
             input=(ListNode.from_list([1]), -1), expected=False, label="example 3"
         ),
+        TestCase(
+            input=(None, -1), expected=False, label="empty list"
+        ),
+        TestCase(
+            input=(ListNode.from_list([1, 2]), -1), expected=False, label="two nodes no cycle"
+        ),
+        TestCase(
+            input=(ListNode.from_list([1, 2, 3]), 2), expected=True, label="self-loop at tail"
+        ),
+        TestCase(
+            input=(ListNode.from_list([1, 2, 3, 4, 5]), -1), expected=False, label="long list no cycle"
+        ),
+        TestCase(
+            input=(ListNode.from_list([1, 2, 3]), 0), expected=True, label="cycle back to head"
+        ),
     ]
 
     def solve(self, head: ListNode | None, pos: int) -> bool:

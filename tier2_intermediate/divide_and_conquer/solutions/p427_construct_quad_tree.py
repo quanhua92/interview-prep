@@ -116,6 +116,18 @@ class Solution(Problem):
             ],
             label="example 3",
         ),
+        TestCase(input=[[0]], expected=[[1, 0]], label="1x1 all zeros"),
+        TestCase(input=[[1]], expected=[[1, 1]], label="1x1 all ones"),
+        TestCase(
+            input=[[1, 1], [1, 1]],
+            expected=[[1, 1]],
+            label="2x2 all same (ones)",
+        ),
+        TestCase(
+            input=[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+            expected=[[1, 0]],
+            label="4x4 all zeros",
+        ),
     ]
 
     def solve(self, grid: list[list[int]]) -> list:

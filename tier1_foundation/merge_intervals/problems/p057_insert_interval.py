@@ -58,6 +58,31 @@ class Solution(Problem):
         ),
         TestCase(input=([], [5, 7]), expected=[[5, 7]], label="empty intervals"),
         TestCase(input=([[1, 5]], [2, 3]), expected=[[1, 5]], label="contained"),
+        TestCase(
+            input=([[3, 5], [6, 9]], [1, 2]),
+            expected=[[1, 2], [3, 5], [6, 9]],
+            label="insert before all",
+        ),
+        TestCase(
+            input=([[1, 2], [3, 5]], [6, 9]),
+            expected=[[1, 2], [3, 5], [6, 9]],
+            label="insert after all",
+        ),
+        TestCase(
+            input=([[1, 3], [6, 9]], [0, 2]),
+            expected=[[0, 3], [6, 9]],
+            label="merge with first interval",
+        ),
+        TestCase(
+            input=([[1, 3], [6, 9]], [8, 10]),
+            expected=[[1, 3], [6, 10]],
+            label="merge with last interval",
+        ),
+        TestCase(
+            input=([[1, 2], [4, 5]], [2, 4]),
+            expected=[[1, 5]],
+            label="bridge gap between intervals",
+        ),
     ]
 
     def solve(

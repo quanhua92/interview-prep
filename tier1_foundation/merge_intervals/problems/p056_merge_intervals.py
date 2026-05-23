@@ -43,6 +43,27 @@ class Solution(Problem):
         ),
         TestCase(input=[[1, 4], [4, 5]], expected=[[1, 5]], label="example 2"),
         TestCase(input=[[1, 4], [0, 4]], expected=[[0, 4]], label="overlapping start"),
+        TestCase(input=[[1, 1]], expected=[[1, 1]], label="single interval"),
+        TestCase(
+            input=[[1, 4], [2, 3], [3, 5]],
+            expected=[[1, 5]],
+            label="all overlap into one",
+        ),
+        TestCase(
+            input=[[1, 2], [3, 4], [5, 6]],
+            expected=[[1, 2], [3, 4], [5, 6]],
+            label="no overlaps",
+        ),
+        TestCase(
+            input=[[1, 10], [2, 3], [4, 5]],
+            expected=[[1, 10]],
+            label="interval contains others",
+        ),
+        TestCase(
+            input=[[1, 2], [2, 3], [3, 4]],
+            expected=[[1, 4]],
+            label="adjacent intervals touching",
+        ),
     ]
 
     def solve(self, intervals: list[list[int]]) -> list[list[int]]:

@@ -56,6 +56,11 @@ class Solution(Problem):
         TestCase(input="(]", expected=False, label="mismatched"),
         TestCase(input="([)]", expected=False, label="interleaved"),
         TestCase(input="{[]}", expected=True, label="nested"),
+        TestCase(input="(", expected=False, label="single opening"),
+        TestCase(input=")", expected=False, label="single closing"),
+        TestCase(input="((((", expected=False, label="only openings"),
+        TestCase(input="))))", expected=False, label="only closings"),
+        TestCase(input="((({{{[[[]]]}}})))", expected=True, label="deeply nested"),
     ]
 
     def solve(self, s: str) -> bool:

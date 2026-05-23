@@ -54,6 +54,9 @@ class Solution(Problem):
         ),
         TestCase(input=(10, [3], [3]), expected=1, label="example 2"),
         TestCase(input=(100, [0, 2, 4], [4, 2, 1]), expected=1, label="all merge"),
+        TestCase(input=(10, [8, 0], [2, 1]), expected=2, label="two cars no merge"),
+        TestCase(input=(10, [0, 3], [3, 2]), expected=1, label="two cars merge"),
+        TestCase(input=(10, [1, 2, 3], [1, 1, 1]), expected=3, label="all same speed"),
     ]
 
     def solve(self, target: int, position: list[int], speed: list[int]) -> int:

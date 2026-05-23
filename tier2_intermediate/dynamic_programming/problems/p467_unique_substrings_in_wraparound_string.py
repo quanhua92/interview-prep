@@ -43,6 +43,9 @@ class Solution(Problem):
         TestCase(input="a", expected=1, label="example 1"),
         TestCase(input="cac", expected=2, label="example 2"),
         TestCase(input="zab", expected=6, label="example 3"),
+        TestCase(input="aaaaa", expected=1, label="all same chars only a in wraparound"),
+        TestCase(input="zabcdefg", expected=36, label="wraparound chain length 8"),
+        TestCase(input="abcdefghijklmnopqrstuvwxyz", expected=351, label="full alphabet"),
     ]
 
     def solve(self, s: str) -> int:

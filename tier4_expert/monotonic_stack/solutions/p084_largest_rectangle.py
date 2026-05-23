@@ -37,6 +37,10 @@ class Solution(Problem):
     test_cases = [
         TestCase(input=[2, 1, 5, 6, 2, 3], expected=10, label="example 1"),
         TestCase(input=[2, 4], expected=4, label="example 2"),
+        TestCase(input=[5], expected=5, label="single element"),
+        TestCase(input=[3, 3, 3], expected=9, label="all same heights"),
+        TestCase(input=[2, 0, 2], expected=2, label="contains zero height"),
+        TestCase(input=[1, 2, 3, 4, 5], expected=9, label="strictly increasing"),
     ]
 
     def solve(self, heights: list[int]) -> int:

@@ -46,6 +46,10 @@ class Solution(Problem):
         TestCase(input=[1, 2, 3, 4], expected=[24, 12, 8, 6], label="example 1"),
         TestCase(input=[-1, 1, 0, -3, 3], expected=[0, 0, 9, 0, 0], label="example 2"),
         TestCase(input=[1, 2], expected=[2, 1], label="two elements"),
+        TestCase(input=[1, 1, 1], expected=[1, 1, 1], label="all ones"),
+        TestCase(input=[-1, -1, -1], expected=[1, 1, 1], label="all negatives"),
+        TestCase(input=[1, -1], expected=[-1, 1], label="two elements negative"),
+        TestCase(input=[0, 0, 0, 0], expected=[0, 0, 0, 0], label="all zeros"),
     ]
 
     def solve(self, nums: list[int]) -> list[int]:

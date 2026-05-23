@@ -47,6 +47,26 @@ class Solution(Problem):
         ),
         TestCase(input=[[1]], expected=4, label="example 2"),
         TestCase(input=[[1, 0]], expected=4, label="example 3"),
+        TestCase(
+            input=[[1, 1, 1]],
+            expected=8,
+            label="horizontal line of 3",
+        ),
+        TestCase(
+            input=[[1], [1], [1]],
+            expected=8,
+            label="vertical line of 3",
+        ),
+        TestCase(
+            input=[[1, 1], [1, 1]],
+            expected=8,
+            label="2x2 block",
+        ),
+        TestCase(
+            input=[[1, 1, 1], [1, 1, 1]],
+            expected=10,
+            label="3x2 block",
+        ),
     ]
 
     def solve(self, grid: list[list[int]]) -> int:
