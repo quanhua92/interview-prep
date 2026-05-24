@@ -281,12 +281,21 @@ function _openEditorWithFiles(files, title) {
 			lineNumbers: true,
 			indentUnit: 4,
 			tabSize: 4,
+			indentWithTabs: false,
 			lineWrapping: true,
 			extraKeys: {
 				"Ctrl-S": () => saveFile(),
 				"Cmd-S": () => saveFile(),
 				"Ctrl-R": () => runProblems(),
 				"Cmd-R": () => runProblems(),
+				"Tab": (cm) => {
+				if (cm.somethingSelected()) {
+					cm.indentSelection("add");
+				} else {
+					cm.replaceSelection(" ".repeat(cm.getOption("indentUnit")), "end");
+				}
+			},
+			"Shift-Tab": (cm) => cm.indentSelection("subtract"),
 			},
 		});
 	}
