@@ -66,3 +66,24 @@
   height: 60vh;
   border-radius: 0.5rem;
 }
+
+/* Autocomplete dropdown */
+.CodeMirror-hints {
+  background: #1e1e2e;
+  border: 1px solid #313244;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  font-family: var(--font-mono, "JetBrains Mono", "Fira Code", monospace);
+  font-size: 13px;
+  padding: 4px;
+  z-index: 100;
+}
+.CodeMirror-hint {
+  color: #cdd6f4;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+li.CodeMirror-hint-active {
+  background: #313244;
+  color: #cdd6f4;
+}

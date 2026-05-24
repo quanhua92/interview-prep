@@ -296,7 +296,27 @@ function _openEditorWithFiles(files, title) {
 				}
 			},
 			"Shift-Tab": (cm) => cm.indentSelection("subtract"),
-			},
+				},
+		});
+
+		cmEditor.on("inputRead", (cm, change) => {
+			if (change.origin === "+delete" || change.text[0] === " " || change.text[0] === ":") return;
+			cm.showHint({
+				hint: (cm) => {
+					const customHint = CodeMirror.hint.python(cm);
+					const wordHint = CodeMirror.hint.anyword(cm);
+					const combined = [...new Set([
+						...(customHint ? customHint.list : []),
+						...(wordHint ? wordHint.list : []),
+					])];
+					return {
+						list: combined,
+						from: customHint ? customHint.from : wordHint.from,
+						to: customHint ? customHint.to : wordHint.to,
+					};
+				},
+				completeSingle: false,
+			});
 		});
 	}
 
