@@ -30,6 +30,9 @@ Use `docker compose up -d` to also mount tier directories for persistent file ed
 # Install dependencies
 uv sync
 
+# Install git hooks (blocks accidental commits of problem solve() methods)
+git config core.hooksPath .githooks
+
 # View progress dashboard
 uv run python main.py status
 
