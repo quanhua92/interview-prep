@@ -321,7 +321,9 @@ function _openEditorWithFiles(files, title) {
 			if (ctrlActive) return;
 			if (change.origin === "paste" || change.origin === "+input" && change.text.length > 1) return;
 			if (change.origin === "+delete") return;
-			if (change.text[0] === " " || change.text[0] === ":") return;
+			if (change.text[0] === " " || change.text[0] === ":" || change.text[0] === ")" ||
+				change.text[0] === "]" || change.text[0] === "}" || change.text[0] === "," ||
+				change.text[0] === "'" || change.text[0] === '"') return;
 			cm.showHint({
 				hint: (cm) => {
 					const customHint = CodeMirror.hint.python(cm);
