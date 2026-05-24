@@ -296,7 +296,11 @@ function _openEditorWithFiles(files, title) {
 				}
 			},
 			"Shift-Tab": (cm) => cm.indentSelection("subtract"),
-				},
+			},
+		});
+
+		cmEditor.on("endCompletion", (cm) => {
+			requestAnimationFrame(() => cm.focus());
 		});
 
 		cmEditor.on("inputRead", (cm, change) => {
