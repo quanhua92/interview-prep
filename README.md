@@ -1,6 +1,6 @@
 # Interview Prep
 
-A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, AI-assisted interview scenarios, data analytics, low-level design, and production engineering. Track progress across 144 coding problems and 139 topics with a unified CLI dashboard.
+A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, AI-assisted interview scenarios, data analytics, low-level design, and production engineering. Track progress across 144 coding problems and 140 topics with a unified CLI dashboard.
 
 **Features:**
 - Progress ring, stats cards, and per-section breakdowns
@@ -19,10 +19,18 @@ A comprehensive interview preparation toolkit covering coding patterns, system d
 ## Quick Start
 
 ```bash
-docker run -d -p 8888:8888 -v $(pwd)/progress:/app/progress quanhua92/interview-prep
+git clone https://github.com/quanhua92/interview-prep.git
+cd interview-prep
+docker compose up -d
 ```
 
-Use `docker compose up -d` to also mount tier directories for persistent file editing.
+Go to [http://localhost:8888](http://localhost:8888) to view the dashboard.
+
+For a minimal setup (no file persistence):
+
+```bash
+docker run -d -p 8888:8888 -v $(pwd)/progress:/app/progress quanhua92/interview-prep
+```
 
 ### CLI
 
@@ -209,7 +217,7 @@ Each theme contains:
 - `discussion.md` — STAR framework guidance, what interviewers look for, story mining prompts
 - `checklist.md` — Story workshop with drafting checkboxes, refinement checks, practice log
 
-## Salary Negotiation (7 topics)
+## Salary Negotiation (8 topics)
 
 | Topic | Focus |
 |-------|-------|
@@ -220,6 +228,7 @@ Each theme contains:
 | [Equity & RSU Evaluation](salary_negotiation/equity_rsu_evaluation/) | Stock options, vesting, dilution, tax |
 | [Difficult Scenarios](salary_negotiation/difficult_scenarios/) | Lowball offers, exploding offers, competing offers |
 | [Counteroffer & Staying](salary_negotiation/counteroffer_staying/) | Counteroffer risks, resigning professionally |
+| [Remote Negotiation](salary_negotiation/remote_negotiation/) | Remote/hybrid comp adjustments, cost of living, location arbitrage |
 
 Each topic contains:
 - `discussion.md` — Benchmarks, frameworks, scripts, talking points
