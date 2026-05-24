@@ -297,6 +297,10 @@ function _openEditorWithFiles(files, title) {
 			tabSize: 4,
 			indentWithTabs: false,
 			lineWrapping: true,
+			autoCloseBrackets: true,
+			matchBrackets: true,
+			foldGutter: true,
+			gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 			extraKeys: {
 				"Ctrl-S": () => saveFile(),
 				"Cmd-S": () => saveFile(),
@@ -310,6 +314,8 @@ function _openEditorWithFiles(files, title) {
 				}
 			},
 			"Shift-Tab": (cm) => cm.indentSelection("subtract"),
+				"Ctrl-/": (cm) => cm.toggleComment({ indent: true }),
+				"Cmd-/": (cm) => cm.toggleComment({ indent: true }),
 			},
 		});
 
