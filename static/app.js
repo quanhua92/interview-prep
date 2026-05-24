@@ -129,6 +129,10 @@ filterItems();
 // --- Editor ---
 
 let cmEditor = null;
+let ctrlActive = false;
+
+document.addEventListener("keydown", (e) => { if (e.ctrlKey || e.metaKey) ctrlActive = true; });
+document.addEventListener("keyup", (e) => { if (e.ctrlKey || e.metaKey) ctrlActive = false; });
 let currentFile = { item: null, filename: null };
 let fileTreeOpen = false;
 let activePanel = "explorer";
@@ -304,7 +308,10 @@ function _openEditorWithFiles(files, title) {
 		});
 
 		cmEditor.on("inputRead", (cm, change) => {
-			if (change.origin === "+delete" || change.text[0] === " " || change.text[0] === ":") return;
+			if (ctrlActive) return;
+			if (change.origin === "paste" || change.origin === "+input" && change.text.length > 1) return;
+			if (change.origin === "+delete") return;
+			if (change.text[0] === " " || change.text[0] === ":") return;
 			cm.showHint({
 				hint: (cm) => {
 					const customHint = CodeMirror.hint.python(cm);
