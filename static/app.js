@@ -153,7 +153,15 @@ let fileTreeOpen = false;
 let activePanel = "explorer";
 
 const SETTINGS_KEY = "interview-prep-settings";
-const DEFAULT_SETTINGS = { editorFontSize: 14 };
+const DEFAULT_SETTINGS = {
+	editorFontSize: 14,
+	tabSize: 4,
+	lineWrapping: true,
+	autoCloseBrackets: true,
+	matchBrackets: true,
+	foldGutter: true,
+	lineNumbers: true,
+};
 
 function _loadSettings() {
 	try {
@@ -241,37 +249,84 @@ function toggleSettings() {
 
 function _showSettingsPanel() {
 	const tree = document.getElementById("file-tree");
-	const settings = _loadSettings();
+	const s = _loadSettings();
+
 	const fontSizes = [8, 9, 10, 11, 12, 14, 16, 18, 20, 24];
-	const options = fontSizes
+	const fontOptions = fontSizes
 		.map(
-			(s) =>
-				`<option value="${s}" ${s === settings.editorFontSize ? "selected" : ""}>${s}px</option>`,
+			(v) =>
+				`<option value="${v}" ${v === s.editorFontSize ? "selected" : ""}>${v}px</option>`,
 		)
 		.join("");
 
+	const tabSizes = [2, 4, 8];
+	const tabOptions = tabSizes
+		.map(
+			(v) =>
+				`<option value="${v}" ${v === s.tabSize ? "selected" : ""}>${v}</option>`,
+		)
+		.join("");
+
+	const checkbox = (label, key) =>
+		`<label class="flex items-center gap-2 text-zinc-300 text-sm py-1 cursor-pointer">
+			<input type="checkbox" data-setting="${key}" ${s[key] ? "checked" : ""}
+				class="accent-purple-500 w-3.5 h-3.5 cursor-pointer">
+			${label}
+		</label>`;
+
 	tree.innerHTML = `
 		<div class="tree-group">Settings</div>
-		<div class="px-3 py-2 text-zinc-300">
-			<label class="block text-zinc-400 mb-1">Font Size</label>
-			<select id="font-size-select"
-				class="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1.5 text-sm text-white focus:outline-none focus:border-purple-500 cursor-pointer">
-				${options}
-			</select>
+		<div class="px-3 py-2 space-y-3">
+			<div>
+				<label class="block text-zinc-400 mb-1 text-xs">Font Size</label>
+				<select data-setting="editorFontSize"
+					class="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1.5 text-sm text-white focus:outline-none focus:border-purple-500 cursor-pointer">
+					${fontOptions}
+				</select>
+			</div>
+			<div>
+				<label class="block text-zinc-400 mb-1 text-xs">Tab Size</label>
+				<select data-setting="tabSize"
+					class="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1.5 text-sm text-white focus:outline-none focus:border-purple-500 cursor-pointer">
+					${tabOptions}
+				</select>
+			</div>
+			<div class="border-t border-zinc-800 pt-2">
+				${checkbox("Line Numbers", "lineNumbers")}
+				${checkbox("Line Wrapping", "lineWrapping")}
+				${checkbox("Auto Close Brackets", "autoCloseBrackets")}
+				${checkbox("Match Brackets", "matchBrackets")}
+				${checkbox("Code Folding", "foldGutter")}
+			</div>
 		</div>
 	`;
-	document
-		.getElementById("font-size-select")
-		.addEventListener("change", (e) => {
-			_updateSetting("editorFontSize", Number(e.target.value));
-			_applyFontSize();
+
+	tree.querySelectorAll("select[data-setting]").forEach((el) => {
+		el.addEventListener("change", (e) => {
+			_updateSetting(e.target.dataset.setting, Number(e.target.value));
+			_applyAllSettings();
 		});
+	});
+
+	tree.querySelectorAll("input[type=checkbox][data-setting]").forEach((el) => {
+		el.addEventListener("change", (e) => {
+			_updateSetting(e.target.dataset.setting, e.target.checked);
+			_applyAllSettings();
+		});
+	});
 }
 
-function _applyFontSize() {
+function _applyAllSettings() {
 	if (!cmEditor) return;
-	const size = _loadSettings().editorFontSize;
-	cmEditor.getWrapperElement().style.fontSize = `${size}px`;
+	const s = _loadSettings();
+	cmEditor.getWrapperElement().style.fontSize = `${s.editorFontSize}px`;
+	cmEditor.setOption("tabSize", s.tabSize);
+	cmEditor.setOption("indentUnit", s.tabSize);
+	cmEditor.setOption("lineWrapping", s.lineWrapping);
+	cmEditor.setOption("autoCloseBrackets", s.autoCloseBrackets);
+	cmEditor.setOption("matchBrackets", s.matchBrackets);
+	cmEditor.setOption("foldGutter", s.foldGutter);
+	cmEditor.setOption("lineNumbers", s.lineNumbers);
 	cmEditor.refresh();
 }
 
@@ -454,7 +509,7 @@ function _openEditorWithFiles(files, title) {
 		});
 	}
 
-	_applyFontSize();
+	_applyAllSettings();
 	loadFile(files[0].item, files[0].name);
 }
 
@@ -493,7 +548,7 @@ async function loadFile(itemName, filename) {
 	cmEditor.clearHistory();
 	cmEditor.markClean();
 	_updateSaveBtn();
-	_applyFontSize();
+	_applyAllSettings();
 
 	document.querySelectorAll("#file-tree .tree-item").forEach((el) => {
 		el.classList.toggle("active", el.dataset.file === key);
