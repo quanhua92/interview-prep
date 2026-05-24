@@ -323,7 +323,9 @@ function _openEditorWithFiles(files, title) {
 			requestAnimationFrame(() => cm.focus());
 		});
 
-		cmEditor.on("inputRead", (cm, change) => {
+		cmEditor.on("change", () => _updateSaveBtn());
+
+	cmEditor.on("inputRead", (cm, change) => {
 			if (ctrlActive) return;
 			if (change.origin === "paste" || change.origin === "+input" && change.text.length > 1) return;
 			if (change.origin === "+delete") return;
@@ -383,6 +385,8 @@ async function loadFile(itemName, filename) {
 	const modeMap = { python: "python", markdown: "markdown" };
 	cmEditor.setOption("mode", modeMap[data.language] || "python");
 	cmEditor.clearHistory();
+	cmEditor.markClean();
+	_updateSaveBtn();
 
 	document.querySelectorAll("#file-tree .tree-item").forEach((el) => {
 		el.classList.toggle("active", el.dataset.file === key);
@@ -402,6 +406,18 @@ function toggleEditorBody() {
 	document.getElementById("toggle-icon").innerHTML = hidden
 		? '<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>'
 		: '<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/>';
+}
+
+function _updateSaveBtn() {
+	const label = document.getElementById("save-label");
+	const btn = document.getElementById("save-btn");
+	if (!cmEditor) return;
+	const clean = cmEditor.isClean();
+	label.textContent = clean ? "Saved" : "Save";
+	btn.classList.toggle("bg-blue-600", !clean);
+	btn.classList.toggle("hover:bg-blue-500", !clean);
+	btn.classList.toggle("bg-zinc-700", clean);
+	btn.classList.toggle("hover:bg-zinc-600", clean);
 }
 
 // biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
@@ -424,6 +440,8 @@ async function saveFile() {
 		);
 		if (res.ok) {
 			showToast("File saved");
+			cmEditor.markClean();
+			_updateSaveBtn();
 			if (activePanel === "history") revertFile();
 		} else {
 			const data = await res.json();
@@ -433,7 +451,7 @@ async function saveFile() {
 		showToast("Error: " + err.message);
 	} finally {
 		btn.disabled = false;
-		label.textContent = "Save";
+		_updateSaveBtn();
 	}
 }
 
