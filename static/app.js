@@ -21,7 +21,9 @@ function filterItems() {
 			(c) => c.value,
 		),
 	);
-	const query = (document.getElementById("search-input")?.value || "").toLowerCase().trim();
+	const query = (document.getElementById("search-input")?.value || "")
+		.toLowerCase()
+		.trim();
 	document.querySelectorAll("[data-section]").forEach((section) => {
 		const rows = section.querySelectorAll("[data-status][data-name]");
 		let visible = 0;
@@ -73,7 +75,8 @@ async function downloadTracker() {
 // biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
 async function runProblems() {
 	const termBody = document.getElementById("terminal-body");
-	termBody.innerHTML = '<div class="text-zinc-500 animate-pulse">Running problems...</div>';
+	termBody.innerHTML =
+		'<div class="text-zinc-500 animate-pulse">Running problems...</div>';
 
 	try {
 		const res = await fetch("/api/run", { method: "POST" });
@@ -140,23 +143,53 @@ document.addEventListener("keydown", (e) => {
 });
 document.addEventListener("keyup", (e) => {
 	if (!e.ctrlKey && !e.metaKey) {
-		ctrlTimeout = setTimeout(() => { ctrlActive = false; }, 500);
+		ctrlTimeout = setTimeout(() => {
+			ctrlActive = false;
+		}, 500);
 	}
 });
 let currentFile = { item: null, filename: null };
 let fileTreeOpen = false;
 let activePanel = "explorer";
 
+const SETTINGS_KEY = "interview-prep-settings";
+const DEFAULT_SETTINGS = { editorFontSize: 14 };
+
+function _loadSettings() {
+	try {
+		const raw = localStorage.getItem(SETTINGS_KEY);
+		if (raw) return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+	} catch {
+		/* ignore malformed JSON */
+	}
+	return { ...DEFAULT_SETTINGS };
+}
+
+function _saveSettings(settings) {
+	localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+}
+
+function _updateSetting(key, value) {
+	const settings = _loadSettings();
+	settings[key] = value;
+	_saveSettings(settings);
+	return settings;
+}
+
 function _setActivePanel(panel) {
 	activePanel = panel;
 	const explorer = document.getElementById("explorer-btn");
 	const history = document.getElementById("history-btn");
+	const settings = document.getElementById("settings-btn");
 	explorer.classList.toggle("text-blue-400", panel === "explorer");
 	explorer.classList.toggle("border-l-2", panel === "explorer");
 	explorer.classList.toggle("border-blue-400", panel === "explorer");
 	history.classList.toggle("text-orange-400", panel === "history");
 	history.classList.toggle("border-l-2", panel === "history");
 	history.classList.toggle("border-orange-400", panel === "history");
+	settings.classList.toggle("text-purple-400", panel === "settings");
+	settings.classList.toggle("border-l-2", panel === "settings");
+	settings.classList.toggle("border-purple-400", panel === "settings");
 }
 
 function toggleFileTree() {
@@ -187,6 +220,59 @@ async function _reRenderFileTree() {
 			});
 		}
 	}
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
+function toggleSettings() {
+	if (!fileTreeOpen) {
+		fileTreeOpen = true;
+		document.getElementById("file-tree").classList.remove("hidden");
+		_setActivePanel("settings");
+		_showSettingsPanel();
+	} else if (activePanel === "settings") {
+		fileTreeOpen = false;
+		document.getElementById("file-tree").classList.add("hidden");
+		_setActivePanel(null);
+	} else {
+		_setActivePanel("settings");
+		_showSettingsPanel();
+	}
+}
+
+function _showSettingsPanel() {
+	const tree = document.getElementById("file-tree");
+	const settings = _loadSettings();
+	const fontSizes = [8, 9, 10, 11, 12, 14, 16, 18, 20, 24];
+	const options = fontSizes
+		.map(
+			(s) =>
+				`<option value="${s}" ${s === settings.editorFontSize ? "selected" : ""}>${s}px</option>`,
+		)
+		.join("");
+
+	tree.innerHTML = `
+		<div class="tree-group">Settings</div>
+		<div class="px-3 py-2 text-zinc-300">
+			<label class="block text-zinc-400 mb-1">Font Size</label>
+			<select id="font-size-select"
+				class="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1.5 text-sm text-white focus:outline-none focus:border-purple-500 cursor-pointer">
+				${options}
+			</select>
+		</div>
+	`;
+	document
+		.getElementById("font-size-select")
+		.addEventListener("change", (e) => {
+			_updateSetting("editorFontSize", Number(e.target.value));
+			_applyFontSize();
+		});
+}
+
+function _applyFontSize() {
+	if (!cmEditor) return;
+	const size = _loadSettings().editorFontSize;
+	cmEditor.getWrapperElement().style.fontSize = `${size}px`;
+	cmEditor.refresh();
 }
 
 // biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
@@ -262,7 +348,10 @@ async function openEditor(itemName) {
 	}
 
 	const files = data.files.map((f) => ({ item: itemName, name: f.name }));
-	_openEditorWithFiles(files, itemName.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()));
+	_openEditorWithFiles(
+		files,
+		itemName.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+	);
 }
 
 async function openAllInProgress() {
@@ -306,14 +395,14 @@ function _openEditorWithFiles(files, title) {
 				"Cmd-S": () => saveFile(),
 				"Ctrl-R": () => runProblems(),
 				"Cmd-R": () => runProblems(),
-				"Tab": (cm) => {
-				if (cm.somethingSelected()) {
-					cm.indentSelection("add");
-				} else {
-					cm.replaceSelection(" ".repeat(cm.getOption("indentUnit")), "end");
-				}
-			},
-			"Shift-Tab": (cm) => cm.indentSelection("subtract"),
+				Tab: (cm) => {
+					if (cm.somethingSelected()) {
+						cm.indentSelection("add");
+					} else {
+						cm.replaceSelection(" ".repeat(cm.getOption("indentUnit")), "end");
+					}
+				},
+				"Shift-Tab": (cm) => cm.indentSelection("subtract"),
 				"Ctrl-/": (cm) => cm.toggleComment({ indent: true }),
 				"Cmd-/": (cm) => cm.toggleComment({ indent: true }),
 			},
@@ -325,21 +414,35 @@ function _openEditorWithFiles(files, title) {
 
 		cmEditor.on("change", () => _updateSaveBtn());
 
-	cmEditor.on("inputRead", (cm, change) => {
+		cmEditor.on("inputRead", (cm, change) => {
 			if (ctrlActive) return;
-			if (change.origin === "paste" || change.origin === "+input" && change.text.length > 1) return;
+			if (
+				change.origin === "paste" ||
+				(change.origin === "+input" && change.text.length > 1)
+			)
+				return;
 			if (change.origin === "+delete") return;
-			if (change.text[0] === " " || change.text[0] === ":" || change.text[0] === ")" ||
-				change.text[0] === "]" || change.text[0] === "}" || change.text[0] === "," ||
-				change.text[0] === "'" || change.text[0] === '"') return;
+			if (
+				change.text[0] === " " ||
+				change.text[0] === ":" ||
+				change.text[0] === ")" ||
+				change.text[0] === "]" ||
+				change.text[0] === "}" ||
+				change.text[0] === "," ||
+				change.text[0] === "'" ||
+				change.text[0] === '"'
+			)
+				return;
 			cm.showHint({
 				hint: (cm) => {
 					const customHint = CodeMirror.hint.python(cm);
 					const wordHint = CodeMirror.hint.anyword(cm);
-					const combined = [...new Set([
-						...(customHint ? customHint.list : []),
-						...(wordHint ? wordHint.list : []),
-					])];
+					const combined = [
+						...new Set([
+							...(customHint ? customHint.list : []),
+							...(wordHint ? wordHint.list : []),
+						]),
+					];
 					return {
 						list: combined,
 						from: customHint ? customHint.from : wordHint.from,
@@ -351,6 +454,7 @@ function _openEditorWithFiles(files, title) {
 		});
 	}
 
+	_applyFontSize();
 	loadFile(files[0].item, files[0].name);
 }
 
@@ -364,7 +468,9 @@ function _renderFileTree(files) {
 
 	let html = "";
 	for (const [item, names] of Object.entries(grouped)) {
-		const label = item.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+		const label = item
+			.replace(/_/g, " ")
+			.replace(/\b\w/g, (c) => c.toUpperCase());
 		html += `<div class="tree-group">${label}</div>`;
 		for (const name of names) {
 			const key = _fileKey(item, name);
@@ -387,6 +493,7 @@ async function loadFile(itemName, filename) {
 	cmEditor.clearHistory();
 	cmEditor.markClean();
 	_updateSaveBtn();
+	_applyFontSize();
 
 	document.querySelectorAll("#file-tree .tree-item").forEach((el) => {
 		el.classList.toggle("active", el.dataset.file === key);
