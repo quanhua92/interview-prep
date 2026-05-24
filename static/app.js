@@ -130,9 +130,19 @@ filterItems();
 
 let cmEditor = null;
 let ctrlActive = false;
+let ctrlTimeout = null;
 
-document.addEventListener("keydown", (e) => { if (e.ctrlKey || e.metaKey) ctrlActive = true; });
-document.addEventListener("keyup", (e) => { if (e.ctrlKey || e.metaKey) ctrlActive = false; });
+document.addEventListener("keydown", (e) => {
+	if (e.ctrlKey || e.metaKey) {
+		ctrlActive = true;
+		clearTimeout(ctrlTimeout);
+	}
+});
+document.addEventListener("keyup", (e) => {
+	if (!e.ctrlKey && !e.metaKey) {
+		ctrlTimeout = setTimeout(() => { ctrlActive = false; }, 500);
+	}
+});
 let currentFile = { item: null, filename: null };
 let fileTreeOpen = false;
 let activePanel = "explorer";
