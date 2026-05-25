@@ -48,8 +48,7 @@
 #pragma GCC diagnostic pop
 
 int canCompleteCircuit(const std::vector<int> &gas, const std::vector<int> &cost) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

@@ -36,8 +36,7 @@
 
 static int findPoisonedDuration(int *ts, int tsSize, int duration)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

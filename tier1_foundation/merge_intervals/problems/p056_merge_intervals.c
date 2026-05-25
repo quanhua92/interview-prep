@@ -31,14 +31,12 @@
 
 static int pair_cmp(const void *a, const void *b)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int *solve(int *flat, int flat_n, int target, int *ret_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

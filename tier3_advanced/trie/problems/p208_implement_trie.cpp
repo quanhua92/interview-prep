@@ -69,22 +69,20 @@ class Trie {
     TrieNode root;
 public:
     void insert(const std::string &word) {
-        /* TODO: Implement */
+        abort();
     }
 
     bool search(const std::string &word) {
-        TrieNode *node = find(word);
-        return node && node->is_end;
+        abort();
     }
 
     bool startsWith(const std::string &prefix) {
-        return find(prefix) != nullptr;
+        abort();
     }
 
 private:
     TrieNode *find(const std::string &prefix) {
-        /* TODO: Implement */
-        return 0;
+        abort();
     }
 };
 

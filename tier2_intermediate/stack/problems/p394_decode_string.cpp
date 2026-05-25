@@ -38,8 +38,7 @@
 #include <utility>
 
 static std::string decodeString(const std::string &s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

@@ -58,61 +58,51 @@ static int small_sz, large_sz;
 
 static void sift_up_small(int i)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void sift_down_small(int i)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void sift_up_large(int i)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void sift_down_large(int i)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void prune_small(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void prune_large(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void make_balanced(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static double get_median(int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 double *solve(int *nums, int n, int k, int *ret_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int feq(double a, double b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

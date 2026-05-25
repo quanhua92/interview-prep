@@ -36,8 +36,7 @@
 #include <stdint.h>
 
 static int hammingWeight(uint32_t n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

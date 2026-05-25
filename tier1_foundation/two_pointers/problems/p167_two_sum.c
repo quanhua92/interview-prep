@@ -40,8 +40,7 @@
 
 int *two_sum(const int *numbers, int n, int target, int *return_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

@@ -33,20 +33,17 @@
 
 static int get_next(int num)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 bool isHappy(int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 void __attribute__((unused)) _use_harness_fns(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

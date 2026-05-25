@@ -42,18 +42,15 @@ struct ListNode {
 };
 
 static ListNode *build_list(const std::vector<int> &arr) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_list(ListNode *head) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static std::vector<int> solve(ListNode *head) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

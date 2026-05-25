@@ -38,8 +38,7 @@
 
 std::vector<int> topKFrequent(const std::vector<int> &nums, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

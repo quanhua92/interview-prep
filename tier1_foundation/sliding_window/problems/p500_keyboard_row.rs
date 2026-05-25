@@ -34,7 +34,18 @@ fn get_row(c: char) -> usize {
 }
 
 fn find_words<'a>(words: &'a [&'a str]) -> Vec<&'a str> {
-    todo!()
+    let mut result = Vec::new();
+    for &w in words {
+        if w.is_empty() {
+            continue;
+        }
+        let first_row = get_row(w.chars().next().unwrap());
+        let valid = w.chars().all(|c| get_row(c) == first_row);
+        if valid {
+            result.push(w);
+        }
+    }
+    result
 }
 
 fn main() {

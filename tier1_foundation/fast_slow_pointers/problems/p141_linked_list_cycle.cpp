@@ -55,20 +55,17 @@ struct ListNode {
 
 static ListNode *build_list(const std::vector<int> &vals)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void create_cycle(ListNode *head, int n, int pos)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static bool hasCycle(ListNode *head, int n, int pos)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 struct CycleTestCase {

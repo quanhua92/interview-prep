@@ -36,18 +36,15 @@
 #include <string.h>
 
 static int find(int *parent, int x) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void unite(int *parent, int *rank, int x, int y) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int equationsPossible(int n_eq, const char **equations) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

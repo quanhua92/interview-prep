@@ -35,8 +35,7 @@
 #include "ctest.h"
 
 static int singleNumber(const int *nums, int numsSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

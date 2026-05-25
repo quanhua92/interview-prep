@@ -35,8 +35,7 @@
 
 static int *findAnagrams(const char *s, const char *p, int *returnSize)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

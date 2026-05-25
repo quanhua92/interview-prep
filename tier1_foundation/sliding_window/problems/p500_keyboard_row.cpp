@@ -34,20 +34,17 @@
 
 static int get_row(char c)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 std::vector<std::string> findWords(const std::vector<std::string> &words)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 void __attribute__((unused)) _use_harness_fns(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

@@ -80,28 +80,23 @@ static int key_to_node[MAXKEYS];
 static int lfu_cap, lfu_size, min_freq;
 
 static void list_remove(int idx) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void list_push_front(int idx) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void lfu_init(int capacity) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int lfu_get(int key) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void lfu_put(int key, int value) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

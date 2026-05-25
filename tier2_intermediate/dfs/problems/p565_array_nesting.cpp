@@ -31,8 +31,7 @@
 #include <vector>
 
 static int arrayNesting(const std::vector<int>& nums) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

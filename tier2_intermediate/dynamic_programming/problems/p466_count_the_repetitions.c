@@ -28,8 +28,7 @@
 #include <string.h>
 
 int getMaxRepetitions(const char *s1, int n1, const char *s2, int n2) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

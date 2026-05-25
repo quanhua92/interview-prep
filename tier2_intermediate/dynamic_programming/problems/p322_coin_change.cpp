@@ -37,8 +37,7 @@
 #include <climits>
 
 int coinChange(std::vector<int> coins, int amount) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

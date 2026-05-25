@@ -31,13 +31,11 @@
 #include "ctest.h"
 
 static int dfs(int **grid, int r, int c, int rows, int cols) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int maxAreaOfIsland(int **grid, int gridSize, int *gridColSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

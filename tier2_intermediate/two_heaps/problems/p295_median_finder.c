@@ -56,60 +56,50 @@ static int small[MAX_N], large[MAX_N];
 static int sn, ln;
 
 static void push_small(int v) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 static void push_large(int v) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void sift_up_small(int i)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void sift_down_small(int i)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void sift_up_large(int i)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void sift_down_large(int i)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void add_num(int num)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static double find_median(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 double *solve(int *stream, int n, int *ret_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int feq(double a, double b)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

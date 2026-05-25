@@ -39,8 +39,7 @@
 #include "ctest.h"
 
 static int canFinish(int numCourses, int prerequisites[][2], int prereqSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

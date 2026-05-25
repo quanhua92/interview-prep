@@ -41,8 +41,7 @@ using namespace std;
 
 vector<int> subarray_sum(const vector<int>& nums, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

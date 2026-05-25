@@ -46,26 +46,22 @@
 #include <string.h>
 
 static int cmp_int(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int *threeSum(int *nums, int n, int *return_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int triplet_cmp(const void *a, const void *b)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int results_eq(int *got, int gn, int *exp, int en)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

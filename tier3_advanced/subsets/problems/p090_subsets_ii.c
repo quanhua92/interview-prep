@@ -35,33 +35,27 @@ static int *nums_buf;
 static int nums_len;
 
 static void add_result(int *path, int depth) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void backtrack(int start, int *path, int depth) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int cmp_int(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int **subsetsWithDup(int *nums, int numsSize, int *returnSize, int **returnColumnSizes) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void sort_results(int **rows, int *cs, int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int check(int **got, int got_rows, int *got_cs, int **exp, int exp_rows, int *exp_cs) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

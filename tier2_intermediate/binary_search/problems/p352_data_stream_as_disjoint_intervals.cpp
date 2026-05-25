@@ -56,8 +56,7 @@
 
 std::vector<std::vector<int>> solve_intervals(const std::vector<int> &values)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

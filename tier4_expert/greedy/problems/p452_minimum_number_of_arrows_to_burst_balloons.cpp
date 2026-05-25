@@ -44,8 +44,7 @@
 using ll = long long;
 
 int findMinArrowShots(std::vector<std::pair<ll, ll>> &points) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

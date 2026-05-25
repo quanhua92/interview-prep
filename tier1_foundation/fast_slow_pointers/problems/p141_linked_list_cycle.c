@@ -53,20 +53,17 @@ struct ListNode {
 
 static struct ListNode *build_list(int *vals, int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void create_cycle(struct ListNode *head, int n, int pos)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int hasCycle(struct ListNode *head, int n, int pos)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

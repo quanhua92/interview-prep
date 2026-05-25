@@ -29,8 +29,7 @@
 #include <algorithm>
 
 int longestPalindromeSubseq(const std::string &s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

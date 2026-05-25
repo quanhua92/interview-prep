@@ -46,19 +46,37 @@
 #include <algorithm>
 
 static std::string collapse(const std::string &s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int dfs(const std::string &board, const std::string &hand,
                std::map<std::pair<std::string, std::string>, int> &memo) {
-    /* TODO: Implement */
-    return 0;
+    std::string b = collapse(board);
+    if (b.empty()) return 0;
+    if (hand.empty()) return -1;
+    auto key = std::make_pair(b, hand);
+    if (memo.count(key)) return memo[key];
+    int minBalls = -1;
+    int blen = (int)b.size();
+    int hlen = (int)hand.size();
+    for (int i = 0; i <= blen; i++) {
+        for (int hi = 0; hi < hlen; hi++) {
+            if (hi > 0 && hand[hi] == hand[hi - 1]) continue;
+            char color = hand[hi];
+            std::string newBoard = b.substr(0, i) + color + b.substr(i);
+            std::string newHand = hand.substr(0, hi) + hand.substr(hi + 1);
+            int result = dfs(newBoard, newHand, memo);
+            if (result != -1) {
+                if (minBalls == -1 || result + 1 < minBalls) minBalls = result + 1;
+            }
+        }
+    }
+    memo[key] = minBalls;
+    return minBalls;
 }
 
 static int findMinStep(const std::string &board, const std::string &hand) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 struct TC {

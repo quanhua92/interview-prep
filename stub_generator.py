@@ -113,7 +113,7 @@ def stub_text(content, lang):
                     sig_with_brace = sig_with_brace.rstrip()
                     if not sig_with_brace.endswith('{'):
                         sig_with_brace += ' {'
-                    result.append(sig_with_brace + '\n    /* TODO: Implement */\n    return 0;\n}')
+                    result.append(sig_with_brace + '\n    abort();\n}')
                 else:
                     sig_with_brace = sig_with_brace.rstrip()
                     if not sig_with_brace.endswith('{'):
@@ -141,6 +141,7 @@ def stub_js_text(content):
     in_function = False
     brace_depth = 0
     fn_sig_lines = []
+    any_stubbed = False
 
     i = 0
     while i < len(lines):
@@ -162,6 +163,7 @@ def stub_js_text(content):
             fn_sig_lines.append(line)
             brace_depth += line.count('{') - line.count('}')
             if brace_depth <= 0:
+                any_stubbed = True
                 sig_text = fn_sig_lines[0].rstrip()
                 if sig_text.endswith('{'):
                     sig_text = sig_text[:-1].rstrip()
@@ -176,7 +178,7 @@ def stub_js_text(content):
 
         i += 1
 
-    return '\n'.join(result)
+    return '\n'.join(result), any_stubbed
 
 
 def main():
@@ -223,9 +225,12 @@ def main():
                     after_desc = sol_content[old_desc_m.end():].lstrip("\n") if old_desc_m else sol_content
 
                     stubbed_content, was_stubbed = stub_text(after_desc, lang)
-                    final = block_desc + stubbed_content
-                    prob_file.write_text(final)
-                    if was_stubbed: stubbed_files += 1
+                    if not was_stubbed:
+                        print(f"  WARNING: {stem}{ext} — no functions to stub, need manually edit")
+                    else:
+                        final = block_desc + stubbed_content
+                        prob_file.write_text(final)
+                        stubbed_files += 1
 
                 sol_js = sol_dir / f"{stem}.mjs"
                 prob_js = prob_dir / f"{stem}.mjs"
@@ -233,9 +238,12 @@ def main():
                     sol_content = sol_js.read_text(errors="replace")
                     js_desc_m = re.search(r'^/\*\*(.*?)\*/', sol_content, re.DOTALL)
                     after_desc = sol_content[js_desc_m.end():].lstrip("\n") if js_desc_m else sol_content
-                    stubbed_content = stub_js_text(after_desc)
-                    prob_js.write_text(js_desc + stubbed_content)
-                    stubbed_files += 1
+                    stubbed_content, was_stubbed = stub_js_text(after_desc)
+                    if not was_stubbed:
+                        print(f"  WARNING: {stem}.mjs — no functions to stub, need manually edit")
+                    else:
+                        prob_js.write_text(js_desc + stubbed_content)
+                        stubbed_files += 1
 
     print(f"Processed {total} problems, stubbed {stubbed_files} files")
 

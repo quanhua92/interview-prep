@@ -39,8 +39,7 @@
 #include <string>
 
 bool equationsPossible(const std::vector<std::string> &equations) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 struct TC {

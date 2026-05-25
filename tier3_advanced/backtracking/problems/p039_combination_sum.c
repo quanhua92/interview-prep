@@ -48,33 +48,27 @@ static int g_cnt;
 static int g_cap;
 
 static void add_res(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void bt(int start, int rem) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int sort_cands(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void sort_res(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int **combinationSum(int *candidates, int candidatesSize, int target, int *returnSize, int **returnColumnSizes) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int check(int **got, int gn, int *gcs, int **exp, int en, int *ecs) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

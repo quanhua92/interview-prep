@@ -46,13 +46,11 @@
 static char visited[50001];
 
 static int dfs(const int *arr, int n, int i) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int canReach(const int *arr, int n, int start) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

@@ -27,11 +27,26 @@
  *     - Try to use two-pointers. Set one pointer to the left and one to the right of the array. Always move the pointer that points to the lower line.
  *     - How can you calculate the amount of water at each step?
  * 
+ * Template (python3):
+ *     class Solution:
+ *         def maxArea(self, height: List[int]) -> int:
+ * 
  * Hint: Start with pointers at both ends and move the shorter one inward.
  */
-
-function solve(height) {
-  throw new Error("NotImplementedError");
+function solve(height)
+  let left = 0, right = height.length - 1;
+  let maxArea = 0;
+  while (left < right)
+    const area = Math.min(height[left], height[right]) * (right - left);
+    maxArea = Math.max(maxArea, area);
+    if (height[left] < height[right])
+      left++;
+    } else
+      right--;
+    }
+  }
+  return maxArea; {
+    throw new Error("NotImplementedError");
 }
 
 // --- tests ---

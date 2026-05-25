@@ -35,8 +35,7 @@
 
 static int characterReplacement(const char *s, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

@@ -34,18 +34,15 @@
 #include <stdlib.h>
 
 static int find(int *parent, int x) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int unite(int *parent, int *rank, int x, int y) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 void findRedundantConnection(int n_edges, int (*edges)[2], int *out) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

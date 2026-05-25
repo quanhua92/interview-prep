@@ -33,8 +33,7 @@
 #include <stdlib.h>
 
 int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

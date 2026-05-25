@@ -35,20 +35,17 @@
 
 static long long calc(long long k, int m, long long num)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int bit_length(long long n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 char *smallestGoodBase(char *n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

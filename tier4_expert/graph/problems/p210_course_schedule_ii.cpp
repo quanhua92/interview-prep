@@ -43,8 +43,7 @@
 #include "cpptest.h"
 
 static std::vector<int> findOrder(int numCourses, const std::vector<std::vector<int>>& prerequisites) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 struct TC {

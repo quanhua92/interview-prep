@@ -4,7 +4,7 @@
  * Topics: Array, String, Dynamic Programming, Depth-First Search, Trie, Sorting
  * 
  * Given an array of strings words (without duplicates), return all the concatenated words in the given list of words.
- * A concatenated word is defined as a string that is comprised entirely of at least two shorter words (not necessarily distinct) in the given array.
+ * A concatenated word is defined as a string that is comprised entirely of at least two shorter words (not necessarily distinct) in the given array.
  * Example 1:
  *     Input: words = ["cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"]
  *     Output: ["catsdogcats","dogcatsdog","ratcatdogcat"]
@@ -46,18 +46,16 @@ class ConcatenatedWords {
     TrieNode root;
 
     void insert(const std::string &word) {
-        /* TODO: Implement */
+        abort();
     }
 
     bool canConcatenate(const std::string &word, int start, int count) {
-        /* TODO: Implement */
-        return 0;
+        abort();
     }
 
 public:
     std::vector<std::string> findAllConcatenatedWordsInADict(std::vector<std::string> &words) {
-        /* TODO: Implement */
-        return {};
+        abort();
     }
 };
 

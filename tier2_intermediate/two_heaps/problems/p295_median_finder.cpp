@@ -58,23 +58,27 @@ class MedianFinder {
     std::priority_queue<int, std::vector<int>, std::greater<int>> large;
 public:
     void addNum(int num) {
-        /* TODO: Implement */
+        small.push(num);
+        large.push(small.top());
+        small.pop();
+        if (large.size() > small.size()) {
+            small.push(large.top());
+            large.pop();
+        }
     }
     double findMedian() {
-        /* TODO: Implement */
-        return 0.0;
+        if (small.size() > large.size()) return (double)small.top();
+        return (small.top() + large.top()) / 2.0;
     }
 };
 
 std::vector<double> solve(const std::vector<int> &stream)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static bool feq(double a, double b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

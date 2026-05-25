@@ -17,10 +17,20 @@
  *     - 0 <= s.length <= 100
  *     - 0 <= t.length <= 104
  *     - s and t consist only of lowercase English letters.
+ * 
+ * Template (python3):
+ *     class Solution:
+ *         def isSubsequence(self, s: str, t: str) -> bool:
  */
-
-function solve(s, t) {
-  throw new Error("NotImplementedError");
+function solve(s, t)
+  let i = 0;
+  for (const ch of t)
+    if (i < s.length && s[i] === ch)
+      i++;
+    }
+  }
+  return i === s.length; {
+    throw new Error("NotImplementedError");
 }
 
 // --- tests ---

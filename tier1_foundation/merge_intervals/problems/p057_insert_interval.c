@@ -39,8 +39,7 @@
 #include "ctest.h"
 
 int* solve(int* arr, int arr_n, int num_intervals, int* ret_size) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

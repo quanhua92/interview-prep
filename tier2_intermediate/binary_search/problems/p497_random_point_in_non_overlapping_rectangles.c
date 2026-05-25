@@ -52,20 +52,17 @@
 
 int *solve_prefix_sums(int **rects, int rectsSize, int *rectsColSize, int *ret_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int arr_eq(const int *a, int an, const int *b, int bn)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void print_arr(const int *a, int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

@@ -69,33 +69,27 @@ static int st_data[30000], mn_data[30000];
 static int st_sz, mn_sz;
 
 static void ms_init(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void ms_push(int val) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void ms_pop(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int ms_top(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int ms_get_min(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int ms_run(const char *ops, const int *vals, int n, MSRes *out) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int check_ms(const char *label, const char *ops, const int *vals, int nvals,

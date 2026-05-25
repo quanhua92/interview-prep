@@ -87,18 +87,15 @@ struct NestedInteger {
 };
 
 static bool ni_eq(const NestedInteger& a, const NestedInteger& b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void print_ni(const NestedInteger& ni) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static NestedInteger deserialize(const std::string& s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

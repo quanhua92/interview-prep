@@ -32,20 +32,17 @@
 
 static void merge_sort(std::vector<int> &arr, std::vector<int> &tmp, int l, int r)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 std::vector<int> sortArray(std::vector<int> nums)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void print_arr(const std::vector<int> &a)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

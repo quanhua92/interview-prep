@@ -35,7 +35,10 @@ struct UnionFind {
 
 impl UnionFind {
     fn new(n: usize) -> Self {
-        todo!()
+        Self {
+            parent: (0..n as i32).collect(),
+            rank_: vec![0; n],
+        }
     }
 
     fn find(&mut self, x: i32) -> i32 {

@@ -44,14 +44,12 @@
 #include <string.h>
 
 static int cmp_int(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int *pickIndex(const int *nums, int n, int target, int *return_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

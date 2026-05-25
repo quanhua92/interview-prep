@@ -34,18 +34,15 @@
 #include <numeric>
 
 static void backtrack(std::vector<int>& nums, int first, std::vector<std::vector<int>>& res) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static std::vector<std::vector<int>> permute(std::vector<int> nums) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static bool check(const std::vector<std::vector<int>>& got, const std::vector<std::vector<int>>& exp) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

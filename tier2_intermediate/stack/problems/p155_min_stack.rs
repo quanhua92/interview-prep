@@ -71,8 +71,10 @@ struct MinStack {
 
 impl MinStack {
     fn new() -> Self { MinStack { st: Vec::new(), mn: Vec::new() } }
-    fn push(&mut self, val: i32) { todo!(); _ = val; }
-    fn pop(&mut self) { todo!(); }
+    fn push(&mut self, val: i32) {
+        todo!()
+    }
+    fn pop(&mut self) { todo!() }
     fn top(&self) -> i32 { todo!() }
     fn get_min(&self) -> i32 { todo!() }
 }

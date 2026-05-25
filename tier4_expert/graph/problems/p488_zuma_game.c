@@ -58,38 +58,31 @@ typedef struct Entry {
 static Entry map[MAP_SIZE];
 
 static unsigned hash_str(const char *s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int map_get(const char *board, const char *hand) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void map_put(const char *board, const char *hand, int val) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void collapse(char *s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int dfs(const char *board_str, const char *hand_sorted) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int cmp_char(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int findMinStep(const char *board, const char *hand) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

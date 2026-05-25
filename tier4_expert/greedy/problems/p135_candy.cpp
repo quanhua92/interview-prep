@@ -35,8 +35,7 @@
 #pragma GCC diagnostic pop
 
 int candy(const std::vector<int> &ratings) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

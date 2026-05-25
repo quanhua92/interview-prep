@@ -38,8 +38,7 @@
 
 static int findPoisonedDuration(const std::vector<int> &timeSeries, int duration)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

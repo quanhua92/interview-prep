@@ -59,10 +59,18 @@ impl MedianFinder {
         MedianFinder { small: BinaryHeap::new(), large: BinaryHeap::new() }
     }
     fn add_num(&mut self, num: i32) {
-        todo!()
+        self.small.push(num);
+        self.large.push(Reverse(self.small.pop().unwrap()));
+        if self.large.len() > self.small.len() {
+            self.small.push(self.large.pop().unwrap().0);
+        }
     }
     fn find_median(&self) -> f64 {
-        todo!()
+        if self.small.len() > self.large.len() {
+            *self.small.peek().unwrap() as f64
+        } else {
+            (*self.small.peek().unwrap() as f64 + self.large.peek().unwrap().0 as f64) / 2.0
+        }
     }
 }
 

@@ -38,14 +38,12 @@
 
 static int merge_sort(std::vector<int> &arr, std::vector<int> &tmp, int left, int right)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int reversePairs(std::vector<int> nums)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

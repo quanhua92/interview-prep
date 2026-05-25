@@ -32,8 +32,7 @@
 
 int maxEnvelopes(std::vector<std::vector<int>> envelopes)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

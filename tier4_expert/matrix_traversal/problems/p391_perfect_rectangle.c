@@ -45,8 +45,7 @@ typedef struct {
 
 static bool isRectangleCover(const int *rects, int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

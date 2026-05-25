@@ -34,20 +34,17 @@
 
 static int get_row(char c)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int findWords(const char *words[], int n, const char *result[])
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 void __attribute__((unused)) _use_harness_fns(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

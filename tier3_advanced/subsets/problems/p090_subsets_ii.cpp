@@ -30,17 +30,21 @@
 
 static void backtrack(int start, const std::vector<int>& nums, std::vector<int>& path,
                        std::vector<std::vector<int>>& res) {
-    /* TODO: Implement */
+    res.push_back(path);
+    for (int i = start; i < (int)nums.size(); i++) {
+        if (i > start && nums[i] == nums[i - 1]) continue;
+        path.push_back(nums[i]);
+        backtrack(i + 1, nums, path, res);
+        path.pop_back();
+    }
 }
 
 static std::vector<std::vector<int>> subsetsWithDup(std::vector<int> nums) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static bool check(const std::vector<std::vector<int>>& got, const std::vector<std::vector<int>>& exp) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

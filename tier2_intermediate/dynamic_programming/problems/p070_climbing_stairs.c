@@ -36,8 +36,7 @@
 #include "ctest.h"
 
 int climbStairs(int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

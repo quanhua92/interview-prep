@@ -31,14 +31,12 @@
 
 std::string licenseKeyFormatting(const std::string &s, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 void __attribute__((unused)) _use_harness_fns(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

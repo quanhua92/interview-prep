@@ -56,37 +56,31 @@ typedef struct ListNode {
 
 static ListNode *make_list(const int *arr, int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int list_len(ListNode *h) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void merge_two(ListNode *a, ListNode *b, ListNode **out)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void divide_merge(ListNode **lists, int left, int right, ListNode **out)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int *mergeKLists(ListNode **lists, int k, int *ret_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void print_arr(const int *a, int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

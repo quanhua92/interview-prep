@@ -39,8 +39,7 @@
 #include <vector>
 
 int change(int amount, std::vector<int> coins) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

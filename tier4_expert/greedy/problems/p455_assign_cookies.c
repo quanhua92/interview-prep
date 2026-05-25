@@ -38,13 +38,11 @@
 #include <stdlib.h>
 
 int cmp_int(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int findContentChildren(int *g, int gSize, int *s, int sSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

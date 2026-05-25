@@ -36,14 +36,12 @@
 
 static bool is_subseq(const std::string &a, const std::string &b)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int findLUSlength(std::vector<std::string> strs)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

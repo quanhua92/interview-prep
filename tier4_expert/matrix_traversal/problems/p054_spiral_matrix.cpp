@@ -35,8 +35,7 @@
 
 static std::vector<int> spiralOrder(const std::vector<std::vector<int>> &matrix)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

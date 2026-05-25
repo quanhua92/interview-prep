@@ -27,8 +27,7 @@
 #include <string.h>
 
 int longestPalindromeSubseq(const char *s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

@@ -72,8 +72,7 @@
 #define MAX_TASKS 10000
 
 int leastIntervalMulti(char *tasks, int tasksSize, int n, int m) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

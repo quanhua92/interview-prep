@@ -32,20 +32,17 @@ typedef struct { int h, r, c; } Cell;
 
 static void heap_push(Cell *heap, int *sz, Cell val)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static Cell heap_pop(Cell *heap, int *sz)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int trapRainWater(int *heightMap, int m, int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

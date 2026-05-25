@@ -42,30 +42,25 @@ struct TreeNode {
 };
 
 static TreeNode* from_list(const std::vector<int>& vals) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static bool trees_equal(TreeNode *a, TreeNode *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_tree(TreeNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int gtotal;
 
 static void reverse_inorder(TreeNode *node) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static TreeNode* convertBST(TreeNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

@@ -40,8 +40,7 @@
 using namespace std;
 
 static int orangesRotting(vector<vector<int>> &grid) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

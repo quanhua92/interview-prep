@@ -43,8 +43,7 @@
 #include <algorithm>
 
 static int distributeCandies(const std::vector<int> &candyType) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

@@ -26,10 +26,33 @@
  *     - 1 <= nums.length <= 104
  *     - -107 <= nums[i] <= 107
  *     - 0 <= k <= 107
+ * 
+ * Template (python3):
+ *     class Solution:
+ *         def findPairs(self, nums: List[int], k: int) -> int:
  */
-
-function solve(nums, k) {
-  throw new Error("NotImplementedError");
+function solve(nums, k)
+  if (k < 0) return 0;
+  nums = [...nums].sort((a, b) => a - b);
+  let count = 0;
+  let left = 0, right = 1;
+  while (right < nums.length)
+    const diff = nums[right] - nums[left];
+    if (diff < k)
+      right++;
+    } else if (diff > k)
+      left++;
+    } else
+      count++;
+      const leftVal = nums[left];
+      const rightVal = nums[right];
+      while (left < nums.length && nums[left] === leftVal) left++;
+      while (right < nums.length && nums[right] === rightVal) right++;
+    }
+    if (left === right) right++;
+  }
+  return count; {
+    throw new Error("NotImplementedError");
 }
 
 // --- tests ---

@@ -45,11 +45,19 @@ struct Codec {
 
 impl Codec {
     fn new() -> Self {
-        todo!()
+        Codec {
+            url_map: HashMap::new(),
+            short_map: HashMap::new(),
+            next_id: 0,
+        }
     }
 
     fn encode(&mut self, long_url: &str) -> String {
-        todo!()
+        let key = self.next_id.to_string();
+        self.next_id += 1;
+        self.url_map.insert(key.clone(), long_url.to_string());
+        self.short_map.insert(key.clone(), long_url.to_string());
+        format!("http://tinyurl.com/{}", key)
     }
 
     fn decode(&self, short_url: &str) -> String {

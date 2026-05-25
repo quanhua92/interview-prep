@@ -74,23 +74,19 @@ typedef struct {
 } MT19937;
 
 static void mt_init_genrand(MT19937 *gen, unsigned int seed) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void mt_init(MT19937 *gen, const unsigned int *init_key, int key_length) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static unsigned int mt_genrand(MT19937 *gen) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int mt_randrange(MT19937 *gen, int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {
@@ -102,48 +98,39 @@ typedef struct {
 } RandomizedSet;
 
 static void rs_init(RandomizedSet *rs, unsigned int seed) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void rs_free(RandomizedSet *rs) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static unsigned int rs_hash(int key) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int *rs_get(RandomizedSet *rs, int key) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void rs_put(RandomizedSet *rs, int key, int val) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void rs_del(RandomizedSet *rs, int key) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int rs_insert(RandomizedSet *rs, int val) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int rs_remove(RandomizedSet *rs, int val) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int rs_get_random(RandomizedSet *rs) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

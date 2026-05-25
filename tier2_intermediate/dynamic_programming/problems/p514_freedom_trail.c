@@ -34,8 +34,7 @@
 #include <limits.h>
 
 int findRotateSteps(const char *ring, const char *key) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

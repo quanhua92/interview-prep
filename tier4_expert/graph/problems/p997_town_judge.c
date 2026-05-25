@@ -37,8 +37,7 @@
 #include "ctest.h"
 
 static int findJudge(int n, int trust[][2], int trustSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

@@ -36,8 +36,7 @@ static const long long MOD = 1000000007LL;
 
 int sumSubarrayMins(const std::vector<int> &arr)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

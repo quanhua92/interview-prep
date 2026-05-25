@@ -18,10 +18,36 @@
  *     - 2 <= strs.length <= 50
  *     - 1 <= strs[i].length <= 10
  *     - strs[i] consists of lowercase English letters.
+ * 
+ * Template (python3):
+ *     class Solution:
+ *         def findLUSlength(self, strs: List[str]) -> int:
  */
+function solve(strs)
+  function isSubseq(a, b)
+    let i = 0;
+    for (const ch of b)
+      if (i < a.length && a[i] === ch)
+        i++;
+      }
+    }
+    return i === a.length;
+  }
 
-function solve(strs) {
-  throw new Error("NotImplementedError");
+  strs.sort((a, b) => b.length - a.length);
+  for (let i = 0; i < strs.length; i++)
+    const candidate = strs[i];
+    let isUncommon = true;
+    for (let j = 0; j < strs.length; j++)
+      if (i !== j && isSubseq(candidate, strs[j]))
+        isUncommon = false;
+        break;
+      }
+    }
+    if (isUncommon) return candidate.length;
+  }
+  return -1; {
+    throw new Error("NotImplementedError");
 }
 
 // --- tests ---

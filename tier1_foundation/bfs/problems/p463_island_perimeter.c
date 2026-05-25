@@ -33,8 +33,7 @@
 #include "ctest.h"
 
 static int islandPerimeter(int **grid, int gridSize, int *gridColSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

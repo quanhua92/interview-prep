@@ -43,23 +43,19 @@
 typedef struct { int capital, profit; } Project;
 
 int cmp_project(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void heap_push(int *heap, int *sz, int val) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int heap_pop(int *heap, int *sz) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int findMaximizedCapital(int k, int w, int *profits, int *capital, int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

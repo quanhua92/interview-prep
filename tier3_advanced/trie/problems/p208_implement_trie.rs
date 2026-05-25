@@ -76,7 +76,11 @@ impl Trie {
     }
 
     fn insert(&mut self, word: &str) {
-        todo!()
+        let mut cur = &mut self.root;
+        for ch in word.chars() {
+            cur = cur.children.entry(ch).or_insert_with(|| Box::new(TrieNode::new()));
+        }
+        cur.is_end = true;
     }
 
     fn search(&self, word: &str) -> bool {
@@ -89,7 +93,11 @@ impl Trie {
     }
 
     fn find(&self, prefix: &str) -> Option<&TrieNode> {
-        todo!()
+        let mut cur = &self.root;
+        for ch in prefix.chars() {
+            cur = cur.children.get(&ch)?;
+        }
+        Some(cur)
     }
 }
 

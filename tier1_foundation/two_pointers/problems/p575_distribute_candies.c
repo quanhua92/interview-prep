@@ -41,13 +41,11 @@
 #include <limits.h>
 
 static int cmp_int(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int distributeCandies(const int *candyType, int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

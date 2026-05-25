@@ -45,14 +45,12 @@ struct TestCase {
 
 static bool feasible(const std::vector<int> &nums, long long max_sum, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 long long splitArray(const std::vector<int> &nums, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

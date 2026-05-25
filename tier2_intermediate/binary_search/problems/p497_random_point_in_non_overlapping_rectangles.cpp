@@ -53,14 +53,12 @@
 
 std::vector<int> solve_prefix_sums(const std::vector<std::vector<int>> &rects)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void print_arr(const std::vector<int> &a)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

@@ -34,19 +34,16 @@
 #include <string.h>
 
 static int cmp_int(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int abs_val(int x) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int findRadius(const int *houses, int hn, const int *heaters, int heatn)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

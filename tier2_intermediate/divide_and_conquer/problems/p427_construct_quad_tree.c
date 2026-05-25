@@ -66,54 +66,44 @@ typedef struct QNode {
 } QNode;
 
 static QNode *make_leaf(int v) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static QNode *make_internal(QNode *tl, QNode *tr, QNode *bl, QNode *br) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int all_same(int *grid, int n, int row, int col, int size) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static QNode *build(int *grid, int n, int row, int col, int size) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_tree(QNode *node) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct { int is_leaf, val; } FlatNode;
 typedef struct { FlatNode *data; int len, cap; } FlatVec;
 
 static void fv_init(FlatVec *fv) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 static void fv_push(FlatVec *fv, int is_leaf, int val) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 static void fv_free(FlatVec *fv) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static FlatVec level_order(QNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void print_flat(FlatVec *fv) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

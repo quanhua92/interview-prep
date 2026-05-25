@@ -32,20 +32,17 @@
 
 static int cmp_int(const void *a, const void *b)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int minMeetingRooms(int *intervals, int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 void __attribute__((unused)) _use_harness_fns(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

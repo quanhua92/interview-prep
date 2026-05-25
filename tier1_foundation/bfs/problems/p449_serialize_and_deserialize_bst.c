@@ -57,18 +57,15 @@ typedef struct TreeNode {
 #define NULL_VAL INT_MIN
 
 static TreeNode *make_node(int val) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_tree(TreeNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int *solve(const int *vals, int vals_n, int *returnSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

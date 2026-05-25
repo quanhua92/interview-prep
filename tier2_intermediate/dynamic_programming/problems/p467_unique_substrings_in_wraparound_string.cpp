@@ -33,8 +33,7 @@
 #include "cpptest.h"
 
 int findSubstringInWraproundString(const std::string &s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

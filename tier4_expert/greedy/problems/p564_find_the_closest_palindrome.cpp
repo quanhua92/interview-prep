@@ -41,23 +41,19 @@ using namespace std;
 using ll = long long;
 
 static ll pow10(int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 ll to_ll(const string &s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 string make_pal(ll prefix, int total_len) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 string nearestPalindromic(string n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

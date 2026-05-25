@@ -34,8 +34,7 @@
 
 int findKthLargest(std::vector<int> nums, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

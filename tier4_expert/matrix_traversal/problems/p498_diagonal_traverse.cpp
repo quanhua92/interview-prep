@@ -31,8 +31,7 @@
 
 static std::vector<int> findDiagonalOrder(const std::vector<std::vector<int>> &mat)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

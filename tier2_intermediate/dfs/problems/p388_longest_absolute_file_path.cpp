@@ -51,8 +51,7 @@
 #include <vector>
 
 static int lengthLongestPath(const std::string& input) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

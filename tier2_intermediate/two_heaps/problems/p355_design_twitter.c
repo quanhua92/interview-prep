@@ -74,46 +74,39 @@ static int global_time;
 
 static void twitter_init(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void post_tweet(int user_id, int tweet_id)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct { int tweet_id; int time; int next_node; int user_id; } HeapEntry;
 
 static void heap_push(HeapEntry *h, int *hsz, HeapEntry e)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static HeapEntry heap_pop(HeapEntry *h, int *hsz)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int *get_news_feed(int user_id, int *ret_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void do_follow(int follower_id, int followee_id)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void do_unfollow(int follower_id, int followee_id)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

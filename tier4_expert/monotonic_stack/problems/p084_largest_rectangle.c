@@ -31,8 +31,7 @@
 
 int largestRectangleArea(int *heights, int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

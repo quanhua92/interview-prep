@@ -28,8 +28,7 @@
 
 static bool detectCapitalUse(const std::string &word)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

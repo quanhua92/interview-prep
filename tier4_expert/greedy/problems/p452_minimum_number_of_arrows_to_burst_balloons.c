@@ -43,13 +43,11 @@
 typedef long long ll;
 
 int cmp_ll(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int findMinArrowShots(ll *starts, ll *ends, int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

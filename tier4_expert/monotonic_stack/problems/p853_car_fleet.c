@@ -47,14 +47,12 @@ typedef struct { int pos; int spd; } Car;
 
 static int cmp_car(const void *a, const void *b)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int carFleet(int target, int *position, int *speed, int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

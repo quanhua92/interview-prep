@@ -46,32 +46,27 @@ static Entry *hm[40007];
 
 static unsigned hm_hash(long long key)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void hm_set(long long key, int val)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int hm_get(long long key)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void hm_clear(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int *subarray_sum(int *nums, int numsSize, int k, int *retSize)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

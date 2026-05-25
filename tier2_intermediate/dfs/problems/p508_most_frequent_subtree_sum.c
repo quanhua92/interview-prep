@@ -37,36 +37,30 @@ struct TreeNode {
 };
 
 static struct TreeNode* make_node(int val, struct TreeNode *left, struct TreeNode *right) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static struct TreeNode* from_list(int *vals, int n, int i) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_tree(struct TreeNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 #define MAP_SIZE 20001
 static int map_keys[MAP_SIZE], map_vals[MAP_SIZE], map_count;
 
 static void map_add(int key) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int subtree_sum(struct TreeNode *node) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int *findFrequentTreeSum(struct TreeNode *root, int *returnSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

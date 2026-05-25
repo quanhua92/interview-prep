@@ -26,7 +26,7 @@
  * 
  * Hints:
  *     - You would need to optimize your backtracking to pass the larger test. Could you stop backtracking earlier?
- *     - If the current candidate does not exist in all words&#39; prefix, you could stop backtracking immediately. What kind of data structure could answer such query efficiently? Does a hash table work? Why or why not? How about a Trie? If you would like to learn how to implement a basic trie, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.
+ *     - If the current candidate does not exist in all words' prefix, you could stop backtracking immediately. What kind of data structure could answer such query efficiently? Does a hash table work? Why or why not? How about a Trie? If you would like to learn how to implement a basic trie, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.
  * 
  * Template (python3):
  *     class Solution:
@@ -52,14 +52,13 @@ class WordSearchII {
     std::vector<std::string> result;
 
     void dfs(std::vector<std::vector<char>> &board, int r, int c, TrieNode *parent) {
-        /* TODO: Implement */
+        abort();
     }
 
 public:
     std::vector<std::string> findWords(std::vector<std::vector<char>> board,
                                        std::vector<std::string> words) {
-        /* TODO: Implement */
-        return {};
+        abort();
     }
 };
 

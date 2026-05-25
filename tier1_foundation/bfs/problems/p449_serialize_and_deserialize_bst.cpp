@@ -61,13 +61,11 @@ struct TreeNode {
 static const int NULL_VAL = INT_MIN;
 
 static void free_tree(TreeNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static vector<int> solve(const vector<int> &vals) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

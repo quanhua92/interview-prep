@@ -37,8 +37,7 @@
 static char result_buf[100001];
 
 static char *decode_string(const char *s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

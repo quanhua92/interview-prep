@@ -37,8 +37,7 @@
 #include <vector>
 
 std::vector<int> findRedundantConnection(const std::vector<std::vector<int>> &edges) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 struct TC {

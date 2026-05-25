@@ -36,8 +36,7 @@
 
 static int *spiralOrder(const int *flat, int rows, int cols, int *ret_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

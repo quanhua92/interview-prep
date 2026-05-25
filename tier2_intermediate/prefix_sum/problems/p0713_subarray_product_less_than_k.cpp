@@ -37,8 +37,7 @@ using namespace std;
 
 vector<int> num_subarray_product_less_than_k(const vector<int>& nums, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

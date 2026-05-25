@@ -39,8 +39,7 @@
 
 int numberOfBoomerangs(const std::vector<std::pair<int,int>> &points)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

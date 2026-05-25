@@ -69,29 +69,24 @@ struct QNode {
 };
 
 static bool all_same(const std::vector<std::vector<int>> &g, int row, int col, int size) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static QNode *build(const std::vector<std::vector<int>> &g, int row, int col, int size) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_tree(QNode *n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef std::pair<int,int> IP;
 static std::vector<IP> level_order(QNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void print_flat(const std::vector<IP> &fv) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

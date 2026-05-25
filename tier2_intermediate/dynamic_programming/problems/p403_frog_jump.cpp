@@ -31,8 +31,7 @@
 #include <cstring>
 
 bool canCross(std::vector<int> stones) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

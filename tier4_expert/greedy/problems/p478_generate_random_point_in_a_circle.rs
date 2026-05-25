@@ -20,7 +20,7 @@
  *     solution.randPoint(); // return [0.36572, 0.17248]
  * 
  * Constraints:
- *     - 0 < radius <= 108
+ *     - 0 < radius <= 108
  *     - -107 <= x_center, y_center <= 107
  *     - At most 3 * 104 calls will be made to randPoint.
  * 
@@ -47,11 +47,14 @@ struct CircleSolver {
 
 impl CircleSolver {
     fn new(radius: f64, x_center: f64, y_center: f64) -> Self {
-        todo!()
+        let state = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_nanos() as u64)
+            .unwrap_or(12345);
+        Self { radius, x_center, y_center, state }
     }
     fn next_u64(&mut self) -> u64 {
-        self.state = self.state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
-        self.state
+        todo!()
     }
     fn rand_point(&mut self) -> (f64, f64) {
         todo!()

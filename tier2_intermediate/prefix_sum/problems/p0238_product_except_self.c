@@ -38,8 +38,7 @@
 
 int *product_except_self(int *nums, int numsSize, int target, int *retSize)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

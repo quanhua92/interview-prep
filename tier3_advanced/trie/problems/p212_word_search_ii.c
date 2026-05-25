@@ -52,13 +52,11 @@ static TrieNode pool[600000];
 static int pool_idx;
 
 static TrieNode *node_new(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void trie_insert(TrieNode *root, const char *word) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static char result[MAX_WORDS][MAX_WORD_LEN + 1];
@@ -66,13 +64,11 @@ static int result_count;
 static int rows, cols;
 
 static void dfs(char board[MAX_BOARD][MAX_BOARD], int r, int c, TrieNode *parent) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int cmp_str(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

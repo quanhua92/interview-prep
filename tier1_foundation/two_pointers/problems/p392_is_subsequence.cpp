@@ -30,8 +30,7 @@
 
 bool isSubsequence(const std::string &s, const std::string &t)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

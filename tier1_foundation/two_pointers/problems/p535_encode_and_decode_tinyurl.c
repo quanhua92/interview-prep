@@ -49,28 +49,23 @@ typedef struct {
 } Codec;
 
 static void codec_init(Codec *c) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void codec_free(Codec *c) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static char *codec_encode(Codec *c, const char *longUrl) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static char *codec_decode(Codec *c, const char *shortUrl) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static char *solve(const char *longUrl) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

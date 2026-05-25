@@ -64,13 +64,11 @@ struct LargeCmp {
 
 std::vector<double> solve(const std::vector<int> &nums, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static bool feq(double a, double b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

@@ -53,20 +53,17 @@ typedef struct { long long key; long long val; } MapEntry;
 
 static long long map_get(MapEntry *map, int n, long long key, long long default_val)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void map_set(MapEntry *map, int n, long long key, long long val)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int solve(int m, int n, int num_flips)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

@@ -31,18 +31,15 @@
 #include <vector>
 
 static void backtrack(int start, int n, int k, std::vector<int>& path, std::vector<std::vector<int>>& res) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static std::vector<std::vector<int>> combine(int n, int k) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static bool check(const std::vector<std::vector<int>>& got, const std::vector<std::vector<int>>& exp) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

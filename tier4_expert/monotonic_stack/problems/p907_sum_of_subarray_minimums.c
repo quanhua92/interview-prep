@@ -35,8 +35,7 @@ static const long MOD = 1000000007L;
 
 int sumSubarrayMins(int *arr, int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

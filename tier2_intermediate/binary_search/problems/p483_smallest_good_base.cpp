@@ -37,14 +37,12 @@
 
 static long long calc(long long k, int m, long long num)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 std::string smallestGoodBase(std::string n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

@@ -27,8 +27,7 @@
 
 int isSubsequence(const char *s, const char *t)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

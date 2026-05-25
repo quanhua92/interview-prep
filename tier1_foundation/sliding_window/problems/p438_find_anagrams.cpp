@@ -37,8 +37,7 @@
 
 static std::vector<int> findAnagrams(const std::string &s, const std::string &p)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

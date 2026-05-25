@@ -83,7 +83,7 @@ impl WordDictionary {
     }
 
     fn search(&self, word: &str) -> bool {
-        self.dfs(&self.root, word.chars().collect::<Vec<_>>(), 0)
+        todo!()
     }
 
     fn dfs(&self, node: &TrieNode, chars: Vec<char>, idx: usize) -> bool {

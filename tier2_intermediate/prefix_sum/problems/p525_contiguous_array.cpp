@@ -35,8 +35,7 @@ using namespace std;
 
 vector<int> find_max_length(const vector<int>& nums, int target)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

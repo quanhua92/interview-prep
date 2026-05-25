@@ -66,8 +66,7 @@
 
 int *random_pick_with_weight(int *w, int wSize, int target, int *retSize)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

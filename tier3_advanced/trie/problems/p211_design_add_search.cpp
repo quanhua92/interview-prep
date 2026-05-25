@@ -72,17 +72,16 @@ class WordDictionary {
     TrieNode root;
 public:
     void addWord(const std::string &word) {
-        /* TODO: Implement */
+        abort();
     }
 
     bool search(const std::string &word) {
-        return dfs(&root, word, 0);
+        abort();
     }
 
 private:
     bool dfs(TrieNode *node, const std::string &word, int idx) {
-        /* TODO: Implement */
-        return 0;
+        abort();
     }
 };
 

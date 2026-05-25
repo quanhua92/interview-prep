@@ -35,8 +35,7 @@
 #include "cpptest.h"
 
 static int singleNumber(const std::vector<int>& nums) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

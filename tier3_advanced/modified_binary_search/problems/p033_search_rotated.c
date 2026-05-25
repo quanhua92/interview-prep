@@ -45,8 +45,7 @@ typedef struct {
 
 int search(int *nums, int numsSize, int target)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

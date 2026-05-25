@@ -41,35 +41,29 @@ struct TreeNode {
 };
 
 static struct TreeNode* make_node(int val) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static struct TreeNode* from_list(int *vals, int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_tree(struct TreeNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int trees_equal(struct TreeNode *a, struct TreeNode *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int gtotal;
 
 static void reverse_inorder(struct TreeNode *node) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static struct TreeNode* convertBST(struct TreeNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

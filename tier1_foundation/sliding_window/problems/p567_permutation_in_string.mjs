@@ -24,10 +24,49 @@
  * Hint: If one string is a permutation of another string then they must have one common metric. What is that?
  * Hint: Both strings must have same character frequencies, if  one is permutation of another. Which data structure should be used to store frequencies?
  * Hint: What about hash table?  An array of size 26?
+ * 
+ * Template (python3):
+ *     class Solution:
+ *         def checkInclusion(self, s1: str, s2: str) -> bool:
  */
+function solve(s1, s2)
+  const n1 = s1.length, n2 = s2.length;
+  if (n1 > n2) return false;
 
-function solve(s1, s2) {
-  throw new Error("NotImplementedError");
+  const target = new Map();
+  for (const ch of s1)
+    target.set(ch, (target.get(ch) || 0) + 1);
+  }
+
+  const window = new Map();
+  for (let i = 0; i < n1; i++)
+    const ch = s2[i];
+    window.set(ch, (window.get(ch) || 0) + 1);
+  }
+
+  if (mapsEqual(window, target)) return true;
+
+  for (let i = n1; i < n2; i++)
+    const leftCh = s2[i - n1];
+    if (window.get(leftCh) === 1)
+      window.delete(leftCh);
+    } else
+      window.set(leftCh, window.get(leftCh) - 1);
+    }
+    window.set(s2[i], (window.get(s2[i]) || 0) + 1);
+    if (mapsEqual(window, target)) return true;
+  }
+  return false; {
+    throw new Error("NotImplementedError");
+}
+
+function mapsEqual(a, b)
+  if (a.size !== b.size) return false;
+  for (const [k, v] of a)
+    if (b.get(k) !== v) return false;
+  }
+  return true; {
+    throw new Error("NotImplementedError");
 }
 
 // --- tests ---

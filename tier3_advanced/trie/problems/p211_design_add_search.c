@@ -65,28 +65,23 @@ typedef struct TrieNode {
 } TrieNode;
 
 static TrieNode *node_new(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void node_free(TrieNode *n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void wd_insert(TrieNode *root, const char *word) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int wd_search_dfs(TrieNode *node, const char *word, int idx) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int wd_search(TrieNode *root, const char *word) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

@@ -35,8 +35,7 @@
 
 int *num_subarray_product_less_than_k(int *nums, int numsSize, int k, int *retSize)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

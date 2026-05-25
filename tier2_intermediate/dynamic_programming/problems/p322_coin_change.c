@@ -35,8 +35,7 @@
 #include <limits.h>
 
 int coinChange(int *coins, int coinsSize, int amount) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

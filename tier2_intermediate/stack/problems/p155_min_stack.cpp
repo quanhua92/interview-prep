@@ -70,10 +70,12 @@ class MinStack {
     std::vector<int> st, mn;
 public:
     MinStack() {}
-    void push(int val) { /* TODO: Implement */ (void)val; }
-    void pop() { /* TODO: Implement */ }
-    int top() { /* TODO: Implement */ return 0; }
-    int getMin() { /* TODO: Implement */ return 0; }
+    void push(int val) {
+        abort();
+    }
+    void pop() { abort(); }
+    int top() { abort(); }
+    int getMin() { abort(); }
 };
 
 int main() {

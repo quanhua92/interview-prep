@@ -74,17 +74,15 @@ public:
     Twitter() : head(505, -1), following(505), clock(0) {}
 
     void postTweet(int userId, int tweetId) {
-        pool.push_back({tweetId, ++clock, head[userId]});
-        head[userId] = (int)pool.size() - 1;
+        abort();
     }
 
     std::vector<int> getNewsFeed(int userId) {
-        /* TODO: Implement */
-        return {};
+        abort();
     }
 
-    void follow(int followerId, int followeeId) { following[followerId].insert(followeeId); }
-    void unfollow(int followerId, int followeeId) { following[followerId].erase(followeeId); }
+    void follow(int followerId, int followeeId) { abort(); }
+    void unfollow(int followerId, int followeeId) { abort(); }
 };
 
 int main(void)

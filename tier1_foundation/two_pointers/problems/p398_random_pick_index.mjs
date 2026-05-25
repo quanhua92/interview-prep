@@ -24,10 +24,30 @@
  *     - -231 <= nums[i] <= 231 - 1
  *     - target is an integer from nums.
  *     - At most 104 calls will be made to pick.
+ * 
+ * Template (python3):
+ *     class Solution:
+ * 
+ *         def __init__(self, nums: List[int]):
+ * 
+ * 
+ *         def pick(self, target: int) -> int:
+ * 
+ * 
+ * 
+ *     # Your Solution object will be instantiated and called as such:
+ *     # obj = Solution(nums)
+ *     # param_1 = obj.pick(target)
  */
-
-function solve(nums, target) {
-  throw new Error("NotImplementedError");
+function solve(nums, target)
+  const indexMap = new Map();
+  for (let i = 0; i < nums.length; i++)
+    const num = nums[i];
+    if (!indexMap.has(num)) indexMap.set(num, []);
+    indexMap.get(num).push(i);
+  }
+  return indexMap.get(target) || []; {
+    throw new Error("NotImplementedError");
 }
 
 // --- tests ---

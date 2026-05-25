@@ -39,28 +39,23 @@ typedef struct {
 } UnionFind;
 
 static UnionFind *UF_create(int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int UF_find(UnionFind *uf, int x) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int UF_union(UnionFind *uf, int x, int y) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void UF_free(UnionFind *uf) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int countComponents(int n, int *edges_flat, int edge_count) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

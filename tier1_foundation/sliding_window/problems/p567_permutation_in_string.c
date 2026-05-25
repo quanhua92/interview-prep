@@ -35,8 +35,7 @@
 
 static int checkInclusion(const char *s1, const char *s2)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

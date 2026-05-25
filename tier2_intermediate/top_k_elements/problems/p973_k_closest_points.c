@@ -39,20 +39,17 @@ typedef struct { int x, y; } Pt;
 
 static int cmp_dist(const void *a, const void *b)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int cmp_lex(const void *a, const void *b)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int *kClosest(int *points, int totalInts, int k, int *returnSize)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

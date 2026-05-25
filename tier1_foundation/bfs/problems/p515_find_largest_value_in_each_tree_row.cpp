@@ -41,18 +41,15 @@ struct TreeNode {
 static const int NULL_VAL = INT_MIN;
 
 static TreeNode *build_tree(const vector<int> &vals) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_tree(TreeNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static vector<int> largestValues(TreeNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

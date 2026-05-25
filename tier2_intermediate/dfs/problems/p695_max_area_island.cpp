@@ -33,13 +33,11 @@
 #include <algorithm>
 
 static int dfs(std::vector<std::vector<int>>& grid, int r, int c, int rows, int cols) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int maxAreaOfIsland(std::vector<std::vector<int>> grid) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

@@ -23,8 +23,7 @@
 #include "cpptest.h"
 
 int largestPalindrome(int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

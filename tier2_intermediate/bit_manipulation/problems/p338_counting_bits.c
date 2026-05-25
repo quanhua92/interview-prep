@@ -42,8 +42,7 @@
 #include <stdlib.h>
 
 static int *countBits(int n, int *returnSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

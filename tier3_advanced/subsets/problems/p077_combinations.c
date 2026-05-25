@@ -37,23 +37,19 @@ static int result_cap;
 static int k_val;
 
 static void add_result(int *path) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void backtrack(int start, int n, int *path, int depth) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int **combine(int n, int k, int *returnSize, int **returnColumnSizes) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int check(int **got, int got_rows, int *got_cs, int **exp, int exp_rows, int *exp_cs) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

@@ -36,14 +36,12 @@ typedef struct { int val, freq; } Freq;
 
 static int cmp_freq(const void *a, const void *b)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int *topKFrequent(int *nums, int numsSize, int k, int *returnSize)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

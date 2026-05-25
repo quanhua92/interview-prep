@@ -2,7 +2,7 @@
  * P450: Delete Node in a BST [PREMIUM] (Medium)
  * https://leetcode.com/problems/delete-node-in-a-bst/
  * Topics: Tree, Binary Search Tree, Binary Tree
- *
+ * 
  * Given a root node reference of a BST and a key, delete the node with the given key in the BST. Return the root node reference (possibly updated) of the BST.
  * Basically, the deletion can be divided into two stages:
  * Example 3:
@@ -13,23 +13,23 @@
  *     Explanation: Given key to delete is 3. So we find the node with value 3 and delete it.
  *     One valid answer is [5,4,6,2,null,null,7], shown in the above BST.
  *     Please notice that another valid answer is [5,2,6,null,4,null,7] and it's also accepted.
- *
+ * 
  * Example 2:
  *     Input: root = [5,3,6,2,4,null,7], key = 0
  *     Output: [5,3,6,2,4,null,7]
  *     Explanation: The tree does not contain a node with value = 0.
- *
+ * 
  * Example 3:
  *     Input: root = [], key = 0
  *     Output: []
- *
+ * 
  * Constraints:
  *     - The number of nodes in the tree is in the range [0, 104].
  *     - -105 <= Node.val <= 105
  *     - Each node has a unique value.
  *     - root is a valid binary search tree.
  *     - -105 <= key <= 105
- *
+ * 
  * Template (python3):
  *     # Definition for a binary tree node.
  *     # class TreeNode:
@@ -40,50 +40,73 @@
  *     class Solution:
  *         def deleteNode(self, root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
  */
-
-function buildTree(arr) {
+function buildTree(arr)
   if (arr.length === 0) return null;
   const root = { val: arr[0], left: null, right: null };
   const queue = [root];
   let i = 1;
-  while (queue.length > 0 && i < arr.length) {
+  while (queue.length > 0 && i < arr.length)
     const node = queue.shift();
-    if (i < arr.length && arr[i] !== null) {
+    if (i < arr.length && arr[i] !== null)
       node.left = { val: arr[i], left: null, right: null };
       queue.push(node.left);
     }
     i++;
-    if (i < arr.length && arr[i] !== null) {
+    if (i < arr.length && arr[i] !== null)
       node.right = { val: arr[i], left: null, right: null };
       queue.push(node.right);
     }
     i++;
   }
-  return root;
+  return root; {
+    throw new Error("NotImplementedError");
 }
 
-function treeToList(root) {
+function treeToList(root)
   if (!root) return [];
   const result = [];
   const queue = [root];
-  while (queue.length > 0) {
+  while (queue.length > 0)
     const node = queue.shift();
-    if (node) {
+    if (node)
       result.push(node.val);
       queue.push(node.left);
       queue.push(node.right);
-    } else {
+    } else
       result.push(null);
     }
   }
-  while (result.length > 0 && result[result.length - 1] === null) {
+  while (result.length > 0 && result[result.length - 1] === null)
     result.pop();
   }
-  return result;
+  return result; {
+    throw new Error("NotImplementedError");
 }
 
-function solve(root, key) {
-  throw new Error("NotImplementedError");
+function deleteNode(root, key)
+  if (!root) return null;
+  if (key < root.val)
+    root.left = deleteNode(root.left, key);
+  } else if (key > root.val)
+    root.right = deleteNode(root.right, key);
+  } else
+    if (!root.left) return root.right;
+    if (!root.right) return root.left;
+    let minNode = root.right;
+    while (minNode.left)
+      minNode = minNode.left;
+    }
+    root.val = minNode.val;
+    root.right = deleteNode(root.right, minNode.val);
+  }
+  return root; {
+    throw new Error("NotImplementedError");
+}
+
+function solve(root, key)
+  const result = deleteNode(root, key);
+  return treeToList(result); {
+    throw new Error("NotImplementedError");
 }
 
 const tests = [

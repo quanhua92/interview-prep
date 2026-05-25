@@ -57,43 +57,36 @@ struct ListNode {
 
 static void merge_two(ListNode *a, ListNode *b, ListNode **out)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void divide_merge(std::vector<ListNode*> &lists, int left, int right, ListNode **out)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static ListNode* make_list(const std::vector<int> &v)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static std::vector<int> to_vec(ListNode *h)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_list(ListNode *h) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 std::vector<int> mergeKLists(const std::vector<std::vector<int>> &lists_input)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void print_arr(const std::vector<int> &a)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

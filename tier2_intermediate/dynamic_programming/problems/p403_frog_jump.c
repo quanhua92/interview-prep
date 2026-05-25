@@ -31,8 +31,7 @@
 #include <string.h>
 
 bool canCross(int *stones, int stonesSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

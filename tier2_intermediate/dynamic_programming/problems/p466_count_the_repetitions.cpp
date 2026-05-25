@@ -28,8 +28,7 @@
 #include <cstring>
 
 int getMaxRepetitions(const std::string &s1, int n1, const std::string &s2, int n2) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

@@ -37,8 +37,7 @@
 
 static void rotate(int n, int matrix[n][n])
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

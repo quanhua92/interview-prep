@@ -43,28 +43,23 @@ static int result_cap;
 static int digits_len;
 
 static void add_result(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void backtrack(const char *digits, int index) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int cmp_str(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static char **letterCombinations(const char *digits, int *returnSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int check_strs(char **got, int got_n, char **exp, int exp_n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

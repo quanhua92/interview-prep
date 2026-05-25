@@ -46,8 +46,7 @@
 #include <stack>
 
 static bool isValid(const std::string &s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

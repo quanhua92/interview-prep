@@ -42,32 +42,27 @@ static Entry *hm[HM_SIZE];
 
 static void hm_init(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void hm_set(int key, int val)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int hm_get(int key, int *found)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void hm_clear(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int *find_max_length(int *nums, int numsSize, int target, int *retSize)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

@@ -36,8 +36,7 @@
 #include "ctest.h"
 
 static int orangesRotting(int grid[10][10], int rows, int cols) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

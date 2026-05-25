@@ -39,8 +39,7 @@
 #include "cpptest.h"
 
 static bool canFinish(int numCourses, const std::vector<std::vector<int>>& prerequisites) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 struct TC {

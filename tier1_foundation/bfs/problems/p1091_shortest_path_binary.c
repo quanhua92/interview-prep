@@ -37,8 +37,7 @@
 #include "ctest.h"
 
 static int shortestPathBinaryMatrix(int grid[100][100], int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

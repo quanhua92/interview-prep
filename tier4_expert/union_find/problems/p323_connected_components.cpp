@@ -39,18 +39,21 @@ struct UnionFind {
         for (int i = 0; i < n; i++) parent[i] = i;
     }
     int find(int x) {
-        /* TODO: Implement */
-        return 0;
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
     }
     bool unite(int x, int y) {
-        /* TODO: Implement */
-        return 0;
+        int rx = find(x), ry = find(y);
+        if (rx == ry) return false;
+        if (rank_[rx] < rank_[ry]) std::swap(rx, ry);
+        parent[ry] = rx;
+        if (rank_[rx] == rank_[ry]) rank_[rx]++;
+        return true;
     }
 };
 
 int countComponents(int n, const std::vector<std::pair<int,int>> &edges) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 struct TC {

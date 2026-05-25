@@ -39,8 +39,7 @@
 #include <stdlib.h>
 
 int change(int amount, int *coins, int coinsSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

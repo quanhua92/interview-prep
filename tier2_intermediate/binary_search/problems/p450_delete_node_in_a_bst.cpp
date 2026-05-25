@@ -53,32 +53,27 @@ struct TreeNode {
 
 static TreeNode *insert(TreeNode *root, int val)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static TreeNode *deleteNode(TreeNode *root, int key)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static std::vector<int> tree_to_bfs(TreeNode *root)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static TreeNode *build_from_list(const std::vector<int> &vals)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_tree(TreeNode *root)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 #define NL 0x7FFFFFFF

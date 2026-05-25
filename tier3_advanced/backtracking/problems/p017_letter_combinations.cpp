@@ -38,13 +38,11 @@ static const std::string phone_map[] = {
 };
 
 static std::vector<std::string> letterCombinations(const std::string &digits) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static bool check(const std::vector<std::string> &got, const std::vector<std::string> &exp) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

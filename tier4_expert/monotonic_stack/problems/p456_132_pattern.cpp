@@ -36,8 +36,7 @@
 
 bool find132pattern(const std::vector<int> &nums)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

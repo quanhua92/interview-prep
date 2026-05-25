@@ -37,14 +37,12 @@
 
 static int merge_sort(int *arr, int *tmp, int left, int right)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int reversePairs(int *nums, int numsSize)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

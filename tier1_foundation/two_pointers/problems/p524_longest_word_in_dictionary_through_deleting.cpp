@@ -29,13 +29,11 @@
 #include <vector>
 
 static bool isSubseq(const std::string &word, const std::string &target) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static std::string findLongestWord(const std::string &s, const std::vector<std::string> &dict) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

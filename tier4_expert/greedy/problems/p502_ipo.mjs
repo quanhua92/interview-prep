@@ -2,7 +2,7 @@
  * P502: IPO [PREMIUM] (Hard)
  * https://leetcode.com/problems/ipo/
  * Topics: Array, Greedy, Sorting, Heap (Priority Queue)
- *
+ * 
  * Suppose LeetCode will start its IPO soon. In order to sell a good price of its shares to Venture Capital, LeetCode would like to work on some projects to increase its capital before the IPO. Since it has limited resources, it can only finish at most k distinct projects before the IPO. Help LeetCode design the best way to maximize its total capital after finishing at most k distinct projects.
  * You are given n projects where the ith project has a pure profit profits[i] and a minimum capital of capital[i] is needed to start it.
  * Initially, you have w capital. When you finish a project, you will obtain its pure profit and the profit will be added to your total capital.
@@ -16,11 +16,11 @@
  *     With capital 1, you can either start the project indexed 1 or the project indexed 2.
  *     Since you can choose at most 2 projects, you need to finish the project indexed 2 to get the maximum capital.
  *     Therefore, output the final maximized capital, which is 0 + 1 + 3 = 4.
- *
+ * 
  * Example 2:
  *     Input: k = 3, w = 0, profits = [1,2,3], capital = [0,1,2]
  *     Output: 6
- *
+ * 
  * Constraints:
  *     - 1 <= k <= 105
  *     - 0 <= w <= 109
@@ -29,14 +29,27 @@
  *     - 1 <= n <= 105
  *     - 0 <= profits[i] <= 104
  *     - 0 <= capital[i] <= 109
- *
+ * 
  * Template (python3):
  *     class Solution:
  *         def findMaximizedCapital(self, k: int, w: int, profits: List[int], capital: List[int]) -> int:
  */
+function solve(k, w, profits, capital)
+  const projects = capital.map((c, i) => [c, profits[i]]).sort((a, b) => a[0] - b[0]);
+  const maxHeap = [];
+  let idx = 0;
 
-function solve(k, w, profits, capital) {
-  throw new Error("NotImplementedError");
+  for (let round = 0; round < k; round++)
+    while (idx < projects.length && projects[idx][0] <= w)
+      maxHeap.push(projects[idx][1]);
+      maxHeap.sort((a, b) => b - a);
+      idx++;
+    }
+    if (maxHeap.length === 0) break;
+    w += maxHeap.shift();
+  }
+  return w; {
+    throw new Error("NotImplementedError");
 }
 
 const tests = [

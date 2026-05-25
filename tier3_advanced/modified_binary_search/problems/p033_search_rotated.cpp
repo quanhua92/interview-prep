@@ -46,8 +46,7 @@ struct TestCase {
 
 int search(const std::vector<int> &nums, int target)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

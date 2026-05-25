@@ -37,8 +37,7 @@
 
 static bool checkInclusion(const std::string &s1, const std::string &s2)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

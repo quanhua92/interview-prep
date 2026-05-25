@@ -52,13 +52,11 @@ typedef struct {
 } CircleSolver;
 
 CircleSolver circle_new(double radius, double x_center, double y_center) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 void circle_rand_point(CircleSolver *c, double *out_x, double *out_y) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

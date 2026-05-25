@@ -18,7 +18,7 @@ class JSRunner(BaseRunner):
 
         try:
             result = subprocess.run(
-                ["node", str(source)],
+                ["node", "--trace-uncaught", str(source)],
                 capture_output=True,
                 text=True,
                 timeout=30,

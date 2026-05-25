@@ -7,7 +7,7 @@
  * Implement the LFUCache class:
  * To determine the least frequently used key, a use counter is maintained for each key in the cache. The key with the smallest use counter is the least frequently used key.
  * When a key is first inserted into the cache, its use counter is set to 1 (due to the put operation). The use counter for a key in the cache is incremented either a get or put operation is called on it.
- * The functions get and put must each run in O(1) average time complexity.
+ * The functions get and put must each run in O(1) average time complexity.
  * Example 1:
  *     Input
  * Example 1:
@@ -38,10 +38,10 @@
  *     // cache=[4,3], cnt(4)=2, cnt(3)=3
  * 
  * Constraints:
- *     - 1 <= capacity <= 104
+ *     - 1 <= capacity <= 104
  *     - 0 <= key <= 105
  *     - 0 <= value <= 109
- *     - At most 2 * 105 calls will be made to get and put.
+ *     - At most 2 * 105 calls will be made to get and put.
  * 
  * Template (python3):
  *     class LFUCache:
@@ -76,19 +76,18 @@ class LFUCache {
     std::unordered_map<int, std::list<int>> freqMap;
 
     void touch(int key) {
-        /* TODO: Implement */
+        abort();
     }
 
 public:
     LFUCache(int capacity) : cap(capacity), minFreq(0) {}
 
     int get(int key) {
-        /* TODO: Implement */
-        return 0;
+        abort();
     }
 
     void put(int key, int value) {
-        /* TODO: Implement */
+        abort();
     }
 };
 

@@ -37,8 +37,7 @@
 
 static int characterReplacement(const std::string &s, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

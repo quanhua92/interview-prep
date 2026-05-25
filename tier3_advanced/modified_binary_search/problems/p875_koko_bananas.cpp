@@ -45,14 +45,12 @@ struct TestCase {
 
 static long long hours_needed(const std::vector<int> &piles, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int minEatingSpeed(const std::vector<int> &piles, long long h)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

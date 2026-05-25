@@ -71,8 +71,7 @@
 #include <vector>
 
 int leastIntervalMulti(const std::string &tasks, int n, int m) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

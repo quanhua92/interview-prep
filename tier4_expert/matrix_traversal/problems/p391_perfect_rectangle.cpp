@@ -38,8 +38,7 @@
 
 static bool isRectangleCover(const std::vector<std::vector<int>> &rectangles)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

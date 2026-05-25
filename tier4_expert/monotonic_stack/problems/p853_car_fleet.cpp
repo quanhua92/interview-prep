@@ -47,8 +47,7 @@
 
 int carFleet(int target, std::vector<int> &position, std::vector<int> &speed)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

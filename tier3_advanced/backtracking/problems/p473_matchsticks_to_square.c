@@ -39,18 +39,15 @@ static int g_side;
 static int g_sides[4];
 
 static int sort_desc(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int bt(int idx) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int makesquare(int *matchsticks, int matchsticksSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

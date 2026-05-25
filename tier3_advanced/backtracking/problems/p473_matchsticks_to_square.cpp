@@ -35,8 +35,7 @@
 #include <numeric>
 
 static bool makesquare(std::vector<int> matchsticks) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

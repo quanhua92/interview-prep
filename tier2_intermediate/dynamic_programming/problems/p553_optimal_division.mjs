@@ -2,7 +2,7 @@
  * P553: Optimal Division [PREMIUM] (Medium)
  * https://leetcode.com/problems/optimal-division/
  * Topics: Array, Math, Dynamic Programming
- *
+ * 
  * You are given an integer array nums. The adjacent integers in nums will perform the float division.
  * However, you can add any number of parenthesis at any position to change the priority of operations. You want to add these parentheses such the value of the expression after the evaluation is maximum.
  * Return the corresponding expression that has the maximum value in string format.
@@ -18,25 +18,26 @@
  *     1000/(100/(10/2)) = 50
  *     1000/100/10/2 = 0.5
  *     1000/100/(10/2) = 2
- *
+ * 
  * Example 2:
  *     Input: nums = [2,3,4]
  *     Output: "2/(3/4)"
  *     Explanation: (2/(3/4)) = 8/3 = 2.667
  *     It can be shown that after trying all possibilities, we cannot get an expression with evaluation greater than 2.667
- *
+ * 
  * Constraints:
  *     - 1 <= nums.length <= 10
  *     - 2 <= nums[i] <= 1000
  *     - There is only one optimal division for the given input.
- *
+ * 
  * Template (python3):
  *     class Solution:
  *         def optimalDivision(self, nums: List[int]) -> str:
  */
-
-function solve(nums) {
-  throw new Error("NotImplementedError");
+function solve(nums)
+  if (nums.length <= 2) return nums.join("/");
+  return `${nums[0]}/(${nums.slice(1).join("/")})`; {
+    throw new Error("NotImplementedError");
 }
 
 const tests = [

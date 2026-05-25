@@ -41,33 +41,27 @@ typedef struct TrieNode {
 } TrieNode;
 
 static TrieNode *node_new(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void node_free(TrieNode *n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void trie_insert(TrieNode *root, const char *word) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int can_concatenate(TrieNode *root, const char *word, int start, int count) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int cmp_str(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int cmp_len(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

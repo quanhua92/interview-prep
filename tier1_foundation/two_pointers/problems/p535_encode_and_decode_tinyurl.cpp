@@ -47,8 +47,10 @@ struct Codec {
     int next_id = 0;
 
     std::string encode(const std::string &longUrl) {
-        /* TODO: Implement */
-        return {};
+        std::string key = std::to_string(next_id++);
+        url_map[key] = longUrl;
+        short_map[key] = longUrl;
+        return "http://tinyurl.com/" + key;
     }
 
     std::string decode(const std::string &shortUrl) {
@@ -59,8 +61,7 @@ struct Codec {
 };
 
 static std::string solve(const std::string &longUrl) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

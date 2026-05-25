@@ -33,20 +33,17 @@
 
 static int is_subseq(const char *a, const char *b)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int cmp_len_desc(const void *a, const void *b)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int findLUSlength(const char **strs, int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

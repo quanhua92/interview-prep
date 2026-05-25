@@ -32,8 +32,7 @@
 
 int largestRectangleArea(const std::vector<int> &heights)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

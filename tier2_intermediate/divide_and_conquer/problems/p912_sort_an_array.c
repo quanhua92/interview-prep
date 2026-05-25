@@ -32,20 +32,17 @@
 
 static void merge(int *arr, int *tmp, int l, int m, int r)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void merge_sort(int *arr, int *tmp, int l, int r)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int *sortArray(int *nums, int n, int *ret_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

@@ -28,8 +28,7 @@
 
 static int detectCapitalUse(const char *word)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

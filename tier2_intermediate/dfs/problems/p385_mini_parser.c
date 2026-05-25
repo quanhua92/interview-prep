@@ -88,51 +88,41 @@ struct NestedInteger {
 };
 
 static void ni_init_int(struct NestedInteger *ni, int val) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void ni_init_list(struct NestedInteger *ni) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void ni_add(struct NestedInteger *ni, struct NestedInteger *elem) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void ni_free(struct NestedInteger *ni) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int ni_eq(struct NestedInteger *a, struct NestedInteger *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static struct NestedInteger* deserialize(const char *s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void print_ni(struct NestedInteger *ni) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static struct NestedInteger* make_int(int v) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 static struct NestedInteger* make_list(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 static void ml_add(struct NestedInteger *l, struct NestedInteger *e) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

@@ -48,8 +48,7 @@
 
 std::vector<int> pickIndex(const std::vector<int> &nums, int target)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

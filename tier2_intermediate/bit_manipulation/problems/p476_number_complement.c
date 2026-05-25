@@ -27,8 +27,7 @@
 #include "ctest.h"
 
 static int findComplement(int num) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

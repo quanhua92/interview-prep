@@ -35,8 +35,7 @@
 
 int trapRainWater(const std::vector<std::vector<int>> &heightMap)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

@@ -32,8 +32,7 @@
 
 static int *updateMatrix(const int *flat, int rows, int cols, int *out_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

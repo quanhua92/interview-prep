@@ -36,8 +36,7 @@
 
 static std::vector<std::vector<int>> updateMatrix(const std::vector<std::vector<int>> &mat)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

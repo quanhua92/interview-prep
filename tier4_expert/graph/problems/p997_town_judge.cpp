@@ -37,8 +37,7 @@
 #include "cpptest.h"
 
 static int findJudge(int n, const std::vector<std::vector<int>>& trust) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 struct TC {

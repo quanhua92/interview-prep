@@ -31,14 +31,12 @@
 
 static int cmp_env(const void *a, const void *b)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int maxEnvelopes(int **envelopes, int envelopesSize, int *envelopesColSize)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

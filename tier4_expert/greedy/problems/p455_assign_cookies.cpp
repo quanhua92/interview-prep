@@ -38,8 +38,7 @@
 #include <algorithm>
 
 int findContentChildren(std::vector<int> g, std::vector<int> s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

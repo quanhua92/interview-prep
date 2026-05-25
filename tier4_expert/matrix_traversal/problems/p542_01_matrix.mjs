@@ -2,7 +2,7 @@
  * P542: 01 Matrix [PREMIUM] (Medium)
  * https://leetcode.com/problems/01-matrix/
  * Topics: Array, Dynamic Programming, Breadth-First Search, Matrix
- *
+ * 
  * Given an m x n binary matrix mat, return the distance of the nearest 0 for each cell.
  * The distance between two cells sharing a common edge is 1.
  * Example 2:
@@ -10,11 +10,11 @@
  * Example 1:
  *     Input: mat = [[0,0,0],[0,1,0],[0,0,0]]
  *     Output: [[0,0,0],[0,1,0],[0,0,0]]
- *
+ * 
  * Example 2:
  *     Input: mat = [[0,0,0],[0,1,0],[1,1,1]]
  *     Output: [[0,0,0],[0,1,0],[1,2,1]]
- *
+ * 
  * Constraints:
  *     - m == mat.length
  *     - n == mat[i].length
@@ -22,14 +22,38 @@
  *     - 1 <= m * n <= 104
  *     - mat[i][j] is either 0 or 1.
  *     - There is at least one 0 in mat.
- *
+ * 
  * Template (python3):
  *     class Solution:
  *         def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
  */
-
-function solve(mat) {
-  throw new Error("NotImplementedError");
+function solve(mat)
+  const m = mat.length, n = mat[0].length;
+  const dist = Array.from({ length: m }, () => new Array(n).fill(0));
+  const queue = [];
+  for (let r = 0; r < m; r++)
+    for (let c = 0; c < n; c++)
+      if (mat[r][c] === 0)
+        queue.push([r, c]);
+      } else
+        dist[r][c] = -1;
+      }
+    }
+  }
+  const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+  let head = 0;
+  while (head < queue.length)
+    const [r, c] = queue[head++];
+    for (const [dr, dc] of dirs)
+      const nr = r + dr, nc = c + dc;
+      if (nr >= 0 && nr < m && nc >= 0 && nc < n && dist[nr][nc] === -1)
+        dist[nr][nc] = dist[r][c] + 1;
+        queue.push([nr, nc]);
+      }
+    }
+  }
+  return dist; {
+    throw new Error("NotImplementedError");
 }
 
 const tests = [

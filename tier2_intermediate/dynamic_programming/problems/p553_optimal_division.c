@@ -40,8 +40,7 @@
 #include <string.h>
 
 char *optimalDivision(int *nums, int numsSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

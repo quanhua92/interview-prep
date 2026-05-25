@@ -40,8 +40,7 @@
 
 std::vector<std::vector<int>> kClosest(std::vector<std::vector<int>> points, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

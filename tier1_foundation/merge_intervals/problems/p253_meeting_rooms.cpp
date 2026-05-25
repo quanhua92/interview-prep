@@ -32,14 +32,12 @@
 
 int minMeetingRooms(const std::vector<int> &flat)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 void __attribute__((unused)) _use_harness_fns(void)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

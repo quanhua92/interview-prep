@@ -33,8 +33,7 @@
 
 static std::vector<int> solve(const std::vector<int> &flat, int target)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

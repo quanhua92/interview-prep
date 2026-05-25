@@ -42,8 +42,7 @@
 #include "cpptest.h"
 
 int poorPigs(int buckets, int minutesToDie, int minutesToTest) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

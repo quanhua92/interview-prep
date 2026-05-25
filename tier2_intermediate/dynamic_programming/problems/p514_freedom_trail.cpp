@@ -35,8 +35,7 @@
 #include <climits>
 
 int findRotateSteps(const std::string &ring, const std::string &key) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

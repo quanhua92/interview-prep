@@ -42,8 +42,7 @@
 
 int maxArea(const std::vector<int> &height)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

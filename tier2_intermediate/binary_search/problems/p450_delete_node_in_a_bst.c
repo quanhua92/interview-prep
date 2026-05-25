@@ -53,56 +53,47 @@ typedef struct QNode { struct TreeNode *node; struct QNode *next; } QNode;
 
 static void enqueue(QNode **front, QNode **back, TreeNode *n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static TreeNode *dequeue(QNode **front, QNode **back)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_q(QNode **front, QNode **back)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static TreeNode *make_node(int val)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static TreeNode *insert(TreeNode *root, int val)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static TreeNode *deleteNode(TreeNode *root, int key)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int tree_to_bfs(TreeNode *root, int *arr, int max_n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_tree(TreeNode *root)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static TreeNode *build_from_list(const int *vals, int n)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 #define NL 0x7FFFFFFF

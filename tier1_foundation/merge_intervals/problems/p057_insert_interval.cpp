@@ -39,8 +39,7 @@
 #include "cpptest.h"
 
 std::vector<int> solve(std::vector<int> arr, int num_intervals) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

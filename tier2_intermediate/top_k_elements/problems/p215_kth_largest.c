@@ -30,20 +30,17 @@
 #include <string.h>
 
 static void swap(int *a, int *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int partition(int *a, int lo, int hi)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int findKthLargest(int *nums, int numsSize, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

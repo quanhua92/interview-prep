@@ -37,13 +37,11 @@
 static unsigned long rng_state = 12345;
 
 static int rand7(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int rand10(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

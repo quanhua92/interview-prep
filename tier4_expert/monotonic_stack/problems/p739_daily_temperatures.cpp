@@ -37,14 +37,12 @@
 
 std::vector<int> dailyTemperatures(const std::vector<int> &temperatures)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void print_arr(const std::vector<int> &a)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

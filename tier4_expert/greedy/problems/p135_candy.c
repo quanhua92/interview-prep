@@ -36,8 +36,7 @@
 #include <stdlib.h>
 
 int candy(int *ratings, int ratingsSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

@@ -36,8 +36,7 @@
 
 static void rotate(std::vector<std::vector<int>> &matrix)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {

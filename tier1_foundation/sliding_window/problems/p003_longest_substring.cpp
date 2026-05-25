@@ -42,8 +42,7 @@
 
 static int lengthOfLongestSubstring(const std::string &s)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

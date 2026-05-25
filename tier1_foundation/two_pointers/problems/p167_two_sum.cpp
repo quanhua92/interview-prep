@@ -40,8 +40,7 @@
 
 std::vector<int> twoSum(const std::vector<int> &numbers, int target)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

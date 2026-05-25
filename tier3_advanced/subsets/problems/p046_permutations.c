@@ -39,33 +39,27 @@ static int *nums_buf;
 static int nums_len;
 
 static void add_result(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void backtrack(int first) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int cmp_rows(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int **permute(int *nums, int numsSize, int *returnSize, int **returnColumnSizes) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int perm_cmp(const void *a, const void *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int check(int **got, int got_rows, int *got_cs, int **exp, int exp_rows, int *exp_cs, int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

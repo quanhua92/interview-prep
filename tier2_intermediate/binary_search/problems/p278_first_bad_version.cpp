@@ -39,8 +39,7 @@ static int g_bad;
 
 int firstBadVersion(long long n, int bad)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

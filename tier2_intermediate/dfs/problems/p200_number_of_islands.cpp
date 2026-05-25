@@ -41,13 +41,11 @@
 #include <string>
 
 static void dfs(std::vector<std::vector<char>>& grid, int r, int c, int rows, int cols) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int numIslands(std::vector<std::vector<char>> grid) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

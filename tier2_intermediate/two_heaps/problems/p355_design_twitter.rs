@@ -89,7 +89,12 @@ struct Twitter {
 
 impl Twitter {
     fn new() -> Self {
-        todo!()
+        Twitter {
+            pool: Vec::new(),
+            head: vec![None; 505],
+            following: vec![HashSet::new(); 505],
+            clock: 0,
+        }
     }
 
     fn post_tweet(&mut self, user_id: usize, tweet_id: i32) {
@@ -101,11 +106,11 @@ impl Twitter {
     }
 
     fn follow(&mut self, follower: usize, followee: usize) {
-        self.following[follower].insert(followee as i32);
+        todo!()
     }
 
     fn unfollow(&mut self, follower: usize, followee: usize) {
-        self.following[follower].remove(&(followee as i32));
+        todo!()
     }
 }
 

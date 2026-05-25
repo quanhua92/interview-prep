@@ -39,28 +39,23 @@
 typedef long long ll;
 
 ll pow10(int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 ll str_to_ll(const char *s) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 void ll_to_str(ll v, char *buf) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 ll make_palindrome(ll prefix, int total_len) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 char *nearestPalindromic(const char *n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

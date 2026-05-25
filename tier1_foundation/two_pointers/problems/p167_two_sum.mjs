@@ -30,11 +30,26 @@
  *     - -1000 <= target <= 1000
  *     - The tests are generated such that there is exactly one solution.
  * 
+ * Template (python3):
+ *     class Solution:
+ *         def twoSum(self, numbers: List[int], target: int) -> List[int]:
+ * 
  * Hint: Use two pointers from both ends of the sorted array.
  */
-
-function solve(numbers, target) {
-  throw new Error("NotImplementedError");
+function solve(numbers, target)
+  let left = 0, right = numbers.length - 1;
+  while (left < right)
+    const current = numbers[left] + numbers[right];
+    if (current === target)
+      return [left + 1, right + 1];
+    } else if (current < target)
+      left++;
+    } else
+      right--;
+    }
+  }
+  return []; {
+    throw new Error("NotImplementedError");
 }
 
 // --- tests ---

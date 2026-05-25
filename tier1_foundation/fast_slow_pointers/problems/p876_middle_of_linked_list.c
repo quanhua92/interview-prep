@@ -41,18 +41,15 @@ typedef struct ListNode {
 } ListNode;
 
 static ListNode *build_list(const int *arr, int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_list(ListNode *head) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int *solve(ListNode *head, int *ret_size) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

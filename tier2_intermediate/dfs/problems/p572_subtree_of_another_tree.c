@@ -45,28 +45,23 @@ struct TreeNode {
 };
 
 static struct TreeNode* make_node(int val) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static struct TreeNode* from_list(int *vals, int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_tree(struct TreeNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int is_same(struct TreeNode *a, struct TreeNode *b) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int isSubtree(struct TreeNode *root, struct TreeNode *subRoot) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

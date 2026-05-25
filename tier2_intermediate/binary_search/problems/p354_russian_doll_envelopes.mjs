@@ -2,7 +2,7 @@
  * P354: Russian Doll Envelopes [PREMIUM] (Hard)
  * https://leetcode.com/problems/russian-doll-envelopes/
  * Topics: Array, Binary Search, Dynamic Programming, Sorting
- *
+ * 
  * You are given a 2D array of integers envelopes where envelopes[i] = [wi, hi] represents the width and the height of an envelope.
  * One envelope can fit into another if and only if both the width and height of one envelope are greater than the other envelope's width and height.
  * Return the maximum number of envelopes you can Russian doll (i.e., put one inside the other).
@@ -11,23 +11,43 @@
  *     Input: envelopes = [[5,4],[6,4],[6,7],[2,3]]
  *     Output: 3
  *     Explanation: The maximum number of envelopes you can Russian doll is 3 ([2,3] => [5,4] => [6,7]).
- *
+ * 
  * Example 2:
  *     Input: envelopes = [[1,1],[1,1],[1,1]]
  *     Output: 1
- *
+ * 
  * Constraints:
  *     - 1 <= envelopes.length <= 105
  *     - envelopes[i].length == 2
  *     - 1 <= wi, hi <= 105
- *
+ * 
  * Template (python3):
  *     class Solution:
  *         def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
  */
+function solve(envelopes)
+  envelopes.sort((a, b) => a[0] - b[0] || b[1] - a[1]);
 
-function solve(envelopes) {
-  throw new Error("NotImplementedError");
+  const heights = [];
+  for (const [, h] of envelopes)
+    let lo = 0;
+    let hi = heights.length;
+    while (lo < hi)
+      const mid = (lo + hi) >> 1;
+      if (heights[mid] < h)
+        lo = mid + 1;
+      } else
+        hi = mid;
+      }
+    }
+    if (lo === heights.length)
+      heights.push(h);
+    } else
+      heights[lo] = h;
+    }
+  }
+  return heights.length; {
+    throw new Error("NotImplementedError");
 }
 
 const tests = [

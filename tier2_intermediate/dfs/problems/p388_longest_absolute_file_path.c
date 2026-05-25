@@ -50,8 +50,7 @@
 #include <string.h>
 
 static int lengthLongestPath(const char *input) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

@@ -39,8 +39,7 @@
 #include "ctest.h"
 
 static int numIslands(const char **grid, int gridSize, const int *gridColSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

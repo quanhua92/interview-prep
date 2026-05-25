@@ -20,7 +20,7 @@
  *     solution.randPoint(); // return [0.36572, 0.17248]
  * 
  * Constraints:
- *     - 0 < radius <= 108
+ *     - 0 < radius <= 108
  *     - -107 <= x_center, y_center <= 107
  *     - At most 3 * 104 calls will be made to randPoint.
  * 
@@ -51,8 +51,7 @@ struct CircleSolver {
     std::uniform_real_distribution<double> dist{-1.0, 1.0};
     CircleSolver(double r, double x, double y) : radius(r), x_center(x), y_center(y), rng(std::random_device{}()) {}
     std::pair<double, double> randPoint() {
-        /* TODO: Implement */
-        return {};
+        abort();
     }
 };
 

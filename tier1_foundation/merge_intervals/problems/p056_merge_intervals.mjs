@@ -2,33 +2,50 @@
  * P56: Merge Intervals (Medium)
  * https://leetcode.com/problems/merge-intervals/
  * Topics: Array, Sorting
- *
+ * 
  * Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
- *
+ * 
  * Example 1:
  *     Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
  *     Output: [[1,6],[8,10],[15,18]]
  *     Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
- *
+ * 
  * Example 2:
  *     Input: intervals = [[1,4],[4,5]]
  *     Output: [[1,5]]
  *     Explanation: Intervals [1,4] and [4,5] are considered overlapping.
- *
+ * 
  * Constraints:
  *     - 1 <= intervals.length <= 104
  *     - intervals[i].length == 2
  *     - 0 <= starti <= endi <= 104
- *
+ * 
  * Template (python3):
  *     class Solution:
  *         def merge(self, intervals: List[List[int]]) -> List[List[int]]:
- *
+ * 
  * Hint: Sort intervals by start time, then merge overlapping ones.
  */
+function mergeIntervals(intervals)
+  if (!intervals || intervals.length === 0) return [];
+  intervals.sort((a, b) => a[0] - b[0]);
+  const merged = [intervals[0]];
+  for (let i = 1; i < intervals.length; i++)
+    const [start, end] = intervals[i];
+    const last = merged[merged.length - 1];
+    if (start <= last[1])
+      last[1] = Math.max(last[1], end);
+    } else
+      merged.push([start, end]);
+    }
+  }
+  return merged; {
+    throw new Error("NotImplementedError");
+}
 
-function solve(input) {
-  throw new Error("NotImplementedError");
+function solve(input)
+  return mergeIntervals(input); {
+    throw new Error("NotImplementedError");
 }
 
 // --- tests ---

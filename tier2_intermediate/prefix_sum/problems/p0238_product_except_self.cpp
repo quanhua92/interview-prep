@@ -40,8 +40,7 @@ using namespace std;
 
 vector<int> product_except_self(const vector<int>& nums, int target)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

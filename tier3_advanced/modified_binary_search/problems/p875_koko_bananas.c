@@ -44,14 +44,12 @@ typedef struct {
 
 static long long hours_needed(int *piles, int piles_n, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int minEatingSpeed(int *piles, int pilesSize, long long h)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

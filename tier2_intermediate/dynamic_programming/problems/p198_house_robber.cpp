@@ -32,8 +32,7 @@
 #include <vector>
 
 int rob(std::vector<int> nums) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

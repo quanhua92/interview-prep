@@ -34,28 +34,23 @@ static int *g_path;
 static int g_plen;
 
 static void add_res(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void bt(int start) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void sort_res(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int **findSubsequences(int *nums, int numsSize, int *returnSize, int **returnColumnSizes) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int check(int **got, int gn, int *gcs, int **exp, int en, int *ecs) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

@@ -40,13 +40,11 @@
 #include <algorithm>
 
 static std::vector<std::vector<int>> combinationSum(std::vector<int> candidates, int target) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static bool check(const std::vector<std::vector<int>> &got, const std::vector<std::vector<int>> &exp) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

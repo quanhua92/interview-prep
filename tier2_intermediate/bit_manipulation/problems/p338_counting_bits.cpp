@@ -41,8 +41,7 @@
 #include "cpptest.h"
 
 static std::vector<int> countBits(int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

@@ -43,14 +43,12 @@ typedef struct {
 
 static int feasible(int *nums, int nums_n, long long max_sum, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 long long splitArray(int *nums, int numsSize, int k)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

@@ -52,8 +52,7 @@
 
 static int solve(int m, int n, int num_flips)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

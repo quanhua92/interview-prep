@@ -30,11 +30,41 @@
  *     - 3 <= nums.length <= 3000
  *     - -105 <= nums[i] <= 105
  * 
+ * Hints:
+ *     - So, we essentially need to find three numbers x, y, and z such that they add up to the given value. If we fix one of the numbers say x, we are left with the two-sum problem at hand!
+ *     - For the two-sum problem, if we fix one of the numbers, say x, we have to scan the entire array to find the next number y, which is value - x where value is the input parameter. Can we change our array somehow so that this search becomes faster?
+ *     - The second train of thought for two-sum is, without changing the array, can we use additional space somehow? Like maybe a hash map to speed up the search?
+ * 
+ * Template (python3):
+ *     class Solution:
+ *         def threeSum(self, nums: List[int]) -> List[List[int]]:
+ * 
  * Hint: Sort, iterate i, nested two pointers for remaining pair, skip duplicates.
  */
-
-function solve(nums) {
-  throw new Error("NotImplementedError");
+function solve(nums)
+  nums.sort((a, b) => a - b);
+  const result = [];
+  const n = nums.length;
+  for (let i = 0; i < n - 2; i++)
+    if (i > 0 && nums[i] === nums[i - 1]) continue;
+    let left = i + 1, right = n - 1;
+    while (left < right)
+      const total = nums[i] + nums[left] + nums[right];
+      if (total < 0)
+        left++;
+      } else if (total > 0)
+        right--;
+      } else
+        result.push([nums[i], nums[left], nums[right]]);
+        while (left < right && nums[left] === nums[left + 1]) left++;
+        while (left < right && nums[right] === nums[right - 1]) right--;
+        left++;
+        right--;
+      }
+    }
+  }
+  return result.map(t => t.sort((a, b) => a - b)).sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]); {
+    throw new Error("NotImplementedError");
 }
 
 // --- tests ---

@@ -2,49 +2,55 @@
  * P538: Convert BST to Greater Tree [PREMIUM] (Medium)
  * https://leetcode.com/problems/convert-bst-to-greater-tree/
  * Topics: Tree, Depth-First Search, Binary Search Tree, Binary Tree
- *
+ * 
  * Given the root of a Binary Search Tree (BST), convert it to a Greater Tree such that every key of the original BST is changed to the original key plus the sum of all keys greater than the original key in BST.
  * As a reminder, a binary search tree is a tree that satisfies these constraints:
+ * Example 2:
  * Note: This question is the same as 1038: https://leetcode.com/problems/binary-search-tree-to-greater-sum-tree/
  * Example 1:
  *     Input: root = [4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
  *     Output: [30,36,21,36,35,26,15,null,null,null,33,null,null,null,8]
- *
+ * 
  * Example 2:
  *     Input: root = [0,null,1]
  *     Output: [1,null,1]
- *
+ * 
  * Constraints:
  *     - The number of nodes in the tree is in the range [0, 104].
  *     - -104 <= Node.val <= 104
  *     - All the values in the tree are unique.
  *     - root is guaranteed to be a valid binary search tree.
- *
+ * 
  * Template (python3):
+ *     # Definition for a binary tree node.
+ *     # class TreeNode:
+ *     #     def __init__(self, val=0, left=None, right=None):
+ *     #         self.val = val
+ *     #         self.left = left
+ *     #         self.right = right
  *     class Solution:
  *         def convertBST(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
  */
-
-class TreeNode {
-  constructor(val, left, right) {
+class TreeNode
+  constructor(val, left, right)
     this.val = val === undefined ? 0 : val;
     this.left = left === undefined ? null : left;
     this.right = right === undefined ? null : right;
   }
 
-  static buildTree(arr) {
+  static buildTree(arr)
     if (arr === null || arr.length === 0) return null;
     const root = new TreeNode(arr[0]);
     const queue = [root];
     let i = 1;
-    while (i < arr.length && queue.length > 0) {
+    while (i < arr.length && queue.length > 0)
       const node = queue.shift();
-      if (i < arr.length && arr[i] !== null) {
+      if (i < arr.length && arr[i] !== null)
         node.left = new TreeNode(arr[i]);
         queue.push(node.left);
       }
       i++;
-      if (i < arr.length && arr[i] !== null) {
+      if (i < arr.length && arr[i] !== null)
         node.right = new TreeNode(arr[i]);
         queue.push(node.right);
       }
@@ -53,31 +59,45 @@ class TreeNode {
     return root;
   }
 
-  toList() {
+  toList()
     const result = [];
     const queue = [this];
-    while (queue.length > 0) {
+    while (queue.length > 0)
       const node = queue.shift();
       result.push(node ? node.val : null);
-      if (node) {
+      if (node)
         queue.push(node.left);
         queue.push(node.right);
       }
     }
-    while (result.length > 0 && result[result.length - 1] === null) {
+    while (result.length > 0 && result[result.length - 1] === null)
       result.pop();
     }
     return result;
+  } {
+    throw new Error("NotImplementedError");
+}
+
+function solve(root)
+  let total = 0;
+
+  function reverseInorder(node)
+    if (!node) return;
+    reverseInorder(node.right);
+    total += node.val;
+    node.val = total;
+    reverseInorder(node.left);
   }
+
+  reverseInorder(root);
+  return root; {
+    throw new Error("NotImplementedError");
 }
 
-function solve(root) {
-  throw new Error("NotImplementedError");
-}
-
-function treeToList(root) {
+function treeToList(root)
   if (root === null) return null;
-  return root.toList();
+  return root.toList(); {
+    throw new Error("NotImplementedError");
 }
 
 const tests = [

@@ -48,8 +48,7 @@
 #pragma GCC diagnostic pop
 
 int canCompleteCircuit(int *gas, int *cost, int n) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

@@ -68,8 +68,7 @@ using namespace std;
 
 vector<int> random_pick_with_weight(const vector<int>& w, int target)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main()

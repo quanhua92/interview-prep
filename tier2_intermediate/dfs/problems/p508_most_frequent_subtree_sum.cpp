@@ -40,23 +40,19 @@ struct TreeNode {
 };
 
 static TreeNode* from_list(const std::vector<int>& vals) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static void free_tree(TreeNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int subtree_sum(TreeNode *node, std::unordered_map<int, int>& freq) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static std::vector<int> findFrequentTreeSum(TreeNode *root) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

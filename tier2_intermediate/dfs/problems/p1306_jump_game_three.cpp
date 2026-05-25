@@ -45,13 +45,11 @@
 #include <vector>
 
 static bool dfs(const std::vector<int>& arr, int i, std::vector<char>& visited) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static bool canReach(const std::vector<int>& arr, int start) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main() {

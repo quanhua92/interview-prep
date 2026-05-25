@@ -27,13 +27,11 @@
 #include <string.h>
 
 static int is_subseq(const char *word, const char *target) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static char *findLongestWord(const char *s, const char **dict, int dict_size) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

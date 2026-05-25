@@ -58,14 +58,12 @@ typedef struct { int lo, hi; } Interval;
 
 static Interval *solve_intervals(const int *values, int n, int *ret_size)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int check(const Interval *got, int gn, const int *expected, int en)
 {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void)

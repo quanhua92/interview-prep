@@ -44,13 +44,11 @@
 
 static int *findOrder(int numCourses, int prerequisites[][2], int prereqSize, int *returnSize);
 __attribute__((unused)) static void _u(void) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 static int *findOrder(int numCourses, int prerequisites[][2], int prereqSize, int *returnSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 typedef struct {
@@ -63,8 +61,7 @@ typedef struct {
 } TC;
 
 static int is_valid_order(int *order, int n, int prereqs[][2], int prereqSize) {
-    /* TODO: Implement */
-    return 0;
+    abort();
 }
 
 int main(void) {

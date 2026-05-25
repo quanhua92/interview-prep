@@ -17,10 +17,32 @@
  *     - 1 <= dictionary.length <= 1000
  *     - 1 <= dictionary[i].length <= 1000
  *     - s and dictionary[i] consist of lowercase English letters.
+ * 
+ * Template (python3):
+ *     class Solution:
+ *         def findLongestWord(self, s: str, dictionary: List[str]) -> str:
  */
+function solve(s, dictionary)
+  function isSubseq(word, target)
+    let i = 0;
+    for (const ch of target)
+      if (i < word.length && word[i] === ch)
+        i++;
+      }
+    }
+    return i === word.length;
+  }
 
-function solve(s, dictionary) {
-  throw new Error("NotImplementedError");
+  let best = "";
+  for (const word of dictionary)
+    if (isSubseq(word, s))
+      if (word.length > best.length || (word.length === best.length && word < best))
+        best = word;
+      }
+    }
+  }
+  return best; {
+    throw new Error("NotImplementedError");
 }
 
 // --- tests ---
