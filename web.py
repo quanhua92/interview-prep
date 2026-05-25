@@ -225,6 +225,11 @@ def dashboard():
     return _build_dashboard_html()
 
 
+@app.get("/code", response_class=HTMLResponse)
+def code_page():
+    return (tracker.ROOT / "static" / "code.html").read_text()
+
+
 @app.get("/api/tracker")
 def get_tracker():
     return tracker.load_tracker()

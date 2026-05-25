@@ -1,0 +1,166 @@
+/* Editor body must constrain children */
+#editor-body {
+  overflow: clip;
+}
+
+/* Full-height overrides for code page */
+#editor-card {
+  border-radius: 0 !important;
+  border: none !important;
+  margin: 0 !important;
+}
+
+#editor-card .CodeMirror {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: auto !important;
+  background: #18181b;
+  border-radius: 0;
+}
+
+#editor-card .CodeMirror-scroll,
+#editor-card .CodeMirror-vscrollbar {
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: #52525b transparent;
+}
+
+#editor-card .CodeMirror-scroll::-webkit-scrollbar,
+#editor-card .CodeMirror-vscrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+#editor-card .CodeMirror-scroll::-webkit-scrollbar-track,
+#editor-card .CodeMirror-vscrollbar::-webkit-scrollbar-track {
+  background: #18181b;
+}
+
+#editor-card .CodeMirror-scroll::-webkit-scrollbar-thumb,
+#editor-card .CodeMirror-vscrollbar::-webkit-scrollbar-thumb {
+  background: #52525b;
+  border-radius: 4px;
+}
+
+#editor-card .CodeMirror-scroll::-webkit-scrollbar-thumb:hover,
+#editor-card .CodeMirror-vscrollbar::-webkit-scrollbar-thumb:hover {
+  background: #71717a;
+}
+
+#file-tree {
+  max-height: 100vh !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 transparent;
+}
+
+#file-tree::-webkit-scrollbar {
+  width: 4px;
+}
+
+#file-tree::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#file-tree::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 2px;
+}
+
+#terminal-body {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 transparent;
+}
+
+#terminal-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+#terminal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#terminal-body::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 2px;
+}
+
+#terminal-body::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+}
+
+#editor-main {
+  overflow: clip;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Terminal panel base */
+#terminal-panel {
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Manual hide via - button */
+#terminal-panel.auto-hidden {
+  display: none;
+}
+
+/* Layout: right (default) */
+.layout-right #editor-main {
+  flex-direction: row;
+}
+
+.layout-right #terminal-panel {
+  width: var(--term-width, 450px);
+  min-width: var(--term-width, 450px);
+  height: 100%;
+  border-left: 1px solid #27272a;
+  border-top: none;
+}
+
+/* Layout: left */
+.layout-left #editor-main {
+  flex-direction: row-reverse;
+}
+
+.layout-left #terminal-panel {
+  width: var(--term-width, 450px);
+  min-width: var(--term-width, 450px);
+  height: 100%;
+  border-right: 1px solid #27272a;
+  border-top: none;
+}
+
+/* Layout: bottom */
+.layout-bottom #editor-main {
+  flex-direction: column;
+}
+
+.layout-bottom #terminal-panel {
+  height: var(--term-height, 350px);
+  width: auto;
+  min-width: 0;
+  border-top: 1px solid #27272a;
+  border-left: none;
+}
+
+/* Layout: top */
+.layout-top #editor-main {
+  flex-direction: column-reverse;
+}
+
+.layout-top #terminal-panel {
+  height: var(--term-height, 350px);
+  width: auto;
+  min-width: 0;
+  border-bottom: 1px solid #27272a;
+  border-left: none;
+}

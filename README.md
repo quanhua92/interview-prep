@@ -6,16 +6,25 @@ A comprehensive interview preparation toolkit covering coding patterns, system d
 - Progress ring, stats cards, and per-section breakdowns
 - **Code Editor** — auto-loads all in-progress problem files with CodeMirror syntax highlighting
 - **Save & Run** — edit code in the browser, save (`Ctrl+S`), and run (`Ctrl+R`) directly from the editor header
-- **Terminal** card with PASS/FAIL/SKIP results and copy-to-clipboard button
+- **Terminal** — PASS/FAIL/SKIP results panel
+- **Full-screen Code Page** (`/code`) — dedicated coding layout with configurable terminal position (Right, Left, Bottom, Top), adjustable terminal width/height, and Ctrl+\` to toggle terminal
 - **Language selector** — toggle Python / C / C++ / Rust in Coding Patterns card or Settings sidebar, persisted to localStorage, filters file tree and Run output
 - **File tree sidebar** — activity bar with collapsible file explorer
 - **Version history** — every save creates a version snapshot; revert to any previous version
+- **Hint** — toggle to view solution files directly in the editor
+- **Autocomplete** — language-aware hints for Python, C, C++, and Rust
 - Click any topic name to open its files in the editor
 - Filter by status (New / In Progress / Done) and instant search
 
+Full-screen code editor (`/code`) with VS Code-style layout, configurable terminal, and Ctrl+\` to toggle:
+
+![Code Editor](screenshot-code.jpeg)
+
+Progress dashboard with inline code editor:
+
 ![Dashboard](screenshot-top-editor.jpeg)
 
-[See full screenshot](screenshot.jpeg)
+[See full dashboard screenshot](screenshot.jpeg)
 
 ## Quick Start
 
@@ -25,7 +34,7 @@ cd interview-prep
 docker compose up -d
 ```
 
-Go to [http://localhost:8888](http://localhost:8888) to view the dashboard.
+Go to [http://localhost:8888](http://localhost:8888) to view the dashboard, or [http://localhost:8888/code](http://localhost:8888/code) for the full-screen code editor.
 
 For a minimal setup (no file persistence):
 
@@ -82,8 +91,12 @@ interview-prep/
 ├── tracker.py                     # Data layer (CRUD on tracker.json)
 ├── web.py                         # FastAPI server + HTML dashboard
 ├── index.html                     # HTML template (Tailwind CSS)
-├── static/app.js                  # Client-side JS (filters, API calls)
-├── static/app.css                 # Editor and sidebar styles
+├── static/app.js                  # Dashboard-specific JS (filters, status updates)
+├── static/app.css                 # Shared editor and sidebar styles
+├── static/editor-core.js          # Shared editor logic (CodeMirror, file tree, save/run/hint)
+├── static/code.js                 # /code page logic (layout, terminal toggle)
+├── static/code.html               # /code page (full-screen coding layout)
+├── static/code.css                # /code page layout presets
 ├── static/codemirror/             # Vendored CodeMirror (syntax highlighting)
 ├── static/tailwind-browser.js    # Vendored Tailwind CSS runtime
 ├── Dockerfile                     # Docker image (Python 3.14-slim)
