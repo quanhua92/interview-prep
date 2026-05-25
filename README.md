@@ -6,8 +6,9 @@ A comprehensive interview preparation toolkit covering coding patterns, system d
 - Progress ring, stats cards, and per-section breakdowns
 - **Code Editor** — auto-loads all in-progress problem files with CodeMirror syntax highlighting
 - **Save & Run** — edit code in the browser, save (`Ctrl+S`), and run (`Ctrl+R`) directly from the editor header
-- **Terminal** card showing PASS/FAIL/SKIP results
-- **File tree sidebar** — activity bar with collapsible file explorer + language filter tabs (Py / C / C++ / Rs)
+- **Terminal** card with PASS/FAIL/SKIP results and copy-to-clipboard button
+- **Language selector** — toggle Python / C / C++ / Rust in Coding Patterns card or Settings sidebar, persisted to localStorage, filters file tree and Run output
+- **File tree sidebar** — activity bar with collapsible file explorer
 - **Version history** — every save creates a version snapshot; revert to any previous version
 - Click any topic name to open its files in the editor
 - Filter by status (New / In Progress / Done) and instant search
