@@ -166,6 +166,8 @@ let fileTreeOpen = false;
 let activePanel = "explorer";
 let activeExts = new Set([".py"]);
 let _cachedAllFiles = [];
+let solutionVisible = false;
+let userContent = "";
 
 function _loadLangs() {
 	try {
@@ -644,6 +646,7 @@ function _renderCachedFiles() {
 }
 
 async function loadFile(itemName, filename) {
+	_hideHint();
 	const key = _fileKey(itemName, filename);
 	const res = await fetch(
 		`/api/files/read?name=${encodeURIComponent(itemName)}&file=${encodeURIComponent(filename)}`,
@@ -662,6 +665,68 @@ async function loadFile(itemName, filename) {
 	});
 
 	currentFile = { item: itemName, filename: filename };
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
+async function toggleHint() {
+	if (!currentFile.item || !currentFile.filename) return;
+
+	if (solutionVisible) {
+		_hideHint();
+		return;
+	}
+
+	try {
+		const res = await fetch(
+			`/api/files/solution?name=${encodeURIComponent(currentFile.item)}&file=${encodeURIComponent(currentFile.filename)}`,
+		);
+		if (!res.ok) {
+			const data = await res.json().catch(() => ({}));
+			showToast(data.detail || "No solution available");
+			return;
+		}
+		const data = await res.json();
+		userContent = cmEditor.getValue();
+		cmEditor.setValue(data.content);
+		cmEditor.setOption("mode", data.language || "text");
+		cmEditor.setOption("readOnly", true);
+		cmEditor.clearHistory();
+
+		solutionVisible = true;
+		const hintBtn = document.getElementById("hint-btn");
+		const hintLabel = document.getElementById("hint-label");
+		hintBtn.classList.remove("bg-purple-600", "hover:bg-purple-500");
+		hintBtn.classList.add("bg-purple-800");
+		hintLabel.textContent = "Hide";
+
+		document.getElementById("save-btn").disabled = true;
+		document.getElementById("run-btn").disabled = true;
+	} catch (err) {
+		showToast("Error: " + err.message);
+	}
+}
+
+function _hideHint() {
+	if (!solutionVisible) return;
+	solutionVisible = false;
+
+	if (userContent !== undefined && cmEditor) {
+		cmEditor.setValue(userContent);
+		cmEditor.setOption("readOnly", false);
+		cmEditor.clearHistory();
+		cmEditor.markClean();
+		_updateSaveBtn();
+	}
+	userContent = "";
+
+	const hintBtn = document.getElementById("hint-btn");
+	const hintLabel = document.getElementById("hint-label");
+	hintBtn.classList.remove("bg-purple-800");
+	hintBtn.classList.add("bg-purple-600", "hover:bg-purple-500");
+	hintLabel.textContent = "Hint";
+
+	document.getElementById("save-btn").disabled = false;
+	document.getElementById("run-btn").disabled = false;
 }
 
 // biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick

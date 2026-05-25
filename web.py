@@ -364,6 +364,25 @@ def read_file(name: str, file: str):
     return {"content": content, "language": language}
 
 
+@app.get("/api/files/solution")
+def read_solution(name: str, file: str):
+    _validate_fs_name(name)
+    _validate_fs_name(file)
+    try:
+        _, base_dir = tracker.resolve_item_dir(name, solutions=True)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    if not base_dir:
+        raise HTTPException(status_code=404, detail="Solutions directory not found")
+    resolved = (base_dir / file).resolve()
+    if not resolved.is_relative_to(base_dir.resolve()):
+        raise HTTPException(status_code=400, detail="Invalid path")
+    if not resolved.exists():
+        raise HTTPException(status_code=404, detail="Solution file not found")
+    language = EXT_CODEMIRROR_MODE.get(resolved.suffix.lower(), "text")
+    return {"content": resolved.read_text(), "language": language}
+
+
 @app.post("/api/files/write")
 def write_file(name: str, file: str, req: SaveFileRequest):
     _validate_fs_name(name)

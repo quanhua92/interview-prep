@@ -134,7 +134,7 @@ def _find_item(tracker, item_name):
     return None, None
 
 
-def resolve_item_dir(item_name):
+def resolve_item_dir(item_name, *, solutions=False):
     tracker = load_tracker()
     section_key, item = _find_item(tracker, item_name)
     if not item:
@@ -145,7 +145,8 @@ def resolve_item_dir(item_name):
         tier_dir = TIER_DIRS.get(tier)
         if not tier_dir:
             return section_key, None
-        base = ROOT / tier_dir / item_name / "problems"
+        sub = "solutions" if solutions else "problems"
+        base = ROOT / tier_dir / item_name / sub
     else:
         base = ROOT / section_key / item_name
 
