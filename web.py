@@ -327,9 +327,9 @@ def health_check():
 
 
 def _set_resource_limits():
-    _resource.setrlimit(_resource.RLIMIT_AS, (1024 * 1024 * 1024, 1024 * 1024 * 1024))
-    _resource.setrlimit(_resource.RLIMIT_NPROC, (16, 16))
-    _resource.setrlimit(_resource.RLIMIT_NOFILE, (64, 64))
+    _resource.setrlimit(_resource.RLIMIT_AS, (2048 * 1024 * 1024, 2048 * 1024 * 1024))
+    _resource.setrlimit(_resource.RLIMIT_NPROC, (128, 128))
+    _resource.setrlimit(_resource.RLIMIT_NOFILE, (1024, 1024))
 
 
 def _run_sandboxed(cmd: list[str], timeout: int = 120) -> subprocess.CompletedProcess:
