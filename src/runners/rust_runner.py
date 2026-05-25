@@ -10,6 +10,7 @@ class RustRunner(BaseRunner):
     language = "Rust"
     extension = ".rs"
     compile_cmd = ["rustc", "--edition", "2024", "-O"]
+    stub_patterns = [r"(?<!\S)todo!\(\)"]
 
     def compile(self, source: Path, out: Path) -> None:
         test_lib = Path("src/runners/rstest.rs")

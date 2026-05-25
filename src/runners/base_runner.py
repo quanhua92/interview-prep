@@ -55,10 +55,15 @@ class BaseRunner:
             raise FileNotFoundError(f"No {self.language} file found: {candidate}")
         return candidate
 
+    stub_patterns: list[str] = []
+
     def _is_problem_stub(self, source: Path) -> bool:
-        """Check if the source file is a problem stub (contains TODO)."""
+        import re
         content = source.read_text(errors="replace")
-        return "TODO" in content or "todo!()" in content or "NotImplementedError" in content
+        for pattern in self.stub_patterns:
+            if re.search(pattern, content, re.MULTILINE):
+                return True
+        return False
 
     def run_all(self, py_path: Path | None = None) -> list[dict]:
         """Compile and run the source file with embedded test cases.

@@ -6,6 +6,7 @@ from .base_runner import BaseRunner
 class JSRunner(BaseRunner):
     language = "JavaScript"
     extension = ".mjs"
+    stub_patterns = [r"(?<!\S)throw\s+new\s+Error\(\"NotImplementedError\"\)"]
 
     def run_all(self, py_path=None) -> list[dict]:
         if py_path is None:
