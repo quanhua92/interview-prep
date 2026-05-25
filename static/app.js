@@ -140,6 +140,7 @@ function renderTerminalOutput(output) {
 
 _restoreFilters();
 filterItems();
+_loadLangs();
 
 // --- Editor ---
 
@@ -165,6 +166,29 @@ let fileTreeOpen = false;
 let activePanel = "explorer";
 let activeExts = new Set([".py"]);
 let _cachedAllFiles = [];
+
+function _loadLangs() {
+	try {
+		const saved = localStorage.getItem("interview-prep-langs");
+		if (saved) {
+			const arr = JSON.parse(saved);
+			if (Array.isArray(arr) && arr.length > 0) {
+				activeExts = new Set(arr);
+				_syncLangButtons();
+			}
+		}
+	} catch {}
+}
+
+function _saveLangs() {
+	localStorage.setItem("interview-prep-langs", JSON.stringify([...activeExts]));
+}
+
+function _syncLangButtons() {
+	document.querySelectorAll("#lang-selector .lang-btn").forEach((btn) => {
+		btn.classList.toggle("active", activeExts.has(btn.dataset.ext));
+	});
+}
 
 function _matchesActiveExts(filename) {
 	if (filename.endsWith(".md")) return true;
@@ -286,6 +310,13 @@ function _showSettingsPanel() {
 			${label}
 		</label>`;
 
+	const langCheckbox = (label, ext) =>
+		`<label class="flex items-center gap-2 text-zinc-300 text-sm py-1 cursor-pointer">
+			<input type="checkbox" data-lang="${ext}" ${activeExts.has(ext) ? "checked" : ""}
+				class="accent-blue-500 w-3.5 h-3.5 cursor-pointer">
+			${label}
+		</label>`;
+
 	tree.innerHTML = `
 		<div class="tree-group">Settings</div>
 		<div class="px-3 py-2 space-y-3">
@@ -310,6 +341,13 @@ function _showSettingsPanel() {
 				${checkbox("Match Brackets", "matchBrackets")}
 				${checkbox("Code Folding", "foldGutter")}
 			</div>
+			<div class="border-t border-zinc-800 pt-2">
+				<div class="text-zinc-400 text-xs mb-1">Languages</div>
+				${langCheckbox("Python", ".py")}
+				${langCheckbox("C", ".c")}
+				${langCheckbox("C++", ".cpp")}
+				${langCheckbox("Rust", ".rs")}
+			</div>
 		</div>
 	`;
 
@@ -324,6 +362,12 @@ function _showSettingsPanel() {
 		el.addEventListener("change", (e) => {
 			_updateSetting(e.target.dataset.setting, e.target.checked);
 			_applyAllSettings();
+		});
+	});
+
+	tree.querySelectorAll("input[type=checkbox][data-lang]").forEach((el) => {
+		el.addEventListener("change", (e) => {
+			toggleExt(e.target.dataset.lang);
 		});
 	});
 }
@@ -542,9 +586,8 @@ function toggleExt(ext) {
 	} else {
 		activeExts.add(ext);
 	}
-	document.querySelectorAll("#lang-selector .lang-btn").forEach((btn) => {
-		btn.classList.toggle("active", activeExts.has(btn.dataset.ext));
-	});
+	_syncLangButtons();
+	_saveLangs();
 	_renderCachedFiles();
 }
 
@@ -679,6 +722,19 @@ async function saveFile() {
 		btn.disabled = false;
 		_updateSaveBtn();
 	}
+}
+
+function copyTerminal() {
+	const termBody = document.getElementById("terminal-body");
+	const text = termBody.innerText || termBody.textContent || "";
+	if (!text.trim()) {
+		showToast("Nothing to copy");
+		return;
+	}
+	navigator.clipboard.writeText(text).then(
+		() => showToast("Copied to clipboard"),
+		() => showToast("Failed to copy"),
+	);
 }
 
 function showToast(message) {
