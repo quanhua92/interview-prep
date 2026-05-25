@@ -130,13 +130,13 @@ def _find_item(tracker, item_name):
     for section_key, array_key in SECTION_KEYS.items():
         for item in tracker.get(array_key, []):
             if item["name"] == item_name:
-                return section_key, item
-    return None, None
+                return section_key, array_key, item
+    return None, None, None
 
 
 def resolve_item_dir(item_name, *, solutions=False):
     tracker = load_tracker()
-    section_key, item = _find_item(tracker, item_name)
+    section_key, array_key, item = _find_item(tracker, item_name)
     if not item:
         raise ValueError(f"Unknown item: {item_name}")
 
@@ -148,7 +148,7 @@ def resolve_item_dir(item_name, *, solutions=False):
         sub = "solutions" if solutions else "problems"
         base = ROOT / tier_dir / item_name / sub
     else:
-        base = ROOT / section_key / item_name
+        base = ROOT / array_key / item_name
 
     return section_key, base if base.exists() else None
 
@@ -157,7 +157,7 @@ def update_item_status(item_name, new_status):
     if new_status not in ("completed", "in_progress", "not_started"):
         raise ValueError(f"Invalid status: {new_status}")
     tracker = load_tracker()
-    section_key, item = _find_item(tracker, item_name)
+    section_key, _, item = _find_item(tracker, item_name)
     if not item:
         raise ValueError(f"Unknown item: {item_name}")
     old_status = item["status"]
@@ -174,7 +174,7 @@ def update_item_status(item_name, new_status):
 
 def record_attempt(item_name):
     tracker = load_tracker()
-    section_key, item = _find_item(tracker, item_name)
+    section_key, _, item = _find_item(tracker, item_name)
     if not item:
         raise ValueError(f"Unknown item: {item_name}")
     item["attempts"] = item.get("attempts", 0) + 1
