@@ -444,23 +444,34 @@ def revert_file(name: str, file: str, label: str):
     return {"ok": True}
 
 
-# --- Static files (mounted after routes to avoid conflicts) ---
+# --- Static files (served via route for no-cache middleware) ---
 
-from fastapi.staticfiles import StaticFiles  # noqa: E402
+from starlette.responses import Response as _Response
 from starlette.middleware.base import BaseHTTPMiddleware
 
 class NoCacheMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         response = await call_next(request)
-        if True:
-            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-            response.headers["Pragma"] = "no-cache"
-            response.headers["Expires"] = "0"
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
         return response
 
 app.add_middleware(NoCacheMiddleware)
 
-app.mount("/static", StaticFiles(directory=tracker.ROOT / "static"), name="static")
+@app.get("/static/{filepath:path}")
+async def serve_static(filepath: str):
+    static_dir = tracker.ROOT / "static"
+    file_path = (static_dir / filepath).resolve()
+    if not file_path.is_relative_to(static_dir.resolve()):
+        raise HTTPException(status_code=404)
+    if not file_path.is_file():
+        raise HTTPException(status_code=404)
+    content = file_path.read_bytes()
+    import mimetypes
+    mt, _ = mimetypes.guess_type(filepath)
+    return _Response(content, media_type=mt or "application/octet-stream")
+
 
 
 # --- Entry point ---
