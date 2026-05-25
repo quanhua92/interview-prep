@@ -4,6 +4,7 @@ let ctrlTimeout = null;
 let currentFile = { item: null, filename: null };
 let fileTreeOpen = false;
 let activePanel = "explorer";
+let _settingsVisible = false;
 let activeExts = new Set([".py"]);
 let _cachedAllFiles = [];
 let solutionVisible = false;
@@ -115,6 +116,7 @@ function _setActivePanel(panel) {
 }
 
 function toggleFileTree() {
+	_settingsVisible = false;
 	if (!fileTreeOpen) {
 		fileTreeOpen = true;
 		document.getElementById("file-tree").classList.remove("hidden");
@@ -139,6 +141,7 @@ async function _reRenderFileTree() {
 
 // biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
 function toggleSettings() {
+	_settingsVisible = true;
 	if (!fileTreeOpen) {
 		fileTreeOpen = true;
 		document.getElementById("file-tree").classList.remove("hidden");
@@ -519,6 +522,7 @@ function _renderFileTree(files) {
 }
 
 function _renderCachedFiles() {
+	if (_settingsVisible) return;
 	const tree = document.getElementById("file-tree");
 	if (!tree) return;
 	const filtered = _cachedAllFiles.filter((f) =>
