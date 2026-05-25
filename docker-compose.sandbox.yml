@@ -1,0 +1,17 @@
+services:
+  web:
+    container_name: interview-prep
+    build: .
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./progress:/app/progress
+      - ./static:/app/static
+      - ./tier1_foundation:/app/tier1_foundation
+      - ./tier2_intermediate:/app/tier2_intermediate
+      - ./tier3_advanced:/app/tier3_advanced
+      - ./tier4_expert:/app/tier4_expert
+    userns_mode: host
+    security_opt:
+      - seccomp=unconfined
+      - apparmor=unconfined

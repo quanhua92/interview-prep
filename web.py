@@ -256,6 +256,116 @@ def record_attempt(req: AttemptRequest):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+import resource as _resource
+import shutil
+
+BWRAP_TIME_LIMIT = 120
+
+
+_BWRAP_BASE = [
+    "--unshare-user",
+    "--unshare-pid",
+    "--unshare-ipc",
+    "--unshare-uts",
+    "--die-with-parent",
+    "--new-session",
+]
+
+
+def _detect_bwrap() -> bool:
+    if not shutil.which("bwrap"):
+        return False
+    try:
+        r = subprocess.run(
+            [
+                "bwrap",
+                *_BWRAP_BASE,
+                "--ro-bind", "/usr", "/usr",
+                "--ro-bind", "/bin", "/bin",
+                "--ro-bind", "/lib", "/lib",
+                "--ro-bind", "/lib64", "/lib64",
+                "--dev", "/dev",
+                "--", "/bin/true",
+            ],
+            capture_output=True, timeout=5,
+        )
+        return r.returncode == 0
+    except (subprocess.TimeoutExpired, OSError):
+        return False
+
+
+_USE_BWRAP = _detect_bwrap()
+
+
+@app.get("/api/health")
+def health_check():
+    checks = {
+        "status": "ok",
+        "sandbox": {
+            "type": "bwrap" if _USE_BWRAP else "none (direct subprocess)",
+            "bwrap_available": bool(shutil.which("bwrap")),
+            "bwrap_namespaces": _USE_BWRAP,
+            "sandbox_active": _USE_BWRAP,
+        },
+        "runtimes": {},
+    }
+    runtimes = {
+        "python": ["/usr/local/bin/python3", "--version"],
+        "gcc": ["gcc", "--version"],
+        "g++": ["g++", "--version"],
+        "rustc": ["rustc", "--version"],
+        "node": ["node", "--version"],
+    }
+    for name, cmd in runtimes.items():
+        try:
+            r = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
+            version = r.stdout.strip().split("\n")[0] if r.stdout.strip() else "not found"
+            checks["runtimes"][name] = {"available": True, "version": version}
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            checks["runtimes"][name] = {"available": False, "version": None}
+    return checks
+
+
+def _set_resource_limits():
+    _resource.setrlimit(_resource.RLIMIT_AS, (1024 * 1024 * 1024, 1024 * 1024 * 1024))
+    _resource.setrlimit(_resource.RLIMIT_NPROC, (16, 16))
+    _resource.setrlimit(_resource.RLIMIT_NOFILE, (64, 64))
+
+
+def _run_sandboxed(cmd: list[str], timeout: int = 120) -> subprocess.CompletedProcess:
+    if _USE_BWRAP:
+        return subprocess.run(
+            [
+                "bwrap",
+                *_BWRAP_BASE,
+                "--ro-bind", "/usr", "/usr",
+                "--ro-bind", "/bin", "/bin",
+                "--ro-bind", "/lib", "/lib",
+                "--ro-bind", "/lib64", "/lib64",
+                "--ro-bind", "/etc", "/etc",
+                "--ro-bind", "/app", "/app",
+                "--bind", "/app/progress", "/app/progress",
+                "--bind", "/tmp", "/tmp",
+                "--dev", "/dev",
+                "--chdir", "/app",
+                "--",
+                *cmd,
+            ],
+            capture_output=True,
+            text=True,
+            timeout=timeout + 10,
+            preexec_fn=_set_resource_limits,
+        )
+    return subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        timeout=timeout + 10,
+        cwd=str(tracker.ROOT),
+        preexec_fn=_set_resource_limits,
+    )
+
+
 @app.post("/api/run")
 def run_problems(lang: list[str] = Query(default=["py"]), pattern: str | None = None, all_patterns: bool = False, solution: bool = False):
     valid_langs = {"py", "c", "cpp", "rs", "js"}
@@ -265,29 +375,23 @@ def run_problems(lang: list[str] = Query(default=["py"]), pattern: str | None = 
             raise HTTPException(status_code=400, detail=f"Invalid lang: {l}. Must be one of {valid_langs}")
     results = []
     for l in langs:
-        cmd = [sys.executable, str(tracker.ROOT / "run.py")]
+        sandbox_cmd = ["/usr/local/bin/python3", "/app/run.py"]
         if all_patterns:
-            cmd.append("--all")
+            sandbox_cmd.append("--all")
         if pattern:
-            cmd.append(pattern)
+            sandbox_cmd.append(pattern)
         if l != "py":
-            cmd.extend(["--lang", l])
+            sandbox_cmd.extend(["--lang", l])
         if solution:
-            cmd.append("--solution")
+            sandbox_cmd.append("--solution")
         try:
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=120,
-                cwd=str(tracker.ROOT),
-            )
+            result = _run_sandboxed(sandbox_cmd, timeout=BWRAP_TIME_LIMIT)
             output = result.stdout
             if result.stderr:
                 output += "\n" + result.stderr
             results.append({"lang": l, "output": output, "exit_code": result.returncode})
         except subprocess.TimeoutExpired:
-            results.append({"lang": l, "error": "Timed out after 120 seconds"})
+            results.append({"lang": l, "error": f"Timed out after {BWRAP_TIME_LIMIT} seconds"})
     return {"results": results}
 
 
