@@ -1,11 +1,11 @@
 const CODE_SETTINGS_KEY = "code-settings";
 const DEFAULTS = {
-	layout: "right",
-	termWidth: 450,
+	layout: "bottom",
+	termWidth: window.innerWidth <= 768 ? 250 : 450,
 	termHeight: 350,
 	termVisible: false,
 };
-const TERM_WIDTHS = [250, 350, 450, 550, 700];
+const TERM_WIDTHS = [200, 250, 300, 350, 400, 450, 500, 550, 600, 700, 800];
 const TERM_HEIGHTS = [150, 250, 350, 450, 550];
 
 function _loadCodeSettings() {
