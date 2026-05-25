@@ -1,3 +1,4 @@
+# TODO: Implement
 """
 P515: Find Largest Value in Each Tree Row [PREMIUM] (Medium)
 https://leetcode.com/problems/find-largest-value-in-each-tree-row/
@@ -31,14 +32,21 @@ import sys
 
 sys.path.insert(0, ".")
 from src.utils import Problem, TestCase, TreeNode
-from typing import Any
 
 
 class Solution(Problem):
     name = "515. Find Largest Value in Each Tree Row"
     test_cases = [
-        TestCase(input=TreeNode.from_list([1, 3, 2, 5, 3, None, 9]), expected=[1, 3, 9], label="example 1"),
-        TestCase(input=TreeNode.from_list([1, 2, 3]), expected=[1, 3], label="example 2"),
+        TestCase(
+            input=TreeNode.from_list([1, 3, 2, 5, 3, None, 9]),
+            expected=[1, 3, 9],
+            label="example 1",
+        ),
+        TestCase(
+            input=TreeNode.from_list([1, 2, 3]),
+            expected=[1, 3],
+            label="example 2",
+        ),
         TestCase(
             input=TreeNode.from_list([]),
             expected=[],
@@ -62,8 +70,9 @@ class Solution(Problem):
     ]
 
     def solve(self, root: TreeNode) -> list[int]:
-        raise NotImplementedError("TODO: Implement solve(self, root: TreeNode) -> list[int]")
+        raise NotImplementedError("TODO: Implement solve(...)")
 
 
 if __name__ == "__main__":
     Solution().run()
+

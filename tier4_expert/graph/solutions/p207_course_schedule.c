@@ -1,0 +1,117 @@
+/*
+ * P207: Course Schedule (Medium)
+ * https://leetcode.com/problems/course-schedule/
+ * Topics: Depth-First Search, Breadth-First Search, Graph, Topological Sort
+ *
+ * There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
+ * Return true if you can finish all courses. Otherwise, return false.
+ *
+ * Example 1:
+ *     Input: numCourses = 2, prerequisites = [[1,0]]
+ *     Output: true
+ *     Explanation: There are a total of 2 courses to take.
+ *     To take course 1 you should have finished course 0. So it is possible.
+ *
+ * Example 2:
+ *     Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+ *     Output: false
+ *     Explanation: There are a total of 2 courses to take.
+ *     To take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.
+ *
+ * Constraints:
+ *     - 1 <= numCourses <= 2000
+ *     - 0 <= prerequisites.length <= 5000
+ *     - prerequisites[i].length == 2
+ *     - 0 <= ai, bi < numCourses
+ *     - All the pairs prerequisites[i] are unique.
+ *
+ * Hints:
+ *     - This problem is equivalent to finding if a cycle exists in a directed graph. If a cycle exists, no topological ordering exists and therefore it will be impossible to take all courses.
+ *     - <a href="https://www.cs.princeton.edu/~wayne/kleinberg-tardos/pdf/03Graphs.pdf" target="_blank">Topological Sort via DFS</a> - A great tutorial explaining the basic concepts of Topological Sort.
+ *     - Topological sort could also be done via <a href="http://en.wikipedia.org/wiki/Topological_sorting#Algorithms" target="_blank">BFS</a>.
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+ *
+ * Hint: Build a graph and use topological sort (Kahn's algorithm) to detect cycles.
+ */
+
+
+#include "ctest.h"
+
+static int canFinish(int numCourses, int prerequisites[][2], int prereqSize) {
+    int *adjCount = calloc(numCourses, sizeof(int));
+    int *inDegree = calloc(numCourses, sizeof(int));
+    int *queue = malloc(numCourses * sizeof(int));
+    int *edges = malloc(prereqSize * sizeof(int));
+    int *head = calloc(numCourses, sizeof(int));
+    int front = 0, back = 0, count = 0;
+
+    for (int i = 0; i < prereqSize; i++) {
+        inDegree[prerequisites[i][0]]++;
+    }
+    int edgeIdx = 0;
+    for (int i = 0; i < numCourses; i++) head[i] = -1;
+    for (int i = 0; i < prereqSize; i++) {
+        int course = prerequisites[i][0];
+        int prereq = prerequisites[i][1];
+        edges[edgeIdx] = course;
+        adjCount[edgeIdx] = head[prereq];
+        head[prereq] = edgeIdx;
+        edgeIdx++;
+    }
+    for (int i = 0; i < numCourses; i++) {
+        if (inDegree[i] == 0) queue[back++] = i;
+    }
+    while (front < back) {
+        int node = queue[front++];
+        count++;
+        for (int e = head[node]; e != -1; e = adjCount[e]) {
+            int nb = edges[e];
+            if (--inDegree[nb] == 0) queue[back++] = nb;
+        }
+    }
+    free(adjCount);
+    free(inDegree);
+    free(queue);
+    free(edges);
+    free(head);
+    return count == numCourses;
+}
+
+typedef struct {
+    const char *label;
+    int numCourses;
+    int prereqs[10000][2];
+    int prereqSize;
+    int expected;
+} TC;
+
+int main(void) {
+    (void)th_print_arr;
+    (void)th_arr_eq;
+    TC tests[] = {
+        {"example 1", 2, {{1,0}}, 1, 1},
+        {"example 2", 2, {{1,0},{0,1}}, 2, 0},
+        {"no prerequisites", 1, {{0}}, 0, 1},
+        {"3-node cycle", 3, {{0,1},{1,2},{2,0}}, 3, 0},
+        {"linear chain disconnected node", 5, {{0,1},{1,2},{2,3}}, 3, 1},
+        {"two deps on one course", 3, {{1,0},{2,0}}, 2, 1},
+        {"self-contained cycle", 4, {{0,1},{1,2},{2,3},{3,1}}, 4, 0},
+    };
+    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
+    int passed = 0;
+    for (int i = 0; i < nt; i++) {
+        int got = canFinish(tests[i].numCourses, tests[i].prereqs, tests[i].prereqSize);
+        if (got == tests[i].expected) {
+            passed++;
+            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
+        } else {
+            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
+            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
+        }
+    }
+    printf("\n  %d/%d passed\n", passed, nt);
+    return passed == nt ? 0 : 1;
+}

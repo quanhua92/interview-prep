@@ -1,7 +1,10 @@
 """Base Problem class and TestCase for running solutions with instant feedback."""
 
+from __future__ import annotations
+
 import sys
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
 
@@ -59,7 +62,7 @@ class Problem:
         print(f"{'='*60}")
 
         if not self.test_cases:
-            print(f"  SKIP — no test cases defined")
+            print("  SKIP — no test cases defined")
             print(f"{'='*60}\n")
             sys.exit(self.EXIT_WIP)
 
@@ -110,6 +113,32 @@ class Problem:
 
     def run_quiet(self) -> bool:
         return self._run(quiet=True)
+
+    def run_c(self, source_file: str | None = None) -> list[dict]:
+        from src.runners import CRunner
+
+        py_path = self._resolve_py_path(source_file)
+        return CRunner().run_all(py_path)
+
+    def run_cpp(self, source_file: str | None = None) -> list[dict]:
+        from src.runners import CppRunner
+
+        py_path = self._resolve_py_path(source_file)
+        return CppRunner().run_all(py_path)
+
+    def run_rs(self, source_file: str | None = None) -> list[dict]:
+        from src.runners import RustRunner
+
+        py_path = self._resolve_py_path(source_file)
+        return RustRunner().run_all(py_path)
+
+    def _resolve_py_path(self, source_file: str | None) -> Path:
+        if source_file:
+            return Path(source_file)
+        import importlib
+
+        mod = importlib.import_module(type(self).__module__)
+        return Path(mod.__file__)
 
 
 if __name__ == "__main__":

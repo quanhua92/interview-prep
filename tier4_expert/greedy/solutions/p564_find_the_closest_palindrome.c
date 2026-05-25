@@ -1,0 +1,131 @@
+/*
+ * P564: Find the Closest Palindrome [PREMIUM] (Hard)
+ * https://leetcode.com/problems/find-the-closest-palindrome/
+ * Topics: Math, String
+ *
+ * Given a string n representing an integer, return the closest integer (not including itself), which is a palindrome. If there is a tie, return the smaller one.
+ * The closest is defined as the absolute difference minimized between two integers.
+ * Example 1:
+ *     Input: n = "123"
+ *     Output: "121"
+ *
+ * Example 2:
+ *     Input: n = "1"
+ *     Output: "0"
+ *     Explanation: 0 and 2 are the closest palindromes but we return the smallest which is 0.
+ *
+ * Constraints:
+ *     - 1 <= n.length <= 18
+ *     - n consists of only digits.
+ *     - n does not have leading zeros.
+ *     - n is representing an integer in the range [1, 1018 - 1].
+ *
+ * Hint: Will brute force work for this problem? Think of something else.
+ * Hint: Take some examples like 1234, 999,1000, etc and check their closest palindromes. How many different cases are possible?
+ * Hint: Do we have to consider only left half or right half of the string or both?
+ * Hint: Try to find the closest palindrome of these numbers- 12932, 99800, 12120. Did you observe something?
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def nearestPalindromic(self, n: str) -> str:
+ */
+
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
+#include "ctest.h"
+#pragma GCC diagnostic pop
+#include <stdlib.h>
+#include <string.h>
+
+typedef long long ll;
+
+ll pow10(int n) { ll r = 1; for (int i = 0; i < n; i++) r *= 10; return r; }
+
+ll str_to_ll(const char *s) {
+    ll v = 0;
+    while (*s) { v = v * 10 + (*s - '0'); s++; }
+    return v;
+}
+
+void ll_to_str(ll v, char *buf) {
+    if (v == 0) { buf[0] = '0'; buf[1] = '\0'; return; }
+    char tmp[21];
+    int len = 0;
+    if (v < 0) { *buf++ = '-'; v = -v; }
+    while (v > 0) { tmp[len++] = (char)('0' + (int)(v % 10)); v /= 10; }
+    for (int i = 0; i < len; i++) buf[i] = tmp[len - 1 - i];
+    buf[len] = '\0';
+}
+
+ll make_palindrome(ll prefix, int total_len) {
+    char p[21], rev[21];
+    ll_to_str(prefix, p);
+    int plen = (int)strlen(p);
+    for (int i = 0; i < plen; i++) rev[i] = p[i];
+    rev[plen] = '\0';
+    int rev_start = total_len % 2 == 0 ? plen - 1 : plen - 2;
+    for (int i = rev_start; i >= 0; i--) rev[plen++] = p[i];
+    rev[plen] = '\0';
+    return str_to_ll(rev);
+}
+
+char *nearestPalindromic(const char *n) {
+    ll num = str_to_ll(n);
+    int len = (int)strlen(n);
+    ll candidates[5];
+    int nc = 0;
+    int half_len = (len + 1) / 2;
+    char half[19];
+    memcpy(half, n, (size_t)half_len);
+    half[half_len] = '\0';
+    ll prefix = str_to_ll(half);
+    for (ll delta = -1; delta <= 1; delta++) {
+        candidates[nc++] = make_palindrome(prefix + delta, len);
+    }
+    candidates[nc++] = (len > 1) ? pow10(len - 1) - 1 : -1;
+    candidates[nc++] = pow10(len) + 1;
+    ll best = -1;
+    ll best_diff = -1;
+    for (int i = 0; i < nc; i++) {
+        if (candidates[i] == num) continue;
+        if (candidates[i] < 0) continue;
+        ll diff = candidates[i] > num ? candidates[i] - num : num - candidates[i];
+        if (best_diff < 0 || diff < best_diff || (diff == best_diff && candidates[i] < best)) {
+            best = candidates[i];
+            best_diff = diff;
+        }
+    }
+    static char result[21];
+    ll_to_str(best, result);
+    return result;
+}
+
+int main(void) {
+    printf("\n============================================================\n");
+    printf("  564. Find the Closest Palindrome\n");
+    printf("============================================================\n");
+    struct { const char *label; const char *input; const char *expected; } tests[] = {
+        {"example 1", "123", "121"},
+        {"example 2", "1", "0"},
+        {"edge at 10", "10", "9"},
+        {"two same digits", "99", "101"},
+        {"power of 10", "100", "99"},
+        {"four digit", "1283", "1331"},
+    };
+    int tc = (int)(sizeof(tests) / sizeof(tests[0]));
+    int passed = 0;
+    for (int i = 0; i < tc; i++) {
+        char *got = nearestPalindromic(tests[i].input);
+        if (strcmp(got, tests[i].expected) == 0) {
+            passed++;
+            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
+        } else {
+            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
+            printf("    Expected: %s, Got: %s\n", tests[i].expected, got);
+        }
+    }
+    printf("\n  %d/%d passed\n", passed, tc);
+    printf("============================================================\n\n");
+    return passed == tc ? 0 : 1;
+}

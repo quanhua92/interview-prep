@@ -14,6 +14,24 @@ import tracker
 
 app = FastAPI()
 
+ALLOWED_EXTENSIONS = (".py", ".md", ".c", ".cpp", ".rs")
+
+EXT_CODEMIRROR_MODE = {
+    ".py": "python",
+    ".md": "markdown",
+    ".c": "text/x-csrc",
+    ".cpp": "text/x-c++src",
+    ".rs": "text/x-rustsrc",
+}
+
+EXT_LANGUAGE_LABEL = {
+    ".py": "Python",
+    ".md": "Markdown",
+    ".c": "C",
+    ".cpp": "C++",
+    ".rs": "Rust",
+}
+
 # --- HTML helpers ---
 
 
@@ -251,7 +269,7 @@ def _snapshot_all_files():
                 continue
             for f in sorted(base_dir.iterdir()):
                 if f.is_file() and not f.name.startswith("_") and not f.name.startswith("."):
-                    if f.suffix.lower() in (".py", ".md"):
+                    if f.suffix.lower() in ALLOWED_EXTENSIONS:
                         key = f"{item['name']}/{f.name}"
                         _file_snapshots[key] = [{"label": "Original", "content": f.read_text()}]
 
@@ -278,7 +296,7 @@ def _resolve_safe_path(item_name: str, filename: str) -> Path | None:
 
 
 @app.get("/api/files/ls")
-def list_files(name: str):
+def list_files(name: str, ext: str | None = None):
     _validate_fs_name(name)
     try:
         section_key, base_dir = tracker.resolve_item_dir(name)
@@ -288,11 +306,16 @@ def list_files(name: str):
     if not base_dir:
         return {"has_files": False, "files": []}
 
+    ext_filter = ext.lower() if ext else None
     files = []
     for f in sorted(base_dir.iterdir()):
         if f.is_file() and not f.name.startswith("_") and not f.name.startswith("."):
-            if f.suffix.lower() in (".py", ".md"):
-                files.append({"name": f.name, "size": f.stat().st_size})
+            suffix = f.suffix.lower()
+            if suffix not in ALLOWED_EXTENSIONS:
+                continue
+            if ext_filter and suffix != ext_filter:
+                continue
+            files.append({"name": f.name, "size": f.stat().st_size})
     return {"has_files": len(files) > 0, "files": files}
 
 
@@ -304,7 +327,7 @@ def read_file(name: str, file: str):
     if not file_path or not file_path.exists():
         raise HTTPException(status_code=404, detail="File not found")
 
-    ext_map = {".py": "python", ".md": "markdown"}
+    ext_map = EXT_CODEMIRROR_MODE
     language = ext_map.get(file_path.suffix.lower(), "text")
     content = file_path.read_text()
     return {"content": content, "language": language}
@@ -330,9 +353,10 @@ def write_file(name: str, file: str, req: SaveFileRequest):
 
 
 @app.get("/api/files/in-progress")
-def list_in_progress_files():
+def list_in_progress_files(ext: str | None = None):
     tracker_data = tracker.load_tracker()
     files = []
+    ext_filter = ext.lower() if ext else None
     for section_key, array_key in tracker.SECTION_KEYS.items():
         for item in tracker_data.get(array_key, []):
             if item["status"] != "in_progress":
@@ -345,12 +369,16 @@ def list_in_progress_files():
                 continue
             for f in sorted(base_dir.iterdir()):
                 if f.is_file() and not f.name.startswith("_") and not f.name.startswith("."):
-                    if f.suffix.lower() in (".py", ".md"):
-                        files.append({
-                            "item": item["name"],
-                            "name": f.name,
-                            "size": f.stat().st_size,
-                        })
+                    suffix = f.suffix.lower()
+                    if suffix not in ALLOWED_EXTENSIONS:
+                        continue
+                    if ext_filter and suffix != ext_filter:
+                        continue
+                    files.append({
+                        "item": item["name"],
+                        "name": f.name,
+                        "size": f.stat().st_size,
+                    })
     return {"files": files}
 
 

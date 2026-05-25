@@ -60,8 +60,8 @@ class Solution(Problem):
         TestCase(input=(3, 1, 3), expected=3, label="column matrix flip all"),
     ]
 
-    def solve(self) -> None:
-        raise NotImplementedError("TODO: Implement solve(self) -> None")
+    def solve(self, m: int, n: int, num_flips: int) -> int:
+        raise NotImplementedError("TODO: Implement solve(self, m, n, num_flips) -> int")
 
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+# TODO: Implement
 """
 P521: Longest Uncommon Subsequence I [PREMIUM] (Easy)
 https://leetcode.com/problems/longest-uncommon-subsequence-i/
@@ -46,11 +47,12 @@ class Solution(Problem):
         TestCase(input=("aba", "cdc"), expected=3, label="example 1"),
         TestCase(input=("aaa", "bbb"), expected=3, label="example 2"),
         TestCase(input=("aaa", "aaa"), expected=-1, label="example 3"),
+        TestCase(input=("a", "b"), expected=1, label="single char different"),
+        TestCase(input=("a", "aa"), expected=2, label="one is subsequence of other"),
+        TestCase(input=("abc", "abcde"), expected=5, label="one longer than other"),
     ]
 
     def solve(self, a: str, b: str) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, a, b) -> int")
-
-
+        raise NotImplementedError("TODO: Implement solve(self, a: str, b: str)")
 if __name__ == "__main__":
     Solution().run()

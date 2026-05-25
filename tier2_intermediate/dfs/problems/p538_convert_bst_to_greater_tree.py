@@ -1,3 +1,4 @@
+# TODO: Implement
 """
 P538: Convert BST to Greater Tree [PREMIUM] (Medium)
 https://leetcode.com/problems/convert-bst-to-greater-tree/
@@ -36,24 +37,35 @@ import sys
 
 sys.path.insert(0, ".")
 from src.utils import Problem, TestCase, TreeNode
-from typing import Any
 
 
 class Solution(Problem):
     name = "538. Convert BST to Greater Tree"
     test_cases = [
         TestCase(
-            input=TreeNode.from_list([4, 1, 6, 0, 2, 5, 7, None, None, None, 3, None, None, None, 8]),
-            expected=TreeNode.from_list([30, 36, 21, 36, 35, 26, 15, None, None, None, 33, None, None, None, 8]),
+            input=TreeNode.from_list(
+                [4, 1, 6, 0, 2, 5, 7, None, None, None, 3, None, None, None, 8]
+            ),
+            expected=TreeNode.from_list(
+                [30, 36, 21, 36, 35, 26, 15, None, None, None, 33, None, None, None, 8]
+            ),
             label="example 1",
         ),
-        TestCase(input=TreeNode.from_list([0, None, 1]), expected=TreeNode.from_list([1, None, 1]), label="example 2"),
+        TestCase(
+            input=TreeNode.from_list([0, None, 1]),
+            expected=TreeNode.from_list([1, None, 1]),
+            label="example 2",
+        ),
         TestCase(
             input=TreeNode.from_list([2, 1, 3]),
             expected=TreeNode.from_list([5, 6, 3]),
             label="small balanced BST",
         ),
-        TestCase(input=TreeNode.from_list([1]), expected=TreeNode.from_list([1]), label="single node"),
+        TestCase(
+            input=TreeNode.from_list([1]),
+            expected=TreeNode.from_list([1]),
+            label="single node",
+        ),
         TestCase(
             input=TreeNode.from_list([1, None, 2, None, 3]),
             expected=TreeNode.from_list([6, None, 5, None, 3]),
@@ -63,8 +75,9 @@ class Solution(Problem):
     ]
 
     def solve(self, root: TreeNode | None) -> TreeNode | None:
-        raise NotImplementedError("TODO: Implement solve(self, root: TreeNode | None) -> TreeNode | None")
+        raise NotImplementedError("TODO: Implement solve(...)")
 
 
 if __name__ == "__main__":
     Solution().run()
+

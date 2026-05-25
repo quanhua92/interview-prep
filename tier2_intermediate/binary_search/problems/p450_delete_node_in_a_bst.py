@@ -1,3 +1,4 @@
+# TODO: Implement
 """
 P450: Delete Node in a BST [PREMIUM] (Medium)
 https://leetcode.com/problems/delete-node-in-a-bst/
@@ -60,7 +61,11 @@ class Solution(Problem):
             expected=TreeNode.from_list([5, 3, 6, 2, 4, None, 7]),
             label="example 2",
         ),
-        TestCase(input=(TreeNode.from_list([]), 0), expected=TreeNode.from_list([]), label="example 3"),
+        TestCase(
+            input=(TreeNode.from_list([]), 0),
+            expected=TreeNode.from_list([]),
+            label="example 3",
+        ),
         TestCase(
             input=(TreeNode.from_list([5]), 5),
             expected=TreeNode.from_list([]),
@@ -84,8 +89,6 @@ class Solution(Problem):
     ]
 
     def solve(self, root: TreeNode | None, key: int) -> TreeNode | None:
-        raise NotImplementedError("TODO: Implement solve(self, root: TreeNode | None, key: int) -> TreeNode | None")
-
-
+        raise NotImplementedError("TODO: Implement solve(self, root: TreeNode | None, key: int)")
 if __name__ == "__main__":
     Solution().run()

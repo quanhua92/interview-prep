@@ -2,14 +2,44 @@
 """Run problem files for coding patterns.
 
 Usage:
-    python run.py                  Run all WIP pattern problem files
-    python run.py sliding_window   Run a specific pattern's problems
-    python run.py --all            Run all patterns regardless of status
+    python run.py                        Run all WIP pattern problem files (Python)
+    python run.py sliding_window         Run a specific pattern's problems
+    python run.py --all                  Run all patterns regardless of status
+    python run.py --lang c               Run C counterparts instead of Python
+    python run.py --lang cpp             Run C++ counterparts instead of Python
+    python run.py --lang rs              Run Rust counterparts instead of Python
+    python run.py --all --lang c         Run all C problem stubs
+    python run.py --solution             Run solutions instead of problem stubs
+    python run.py --solution --lang c    Run all C solutions
 """
 import subprocess
 import sys
 
 from tracker import ROOT, TIER_DIRS, load_tracker
+
+LANG_FLAGS = ("--lang", "-l")
+SOLUTION_FLAGS = ("--solution", "-s")
+
+
+def _parse_args(args):
+    lang = None
+    solution = False
+    rest = []
+    i = 0
+    while i < len(args):
+        if args[i] in LANG_FLAGS:
+            i += 1
+            if i < len(args):
+                lang = args[i].lower()
+            else:
+                print("Error: --lang requires a value (c, cpp, or rs)")
+                sys.exit(1)
+        elif args[i] in SOLUTION_FLAGS:
+            solution = True
+        else:
+            rest.append(args[i])
+        i += 1
+    return lang, solution, rest
 
 
 def _get_patterns(args):
@@ -26,7 +56,7 @@ def _get_patterns(args):
             print(f"Error: Unknown pattern '{name}'")
             available = [p["name"] for p in patterns if p["status"] == "in_progress"]
             if available:
-                print(f"WIP patterns: {', '.join(available)}")
+                print(f"WIP patterns: {chr(39).join(available)}")
             sys.exit(1)
         return matched
 
@@ -37,7 +67,7 @@ def _get_patterns(args):
     return wip
 
 
-def _run_pattern(pattern):
+def _run_pattern(pattern, lang=None, solution=False):
     name = pattern["name"]
     tier = pattern.get("tier", 1)
     tier_dir = TIER_DIRS.get(tier)
@@ -45,78 +75,129 @@ def _run_pattern(pattern):
         print(f"  Skipping {name}: unknown tier {tier}")
         return 0, 0
 
-    problems_dir = ROOT / tier_dir / name / "problems"
-    if not problems_dir.exists():
-        print(f"  Skipping {name}: no problems/ directory")
+    subdir = "solutions" if solution else "problems"
+    work_dir = ROOT / tier_dir / name / subdir
+    if not work_dir.exists():
+        print(f"  Skipping {name}: no {subdir}/ directory")
         return 0, 0
 
-    files = sorted(f for f in problems_dir.iterdir() if f.suffix == ".py" and not f.name.startswith("_"))
-    if not files:
-        print(f"  Skipping {name}: no problem files")
+    ref_dir = ROOT / tier_dir / name / "solutions"
+    if not ref_dir.exists():
+        print(f"  Skipping {name}: no solutions/ directory")
         return 0, 0
+
+    files = sorted(f for f in ref_dir.iterdir() if f.suffix == ".py" and not f.name.startswith("_"))
+    if not files:
+        print(f"  Skipping {name}: no solution files")
+        return 0, 0
+
+    if lang:
+        suffix_map = {"c": ".c", "cpp": ".cpp", "rs": ".rs"}
+        if lang not in suffix_map:
+            print(f"  Skipping {name}: unknown language '{lang}'")
+            return 0, 0
+        target_suffix = suffix_map[lang]
+        files = [f for f in files if (work_dir / f"{f.stem}{target_suffix}").exists()]
+        if not files:
+            print(f"  Skipping {name}: no {lang} counterparts found in {subdir}/")
+            return 0, 0
 
     display_name = name.replace("_", " ").title()
-    print(f"\n  {display_name} ({len(files)} problems)")
-    print(f"  {'-' * 50}")
+    mode_label = "solution" if solution else "problem"
+    lang_label = f" ({lang})" if lang else ""
+    print(f"\n  {display_name}{lang_label} ({len(files)} {mode_label}s)")
+    print("  " + "-" * 50)
 
     passed = 0
     failed = 0
     skipped = 0
-    for f in files:
-        try:
-            result = subprocess.run(
-                [sys.executable, str(f)],
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
-        except subprocess.TimeoutExpired:
-            status = "FAIL"
-            failed += 1
-            print(f"    [{status}] {f.name}")
-            print(f"    │ Timed out after 10s — possible infinite loop")
-            continue
-        if result.returncode == 0:
-            status = "PASS"
-            passed += 1
-        elif result.returncode == 2:
-            status = "SKIP"
-            skipped += 1
-        else:
-            status = "FAIL"
-            failed += 1
 
-        print(f"    [{status}] {f.name}")
-        output = (result.stdout or "") + (result.stderr or "")
-        if status == "FAIL" and output.strip():
-            for line in output.strip().split("\n"):
-                print(f"    │ {line}")
+    for f in files:
+        if lang:
+            from src.runners import CRunner, CppRunner, RustRunner
+
+            target_file = work_dir / f"{f.stem}{target_suffix}"
+            runners = {"c": CRunner, "cpp": CppRunner, "rs": RustRunner}
+            runner = runners[lang]()
+            results = runner.run_all(target_file)
+            file_passed = sum(1 for r in results if r["status"] == "PASS")
+            file_failed = sum(1 for r in results if r["status"] not in ("PASS", "SKIP"))
+            file_skipped = sum(1 for r in results if r["status"] == "SKIP")
+            passed += file_passed
+            failed += file_failed
+            skipped += file_skipped
+            status = "SKIP" if file_failed == 0 and file_skipped > 0 else ("PASS" if file_failed == 0 else "FAIL")
+            print(f"    [{status}] {f.stem}{target_suffix}")
+            for r in results:
+                if r["status"] != "PASS":
+                    err = r.get("error", "")
+                    out = r.get("output", "")
+                    if err:
+                        for line in err.strip().split("\n"):
+                            print(f"             {line}")
+                    elif out:
+                        for line in out.strip().split("\n")[-5:]:
+                            print(f"             {line}")
+        else:
+            target_file = work_dir / f.name
+            try:
+                result = subprocess.run(
+                    [sys.executable, str(target_file)],
+                    capture_output=True,
+                    text=True,
+                    timeout=10,
+                )
+            except subprocess.TimeoutExpired:
+                status = "FAIL"
+                failed += 1
+                print(f"    [{status}] {f.name}")
+                print("    │ Timed out after 10s — possible infinite loop")
+                continue
+            if result.returncode == 0:
+                status = "PASS"
+                passed += 1
+            elif result.returncode == 2:
+                status = "SKIP"
+                skipped += 1
+            else:
+                status = "FAIL"
+                failed += 1
+
+            print(f"    [{status}] {f.name}")
+            output = (result.stdout or "") + (result.stderr or "")
+            if status == "FAIL" and output.strip():
+                for line in output.strip().split("\n"):
+                    print(f"    │ {line}")
 
     return passed, failed, skipped
 
 
 def main():
     args = sys.argv[1:]
-    patterns = _get_patterns(args)
+    lang, solution, rest = _parse_args(args)
+    patterns = _get_patterns(rest)
 
+    lang_label = f" ({lang})" if lang else ""
+    mode_label = "solution" if solution else "problem"
     print()
-    print(f"{'=' * 60}")
-    print(f"  Running {len(patterns)} pattern(s)")
-    print(f"{'=' * 60}")
+    print("=" * 60)
+    print(f"  Running {len(patterns)} pattern(s){lang_label} ({mode_label}s)")
+    print("=" * 60)
 
     total_passed = 0
     total_failed = 0
     total_skipped = 0
 
     for p in patterns:
-        p_ok, p_fail, p_skipped = _run_pattern(p)
+        p_ok, p_fail, p_skipped = _run_pattern(p, lang=lang, solution=solution)
         total_passed += p_ok
         total_failed += p_fail
         total_skipped += p_skipped
 
-    print(f"\n  {'-' * 50}")
+    print()
+    print("  " + "-" * 50)
     print(f"  TOTAL: {total_passed} passed, {total_failed} failed, {total_skipped} skipped")
-    print(f"{'=' * 60}\n")
+    print("=" * 60)
 
     sys.exit(1 if total_failed > 0 else 0)
 

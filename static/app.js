@@ -151,6 +151,7 @@ document.addEventListener("keyup", (e) => {
 let currentFile = { item: null, filename: null };
 let fileTreeOpen = false;
 let activePanel = "explorer";
+let activeExtFilter = null;
 
 const SETTINGS_KEY = "interview-prep-settings";
 const DEFAULT_SETTINGS = {
@@ -217,7 +218,8 @@ function toggleFileTree() {
 }
 
 async function _reRenderFileTree() {
-	const res = await fetch("/api/files/in-progress");
+	const extParam = activeExtFilter ? `?ext=${activeExtFilter}` : "";
+	const res = await fetch(`/api/files/in-progress${extParam}`);
 	const data = await res.json();
 	if (data.files && data.files.length > 0) {
 		_renderFileTree(data.files);
@@ -394,7 +396,8 @@ function _fileKey(item, filename) {
 
 // biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
 async function openEditor(itemName) {
-	const res = await fetch(`/api/files/ls?name=${encodeURIComponent(itemName)}`);
+	const extParam = activeExtFilter ? `&ext=${activeExtFilter}` : "";
+	const res = await fetch(`/api/files/ls?name=${encodeURIComponent(itemName)}${extParam}`);
 	const data = await res.json();
 
 	if (!data.has_files || data.files.length === 0) {
@@ -410,7 +413,8 @@ async function openEditor(itemName) {
 }
 
 async function openAllInProgress() {
-	const res = await fetch("/api/files/in-progress");
+	const extParam = activeExtFilter ? `?ext=${activeExtFilter}` : "";
+	const res = await fetch(`/api/files/in-progress${extParam}`);
 	const data = await res.json();
 
 	if (!data.files || data.files.length === 0) return;
@@ -488,6 +492,14 @@ function _openEditorWithFiles(files, title) {
 				change.text[0] === '"'
 			)
 				return;
+			const isPython = cm.getOption("mode") === "python";
+			if (!isPython) {
+				cm.showHint({
+					hint: CodeMirror.hint.anyword,
+					completeSingle: false,
+				});
+				return;
+			}
 			cm.showHint({
 				hint: (cm) => {
 					const customHint = CodeMirror.hint.python(cm);
@@ -513,6 +525,12 @@ function _openEditorWithFiles(files, title) {
 	loadFile(files[0].item, files[0].name);
 }
 
+// biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
+function setExtFilter(ext) {
+	activeExtFilter = ext;
+	_reRenderFileTree();
+}
+
 function _renderFileTree(files) {
 	const tree = document.getElementById("file-tree");
 	const grouped = {};
@@ -521,7 +539,21 @@ function _renderFileTree(files) {
 		grouped[f.item].push(f.name);
 	}
 
-	let html = "";
+	const tabs = [
+		{ ext: null, label: "All" },
+		{ ext: ".py", label: "Py" },
+		{ ext: ".c", label: "C" },
+		{ ext: ".cpp", label: "C++" },
+		{ ext: ".rs", label: "Rs" },
+	];
+
+	let html = '<div class="ext-tabs">';
+	for (const t of tabs) {
+		const active = activeExtFilter === t.ext;
+		html += `<span class="ext-tab${active ? " active" : ""}" data-ext="${t.ext}" onclick="setExtFilter(${t.ext === null ? "null" : `'${t.ext}'`})">${t.label}</span>`;
+	}
+	html += "</div>";
+
 	for (const [item, names] of Object.entries(grouped)) {
 		const label = item
 			.replace(/_/g, " ")
@@ -543,8 +575,7 @@ async function loadFile(itemName, filename) {
 	const data = await res.json();
 
 	cmEditor.setValue(data.content);
-	const modeMap = { python: "python", markdown: "markdown" };
-	cmEditor.setOption("mode", modeMap[data.language] || "python");
+	cmEditor.setOption("mode", data.language || "text");
 	cmEditor.clearHistory();
 	cmEditor.markClean();
 	_updateSaveBtn();

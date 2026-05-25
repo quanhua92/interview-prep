@@ -1,0 +1,90 @@
+/*
+ * P853: Car Fleet (Medium)
+ * https://leetcode.com/problems/car-fleet/
+ * Topics: Array, Stack, Sorting, Monotonic Stack
+ *
+ * There are n cars at given miles away from the starting mile 0, traveling to reach the mile target.
+ * You are given two integer arrays position and speed, both of length n, where position[i] is the starting mile of the ith car and speed[i] is the speed of the ith car in miles per hour.
+ * A car cannot pass another car, but it can catch up and then travel next to it at the speed of the slower car.
+ * A car fleet is a car or cars driving next to each other. The speed of the car fleet is the minimum speed of any car in the fleet.
+ * If a car catches up to a car fleet at the mile target, it will still be considered as part of the car fleet.
+ * Return the number of car fleets that will arrive at the destination.
+ *
+ * Example 1:
+ *     Input: target = 12, position = [10,8,0,5,3], speed = [2,4,1,1,3]
+ *     Output: 3
+ *     Explanation:
+ *
+ * Example 2:
+ *     Input: target = 10, position = [3], speed = [3]
+ *     Output: 1
+ *     Explanation:
+ *
+ * Example 3:
+ *     Input: target = 100, position = [0,2,4], speed = [4,2,1]
+ *     Output: 1
+ *     Explanation:
+ *
+ * Constraints:
+ *     - n == position.length == speed.length
+ *     - 1 <= n <= 105
+ *     - 0 < target <= 106
+ *     - 0 <= position[i] < target
+ *     - All the values of position are unique.
+ *     - 0 < speed[i] <= 106
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def carFleet(self, target: int, position: List[int], speed: List[int]) -> int:
+ *
+ * Hint: Sort by position desc, calculate time to target. A car forms a new fleet only if it arrives before the current fleet.
+ */
+
+
+fn car_fleet(target: i32, position: &[i32], speed: &[i32]) -> i32 {
+    let n = position.len();
+    if n == 0 { return 0; }
+    let mut idx: Vec<usize> = (0..n).collect();
+    idx.sort_by(|&a, &b| position[b].cmp(&position[a]));
+
+    let mut fleets = 0;
+    let mut slowest = -1.0f64;
+    for &i in &idx {
+        let time = (target - position[i]) as f64 / speed[i] as f64;
+        if time > slowest {
+            fleets += 1;
+            slowest = time;
+        }
+    }
+    fleets
+}
+
+fn main() {
+    struct Case { label: &'static str, target: i32, position: &'static [i32], speed: &'static [i32], expected: i32 }
+    let tests: &[Case] = &[
+        Case { label: "example 1", target: 12, position: &[10, 8, 0, 5, 3], speed: &[2, 4, 1, 1, 3], expected: 3 },
+        Case { label: "example 2", target: 10, position: &[3], speed: &[3], expected: 1 },
+        Case { label: "all merge", target: 100, position: &[0, 2, 4], speed: &[4, 2, 1], expected: 1 },
+        Case { label: "two cars no merge", target: 10, position: &[8, 0], speed: &[2, 1], expected: 2 },
+        Case { label: "two cars merge", target: 10, position: &[0, 3], speed: &[3, 2], expected: 1 },
+        Case { label: "all same speed", target: 10, position: &[1, 2, 3], speed: &[1, 1, 1], expected: 3 },
+    ];
+
+    println!("\n============================================================");
+    println!("  853. Car Fleet");
+    println!("============================================================");
+    let mut passed = 0;
+    for (i, tc) in tests.iter().enumerate() {
+        let got = car_fleet(tc.target, tc.position, tc.speed);
+        if got == tc.expected {
+            passed += 1;
+            println!("  Test {} ({}): PASS", i + 1, tc.label);
+        } else {
+            println!("  Test {} ({}): FAIL", i + 1, tc.label);
+            println!("    Expected: {}, Got: {}", tc.expected, got);
+        }
+    }
+    println!("\n  {}/{} passed", passed, tests.len());
+    println!("============================================================\n");
+    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+}

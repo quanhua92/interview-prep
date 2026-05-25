@@ -67,8 +67,8 @@ class Solution(Problem):
         TestCase(input=[], expected=[], label="empty stream"),
     ]
 
-    def solve(self) -> None:
-        raise NotImplementedError("TODO: Implement solve(self) -> None")
+    def solve(self, values: list[int]) -> list[list[int]]:
+        raise NotImplementedError("TODO: Implement solve(self, values: list[int]) -> list[list[int]]")
 
 
 if __name__ == "__main__":

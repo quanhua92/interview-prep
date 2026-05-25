@@ -1,0 +1,84 @@
+/*
+ * P532: K-diff Pairs in an Array [PREMIUM] (Medium)
+ * https://leetcode.com/problems/k-diff-pairs-in-an-array/
+ * Topics: Array, Hash Table, Two Pointers, Binary Search, Sorting
+ * 
+ * Given an array of integers nums and an integer k, return the number of unique k-diff pairs in the array.
+ * A k-diff pair is an integer pair (nums[i], nums[j]), where the following are true:
+ * Notice that |val| denotes the absolute value of val.
+ * Example 1:
+ *     Input: nums = [3,1,4,1,5], k = 2
+ *     Output: 2
+ *     Explanation: There are two 2-diff pairs in the array, (1, 3) and (3, 5).
+ *     Although we have two 1s in the input, we should only return the number of unique pairs.
+ * 
+ * Example 2:
+ *     Input: nums = [1,2,3,4,5], k = 1
+ *     Output: 4
+ *     Explanation: There are four 1-diff pairs in the array, (1, 2), (2, 3), (3, 4) and (4, 5).
+ * 
+ * Example 3:
+ *     Input: nums = [1,3,1,5,4], k = 0
+ *     Output: 1
+ *     Explanation: There is one 0-diff pair in the array, (1, 1).
+ * 
+ * Constraints:
+ *     - 1 <= nums.length <= 104
+ *     - -107 <= nums[i] <= 107
+ *     - 0 <= k <= 107
+ * 
+ * Template (python3):
+ *     class Solution:
+ *         def findPairs(self, nums: List[int], k: int) -> int:
+ */
+fn find_pairs(nums: &[i32], k: i32) -> i32 {
+    todo!()
+}
+
+fn main() {
+    let mut passed = 0;
+    let total = 7;
+    println!("\n============================================================");
+    println!("  532. K-diff Pairs in an Array");
+    println!("============================================================");
+
+    {
+        let got = find_pairs(&[3, 1, 4, 1, 5], 2);
+        if got == 2 { passed += 1; println!("  Test 1 (example 1): PASS"); }
+        else { println!("  Test 1 (example 1): FAIL\n  Expected: 2, Got: {}", got); }
+    }
+    {
+        let got = find_pairs(&[1, 2, 3, 4, 5], 1);
+        if got == 4 { passed += 1; println!("  Test 2 (example 2): PASS"); }
+        else { println!("  Test 2 (example 2): FAIL\n  Expected: 4, Got: {}", got); }
+    }
+    {
+        let got = find_pairs(&[1, 3, 1, 5, 4], 0);
+        if got == 1 { passed += 1; println!("  Test 3 (example 3): PASS"); }
+        else { println!("  Test 3 (example 3): FAIL\n  Expected: 1, Got: {}", got); }
+    }
+    {
+        let got = find_pairs(&[1], 1);
+        if got == 0 { passed += 1; println!("  Test 4 (single element): PASS"); }
+        else { println!("  Test 4 (single element): FAIL\n  Expected: 0, Got: {}", got); }
+    }
+    {
+        let got = find_pairs(&[1, 1, 1, 1], 0);
+        if got == 1 { passed += 1; println!("  Test 5 (all same k=0): PASS"); }
+        else { println!("  Test 5 (all same k=0): FAIL\n  Expected: 1, Got: {}", got); }
+    }
+    {
+        let got = find_pairs(&[1, 2, 3, 4, 5], 100);
+        if got == 0 { passed += 1; println!("  Test 6 (k larger than range): PASS"); }
+        else { println!("  Test 6 (k larger than range): FAIL\n  Expected: 0, Got: {}", got); }
+    }
+    {
+        let got = find_pairs(&[-1, -2, -3, -4, -5], 1);
+        if got == 4 { passed += 1; println!("  Test 7 (all negatives): PASS"); }
+        else { println!("  Test 7 (all negatives): FAIL\n  Expected: 4, Got: {}", got); }
+    }
+
+    println!("\n  {}/{} passed", passed, total);
+    println!("============================================================\n");
+    std::process::exit(if passed == total { 0 } else { 1 });
+}

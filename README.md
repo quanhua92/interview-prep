@@ -1,13 +1,13 @@
 # Interview Prep
 
-A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, AI-assisted interview scenarios, data analytics, low-level design, and production engineering. Track progress across 144 coding problems and 140 topics with a unified CLI dashboard.
+A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, AI-assisted interview scenarios, data analytics, low-level design, and production engineering. Track progress across 144 coding problems and 140 topics with a unified CLI dashboard. Solutions available in **Python, C, C++, and Rust**.
 
 **Features:**
 - Progress ring, stats cards, and per-section breakdowns
 - **Code Editor** — auto-loads all in-progress problem files with CodeMirror syntax highlighting
 - **Save & Run** — edit code in the browser, save (`Ctrl+S`), and run (`Ctrl+R`) directly from the editor header
 - **Terminal** card showing PASS/FAIL/SKIP results
-- **File tree sidebar** — activity bar with collapsible file explorer
+- **File tree sidebar** — activity bar with collapsible file explorer + language filter tabs (Py / C / C++ / Rs)
 - **Version history** — every save creates a version snapshot; revert to any previous version
 - Click any topic name to open its files in the editor
 - Filter by status (New / In Progress / Done) and instant search
@@ -53,6 +53,17 @@ uv run python main.py update url_shortener completed
 
 # Record a practice attempt
 uv run python main.py attempt sliding_window
+
+# Run problem stubs (default — expects SKIP for unimplemented problems)
+uv run python run.py                   # WIP pattern problem stubs (Python)
+uv run python run.py two_pointers      # Run a specific pattern's problems
+uv run python run.py --all             # All pattern problem stubs
+
+# Run solution files (answer keys)
+uv run python run.py --solution         # WIP pattern solutions (Python)
+uv run python run.py --solution --lang c  # All pattern solutions, C versions
+uv run python run.py --solution --lang cpp  # All pattern solutions, C++ versions
+uv run python run.py --solution --lang rs  # All pattern solutions, Rust versions
 
 # Generate static HTML progress report
 uv run python main.py report
@@ -123,7 +134,8 @@ interview-prep/
 │       ├── discussion.md
 │       └── checklist.md
 ├── tests/                         # pytest suite
-├── src/utils/                     # Shared utilities
+├── src/utils/                     # Shared utilities (Problem, TestCase, ListNode, TreeNode)
+├── src/runners/                   # Cross-language test runners (C, C++, Rust)
 └── progress/tracker.json          # Progress data (gitignored)
 ```
 
@@ -176,7 +188,7 @@ interview-prep/
 Each pattern contains:
 - `template.py` — Annotated skeleton with variants
 - `problems/` — Practice stubs with test cases (implement `solve()`)
-- `solutions/` — Answer keys
+- `solutions/` — Answer keys (`.py` + `.c` / `.cpp` / `.rs` counterparts)
 - `README.md` — Pattern explanation, when to recognize it, complexity table
 
 ## System Design (25 topics)
