@@ -1,0 +1,65 @@
+const CPP_KEYWORDS = [
+	"alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool",
+	"break", "case", "catch", "char", "char8_t", "char16_t", "char32_t", "class",
+	"compl", "concept", "const", "consteval", "constexpr", "constinit", "const_cast",
+	"continue", "co_await", "co_return", "co_yield", "decltype", "default", "delete",
+	"do", "double", "dynamic_cast", "else", "enum", "explicit", "export", "extern",
+	"false", "final", "float", "for", "friend", "goto", "if", "inline", "int", "long",
+	"mutable", "namespace", "new", "noexcept", "not", "not_eq", "nullptr", "operator",
+	"or", "or_eq", "override", "private", "protected", "public", "register",
+	"reinterpret_cast", "requires", "return", "short", "signed", "sizeof", "static",
+	"static_assert", "static_cast", "struct", "switch", "template", "this",
+	"thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union",
+	"unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while",
+	"xor", "xor_eq",
+	"vector", "list", "deque", "forward_list", "array", "set", "multiset", "map",
+	"multimap", "unordered_set", "unordered_multiset", "unordered_map",
+	"unordered_multimap", "stack", "queue", "priority_queue", "pair", "tuple",
+	"bitset", "optional", "variant", "any", "expected", "span",
+	"unique_ptr", "shared_ptr", "weak_ptr", "make_unique", "make_shared",
+	"make_pair", "make_tuple",
+	"sort", "stable_sort", "partial_sort", "nth_element", "binary_search",
+	"lower_bound", "upper_bound", "equal_range", "find", "find_if", "find_if_not",
+	"count", "count_if", "min", "max", "minmax", "min_element", "max_element",
+	"swap", "reverse", "rotate", "shuffle", "fill", "fill_n", "generate", "generate_n",
+	"transform", "copy", "copy_n", "copy_if", "copy_backward", "move", "move_backward",
+	"remove", "remove_if", "remove_copy", "replace", "replace_if",
+	"unique", "unique_copy", "merge", "inplace_merge", "partition", "stable_partition",
+	"accumulate", "inner_product", "partial_sum", "adjacent_difference", "iota",
+	"equal", "mismatch", "lexicographical_compare", "any_of", "all_of", "none_of",
+	"for_each", "is_sorted", "is_sorted_until", "clamp",
+	"make_heap", "push_heap", "pop_heap", "sort_heap", "is_heap",
+	"begin", "end", "cbegin", "cend", "rbegin", "rend", "crbegin", "crend",
+	"advance", "distance", "next", "prev",
+	"iterator", "const_iterator", "reverse_iterator", "back_inserter", "front_inserter",
+	"size", "length", "empty", "capacity", "reserve", "resize", "shrink_to_fit",
+	"clear", "insert", "erase", "push_back", "pop_back", "emplace_back",
+	"emplace", "emplace_front", "emplace_hint", "front", "back", "at", "data",
+	"cout", "cin", "cerr", "clog", "endl", "flush",
+	"ifstream", "ofstream", "fstream", "stringstream", "istringstream", "ostringstream",
+	"getline", "get", "put", "read", "write", "peek", "ignore",
+	"tellg", "seekg", "tellp", "seekp", "ws",
+	"istream", "ostream", "ios",
+	"c_str", "data", "append", "assign", "replace", "substr",
+	"find", "rfind", "find_first_of", "find_last_of", "find_first_not_of",
+	"find_last_not_of", "compare", "npos",
+	"size_t", "ptrdiff_t", "int8_t", "uint8_t", "int16_t", "uint16_t",
+	"int32_t", "uint32_t", "int64_t", "uint64_t", "intptr_t", "uintptr_t",
+	"intmax_t", "uintmax_t", "nullptr_t", "initializer_list",
+	"function", "bind", "placeholder", "cref",
+	"exception", "runtime_error", "logic_error", "invalid_argument",
+	"out_of_range", "length_error", "overflow_error", "underflow_error", "bad_alloc",
+	"numeric_limits", "move", "forward", "declval",
+	"NULL", "EOF", "FILE", "EXIT_SUCCESS", "EXIT_FAILURE",
+	"main",
+];
+
+CodeMirror.registerHelper("hint", "text/x-c++src", (cm) => {
+	const cursor = cm.getCursor();
+	const token = cm.getTokenAt(cursor);
+	const start = token.start;
+	const end = cursor.ch;
+	const currentWord = token.string;
+	const list = CPP_KEYWORDS.filter((item) => item.lastIndexOf(currentWord, 0) === 0);
+	return { list, from: CodeMirror.Pos(cursor.line, start), to: CodeMirror.Pos(cursor.line, end) };
+});

@@ -138,29 +138,9 @@ function renderTerminalOutput(output) {
 	body.scrollTop = body.scrollHeight;
 }
 
-_restoreFilters();
-filterItems();
-_loadLangs();
-
-// --- Editor ---
-
 let cmEditor = null;
 let ctrlActive = false;
 let ctrlTimeout = null;
-
-document.addEventListener("keydown", (e) => {
-	if (e.ctrlKey || e.metaKey) {
-		ctrlActive = true;
-		clearTimeout(ctrlTimeout);
-	}
-});
-document.addEventListener("keyup", (e) => {
-	if (!e.ctrlKey && !e.metaKey) {
-		ctrlTimeout = setTimeout(() => {
-			ctrlActive = false;
-		}, 500);
-	}
-});
 let currentFile = { item: null, filename: null };
 let fileTreeOpen = false;
 let activePanel = "explorer";
@@ -168,6 +148,10 @@ let activeExts = new Set([".py"]);
 let _cachedAllFiles = [];
 let solutionVisible = false;
 let userContent = "";
+
+_restoreFilters();
+filterItems();
+_loadLangs();
 
 function _loadLangs() {
 	try {
@@ -185,6 +169,20 @@ function _loadLangs() {
 function _saveLangs() {
 	localStorage.setItem("interview-prep-langs", JSON.stringify([...activeExts]));
 }
+
+document.addEventListener("keydown", (e) => {
+	if (e.ctrlKey || e.metaKey) {
+		ctrlActive = true;
+		clearTimeout(ctrlTimeout);
+	}
+});
+document.addEventListener("keyup", (e) => {
+	if (!e.ctrlKey && !e.metaKey) {
+		ctrlTimeout = setTimeout(() => {
+			ctrlActive = false;
+		}, 500);
+	}
+});
 
 function _syncLangButtons() {
 	document.querySelectorAll("#lang-selector .lang-btn").forEach((btn) => {
@@ -546,17 +544,10 @@ function _openEditorWithFiles(files, title) {
 				change.text[0] === '"'
 			)
 				return;
-			const isPython = cm.getOption("mode") === "python";
-			if (!isPython) {
-				cm.showHint({
-					hint: CodeMirror.hint.anyword,
-					completeSingle: false,
-				});
-				return;
-			}
 			cm.showHint({
 				hint: (cm) => {
-					const customHint = CodeMirror.hint.python(cm);
+					const mode = cm.getOption("mode");
+					const customHint = CodeMirror.hint[mode] ? CodeMirror.hint[mode](cm) : null;
 					const wordHint = CodeMirror.hint.anyword(cm);
 					const combined = [
 						...new Set([
@@ -564,6 +555,7 @@ function _openEditorWithFiles(files, title) {
 							...(wordHint ? wordHint.list : []),
 						]),
 					];
+					if (combined.length === 0) return null;
 					return {
 						list: combined,
 						from: customHint ? customHint.from : wordHint.from,
