@@ -135,6 +135,50 @@ def extract_py_docstring(content):
     return m.group(1).strip() if m else ""
 
 
+def stub_js_text(content):
+    lines = content.split("\n")
+    result = []
+    in_function = False
+    brace_depth = 0
+    fn_sig_lines = []
+
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+
+        if not in_function:
+            stripped = line.strip()
+            if re.match(r'^(function\s+\w+|const\s+\w+\s*=\s*(async\s+)?function|class\s+\w+)', stripped):
+                in_function = True
+                fn_sig_lines = [line]
+                brace_depth = line.count('{') - line.count('}')
+                if brace_depth <= 0:
+                    in_function = False
+                i += 1
+                continue
+
+            result.append(line)
+        else:
+            fn_sig_lines.append(line)
+            brace_depth += line.count('{') - line.count('}')
+            if brace_depth <= 0:
+                sig_text = fn_sig_lines[0].rstrip()
+                if sig_text.endswith('{'):
+                    sig_text = sig_text[:-1].rstrip()
+                for sig_line in fn_sig_lines[1:-1]:
+                    sig_text += "\n" + sig_line.rstrip().rstrip('{').rstrip()
+                result.append(sig_text + " {")
+                result.append('    throw new Error("NotImplementedError");')
+                result.append("}")
+                in_function = False
+            i += 1
+            continue
+
+        i += 1
+
+    return '\n'.join(result)
+
+
 def main():
     tiers = sorted(Path(".").glob("tier*"))
     total = 0
@@ -163,6 +207,12 @@ def main():
                     for line in py_desc.split("\n"): block_desc += f" * {line}\n"
                     block_desc += " */\n"
 
+                js_desc = ""
+                if py_desc:
+                    js_desc = "/**\n"
+                    for line in py_desc.split("\n"): js_desc += f" * {line}\n"
+                    js_desc += " */\n"
+
                 for ext, lang in [(".c", "c"), (".cpp", "cpp"), (".rs", "rs")]:
                     sol_file = sol_dir / f"{stem}{ext}"
                     prob_file = prob_dir / f"{stem}{ext}"
@@ -176,6 +226,16 @@ def main():
                     final = block_desc + stubbed_content
                     prob_file.write_text(final)
                     if was_stubbed: stubbed_files += 1
+
+                sol_js = sol_dir / f"{stem}.mjs"
+                prob_js = prob_dir / f"{stem}.mjs"
+                if sol_js.exists():
+                    sol_content = sol_js.read_text(errors="replace")
+                    js_desc_m = re.search(r'^/\*\*(.*?)\*/', sol_content, re.DOTALL)
+                    after_desc = sol_content[js_desc_m.end():].lstrip("\n") if js_desc_m else sol_content
+                    stubbed_content = stub_js_text(after_desc)
+                    prob_js.write_text(js_desc + stubbed_content)
+                    stubbed_files += 1
 
     print(f"Processed {total} problems, stubbed {stubbed_files} files")
 

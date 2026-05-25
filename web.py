@@ -14,7 +14,7 @@ import tracker
 
 app = FastAPI()
 
-ALLOWED_EXTENSIONS = (".py", ".md", ".c", ".cpp", ".rs")
+ALLOWED_EXTENSIONS = (".py", ".md", ".c", ".cpp", ".rs", ".mjs")
 
 EXT_CODEMIRROR_MODE = {
     ".py": "python",
@@ -22,6 +22,7 @@ EXT_CODEMIRROR_MODE = {
     ".c": "text/x-csrc",
     ".cpp": "text/x-c++src",
     ".rs": "rust",
+    ".mjs": "text/javascript",
 }
 
 EXT_LANGUAGE_LABEL = {
@@ -30,6 +31,7 @@ EXT_LANGUAGE_LABEL = {
     ".c": "C",
     ".cpp": "C++",
     ".rs": "Rust",
+    ".mjs": "JavaScript",
 }
 
 # --- HTML helpers ---
@@ -126,6 +128,7 @@ def _build_section_html(section):
           <button onclick="toggleExt('.c')" class="lang-btn" data-ext=".c">C</button>
           <button onclick="toggleExt('.cpp')" class="lang-btn" data-ext=".cpp">C++</button>
           <button onclick="toggleExt('.rs')" class="lang-btn" data-ext=".rs">Rust</button>
+          <button onclick="toggleExt('.mjs')" class="lang-btn" data-ext=".mjs">JavaScript</button>
         </div>
       </div>'''
 
@@ -255,7 +258,7 @@ def record_attempt(req: AttemptRequest):
 
 @app.post("/api/run")
 def run_problems(lang: list[str] = Query(default=["py"]), pattern: str | None = None, all_patterns: bool = False, solution: bool = False):
-    valid_langs = {"py", "c", "cpp", "rs"}
+    valid_langs = {"py", "c", "cpp", "rs", "js"}
     langs = lang
     for l in langs:
         if l not in valid_langs:

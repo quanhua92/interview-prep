@@ -232,6 +232,7 @@ function _showSettingsPanelCore() {
 				${langCheckbox("C", ".c")}
 				${langCheckbox("C++", ".cpp")}
 				${langCheckbox("Rust", ".rs")}
+				${langCheckbox("JavaScript", ".mjs")}
 			</div>
 			${extraHtml}
 		</div>
@@ -508,6 +509,7 @@ const LANG_TABS = [
 	{ ext: ".c", label: "C" },
 	{ ext: ".cpp", label: "C++" },
 	{ ext: ".rs", label: "Rust" },
+	{ ext: ".mjs", label: "JavaScript" },
 	{ ext: ".md", label: "Markdown" },
 ];
 
@@ -731,7 +733,7 @@ async function runProblems() {
 		'<div class="text-zinc-500 animate-pulse">Running problems...</div>';
 
 	try {
-		const langMap = { ".py": "py", ".c": "c", ".cpp": "cpp", ".rs": "rs" };
+		const langMap = { ".py": "py", ".c": "c", ".cpp": "cpp", ".rs": "rs", ".mjs": "js" };
 		const langs = [...activeExts].map((ext) => langMap[ext]).filter(Boolean);
 		if (langs.length === 0) {
 			termBody.innerHTML = '<div class="text-zinc-500">No coding languages selected</div>';

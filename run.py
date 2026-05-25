@@ -8,6 +8,7 @@ Usage:
     python run.py --lang c               Run C counterparts instead of Python
     python run.py --lang cpp             Run C++ counterparts instead of Python
     python run.py --lang rs              Run Rust counterparts instead of Python
+    python run.py --lang js              Run JavaScript counterparts instead of Python
     python run.py --all --lang c         Run all C problem stubs
     python run.py --solution             Run solutions instead of problem stubs
     python run.py --solution --lang c    Run all C solutions
@@ -32,7 +33,7 @@ def _parse_args(args):
             if i < len(args):
                 lang = args[i].lower()
             else:
-                print("Error: --lang requires a value (c, cpp, or rs)")
+                print("Error: --lang requires a value (c, cpp, rs, or js)")
                 sys.exit(1)
         elif args[i] in SOLUTION_FLAGS:
             solution = True
@@ -92,7 +93,7 @@ def _run_pattern(pattern, lang=None, solution=False):
         return 0, 0
 
     if lang:
-        suffix_map = {"c": ".c", "cpp": ".cpp", "rs": ".rs"}
+        suffix_map = {"c": ".c", "cpp": ".cpp", "rs": ".rs", "js": ".mjs"}
         if lang not in suffix_map:
             print(f"  Skipping {name}: unknown language '{lang}'")
             return 0, 0
@@ -114,10 +115,10 @@ def _run_pattern(pattern, lang=None, solution=False):
 
     for f in files:
         if lang:
-            from src.runners import CRunner, CppRunner, RustRunner
+            from src.runners import CRunner, CppRunner, JSRunner, RustRunner
 
             target_file = work_dir / f"{f.stem}{target_suffix}"
-            runners = {"c": CRunner, "cpp": CppRunner, "rs": RustRunner}
+            runners = {"c": CRunner, "cpp": CppRunner, "rs": RustRunner, "js": JSRunner}
             runner = runners[lang]()
             results = runner.run_all(target_file)
             file_passed = sum(1 for r in results if r["status"] == "PASS")

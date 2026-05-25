@@ -1,6 +1,6 @@
 # Interview Prep
 
-A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, AI-assisted interview scenarios, data analytics, low-level design, and production engineering. Track progress across 144 coding problems and 140 topics with a unified CLI dashboard. Solutions available in **Python, C, C++, and Rust**.
+A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, AI-assisted interview scenarios, data analytics, low-level design, and production engineering. Track progress across 144 coding problems and 140 topics with a unified CLI dashboard. Solutions available in **Python, C, C++, Rust, and JavaScript**.
 
 **Features:**
 - Progress ring, stats cards, and per-section breakdowns
@@ -8,11 +8,11 @@ A comprehensive interview preparation toolkit covering coding patterns, system d
 - **Save & Run** — edit code in the browser, save (`Ctrl+S`), and run (`Ctrl+R`) directly from the editor header
 - **Terminal** — PASS/FAIL/SKIP results panel
 - **Full-screen Code Page** (`/code`) — dedicated coding layout with configurable terminal position (Right, Left, Bottom, Top), adjustable terminal width/height, and Ctrl+\` to toggle terminal
-- **Language selector** — toggle Python / C / C++ / Rust in Coding Patterns card or Settings sidebar, persisted to localStorage, filters file tree and Run output
+- **Language selector** — toggle Python / C / C++ / Rust / JavaScript in Coding Patterns card or Settings sidebar, persisted to localStorage, filters file tree and Run output
 - **File tree sidebar** — activity bar with collapsible file explorer
 - **Version history** — every save creates a version snapshot; revert to any previous version
 - **Hint** — toggle to view solution files directly in the editor
-- **Autocomplete** — language-aware hints for Python, C, C++, and Rust
+- **Autocomplete** — language-aware hints for Python, C, C++, Rust, and JavaScript
 - Click any topic name to start it and open its files in the editor
 - Filter by status (New / In Progress / Done) and instant search
 
@@ -71,9 +71,10 @@ uv run python run.py --all             # All pattern problem stubs
 
 # Run solution files (answer keys)
 uv run python run.py --solution         # WIP pattern solutions (Python)
-uv run python run.py --solution --lang c  # All pattern solutions, C versions
+uv run python run.py --solution --lang c   # All pattern solutions, C versions
 uv run python run.py --solution --lang cpp  # All pattern solutions, C++ versions
-uv run python run.py --solution --lang rs  # All pattern solutions, Rust versions
+uv run python run.py --solution --lang rs   # All pattern solutions, Rust versions
+uv run python run.py --solution --lang js   # All pattern solutions, JavaScript versions
 
 # Generate static HTML progress report
 uv run python main.py report
@@ -149,7 +150,7 @@ interview-prep/
 │       └── checklist.md
 ├── tests/                         # pytest suite
 ├── src/utils/                     # Shared utilities (Problem, TestCase, ListNode, TreeNode)
-├── src/runners/                   # Cross-language test runners (C, C++, Rust)
+├── src/runners/                   # Cross-language test runners (C, C++, Rust, JavaScript)
 └── progress/tracker.json          # Progress data (gitignored)
 ```
 
@@ -202,7 +203,7 @@ interview-prep/
 Each pattern contains:
 - `template.py` — Annotated skeleton with variants
 - `problems/` — Practice stubs with test cases (implement `solve()`)
-- `solutions/` — Answer keys (`.py` + `.c` / `.cpp` / `.rs` counterparts)
+- `solutions/` — Answer keys (`.py` + `.c` / `.cpp` / `.rs` / `.mjs` counterparts)
 - `README.md` — Pattern explanation, when to recognize it, complexity table
 
 ## System Design (25 topics)
