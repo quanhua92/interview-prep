@@ -21,7 +21,7 @@ EXT_CODEMIRROR_MODE = {
     ".md": "markdown",
     ".c": "text/x-csrc",
     ".cpp": "text/x-c++src",
-    ".rs": "text/x-rustsrc",
+    ".rs": "rust",
 }
 
 EXT_LANGUAGE_LABEL = {
@@ -116,6 +116,19 @@ def _build_section_html(section):
         for item in items:
             rows += _build_item_row(item)
 
+    lang_selector_html = ""
+    if key == "patterns":
+        lang_selector_html = '''
+      <div id="lang-selector" class="px-4 sm:px-6 py-3 border-b border-zinc-800">
+        <div class="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-2">Languages</div>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleExt('.py')" class="lang-btn active" data-ext=".py">Python</button>
+          <button onclick="toggleExt('.c')" class="lang-btn" data-ext=".c">C</button>
+          <button onclick="toggleExt('.cpp')" class="lang-btn" data-ext=".cpp">C++</button>
+          <button onclick="toggleExt('.rs')" class="lang-btn" data-ext=".rs">Rust</button>
+        </div>
+      </div>'''
+
     return f'''
     <div data-section class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
       <div class="px-4 sm:px-6 py-5 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-2">
@@ -133,6 +146,7 @@ def _build_section_html(section):
           <span class="text-sm font-mono text-zinc-300">{pct}%</span>
         </div>
       </div>
+      {lang_selector_html}
       <div class="px-4 sm:px-6 py-4 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-2 text-sm">
         <div class="hidden sm:block col-span-1 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Topic</div>
         <div class="hidden sm:block col-span-1 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Status</div>
@@ -235,21 +249,38 @@ def record_attempt(req: AttemptRequest):
 
 
 @app.post("/api/run")
-def run_problems():
-    try:
-        result = subprocess.run(
-            [sys.executable, str(tracker.ROOT / "run.py")],
-            capture_output=True,
-            text=True,
-            timeout=120,
-            cwd=str(tracker.ROOT),
-        )
-        output = result.stdout
-        if result.stderr:
-            output += "\n" + result.stderr
-        return {"output": output, "exit_code": result.returncode}
-    except subprocess.TimeoutExpired:
-        raise HTTPException(status_code=408, detail="Run timed out after 120 seconds")
+def run_problems(lang: list[str] | None = None, pattern: str | None = None, all_patterns: bool = False, solution: bool = False):
+    valid_langs = {"py", "c", "cpp", "rs"}
+    langs = lang or ["py"]
+    for l in langs:
+        if l not in valid_langs:
+            raise HTTPException(status_code=400, detail=f"Invalid lang: {l}. Must be one of {valid_langs}")
+    results = []
+    for l in langs:
+        cmd = [sys.executable, str(tracker.ROOT / "run.py")]
+        if all_patterns:
+            cmd.append("--all")
+        if pattern:
+            cmd.append(pattern)
+        if l != "py":
+            cmd.extend(["--lang", l])
+        if solution:
+            cmd.append("--solution")
+        try:
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=120,
+                cwd=str(tracker.ROOT),
+            )
+            output = result.stdout
+            if result.stderr:
+                output += "\n" + result.stderr
+            results.append({"lang": l, "output": output, "exit_code": result.returncode})
+        except subprocess.TimeoutExpired:
+            results.append({"lang": l, "error": "Timed out after 120 seconds"})
+    return {"results": results}
 
 
 # --- File editor helpers ---
@@ -416,6 +447,18 @@ def revert_file(name: str, file: str, label: str):
 # --- Static files (mounted after routes to avoid conflicts) ---
 
 from fastapi.staticfiles import StaticFiles  # noqa: E402
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class NoCacheMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        if True:
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+        return response
+
+app.add_middleware(NoCacheMiddleware)
 
 app.mount("/static", StaticFiles(directory=tracker.ROOT / "static"), name="static")
 

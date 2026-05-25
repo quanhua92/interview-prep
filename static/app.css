@@ -42,6 +42,29 @@
   font-size: 10px;
 }
 
+/* Language selector buttons */
+#lang-selector .lang-btn {
+  color: #a1a1aa;
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+#lang-selector .lang-btn:hover {
+  color: #e4e4e7;
+  background: #3f3f46;
+}
+#lang-selector .lang-btn.active {
+  color: #fff;
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
 /* Extension filter tabs */
 .ext-tabs {
   display: flex;

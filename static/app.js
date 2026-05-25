@@ -79,17 +79,29 @@ async function runProblems() {
 		'<div class="text-zinc-500 animate-pulse">Running problems...</div>';
 
 	try {
-		const res = await fetch("/api/run", { method: "POST" });
+		const langMap = { ".py": "py", ".c": "c", ".cpp": "cpp", ".rs": "rs" };
+		const langs = [...activeExts].map((ext) => langMap[ext]).filter(Boolean);
+		if (langs.length === 0) {
+			termBody.innerHTML = '<div class="text-zinc-500">No coding languages selected</div>';
+			return;
+		}
+		const langParams = langs.map((l) => `lang=${l}`).join("&");
+		const res = await fetch(`/api/run?${langParams}`, { method: "POST" });
 		const data = await res.json();
-		if (res.ok && data.output) {
-			renderTerminalOutput(data.output);
+		if (res.ok && data.results) {
+			let fullOutput = "";
+			for (const r of data.results) {
+				if (langs.length > 1) fullOutput += `=== ${r.lang.toUpperCase()} ===\n`;
+				fullOutput += r.output || r.error || "";
+				if (r !== data.results[data.results.length - 1]) fullOutput += "\n";
+			}
+			renderTerminalOutput(fullOutput);
 		} else {
-			const msg = data.detail || data.output || "Unknown error";
+			const msg = data.detail || "Unknown error";
 			termBody.innerHTML = `<div class="text-red-400">Error: ${msg}</div>`;
 		}
 	} catch (err) {
 		termBody.innerHTML = `<div class="text-red-400">Error: ${err.message}</div>`;
-	} finally {
 	}
 }
 
@@ -151,7 +163,13 @@ document.addEventListener("keyup", (e) => {
 let currentFile = { item: null, filename: null };
 let fileTreeOpen = false;
 let activePanel = "explorer";
-let activeExtFilter = null;
+let activeExts = new Set([".py"]);
+let _cachedAllFiles = [];
+
+function _matchesActiveExts(filename) {
+	if (filename.endsWith(".md")) return true;
+	return [...activeExts].some((ext) => filename.endsWith(ext));
+}
 
 const SETTINGS_KEY = "interview-prep-settings";
 const DEFAULT_SETTINGS = {
@@ -218,18 +236,10 @@ function toggleFileTree() {
 }
 
 async function _reRenderFileTree() {
-	const extParam = activeExtFilter ? `?ext=${activeExtFilter}` : "";
-	const res = await fetch(`/api/files/in-progress${extParam}`);
+	const res = await fetch("/api/files/in-progress");
 	const data = await res.json();
-	if (data.files && data.files.length > 0) {
-		_renderFileTree(data.files);
-		if (currentFile.item && currentFile.filename) {
-			const key = _fileKey(currentFile.item, currentFile.filename);
-			document.querySelectorAll("#file-tree .tree-item").forEach((el) => {
-				el.classList.toggle("active", el.dataset.file === key);
-			});
-		}
-	}
+	_cachedAllFiles = data.files || [];
+	_renderCachedFiles();
 }
 
 // biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
@@ -396,8 +406,7 @@ function _fileKey(item, filename) {
 
 // biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
 async function openEditor(itemName) {
-	const extParam = activeExtFilter ? `&ext=${activeExtFilter}` : "";
-	const res = await fetch(`/api/files/ls?name=${encodeURIComponent(itemName)}${extParam}`);
+	const res = await fetch(`/api/files/ls?name=${encodeURIComponent(itemName)}`);
 	const data = await res.json();
 
 	if (!data.has_files || data.files.length === 0) {
@@ -413,8 +422,7 @@ async function openEditor(itemName) {
 }
 
 async function openAllInProgress() {
-	const extParam = activeExtFilter ? `?ext=${activeExtFilter}` : "";
-	const res = await fetch(`/api/files/in-progress${extParam}`);
+	const res = await fetch("/api/files/in-progress");
 	const data = await res.json();
 
 	if (!data.files || data.files.length === 0) return;
@@ -522,38 +530,55 @@ function _openEditorWithFiles(files, title) {
 	}
 
 	_applyAllSettings();
-	loadFile(files[0].item, files[0].name);
+	const firstFiltered = _cachedAllFiles.find((f) =>
+		_matchesActiveExts(f.name),
+	);
+	if (firstFiltered) loadFile(firstFiltered.item, firstFiltered.name);
 }
 
-// biome-ignore lint/correctness/noUnusedVariables: called from HTML onclick
-function setExtFilter(ext) {
-	activeExtFilter = ext;
-	_reRenderFileTree();
+function toggleExt(ext) {
+	if (activeExts.has(ext)) {
+		if (activeExts.size > 1) activeExts.delete(ext);
+	} else {
+		activeExts.add(ext);
+	}
+	document.querySelectorAll("#lang-selector .lang-btn").forEach((btn) => {
+		btn.classList.toggle("active", activeExts.has(btn.dataset.ext));
+	});
+	_renderCachedFiles();
 }
+
+const LANG_TABS = [
+	{ ext: ".py", label: "Python" },
+	{ ext: ".c", label: "C" },
+	{ ext: ".cpp", label: "C++" },
+	{ ext: ".rs", label: "Rust" },
+	{ ext: ".md", label: "Markdown" },
+];
 
 function _renderFileTree(files) {
+	_cachedAllFiles = files;
+	_renderCachedFiles();
+}
+
+function _renderCachedFiles() {
 	const tree = document.getElementById("file-tree");
+	const filtered = _cachedAllFiles.filter((f) =>
+		_matchesActiveExts(f.name),
+	);
+
+	if (filtered.length === 0) {
+		tree.innerHTML = '<div class="tree-group">No files</div>';
+		return;
+	}
+
 	const grouped = {};
-	for (const f of files) {
+	for (const f of filtered) {
 		if (!grouped[f.item]) grouped[f.item] = [];
 		grouped[f.item].push(f.name);
 	}
 
-	const tabs = [
-		{ ext: null, label: "All" },
-		{ ext: ".py", label: "Py" },
-		{ ext: ".c", label: "C" },
-		{ ext: ".cpp", label: "C++" },
-		{ ext: ".rs", label: "Rs" },
-	];
-
-	let html = '<div class="ext-tabs">';
-	for (const t of tabs) {
-		const active = activeExtFilter === t.ext;
-		html += `<span class="ext-tab${active ? " active" : ""}" data-ext="${t.ext}" onclick="setExtFilter(${t.ext === null ? "null" : `'${t.ext}'`})">${t.label}</span>`;
-	}
-	html += "</div>";
-
+	let html = "";
 	for (const [item, names] of Object.entries(grouped)) {
 		const label = item
 			.replace(/_/g, " ")
@@ -564,7 +589,15 @@ function _renderFileTree(files) {
 			html += `<div class="tree-item" data-file="${key}" onclick="loadFile('${item}','${name}')">${name}</div>`;
 		}
 	}
+
 	tree.innerHTML = html;
+
+	if (currentFile.item && currentFile.filename) {
+		const key = _fileKey(currentFile.item, currentFile.filename);
+		document.querySelectorAll("#file-tree .tree-item").forEach((el) => {
+			el.classList.toggle("active", el.dataset.file === key);
+		});
+	}
 }
 
 async function loadFile(itemName, filename) {
