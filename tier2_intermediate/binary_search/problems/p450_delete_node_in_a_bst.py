@@ -1,4 +1,3 @@
-# TODO: Implement
 """
 P450: Delete Node in a BST [PREMIUM] (Medium)
 https://leetcode.com/problems/delete-node-in-a-bst/

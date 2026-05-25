@@ -1,4 +1,3 @@
-# TODO: Implement
 """
 P521: Longest Uncommon Subsequence I [PREMIUM] (Easy)
 https://leetcode.com/problems/longest-uncommon-subsequence-i/

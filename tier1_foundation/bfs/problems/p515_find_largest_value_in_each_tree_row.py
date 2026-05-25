@@ -1,4 +1,3 @@
-# TODO: Implement
 """
 P515: Find Largest Value in Each Tree Row [PREMIUM] (Medium)
 https://leetcode.com/problems/find-largest-value-in-each-tree-row/

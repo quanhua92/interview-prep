@@ -1,4 +1,3 @@
-# TODO: Implement
 """
 P538: Convert BST to Greater Tree [PREMIUM] (Medium)
 https://leetcode.com/problems/convert-bst-to-greater-tree/

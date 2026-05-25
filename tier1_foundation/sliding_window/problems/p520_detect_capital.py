@@ -1,4 +1,3 @@
-# TODO: Implement
 """
 P520: Detect Capital [PREMIUM] (Easy)
 https://leetcode.com/problems/detect-capital/
