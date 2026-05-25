@@ -65,20 +65,77 @@ Template (python3):
 import sys
 
 sys.path.insert(0, ".")
-from src.utils import Problem
+from src.utils import Problem, TestCase
+from collections import OrderedDict
+
+
+class LFUCache:
+    def __init__(self, capacity: int):
+        self.cap = capacity
+        self.key_to_val = {}
+        self.key_to_freq = {}
+        self.freq_to_keys = {}
+
+    def _update_freq(self, key: int):
+        freq = self.key_to_freq[key]
+        self.freq_to_keys[freq].discard(key)
+        if not self.freq_to_keys[freq]:
+            del self.freq_to_keys[freq]
+        self.key_to_freq[key] = freq + 1
+        self.freq_to_keys.setdefault(freq + 1, set()).add(key)
+
+    def get(self, key: int) -> int:
+        if key not in self.key_to_val:
+            return -1
+        self._update_freq(key)
+        return self.key_to_val[key]
+
+    def put(self, key: int, value: int) -> None:
+        if self.cap <= 0:
+            return
+        if key in self.key_to_val:
+            self.key_to_val[key] = value
+            self._update_freq(key)
+        else:
+            if len(self.key_to_val) >= self.cap:
+                min_freq = min(self.freq_to_keys)
+                evict_key = self.freq_to_keys[min_freq].pop()
+                del self.key_to_val[evict_key]
+                del self.key_to_freq[evict_key]
+            self.key_to_val[key] = value
+            self.key_to_freq[key] = 1
+            self.freq_to_keys.setdefault(1, set()).add(key)
 
 
 class Solution(Problem):
     name = "460. LFU Cache"
     test_cases = [
-        # example 1: ["LFUCache", "put", "put", "get", "put", "get", "get", "put"... ->
-        # example 1: ["LFUCache", "put", "put", "get", "put", "get", "get", "put"... ->
-        # TODO: Add test cases from examples
+        TestCase(input=(), expected=None, label="example 1"),
     ]
 
     def solve(self) -> None:
-        # Premium problem - implement solution here
-        pass
+        ops = [
+            ("init", [2]),
+            ("put", [1, 1]),
+            ("put", [2, 2]),
+            ("get", [1]),
+            ("put", [3, 3]),
+            ("get", [2]),
+            ("get", [3]),
+            ("put", [4, 4]),
+            ("get", [1]),
+            ("get", [3]),
+            ("get", [4]),
+        ]
+        expected_outputs = [None, None, None, 1, None, -1, 3, None, -1, 3, 4]
+
+        cache = LFUCache(ops[0][1][0])
+        for i, (op, args) in enumerate(ops[1:], 1):
+            if op == "get":
+                result = cache.get(args[0])
+                assert result == expected_outputs[i], f"get({args[0]}) = {result}, expected {expected_outputs[i]}"
+            elif op == "put":
+                cache.put(args[0], args[1])
 
 
 if __name__ == "__main__":

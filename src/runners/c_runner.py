@@ -8,6 +8,7 @@ class CRunner(BaseRunner):
     language = "C"
     extension = ".c"
     compile_cmd = ["gcc", "-O2", "-Wall", "-Wextra"]
+    link_flags = ["-lm"]
     stub_patterns = [r"(?<!\S)abort\(\)"]
 
     @property

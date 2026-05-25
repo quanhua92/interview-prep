@@ -65,19 +65,37 @@ Template (python3):
 import sys
 
 sys.path.insert(0, ".")
-from src.utils import Problem
+from src.utils import Problem, TestCase
+
+
+class LFUCache:
+
+    def __init__(self, capacity: int):
+        raise NotImplementedError(
+            "TODO: Implement __init__(self, capacity: int)"
+        )
+
+    def get(self, key: int) -> int:
+        raise NotImplementedError(
+            "TODO: Implement get(self, key: int) -> int"
+        )
+
+    def put(self, key: int, value: int) -> None:
+        raise NotImplementedError(
+            "TODO: Implement put(self, key: int, value: int) -> None"
+        )
 
 
 class Solution(Problem):
     name = "460. LFU Cache"
     test_cases = [
-        # example 1: ["LFUCache", "put", "put", "get", "put", "get", "get", "put"... ->
-        # example 1: ["LFUCache", "put", "put", "get", "put", "get", "get", "put"... ->
-        # TODO: Add test cases from examples
+        TestCase(input=(), expected=None, label="example 1"),
     ]
 
     def solve(self) -> None:
-        raise NotImplementedError("TODO: Implement solve(self) -> None")
+        raise NotImplementedError(
+            "TODO: Implement solve(self) -> None"
+        )
 
 
 if __name__ == "__main__":

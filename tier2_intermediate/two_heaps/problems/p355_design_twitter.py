@@ -60,19 +60,47 @@ Template (python3):
 import sys
 
 sys.path.insert(0, ".")
-from src.utils import Problem
+from src.utils import Problem, TestCase
+
+
+class Twitter:
+
+    def __init__(self):
+        raise NotImplementedError(
+            "TODO: Implement __init__(self)"
+        )
+
+    def postTweet(self, userId: int, tweetId: int) -> None:
+        raise NotImplementedError(
+            "TODO: Implement postTweet(self, userId: int, tweetId: int) -> None"
+        )
+
+    def getNewsFeed(self, userId: int) -> list[int]:
+        raise NotImplementedError(
+            "TODO: Implement getNewsFeed(self, userId: int) -> list[int]"
+        )
+
+    def follow(self, followerId: int, followeeId: int) -> None:
+        raise NotImplementedError(
+            "TODO: Implement follow(self, followerId: int, followeeId: int) -> None"
+        )
+
+    def unfollow(self, followerId: int, followeeId: int) -> None:
+        raise NotImplementedError(
+            "TODO: Implement unfollow(self, followerId: int, followeeId: int) -> None"
+        )
 
 
 class Solution(Problem):
     name = "355. Design Twitter"
     test_cases = [
-        # example 1: ["Twitter", "postTweet", "getNewsFeed", "follow", "postTweet... ->
-        # example 1: ["Twitter", "postTweet", "getNewsFeed", "follow", "postTweet... ->
-        # TODO: Add test cases from examples
+        TestCase(input=(), expected=None, label="example 1"),
     ]
 
     def solve(self) -> None:
-        raise NotImplementedError("TODO: Implement solve(self) -> None")
+        raise NotImplementedError(
+            "TODO: Implement solve(self) -> None"
+        )
 
 
 if __name__ == "__main__":

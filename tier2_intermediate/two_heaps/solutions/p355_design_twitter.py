@@ -60,20 +60,54 @@ Template (python3):
 import sys
 
 sys.path.insert(0, ".")
-from src.utils import Problem
+from src.utils import Problem, TestCase
+import heapq
+
+
+class Twitter:
+    def __init__(self):
+        self.timestamp = 0
+        self.user_tweets = {}
+        self.following = {}
+
+    def postTweet(self, userId: int, tweetId: int) -> None:
+        self.user_tweets.setdefault(userId, []).append((-self.timestamp, tweetId))
+        self.timestamp += 1
+
+    def getNewsFeed(self, userId: int) -> list[int]:
+        followees = self.following.get(userId, set()) | {userId}
+        heap = []
+        for uid in followees:
+            for tweet in self.user_tweets.get(uid, []):
+                heapq.heappush(heap, tweet)
+        feed = []
+        while heap and len(feed) < 10:
+            feed.append(heapq.heappop(heap)[1])
+        return feed
+
+    def follow(self, followerId: int, followeeId: int) -> None:
+        self.following.setdefault(followerId, set()).add(followeeId)
+
+    def unfollow(self, followerId: int, followeeId: int) -> None:
+        if followerId in self.following:
+            self.following[followerId].discard(followeeId)
 
 
 class Solution(Problem):
     name = "355. Design Twitter"
     test_cases = [
-        # example 1: ["Twitter", "postTweet", "getNewsFeed", "follow", "postTweet... ->
-        # example 1: ["Twitter", "postTweet", "getNewsFeed", "follow", "postTweet... ->
-        # TODO: Add test cases from examples
+        TestCase(input=(), expected=None, label="example 1"),
     ]
 
     def solve(self) -> None:
-        # Premium problem - implement solution here
-        pass
+        twitter = Twitter()
+        twitter.postTweet(1, 5)
+        assert twitter.getNewsFeed(1) == [5], "getNewsFeed(1) after postTweet(1,5)"
+        twitter.follow(1, 2)
+        twitter.postTweet(2, 6)
+        assert twitter.getNewsFeed(1) == [6, 5], "getNewsFeed(1) with follow"
+        twitter.unfollow(1, 2)
+        assert twitter.getNewsFeed(1) == [5], "getNewsFeed(1) after unfollow"
 
 
 if __name__ == "__main__":

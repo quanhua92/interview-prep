@@ -18,13 +18,14 @@ class BaseRunner:
     extension: str = ""
     compile_cmd: list[str] = []
     extra_compile_flags: list[str] = []
+    link_flags: list[str] = []
 
     @property
     def include_flags(self) -> list[str]:
         return []
 
     def compile(self, source: Path, out: Path) -> None:
-        cmd = self.compile_cmd + self.include_flags + self.extra_compile_flags + [str(source), "-o", str(out)]
+        cmd = self.compile_cmd + self.include_flags + self.extra_compile_flags + [str(source), "-o", str(out)] + self.link_flags
         result = subprocess.run(
             cmd,
             capture_output=True,
