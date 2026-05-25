@@ -50,10 +50,11 @@
 }
 
 #file-tree {
-  height: 100%;
+  max-height: none !important;
   overflow-y: auto !important;
   scrollbar-width: thin;
   scrollbar-color: #3f3f46 transparent;
+  background: #0f0f11;
 }
 
 #file-tree::-webkit-scrollbar {
