@@ -52,6 +52,7 @@
 #pragma GCC diagnostic ignored "-Wunused-function"
 #include "cpptest.h"
 #pragma GCC diagnostic pop
+#include <cmath>
 #include <queue>
 #include <vector>
 

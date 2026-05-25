@@ -29,6 +29,7 @@
  *     class Solution:
  *         def find132pattern(self, nums: List[int]) -> bool:
  */
+#include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>

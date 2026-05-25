@@ -49,6 +49,7 @@
 #include <cstdlib>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 static int solve(int m, int n, int num_flips)
 {
