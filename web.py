@@ -73,7 +73,7 @@ def _build_item_row(item):
     return f'''
       <div data-status="{status}" data-name="{display_name.lower()}" class="contents">
         <div class="col-span-1 sm:col-span-1 text-zinc-200 py-1.5 flex items-center gap-2">
-          <a href="javascript:void(0)" onclick="openEditor('{name}')" class="hover:text-blue-400 transition-colors cursor-pointer">{display_name}</a>
+          <a href="javascript:void(0)" onclick="updateStatus('{name}','in_progress')" class="hover:text-blue-400 transition-colors cursor-pointer">{display_name}</a>
           <span class="inline-block w-2 h-2 rounded-full {badge}"></span>
           <span class="{text_color} text-xs">{label}</span>
         </div>

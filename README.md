@@ -13,7 +13,7 @@ A comprehensive interview preparation toolkit covering coding patterns, system d
 - **Version history** — every save creates a version snapshot; revert to any previous version
 - **Hint** — toggle to view solution files directly in the editor
 - **Autocomplete** — language-aware hints for Python, C, C++, and Rust
-- Click any topic name to open its files in the editor
+- Click any topic name to start it and open its files in the editor
 - Filter by status (New / In Progress / Done) and instant search
 
 Full-screen code editor (`/code`) with VS Code-style layout, configurable terminal, and Ctrl+\` to toggle:
