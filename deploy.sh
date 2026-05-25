@@ -2,7 +2,7 @@
 set -euo pipefail
 
 IMAGE="quanhua92/interview-prep"
-PLATFORM="linux/amd64"
+PLATFORMS="linux/amd64,linux/arm64"
 
 if ! git diff --quiet || ! git diff --cached --quiet; then
   echo "ERROR: Uncommitted changes detected. Commit or stash before deploying."
@@ -11,7 +11,7 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
   exit 1
 fi
 
-echo "==> Building ${IMAGE} for ${PLATFORM}..."
-docker buildx build --platform "${PLATFORM}" -t "${IMAGE}:latest" --push .
+echo "==> Building ${IMAGE} for platforms: ${PLATFORMS}..."
+docker buildx build --platform "${PLATFORMS}" -t "${IMAGE}:latest" --push .
 
-echo "==> Done! Pushed ${IMAGE}:latest (${PLATFORM})"
+echo "==> Done! Pushed ${IMAGE}:latest supporting (${PLATFORMS})"
