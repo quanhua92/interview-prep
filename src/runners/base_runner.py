@@ -73,7 +73,7 @@ class BaseRunner:
         source = self.find_source(py_path)
 
         if self._is_problem_stub(source):
-            return [{"status": "SKIP", "output": f"Problem stub: {source.name}"}]
+            return [{"status": "SKIP"}]
 
         with tempfile.NamedTemporaryFile(suffix=self._exe_suffix(), delete=False) as tmp:
             exe_path = Path(tmp.name)
