@@ -6,7 +6,7 @@ import subprocess
 import sys
 
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
@@ -249,9 +249,9 @@ def record_attempt(req: AttemptRequest):
 
 
 @app.post("/api/run")
-def run_problems(lang: list[str] | None = None, pattern: str | None = None, all_patterns: bool = False, solution: bool = False):
+def run_problems(lang: list[str] = Query(default=["py"]), pattern: str | None = None, all_patterns: bool = False, solution: bool = False):
     valid_langs = {"py", "c", "cpp", "rs"}
-    langs = lang or ["py"]
+    langs = lang
     for l in langs:
         if l not in valid_langs:
             raise HTTPException(status_code=400, detail=f"Invalid lang: {l}. Must be one of {valid_langs}")
