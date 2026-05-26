@@ -57,6 +57,37 @@ sys.path.insert(0, ".")
 from src.utils import Problem, TestCase
 
 
+import random
+
+
+class RandomizedSet:
+    def __init__(self):
+        random.seed(42)
+        self.vals: list[int] = []
+        self.idx_map: dict[int, int] = {}
+
+    def insert(self, val: int) -> bool:
+        if val in self.idx_map:
+            return False
+        self.idx_map[val] = len(self.vals)
+        self.vals.append(val)
+        return True
+
+    def remove(self, val: int) -> bool:
+        if val not in self.idx_map:
+            return False
+        idx = self.idx_map[val]
+        last = self.vals[-1]
+        self.vals[idx] = last
+        self.idx_map[last] = idx
+        self.vals.pop()
+        del self.idx_map[val]
+        return True
+
+    def getRandom(self) -> int:
+        return random.choice(self.vals)
+
+
 class Solution(Problem):
     name = "380. Insert Delete GetRandom O(1)"
     test_cases = [
@@ -95,36 +126,15 @@ class Solution(Problem):
     ]
 
     def solve(self, ops: list[str], args: list) -> list:
-        import random
-
-        random.seed(42)
-        vals: list[int] = []
-        idx_map: dict[int, int] = {}
-
+        rs = RandomizedSet()
         results = []
         for op, arg in zip(ops, args):
             if op == "insert":
-                val = arg[0]
-                if val in idx_map:
-                    results.append(False)
-                else:
-                    idx_map[val] = len(vals)
-                    vals.append(val)
-                    results.append(True)
+                results.append(rs.insert(arg[0]))
             elif op == "remove":
-                val = arg[0]
-                if val not in idx_map:
-                    results.append(False)
-                else:
-                    idx = idx_map[val]
-                    last = vals[-1]
-                    vals[idx] = last
-                    idx_map[last] = idx
-                    vals.pop()
-                    del idx_map[val]
-                    results.append(True)
+                results.append(rs.remove(arg[0]))
             elif op == "getRandom":
-                results.append(random.choice(vals))
+                results.append(rs.getRandom())
         return results
 
 
