@@ -34,16 +34,11 @@ For sorted arrays, moving a pointer inward is a deliberate decision based on whe
 | P167 Two Sum II - Input Array Is Sorted | Medium | Two pointers from ends |
 | P011 Container With Most Water | Medium | Two pointers from ends (greedy) |
 | P015 3Sum | Medium | Nested two pointers after sort |
-| P392 Is Subsequence | Medium | Two pointers from same end |
-| P475 Heaters | Easy | Sort + two pointers |
-| P532 K-diff Pairs in an Array | Easy | Counter |
-| P575 Distribute Candies | Easy | min(unique, n/2) |
-| P482 License Key Formatting | Medium | String reformat |
-| P522 Longest Uncommon Subsequence II | Medium | Group by chars + is_subseq |
-| P524 Longest Word through Deleting | Medium | Sort + two pointers |
-| P447 Number of Boomerangs | Medium | Hash map distance counting |
-| P535 Encode and Decode TinyURL | Medium | Hash map encode/decode |
-| P398 Random Pick Index | Medium | Hash map value→indices |
+| P392 Is Subsequence | Easy | Two pointers from same end |
+| P475 Heaters | Medium | Sort + two pointers |
+| P532 K-diff Pairs in an Array | Medium | Sort + two pointers |
+| P522 Longest Uncommon Subsequence II | Medium | Sorting + two pointers (subseq check) |
+| P524 Longest Word through Deleting | Medium | Two pointers (subsequence matching) |
 
 ## Template Variants
 

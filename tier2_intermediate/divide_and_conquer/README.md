@@ -27,6 +27,7 @@ Break the problem into smaller subproblems, solve each recursively, then combine
 | 912 | [Sort an Array](./problems/p912_sort_an_array.py) | Medium |
 | 169 | [Majority Element](./problems/p169_majority_element.py) | Easy |
 | 427 | [Construct Quad Tree](./solutions/p427_construct_quad_tree.py) | Medium |
+| 493 | [Reverse Pairs](./solutions/p493_reverse_pairs.py) | Hard |
 
 ## Common Pitfalls
 - Not handling the base case correctly (arrays of length 0 or 1).

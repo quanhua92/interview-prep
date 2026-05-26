@@ -42,6 +42,7 @@ Look for keywords and problem structures such as:
 | 538 | [Convert BST to Greater Tree](./solutions/p538_convert_bst_to_greater_tree.py) | Medium |
 | 565 | [Array Nesting](./solutions/p565_array_nesting.py) | Medium |
 | 572 | [Subtree of Another Tree](./solutions/p572_subtree_of_another_tree.py) | Easy |
+| 450 | [Delete Node in a BST](./solutions/p450_delete_node_in_a_bst.py) | Medium |
 
 ## Common Pitfalls
 

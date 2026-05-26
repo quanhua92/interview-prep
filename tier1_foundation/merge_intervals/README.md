@@ -38,6 +38,7 @@ interval C, then A cannot overlap with C (given sorted start times).
 | P056 Merge Intervals | Medium | Merge overlapping intervals |
 | P253 Meeting Rooms II | Medium | Minimum meeting rooms (sweep line) |
 | P057 Insert Interval | Medium | Insert + merge into sorted intervals |
+| P495 Teemo Attacking | Easy | Overlap of time ranges |
 
 ## Template Variants
 

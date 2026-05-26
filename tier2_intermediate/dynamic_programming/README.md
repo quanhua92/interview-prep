@@ -37,10 +37,8 @@ Look for keywords and problem structures such as:
 | 322 | [Coin Change](./p322_coin_change.py) | Medium |
 | 198 | [House Robber](./p198_house_robber.py) | Medium |
 | 403 | [Frog Jump](./solutions/p403_frog_jump.py) | Hard |
-| 458 | [Poor Pigs](./solutions/p458_poor_pigs.py) | Hard |
 | 466 | [Count The Repetitions](./solutions/p466_count_the_repetitions.py) | Hard |
 | 467 | [Unique Substrings in Wraparound String](./solutions/p467_unique_substrings_in_wraparound_string.py) | Medium |
-| 479 | [Largest Palindrome Product](./solutions/p479_largest_palindrome_product.py) | Hard |
 | 514 | [Freedom Trail](./solutions/p514_freedom_trail.py) | Hard |
 | 516 | [Longest Palindromic Subsequence](./solutions/p516_longest_palindromic_subsequence.py) | Medium |
 | 518 | [Coin Change II](./solutions/p518_coin_change_ii.py) | Medium |

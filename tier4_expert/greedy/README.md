@@ -27,7 +27,5 @@ Make the locally optimal choice at each step, hoping it leads to a globally opti
 - P135: Candy
 - P452: Minimum Number of Arrows to Burst Balloons
 - P502: IPO
-- P556: Next Greater Element III
-- P564: Find the Closest Palindrome
 - P621: Task Scheduler
 - P621b: Task Scheduler with Multiple Machines

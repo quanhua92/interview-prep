@@ -37,9 +37,7 @@ Look for keywords and problem structures such as:
 | 153 | [Find Minimum in Rotated Sorted Array](./p153_find_min_rotated.py) | Medium |
 | 278 | [First Bad Version](./p278_first_bad_version.py) | Easy |
 | 354 | [Russian Doll Envelopes](./solutions/p354_russian_doll_envelopes.py) | Hard |
-| 450 | [Delete Node in a BST](./solutions/p450_delete_node_in_a_bst.py) | Medium |
 | 483 | [Smallest Good Base](./solutions/p483_smallest_good_base.py) | Hard |
-| 493 | [Reverse Pairs](./solutions/p493_reverse_pairs.py) | Hard |
 | 497 | [Random Point in Non-Overlapping Rectangles](./solutions/p497_random_point_in_non_overlapping_rectangles.py) | Medium |
 
 ## Common Pitfalls
