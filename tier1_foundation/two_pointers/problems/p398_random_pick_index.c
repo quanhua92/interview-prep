@@ -24,31 +24,33 @@
  *     - -231 <= nums[i] <= 231 - 1
  *     - target is an integer from nums.
  *     - At most 104 calls will be made to pick.
- * 
- * Template (python3):
- *     class Solution:
- * 
- *         def __init__(self, nums: List[int]):
- * 
- * 
- *         def pick(self, target: int) -> int:
- * 
- * 
- * 
- *     # Your Solution object will be instantiated and called as such:
- *     # obj = Solution(nums)
- *     # param_1 = obj.pick(target)
  */
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-static int cmp_int(const void *a, const void *b) {
+typedef struct {
+    int key;
+    int *indices;
+    int count;
+    int cap;
+} Entry;
+
+typedef struct {
+    Entry entries[20005];
+    int size;
+} Solution;
+
+static void solution_init(Solution *sol, const int *nums, int n) {
     abort();
 }
 
-int *pickIndex(const int *nums, int n, int target, int *return_size)
-{
+static int solution_pick(Solution *sol, int target) {
+    abort();
+    return -1;
+}
+
+static void solution_free(Solution *sol) {
     abort();
 }
 
@@ -59,15 +61,15 @@ int main(void)
         int input[10];
         int n;
         int target;
-        int expected[10];
-        int expected_n;
+        int valid[10];
+        int valid_n;
     } tests[] = {
         {"returns valid indices for target 3", {1, 2, 3, 3, 3}, 5, 3, {2, 3, 4}, 3},
-        {"returns valid indices for target 1", {1, 2, 3, 3, 3}, 5, 1, {0}, 1},
-        {"single element array",              {5},              1, 5, {0}, 1},
-        {"non-contiguous duplicates",         {1, 2, 1, 2, 1}, 5, 1, {0, 2, 4}, 3},
-        {"negative numbers with duplicates",  {-1, -2, -1, -3, -1}, 5, -1, {0, 2, 4}, 3},
-        {"all same elements",                 {1, 1, 1, 1, 1}, 5, 1, {0, 1, 2, 3, 4}, 5},
+        {"single occurrence",                  {1, 2, 3, 3, 3}, 5, 1, {0}, 1},
+        {"single element array",               {5},              1, 5, {0}, 1},
+        {"non-contiguous duplicates",          {1, 2, 1, 2, 1}, 5, 1, {0, 2, 4}, 3},
+        {"negative numbers with duplicates",   {-1, -2, -1, -3, -1}, 5, -1, {0, 2, 4}, 3},
+        {"all same elements",                  {1, 1, 1, 1, 1}, 5, 1, {0, 1, 2, 3, 4}, 5},
     };
     int n_tests = sizeof(tests) / sizeof(tests[0]);
 
@@ -76,28 +78,24 @@ int main(void)
     printf("============================================================\n");
     int passed = 0;
     for (int i = 0; i < n_tests; i++) {
-        int got_n = 0;
-        int *got = pickIndex(tests[i].input, tests[i].n, tests[i].target, &got_n);
-        if (got_n == tests[i].expected_n) {
-            int *sorted_got = malloc(got_n * sizeof(int));
-            int *sorted_exp = malloc(tests[i].expected_n * sizeof(int));
-            memcpy(sorted_got, got, got_n * sizeof(int));
-            memcpy(sorted_exp, tests[i].expected, tests[i].expected_n * sizeof(int));
-            qsort(sorted_got, got_n, sizeof(int), cmp_int);
-            qsort(sorted_exp, tests[i].expected_n, sizeof(int), cmp_int);
-            int ok = memcmp(sorted_got, sorted_exp, got_n * sizeof(int)) == 0;
-            free(sorted_got);
-            free(sorted_exp);
-            if (ok) {
-                passed++;
-                printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-            } else {
-                printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            }
-        } else {
-            printf("  Test %d (%s): FAIL (size mismatch)\n", i + 1, tests[i].label);
+        Solution sol;
+        solution_init(&sol, tests[i].input, tests[i].n);
+        int got = solution_pick(&sol, tests[i].target);
+        int ok = 0;
+        for (int j = 0; j < tests[i].valid_n; j++) {
+            if (got == tests[i].valid[j]) { ok = 1; break; }
         }
-        free(got);
+        if (ok) {
+            passed++;
+            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
+        } else {
+            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
+            printf("    Expected one of: ");
+            for (int j = 0; j < tests[i].valid_n; j++)
+                printf("%d ", tests[i].valid[j]);
+            printf("\n    Got:              %d\n", got);
+        }
+        solution_free(&sol);
     }
     printf("\n  %d/%d passed\n", passed, n_tests);
     printf("============================================================\n\n");

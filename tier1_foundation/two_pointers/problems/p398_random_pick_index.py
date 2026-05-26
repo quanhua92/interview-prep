@@ -41,50 +41,60 @@ Template (python3):
 """
 
 import sys
+import random
 
 sys.path.insert(0, ".")
 from src.utils import Problem, TestCase
-from typing import Any
+
+random.seed(42)
 
 
-class Solution(Problem):
+class Solution:
+    def __init__(self, nums: list[int]):
+        raise NotImplementedError
+
+    def pick(self, target: int) -> int:
+        raise NotImplementedError
+
+
+class ProblemSolution(Problem):
     name = "398. Random Pick Index"
     test_cases = [
         TestCase(
             input=([1, 2, 3, 3, 3], 3),
-            expected=[2, 3, 4],
-            label="returns valid indices for target 3",
+            expected=4,
+            label="returns valid index for target 3",
         ),
         TestCase(
             input=([1, 2, 3, 3, 3], 1),
-            expected=[0],
-            label="returns valid indices for target 1",
+            expected=0,
+            label="single occurrence",
         ),
         TestCase(
             input=([5], 5),
-            expected=[0],
+            expected=0,
             label="single element array",
         ),
         TestCase(
             input=([1, 2, 1, 2, 1], 1),
-            expected=[0, 2, 4],
+            expected=4,
             label="non-contiguous duplicates",
         ),
         TestCase(
             input=([-1, -2, -1, -3, -1], -1),
-            expected=[0, 2, 4],
+            expected=2,
             label="negative numbers with duplicates",
         ),
         TestCase(
             input=([1, 1, 1, 1, 1], 1),
-            expected=[0, 1, 2, 3, 4],
+            expected=1,
             label="all same elements",
         ),
     ]
 
-    def solve(self, nums: list[int], target: int) -> list[int]:
-        raise NotImplementedError("TODO: Implement solve(self, nums: list[int], target: int) -> list[int]")
+    def solve(self, nums: list[int], target: int) -> int:
+        return Solution(nums).pick(target)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    ProblemSolution().run()

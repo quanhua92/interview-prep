@@ -24,38 +24,64 @@
  *     - -231 <= nums[i] <= 231 - 1
  *     - target is an integer from nums.
  *     - At most 104 calls will be made to pick.
- *
- * Template (python3):
- *     class Solution:
- *
- *         def __init__(self, nums: List[int]):
- *
- *
- *         def pick(self, target: int) -> int:
- *
- *
- *
- *     # Your Solution object will be instantiated and called as such:
- *     # obj = Solution(nums)
- *     # param_1 = obj.pick(target)
  */
-
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
-static int cmp_int(const void *a, const void *b) { return *(const int *)a - *(const int *)b; }
+#define MAX_UNIQUE 20005
 
-int *pickIndex(const int *nums, int n, int target, int *return_size)
-{
-    int *indices = malloc(n * sizeof(int));
-    int count = 0;
+typedef struct {
+    int key;
+    int *indices;
+    int count;
+    int cap;
+} Entry;
+
+typedef struct {
+    Entry entries[MAX_UNIQUE];
+    int size;
+} Solution;
+
+static void solution_init(Solution *sol, const int *nums, int n) {
+    sol->size = 0;
     for (int i = 0; i < n; i++) {
-        if (nums[i] == target) indices[count++] = i;
+        int key = nums[i];
+        int j;
+        for (j = 0; j < sol->size; j++) {
+            if (sol->entries[j].key == key) break;
+        }
+        if (j == sol->size) {
+            sol->entries[j].key = key;
+            sol->entries[j].count = 0;
+            sol->entries[j].cap = 8;
+            sol->entries[j].indices = malloc(8 * sizeof(int));
+            sol->size++;
+        }
+        Entry *e = &sol->entries[j];
+        if (e->count >= e->cap) {
+            e->cap *= 2;
+            e->indices = realloc(e->indices, e->cap * sizeof(int));
+        }
+        e->indices[e->count++] = i;
     }
-    *return_size = count;
-    return indices;
+}
+
+static int solution_pick(Solution *sol, int target) {
+    for (int j = 0; j < sol->size; j++) {
+        if (sol->entries[j].key == target) {
+            Entry *e = &sol->entries[j];
+            return e->indices[rand() % e->count];
+        }
+    }
+    return -1;
+}
+
+static void solution_free(Solution *sol) {
+    for (int i = 0; i < sol->size; i++)
+        free(sol->entries[i].indices);
 }
 
 int main(void)
@@ -65,45 +91,42 @@ int main(void)
         int input[10];
         int n;
         int target;
-        int expected[10];
-        int expected_n;
+        int valid[10];
+        int valid_n;
     } tests[] = {
         {"returns valid indices for target 3", {1, 2, 3, 3, 3}, 5, 3, {2, 3, 4}, 3},
-        {"returns valid indices for target 1", {1, 2, 3, 3, 3}, 5, 1, {0}, 1},
-        {"single element array",              {5},              1, 5, {0}, 1},
-        {"non-contiguous duplicates",         {1, 2, 1, 2, 1}, 5, 1, {0, 2, 4}, 3},
-        {"negative numbers with duplicates",  {-1, -2, -1, -3, -1}, 5, -1, {0, 2, 4}, 3},
-        {"all same elements",                 {1, 1, 1, 1, 1}, 5, 1, {0, 1, 2, 3, 4}, 5},
+        {"single occurrence",                  {1, 2, 3, 3, 3}, 5, 1, {0}, 1},
+        {"single element array",               {5},              1, 5, {0}, 1},
+        {"non-contiguous duplicates",          {1, 2, 1, 2, 1}, 5, 1, {0, 2, 4}, 3},
+        {"negative numbers with duplicates",   {-1, -2, -1, -3, -1}, 5, -1, {0, 2, 4}, 3},
+        {"all same elements",                  {1, 1, 1, 1, 1}, 5, 1, {0, 1, 2, 3, 4}, 5},
     };
     int n_tests = sizeof(tests) / sizeof(tests[0]);
 
+    srand(time(NULL));
     printf("\n============================================================\n");
     printf("  398. Random Pick Index\n");
     printf("============================================================\n");
     int passed = 0;
     for (int i = 0; i < n_tests; i++) {
-        int got_n = 0;
-        int *got = pickIndex(tests[i].input, tests[i].n, tests[i].target, &got_n);
-        if (got_n == tests[i].expected_n) {
-            int *sorted_got = malloc(got_n * sizeof(int));
-            int *sorted_exp = malloc(tests[i].expected_n * sizeof(int));
-            memcpy(sorted_got, got, got_n * sizeof(int));
-            memcpy(sorted_exp, tests[i].expected, tests[i].expected_n * sizeof(int));
-            qsort(sorted_got, got_n, sizeof(int), cmp_int);
-            qsort(sorted_exp, tests[i].expected_n, sizeof(int), cmp_int);
-            int ok = memcmp(sorted_got, sorted_exp, got_n * sizeof(int)) == 0;
-            free(sorted_got);
-            free(sorted_exp);
-            if (ok) {
-                passed++;
-                printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-            } else {
-                printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            }
-        } else {
-            printf("  Test %d (%s): FAIL (size mismatch)\n", i + 1, tests[i].label);
+        Solution sol;
+        solution_init(&sol, tests[i].input, tests[i].n);
+        int got = solution_pick(&sol, tests[i].target);
+        int ok = 0;
+        for (int j = 0; j < tests[i].valid_n; j++) {
+            if (got == tests[i].valid[j]) { ok = 1; break; }
         }
-        free(got);
+        if (ok) {
+            passed++;
+            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
+        } else {
+            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
+            printf("    Expected one of: ");
+            for (int j = 0; j < tests[i].valid_n; j++)
+                printf("%d ", tests[i].valid[j]);
+            printf("\n    Got:              %d\n", got);
+        }
+        solution_free(&sol);
     }
     printf("\n  %d/%d passed\n", passed, n_tests);
     printf("============================================================\n\n");

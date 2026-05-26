@@ -24,17 +24,17 @@
  *     - -231 <= nums[i] <= 231 - 1
  *     - target is an integer from nums.
  *     - At most 104 calls will be made to pick.
- * 
+ *
  * Template (python3):
  *     class Solution:
- * 
+ *
  *         def __init__(self, nums: List[int]):
- * 
- * 
+ *
+ *
  *         def pick(self, target: int) -> int:
- * 
- * 
- * 
+ *
+ *
+ *
  *     # Your Solution object will be instantiated and called as such:
  *     # obj = Solution(nums)
  *     # param_1 = obj.pick(target)
@@ -45,11 +45,20 @@
 #pragma GCC diagnostic pop
 #include <algorithm>
 #include <vector>
+#include <unordered_map>
+#include <cstdlib>
 
-std::vector<int> pickIndex(const std::vector<int> &nums, int target)
-{
-    abort();
-}
+class Solution {
+    std::unordered_map<int, std::vector<int>> idx;
+public:
+    Solution(std::vector<int>& nums) {
+        abort();
+    }
+    int pick(int target) {
+        abort();
+        return -1;
+    }
+};
 
 int main(void)
 {
@@ -57,14 +66,14 @@ int main(void)
         const char *label;
         std::vector<int> input;
         int target;
-        std::vector<int> expected;
+        std::vector<int> valid;
     } tests[] = {
-        {"returns valid indices for target 3", {1, 2, 3, 3, 3}, 3, {2, 3, 4}},
-        {"returns valid indices for target 1", {1, 2, 3, 3, 3}, 1, {0}},
-        {"single element array",              {5},              5, {0}},
-        {"non-contiguous duplicates",         {1, 2, 1, 2, 1}, 1, {0, 2, 4}},
-        {"negative numbers with duplicates",  {-1, -2, -1, -3, -1}, -1, {0, 2, 4}},
-        {"all same elements",                 {1, 1, 1, 1, 1}, 1, {0, 1, 2, 3, 4}},
+        {"returns valid index for target 3", {1, 2, 3, 3, 3}, 3, {2, 3, 4}},
+        {"single occurrence",                {1, 2, 3, 3, 3}, 1, {0}},
+        {"single element array",             {5},              5, {0}},
+        {"non-contiguous duplicates",        {1, 2, 1, 2, 1}, 1, {0, 2, 4}},
+        {"negative numbers with duplicates", {-1, -2, -1, -3, -1}, -1, {0, 2, 4}},
+        {"all same elements",                {1, 1, 1, 1, 1}, 1, {0, 1, 2, 3, 4}},
     };
     int n_tests = sizeof(tests) / sizeof(tests[0]);
 
@@ -73,14 +82,19 @@ int main(void)
     printf("============================================================\n");
     int passed = 0;
     for (int i = 0; i < n_tests; i++) {
-        std::vector<int> got = pickIndex(tests[i].input, tests[i].target);
-        if (got == tests[i].expected) {
+        Solution sol(tests[i].input);
+        int got = sol.pick(tests[i].target);
+        bool ok = false;
+        for (int v : tests[i].valid) {
+            if (got == v) { ok = true; break; }
+        }
+        if (ok) {
             passed++;
             printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
         } else {
             printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: "); print_arr(tests[i].expected); printf("\n");
-            printf("    Got:      "); print_arr(got); printf("\n");
+            printf("    Expected one of: "); print_arr(tests[i].valid); printf("\n");
+            printf("    Got:              %d\n", got);
         }
     }
     printf("\n  %d/%d passed\n", passed, n_tests);

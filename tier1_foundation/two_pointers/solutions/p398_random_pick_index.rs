@@ -24,34 +24,35 @@
  *     - -231 <= nums[i] <= 231 - 1
  *     - target is an integer from nums.
  *     - At most 104 calls will be made to pick.
- *
- * Template (python3):
- *     class Solution:
- *
- *         def __init__(self, nums: List[int]):
- *
- *
- *         def pick(self, target: int) -> int:
- *
- *
- *
- *     # Your Solution object will be instantiated and called as such:
- *     # obj = Solution(nums)
- *     # param_1 = obj.pick(target)
  */
 
+use std::collections::HashMap;
+use rand::Rng;
 
-fn pick_index(nums: &[i32], target: i32) -> Vec<i32> {
-    nums.iter().enumerate()
-        .filter(|&(_, v)| *v == target)
-        .map(|(i, _)| i as i32)
-        .collect()
+struct Solution {
+    idx: HashMap<i32, Vec<i32>>,
+}
+
+impl Solution {
+    fn new(nums: Vec<i32>) -> Self {
+        let mut idx = HashMap::new();
+        for (i, v) in nums.iter().enumerate() {
+            idx.entry(*v).or_insert(vec![]).push(i as i32);
+        }
+        Solution { idx }
+    }
+
+    fn pick(&self, target: i32) -> i32 {
+        let indices = &self.idx[&target];
+        let i = rand::thread_rng().gen_range(0..indices.len());
+        indices[i]
+    }
 }
 
 fn main() {
     let tests: &[(&str, &[i32], i32, &[i32])] = &[
         ("returns valid indices for target 3", &[1, 2, 3, 3, 3], 3, &[2, 3, 4]),
-        ("returns valid indices for target 1", &[1, 2, 3, 3, 3], 1, &[0]),
+        ("single occurrence", &[1, 2, 3, 3, 3], 1, &[0]),
         ("single element array", &[5], 5, &[0]),
         ("non-contiguous duplicates", &[1, 2, 1, 2, 1], 1, &[0, 2, 4]),
         ("negative numbers with duplicates", &[-1, -2, -1, -3, -1], -1, &[0, 2, 4]),
@@ -62,14 +63,16 @@ fn main() {
     println!("  398. Random Pick Index");
     println!("============================================================");
     let mut passed = 0;
-    for (i, (label, input, target, expected)) in tests.iter().enumerate() {
-        let got = pick_index(input, *target);
-        if got == *expected {
+    for (i, (label, input, target, valid)) in tests.iter().enumerate() {
+        let sol = Solution::new(input.to_vec());
+        let got = sol.pick(*target);
+        let ok = valid.contains(&got);
+        if ok {
             passed += 1;
             println!("  Test {} ({}): PASS", i + 1, label);
         } else {
             println!("  Test {} ({}): FAIL", i + 1, label);
-            println!("    Expected: {:?}\n    Got:      {:?}", expected, got);
+            println!("    Expected one of: {:?}\n    Got:              {}", valid, got);
         }
     }
     println!("\n  {}/{} passed", passed, tests.len());

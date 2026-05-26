@@ -24,52 +24,43 @@
  *     - -231 <= nums[i] <= 231 - 1
  *     - target is an integer from nums.
  *     - At most 104 calls will be made to pick.
- * 
- * Template (python3):
- *     class Solution:
- * 
- *         def __init__(self, nums: List[int]):
- * 
- * 
- *         def pick(self, target: int) -> int:
- * 
- * 
- * 
- *     # Your Solution object will be instantiated and called as such:
- *     # obj = Solution(nums)
- *     # param_1 = obj.pick(target)
  */
-function solve(nums, target)
-  const indexMap = new Map();
-  for (let i = 0; i < nums.length; i++)
-    const num = nums[i];
-    if (!indexMap.has(num)) indexMap.set(num, []);
-    indexMap.get(num).push(i);
-  }
-  return indexMap.get(target) || []; {
+
+class Solution {
+  constructor(nums) {
     throw new Error("NotImplementedError");
+  }
+
+  pick(target) {
+    throw new Error("NotImplementedError");
+  }
 }
 
 // --- tests ---
-const tests = [
-  { label: "returns valid indices for target 3", input: [[1, 2, 3, 3, 3], 3], expected: [2, 3, 4] },
-  { label: "returns valid indices for target 1", input: [[1, 2, 3, 3, 3], 1], expected: [0] },
-  { label: "single element array", input: [[5], 5], expected: [0] },
-  { label: "non-contiguous duplicates", input: [[1, 2, 1, 2, 1], 1], expected: [0, 2, 4] },
-  { label: "negative numbers with duplicates", input: [[-1, -2, -1, -3, -1], -1], expected: [0, 2, 4] },
-  { label: "all same elements", input: [[1, 1, 1, 1, 1], 1], expected: [0, 1, 2, 3, 4] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
+function test() {
+  const tests = [
+    { label: "returns valid index for target 3", input: [[1, 2, 3, 3, 3], 3], expected: [2, 3, 4] },
+    { label: "single occurrence", input: [[1, 2, 3, 3, 3], 1], expected: [0] },
+    { label: "single element array", input: [[5], 5], expected: [0] },
+    { label: "non-contiguous duplicates", input: [[1, 2, 1, 2, 1], 1], expected: [0, 2, 4] },
+    { label: "negative numbers with duplicates", input: [[-1, -2, -1, -3, -1], -1], expected: [0, 2, 4] },
+    { label: "all same elements", input: [[1, 1, 1, 1, 1], 1], expected: [0, 1, 2, 3, 4] },
+  ];
+  let passed = 0;
+  for (let i = 0; i < tests.length; i++) {
+    const t = tests[i];
+    const sol = new Solution(t.input[0]);
+    const got = sol.pick(t.input[1]);
+    if (t.expected.includes(got)) {
+      passed++;
+      console.log(`  Test ${i + 1} (${t.label}): PASS`);
+    } else {
+      console.log(`  Test ${i + 1} (${t.label}): FAIL`);
+      console.log(`    Expected one of: ${JSON.stringify(t.expected)}\n    Got:            ${got}`);
+    }
   }
+  console.log(`\n  ${passed}/${tests.length} passed`);
+  process.exit(passed === tests.length ? 0 : 1);
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+
+test();
