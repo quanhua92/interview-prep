@@ -1,5 +1,7 @@
 # Multi-User Deployment
 
+> **ON HOLD** — The sandbox layer requires `--userns=host` + `seccomp=unconfined` on the outer Docker container to enable bwrap inside. This weakens Docker's security (root inside container = root on host, no seccomp filtering). The bwrap tradeoff is acceptable for small-team/personal use (bwrap's user namespace is the real security boundary for code execution), but not for a public multi-tenant service. Revisit with a custom seccomp profile (restore Docker's default syscall filtering while allowing `unshare()`), or a stronger isolation approach (Firecracker/Kata VMs, gVisor user-space kernel).
+
 Deploying interview-prep to a shared server where multiple people can use it simultaneously, each with their own isolated workspace and progress.
 
 ## Problem
@@ -216,7 +218,7 @@ Steps 3-4 require a **zero-day kernel exploit**. This is extremely hard and woul
 - The main threat (user running arbitrary code) is mitigated by **bwrap's namespace isolation** — the inner sandbox is the real security boundary for code execution
 - Container escape requires a **kernel-level vulnerability**, which is a host-wide problem regardless of these flags
 - Keep the host kernel updated to minimize the container escape surface
-- For a **production multi-tenant service**, you'd want either a custom seccomp profile (allowlist only `unshare`, `clone`, `clone3`, `mount`, `pivot_root`, `setns`, `move_mount` instead of disabling seccomp entirely) or a VM-based approach (Firecracker, gVisor)
+- For a **production multi-tenant service**, you'd want either a custom seccomp profile (allowlist only `unshare`, `clone`, `clone3`, `mount`, `pivot_root`, `setns`, `move_mount` instead of disabling seccomp entirely) or a stronger isolation approach (Firecracker/Kata VMs, gVisor user-space kernel)
 
 #### Two-layer model
 
