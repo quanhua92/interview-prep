@@ -108,12 +108,14 @@ src/runners/wasm_runner.py
 ├── WASM_SANDBOX        → "auto" | "0" | "1"  (from env)
 ├── wasm_available()     → shutil.which(wasmtime)
 ├── wasm_sandbox_active() → is WASM sandbox actually active?
+├── _get_javy_plugin()   → javy emit-plugin (once, cached as /tmp/wasm-cache/javy-plugin.wasm)
 ├── compile_to_wasm(src, lang) → Path  (with MD5 cache)
 │   ├── _compile_c()     → clang --target=wasm32-wasip1
 │   ├── _compile_cpp()   → clang++ --target=wasm32-wasip1 -fno-exceptions
 │   ├── _compile_rust()  → rustc --target wasm32-wasip1 (with rstest rlib)
-│   └── _compile_js()    → javy build (with process.exit stripping)
-├── run_wasm(wasm_path, source_dir) → dict
+│   └── _compile_js()    → javy build -C dynamic=y -C plugin=... (3KB) or javy build (1.2MB fallback)
+├── run_wasm(wasm_path, source_dir, preload_plugin=...) → dict
+│   └── wasmtime run --preload javy-default-plugin-v3=plugin.wasm ... (JS only)
 │   └── wasmtime run --dir ... -W fuel=... -W timeout=... -W max-memory-size=...
 └── run_python_wasm(source, project_root) → dict
     └── wasmtime run --dir ... --env PYTHONPATH=... python-3.12.0.wasm -- script.py
@@ -200,16 +202,26 @@ The `rstest.rs` test harness (`run_tests!` macro, `TestCase` struct, `print_arr`
 
 ### JavaScript → WASM
 
-Toolchain: [Javy](https://github.com/bytecodealliance/javy) v8.1.1 (Shopify/Bytecode Alliance)
+Toolchain: [Javy](https://github.com/bytecodealliance/javy) v8.1.1 (Shopify/Bytecode Alliance), **dynamic linking**
 
 ```bash
-javy build -o solution.wasm source.mjs
-wasmtime run -W fuel=2_000_000_000 -W timeout=120s solution.wasm
+# One-time: emit the QuickJS plugin (~870KB, cached in /tmp/wasm-cache/)
+javy emit-plugin -o /tmp/javy-plugin.wasm
+
+# Compile JS to small dynamic module (~3KB)
+javy build -C dynamic=y -C plugin=/tmp/javy-plugin.wasm -o solution.wasm source.mjs
+
+# Run via wasmtime with plugin preloaded
+wasmtime run --preload javy-default-plugin-v3=/tmp/javy-plugin.wasm solution.wasm
 ```
 
-Javy compiles JS to WASM using QuickJS as the embedded runtime. `console.log()` works and produces stdout. `process.exit()` is stripped by `_strip_process_exit()` before compilation — it crashes in QuickJS/WASM (no `process` global).
+**Dynamic linking** (default) produces ~3KB `.wasm` files that share one QuickJS runtime plugin. All modules compiled with the same plugin are compatible. The plugin is emitted once via `javy emit-plugin` and cached in the WASM cache directory.
 
-Compilation is ~1 second (QuickJS parse + bytecode emit). Static linking produces a 1.2MB `.wasm` binary.
+Static linking (fallback, if plugin emit fails) produces ~1.2MB `.wasm` files (each bundles its own QuickJS runtime). Used as fallback only.
+
+`console.log()` works and produces stdout. `process.exit()` is stripped by `_strip_process_exit()` before compilation — it crashes in QuickJS/WASM (no `process` global). The Javy runtime wrapper may also reference `process` internally after user code returns, but `_strip_process_exit` on user code is sufficient for correct exit codes.
+
+Performance with dynamic linking (Docker, 8 JS problems): ~4s total (compile cache hit) vs ~23s with static linking.
 
 ### Python → WASM
 
@@ -339,6 +351,6 @@ No `--privileged`. No Docker socket. No `--userns=host`. No `seccomp=unconfined`
 | C compile + run | ~50ms + native speed | 60ms + native speed |
 | C++ compile + run | ~50ms + native speed | 340ms + native speed |
 | Rust compile + run | ~50ms + native speed | 70ms + native speed |
-| JS run | ~10ms (node) | ~1s compile + ~10ms |
+| JS run | ~10ms (node) | ~0.5s compile + ~0.05s run (dynamic linking) |
 | Python run | ~20ms (CPython) | **~180ms** (CPython WASM startup) |
 | Network from code | Outer Docker network | **Blocked** |
