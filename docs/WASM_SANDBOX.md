@@ -26,7 +26,31 @@ The bwrap approach requires `--userns=host` + `seccomp=unconfined` on the outer 
 | Docker Desktop support | Falls back to no sandbox | **Full sandbox** |
 | Resource limits | `setrlimit` (approximate, OS-enforced) | Fuel + hard memory cap (runtime-enforced, deterministic) |
 
-## Benchmarks (Apple M4, macOS)
+## Benchmarks
+
+### End-to-end: 8 problems via /api/run (two_pointers, solutions)
+
+**macOS (Apple M4, Docker arm64-native):**
+
+| Language | Cold (1st run) | Warm (cached) | Per problem (warm) |
+|---|---|---|---|
+| C | 0.77s | 0.20s | 25ms |
+| C++ | 4.35s | 0.15s | 19ms |
+| Rust | 1.91s | 0.16s | 20ms |
+| JS (Javy dynamic) | 5.57s | 0.24s | 30ms |
+| Python 3.14.5 | 4.61s | 1.61s | 201ms |
+
+**Linux VPS (amd64, small instance):**
+
+| Language | Cold (1st run) | Warm (cached) | Per problem (warm) |
+|---|---|---|---|
+| C | 1.90s | 0.22s | 27ms |
+| C++ | 16.9s | 0.21s | 26ms |
+| Rust | 2.70s | 0.25s | 32ms |
+| JS (Javy dynamic) | 6.27s | 0.44s | 55ms |
+| Python 3.14.5 | 6.79s | 3.86s | 483ms |
+
+Cold includes first-time compilation (clang/rustc/javy) and wasmtime module compilation. Warm hits the MD5 `.wasm` cache — only `wasmtime run` on pre-compiled binaries. Python is always "cold" for interpreter startup (28MB binary load per run) — it benefits from wasmtime's own compile cache but not from our file-level cache.
 
 ### Compilation: user code → .wasm
 
@@ -37,8 +61,8 @@ The bwrap approach requires `--userns=host` + `seccomp=unconfined` on the outer 
 | C++ | p483 (97 lines, complex) | — | 0.38s | — | 624K |
 | Rust | p167 (67 lines, 2-step: rstest lib + problem) | 0.06s | 0.07s | 1.2x | 1.9M |
 | Rust | p483 (complex) | 0.11s | 0.11s | 1.0x | — |
-| JS | p003 (77 lines, via Javy/QuickJS) | 0s (interpreted) | ~1.0s | N/A | 1.2M |
-| Python | (no compile — pre-built interpreter) | — | — | — | 25MB |
+| JS | p003 (77 lines, via Javy dynamic) | 0s (interpreted) | ~0.5s | N/A | ~3KB |
+| Python | (no compile — pre-built interpreter) | — | — | — | 28MB |
 
 ### Execution: .wasm via wasmtime
 
@@ -50,7 +74,7 @@ The bwrap approach requires `--userns=host` + `seccomp=unconfined` on the outer 
 | JS (node) | ~10ms | ~10ms |
 | Python (CPython) | ~20ms | ~180ms |
 
-Python is slower due to CPython WASM startup overhead (~170ms for interpreter init). Execution of actual test code is fast — the bottleneck is loading the 28MB `python.wasm` binary. Fuel requirement is ~5B (CPython 3.14 is larger than 3.12).
+Python is slower due to CPython WASM startup overhead (~170ms for interpreter init). Execution of actual test code is fast — the bottleneck is loading the 28MB `python.wasm` binary.
 
 ### Resource limits (all verified working)
 
@@ -60,7 +84,7 @@ Python is slower due to CPython WASM startup overhead (~170ms for interpreter in
 | Wall-clock timeout | `-W timeout=5s` | Infinite loop killed ("interrupt") |
 | Memory cap | `-W max-memory-size=33554432` | MemoryError raised |
 
-Python requires ~1.5B fuel for CPython startup + import + solve a simple problem.
+Python requires ~5B fuel for CPython 3.14 startup + import + solve a simple problem.
 
 ## Architecture
 
@@ -282,7 +306,7 @@ The WASM sandbox **cannot**:
 | Fork bomb | WASM is single-threaded, no `fork()` |
 | Memory exhaustion | `-W max-memory-size=256MB` (hard cap) |
 | Infinite loops | `-W timeout=120s` (wall-clock) or `-W fuel=N` (instruction count) |
-| CPU exhaustion | `-W fuel=2_000_000_000` (deterministic instruction limit) |
+| CPU exhaustion | `-W fuel=5_000_000_000` (deterministic instruction limit) |
 
 ## Dockerfile (WASM toolchain)
 
@@ -361,5 +385,5 @@ No `--privileged`. No Docker socket. No `--userns=host`. No `seccomp=unconfined`
 | C++ compile + run | ~50ms + native speed | 340ms + native speed |
 | Rust compile + run | ~50ms + native speed | 70ms + native speed |
 | JS run | ~10ms (node) | ~0.5s compile + ~0.05s run (dynamic linking) |
-| Python run | ~20ms (CPython) | **~180ms** (CPython WASM startup) |
+| Python run | ~20ms (CPython) | **~180ms** (CPython 3.14 WASM startup) |
 | Network from code | Outer Docker network | **Blocked** |
