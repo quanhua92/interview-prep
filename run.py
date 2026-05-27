@@ -116,7 +116,7 @@ def _run_pattern(pattern, lang=None, solution=False):
 
     for f in files:
         if lang:
-            from src.runners.wasm_runner import wasm_sandbox_active, compile_to_wasm, run_wasm
+            from src.runners.wasm_runner import wasm_sandbox_active, compile_to_wasm, run_wasm, _get_javy_plugin
 
             target_file = work_dir / f"{f.stem}{target_suffix}"
 
@@ -137,7 +137,8 @@ def _run_pattern(pattern, lang=None, solution=False):
 
                 try:
                     wasm_path = compile_to_wasm(target_file, lang)
-                    result = run_wasm(wasm_path, target_file.parent)
+                    plugin = _get_javy_plugin() if lang == "js" else None
+                    result = run_wasm(wasm_path, target_file.parent, preload_plugin=plugin)
                     if result.get("timed_out"):
                         status = "FAIL"
                         failed += 1

@@ -16,6 +16,8 @@ _WASI_SDK_SYSROOT = os.environ.get("WASI_SDK_SYSROOT", "/opt/wasi-sdk/share/wasi
 _WASI_SDK_CLANG = os.environ.get("WASI_SDK_CLANG", "/opt/wasi-sdk/bin/clang")
 _WASI_SDK_CLANGPP = os.environ.get("WASI_SDK_CLANGPP", "/opt/wasi-sdk/bin/clang++")
 _JAVY_BIN = os.environ.get("JAVY_BIN", "javy")
+_JAVY_PLUGIN_NS = "javy-default-plugin-v3"
+_JAVY_PLUGIN_PATH: Path | None = None
 _PYTHON_WASM = os.environ.get("PYTHON_WASM", "/opt/python.wasm")
 
 _COMPILE_TIMEOUTS = {
@@ -30,6 +32,22 @@ _WASM_TIMEOUT = 120
 _WASM_MAX_MEMORY = 268435456
 
 _RSTEST_RLIB_PATH: Path | None = None
+
+
+def _get_javy_plugin() -> Path | None:
+    global _JAVY_PLUGIN_PATH
+    if _JAVY_PLUGIN_PATH is not None and _JAVY_PLUGIN_PATH.exists():
+        return _JAVY_PLUGIN_PATH
+    plugin_path = _WASM_CACHE_DIR / "javy-plugin.wasm"
+    _WASM_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    result = subprocess.run(
+        [_JAVY_BIN, "emit-plugin", "-o", str(plugin_path)],
+        capture_output=True, text=True, timeout=30,
+    )
+    if result.returncode != 0:
+        return None
+    _JAVY_PLUGIN_PATH = plugin_path
+    return plugin_path
 
 
 def wasm_available() -> bool:
@@ -109,7 +127,11 @@ def _compile_rust(source: Path, out: Path) -> None:
 
 
 def _compile_js(source: Path, out: Path) -> None:
-    cmd = [_JAVY_BIN, "build", "-o", str(out), str(source)]
+    plugin = _get_javy_plugin()
+    if plugin:
+        cmd = [_JAVY_BIN, "build", "-C", "dynamic=y", "-C", f"plugin={plugin}", "-o", str(out), str(source)]
+    else:
+        cmd = [_JAVY_BIN, "build", "-o", str(out), str(source)]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=_COMPILE_TIMEOUTS["js"])
     if result.returncode != 0:
         raise RuntimeError(f"Javy compilation failed:\n{result.stderr}")
@@ -158,15 +180,17 @@ def compile_to_wasm(source: Path, lang: str) -> Path:
         out.unlink(missing_ok=True)
 
 
-def run_wasm(wasm_path: Path, source_dir: Path, timeout: int = _WASM_TIMEOUT) -> dict:
+def run_wasm(wasm_path: Path, source_dir: Path, timeout: int = _WASM_TIMEOUT, preload_plugin: Path | None = None) -> dict:
     cmd = [
         _WASMTIME_BIN, "run",
         "-W", f"fuel={_WASM_FUEL}",
         "-W", f"timeout={timeout}s",
         "-W", f"max-memory-size={_WASM_MAX_MEMORY}",
         "--dir", str(source_dir),
-        str(wasm_path),
     ]
+    if preload_plugin and preload_plugin.exists():
+        cmd.extend(["--preload", f"{_JAVY_PLUGIN_NS}={preload_plugin}"])
+    cmd.append(str(wasm_path))
     try:
         result = subprocess.run(
             cmd,
