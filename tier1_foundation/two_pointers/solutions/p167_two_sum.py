@@ -37,36 +37,24 @@ Template (python3):
 Hint: Use two pointers from both ends of the sorted array.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "167. Two Sum II - Input Array Is Sorted"
-    test_cases = [
-        TestCase(input=([2, 7, 11, 15], 9), expected=[1, 2], label="example 1"),
-        TestCase(input=([2, 3, 4], 6), expected=[1, 3], label="example 2"),
-        TestCase(input=([-1, 0], -1), expected=[1, 2], label="example 3"),
-        TestCase(input=([-10, -6, -4, -2], -10), expected=[2, 3], label="all negatives"),
-        TestCase(input=([1, 2], 3), expected=[1, 2], label="exactly two elements"),
-        TestCase(input=([-5, -3, 0, 2, 4, 6], 1), expected=[1, 6], label="negative positive cross"),
-        TestCase(input=([1, 3, 4, 5, 7, 10, 11], 9), expected=[3, 4], label="middle elements"),
-    ]
-
-    def solve(self, numbers: list[int], target: int) -> list[int]:
-        left, right = 0, len(numbers) - 1
-        while left < right:
-            current = numbers[left] + numbers[right]
-            if current == target:
-                return [left + 1, right + 1]
-            elif current < target:
-                left += 1
-            else:
-                right -= 1
-        return []
+def solve(numbers: list[int], target: int) -> list[int]:
+    left, right = 0, len(numbers) - 1
+    while left < right:
+        current = numbers[left] + numbers[right]
+        if current == target:
+            return [left + 1, right + 1]
+        elif current < target:
+            left += 1
+        else:
+            right -= 1
+    return []
 
 
 if __name__ == "__main__":
-    Solution().run()
+    numbers = read_ints()
+    target = read_int()
+    result = solve(numbers, target)
+    write_ints(result)

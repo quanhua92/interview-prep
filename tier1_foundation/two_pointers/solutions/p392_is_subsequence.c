@@ -23,9 +23,8 @@
  *         def isSubsequence(self, s: str, t: str) -> bool:
  */
 
-
-#include <stdio.h>
-#include <string.h>
+#include "io.h"
+#include <stdlib.h>
 
 int isSubsequence(const char *s, const char *t)
 {
@@ -38,36 +37,10 @@ int isSubsequence(const char *s, const char *t)
 
 int main(void)
 {
-    struct {
-        const char *label;
-        const char *s;
-        const char *t;
-        int expected;
-    } tests[] = {
-        {"example 1",              "abc",   "ahbgdc", 1},
-        {"example 2",              "axc",   "ahbgdc", 0},
-        {"empty s is subsequence", "",      "ahbgdc", 1},
-        {"s equals t",             "abc",   "abc",    1},
-        {"s longer than t",        "abcd",  "abc",    0},
-        {"single char not found",  "z",     "aaaaa",  0},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  392. Is Subsequence\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int got = isSubsequence(tests[i].s, tests[i].t);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    char *s = read_line();
+    char *t = read_line();
+    write_bool(isSubsequence(s, t));
+    free(s);
+    free(t);
+    return 0;
 }

@@ -30,49 +30,15 @@
  *     - -1000 <= target <= 1000
  *     - The tests are generated such that there is exactly one solution.
  * 
- * Template (python3):
- *     class Solution:
- *         def twoSum(self, numbers: List[int], target: int) -> List[int]:
- * 
  * Hint: Use two pointers from both ends of the sorted array.
  */
-function solve(numbers, target)
-  let left = 0, right = numbers.length - 1;
-  while (left < right)
-    const current = numbers[left] + numbers[right];
-    if (current === target)
-      return [left + 1, right + 1];
-    } else if (current < target)
-      left++;
-    } else
-      right--;
-    }
-  }
-  return []; {
-    throw new Error("NotImplementedError");
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
+function solve(numbers, target) {
+  throw new Error("NotImplementedError");
 }
 
-// --- tests ---
-const tests = [
-  { label: "example 1", input: [[2, 7, 11, 15], 9], expected: [1, 2] },
-  { label: "example 2", input: [[2, 3, 4], 6], expected: [1, 3] },
-  { label: "example 3", input: [[-1, 0], -1], expected: [1, 2] },
-  { label: "all negatives", input: [[-10, -6, -4, -2], -10], expected: [2, 3] },
-  { label: "exactly two elements", input: [[1, 2], 3], expected: [1, 2] },
-  { label: "negative positive cross", input: [[-5, -3, 0, 2, 4, 6], 1], expected: [1, 6] },
-  { label: "middle elements", input: [[1, 3, 4, 5, 7, 10, 11], 9], expected: [3, 4] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const numbers = readInts();
+const target = readInt();
+writeInts(solve(numbers, target));

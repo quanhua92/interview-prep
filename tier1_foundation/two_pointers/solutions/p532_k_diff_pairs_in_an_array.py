@@ -32,57 +32,35 @@ Template (python3):
         def findPairs(self, nums: List[int], k: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "532. K-diff Pairs in an Array"
-    test_cases = [
-        TestCase(input=([3, 1, 4, 1, 5], 2), expected=2, label="example 1"),
-        TestCase(input=([1, 2, 3, 4, 5], 1), expected=4, label="example 2"),
-        TestCase(input=([1, 3, 1, 5, 4], 0), expected=1, label="example 3"),
-        TestCase(input=([1], 1), expected=0, label="single element"),
-        TestCase(input=([1, 1, 1, 1], 0), expected=1, label="all same k=0"),
-        TestCase(input=([1, 2, 3, 4, 5], 100), expected=0, label="k larger than range"),
-        TestCase(input=([-1, -2, -3, -4, -5], 1), expected=4, label="all negatives"),
-    ]
-
-    def solve(self, nums: list[int], k: int) -> int:
-        if k < 0:
-            return 0
-        nums.sort()
-        count = 0
-        left, right = 0, 1
-        while right < len(nums):
-            diff = nums[right] - nums[left]
-            if diff < k:
-                right += 1
-            elif diff > k:
+def solve(nums: list[int], k: int) -> int:
+    if k < 0:
+        return 0
+    nums.sort()
+    count = 0
+    left, right = 0, 1
+    while right < len(nums):
+        diff = nums[right] - nums[left]
+        if diff < k:
+            right += 1
+        elif diff > k:
+            left += 1
+        else:
+            count += 1
+            left_val, right_val = nums[left], nums[right]
+            while left < len(nums) and nums[left] == left_val:
                 left += 1
-            else:
-                count += 1
-                left_val, right_val = nums[left], nums[right]
-                while left < len(nums) and nums[left] == left_val:
-                    left += 1
-                while right < len(nums) and nums[right] == right_val:
-                    right += 1
-            if left == right:
+            while right < len(nums) and nums[right] == right_val:
                 right += 1
-        return count
-
-    def solve_alternative(self, nums: list[int], k: int) -> int:
-        from collections import Counter
-
-        if k < 0:
-            return 0
-        freq = Counter(nums)
-        if k == 0:
-            return sum(1 for v in freq.values() if v > 1)
-        return sum(1 for x in freq if x + k in freq)
+        if left == right:
+            right += 1
+    return count
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    k = read_int()
+    result = solve(nums, k)
+    write_int(result)

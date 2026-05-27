@@ -36,32 +36,32 @@
  *
  * Hint: Use two pointers from both ends of the sorted array.
  */
-use rstest::{run_tests, TestCase};
 
-fn two_sum(numbers: &[i32], target: i32) -> Vec<i32> {
-    let (mut left, mut right) = (0, numbers.len() - 1);
-    while left < right {
-        let sum = numbers[left] + numbers[right];
-        if sum == target {
-            return vec![(left + 1) as i32, (right + 1) as i32];
-        } else if sum < target {
-            left += 1;
-        } else {
-            right -= 1;
+use wasm_libs::*;
+
+impl Solution {
+    fn two_sum(numbers: &[i32], target: i32) -> Vec<i32> {
+        let (mut left, mut right) = (0, numbers.len() - 1);
+        while left < right {
+            let sum = numbers[left] + numbers[right];
+            if sum == target {
+                return vec![(left + 1) as i32, (right + 1) as i32];
+            } else if sum < target {
+                left += 1;
+            } else {
+                right -= 1;
+            }
         }
+        vec![]
     }
-    vec![]
 }
 
+struct Solution;
+
 fn main() {
-    let tests: &[TestCase] = &[
-        TestCase { label: "example 1", input_arr: &[2, 7, 11, 15], target: 9, expected: &[1, 2] },
-        TestCase { label: "example 2", input_arr: &[2, 3, 4], target: 6, expected: &[1, 3] },
-        TestCase { label: "example 3", input_arr: &[-1, 0], target: -1, expected: &[1, 2] },
-        TestCase { label: "all negatives", input_arr: &[-10, -6, -4, -2], target: -10, expected: &[2, 3] },
-        TestCase { label: "exactly two elements", input_arr: &[1, 2], target: 3, expected: &[1, 2] },
-        TestCase { label: "negative positive cross", input_arr: &[-5, -3, 0, 2, 4, 6], target: 1, expected: &[1, 6] },
-        TestCase { label: "middle elements", input_arr: &[1, 3, 4, 5, 7, 10, 11], target: 9, expected: &[3, 4] },
-    ];
-    std::process::exit(run_tests!("167. Two Sum II - Input Array Is Sorted", two_sum, tests));
+    let numbers = read_ints();
+    let target = read_int();
+    let result = Solution::two_sum(&numbers, target);
+    write_ints(&result);
+    std::process::exit(0);
 }

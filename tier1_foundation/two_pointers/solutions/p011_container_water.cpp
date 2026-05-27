@@ -35,10 +35,7 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+#include "io.h"
 #include <algorithm>
 #include <vector>
 
@@ -60,37 +57,7 @@ int maxArea(const std::vector<int> &height)
 
 int main(void)
 {
-    struct {
-        const char *label;
-        std::vector<int> input;
-        int expected;
-    } tests[] = {
-        {"example 1",               {1, 8, 6, 2, 5, 4, 8, 3, 7}, 49},
-        {"example 2",               {1, 1},                         1},
-        {"symmetric",               {4, 3, 2, 1, 4},               16},
-        {"all zeros",               {0, 0, 0, 0},                   0},
-        {"strictly increasing",     {1, 2, 3, 4, 5},                6},
-        {"strictly decreasing",     {5, 4, 3, 2, 1},                6},
-        {"max height two elements", {10000, 10000},                 10000},
-        {"all same height",         {2, 2, 2, 2, 2},                8},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  11. Container With Most Water\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int got = maxArea(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    std::vector<int> height = read_ints();
+    write_int(maxArea(height));
+    return 0;
 }

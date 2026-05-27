@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run problem files for coding patterns.
+"""Run problem files for coding patterns via judge system.
 
 Usage:
     python run.py                        Run all WIP pattern problem files (Python)
@@ -13,6 +13,9 @@ Usage:
     python run.py --solution             Run solutions instead of problem stubs
     python run.py --solution --lang c    Run all C solutions
 """
+
+import importlib
+import os
 import re
 import subprocess
 import sys
@@ -21,6 +24,16 @@ from tracker import ROOT, TIER_DIRS, load_tracker
 
 LANG_FLAGS = ("--lang", "-l")
 SOLUTION_FLAGS = ("--solution", "-s")
+
+_SUFFIX_MAP = {"c": ".c", "cpp": ".cpp", "rs": ".rs", "js": ".mjs", "py": ".py"}
+
+_STUB_PATTERNS = {
+    ".c": [r"(?<!\S)abort\(\)"],
+    ".cpp": [r"(?<!\S)abort\(\)"],
+    ".rs": [r"(?<!\S)todo!\(\)"],
+    ".mjs": [r'throw\s+new\s+Error\("NotImplementedError"\)'],
+    ".py": [r"raise NotImplementedError"],
+}
 
 
 def _parse_args(args):
@@ -58,7 +71,7 @@ def _get_patterns(args):
             print(f"Error: Unknown pattern '{name}'")
             available = [p["name"] for p in patterns if p["status"] == "in_progress"]
             if available:
-                print(f"WIP patterns: {chr(39).join(available)}")
+                print(f"WIP patterns: {', '.join(available)}")
             sys.exit(1)
         return matched
 
@@ -69,44 +82,110 @@ def _get_patterns(args):
     return wip
 
 
+def _is_stub(path):
+    patterns = _STUB_PATTERNS.get(path.suffix, [])
+    if not patterns:
+        return False
+    source = path.read_text(errors="replace")
+    return any(re.search(p, source, re.MULTILINE) for p in patterns)
+
+
+def _run_python(target, stdin_text):
+    from src.runners.wasm_runner import wasm_sandbox_active, run_python_wasm
+
+    if wasm_sandbox_active():
+        result = run_python_wasm(target, ROOT, stdin_text=stdin_text)
+        if result.get("timed_out"):
+            return result
+        if "error" not in result or result["exit_code"] != -1:
+            return result
+
+    try:
+        proc = subprocess.run(
+            [sys.executable, str(target)],
+            input=stdin_text,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            env={**os.environ, "PYTHONPATH": str(ROOT)},
+        )
+        return {"exit_code": proc.returncode, "output": proc.stdout.strip(), "timed_out": False}
+    except subprocess.TimeoutExpired:
+        return {"exit_code": -1, "output": "", "timed_out": True}
+
+
+def _run_wasm_lang(target, lang, stdin_text, work_dir):
+    from src.runners.wasm_runner import wasm_sandbox_active, judge_compile_to_wasm, run_wasm, _get_javy_plugin
+
+    if not wasm_sandbox_active():
+        return {"exit_code": -1, "output": "wasmtime not available", "timed_out": False}
+
+    try:
+        wasm_path = judge_compile_to_wasm(target, lang)
+        plugin = _get_javy_plugin() if lang == "js" else None
+        return run_wasm(wasm_path, work_dir, preload_plugin=plugin, stdin_text=stdin_text)
+    except Exception as e:
+        return {"exit_code": -1, "output": str(e)[:500], "timed_out": False}
+
+
 def _run_pattern(pattern, lang=None, solution=False):
+    from src.utils.judge_base import JudgeBase
+
     name = pattern["name"]
     tier = pattern.get("tier", 1)
     tier_dir = TIER_DIRS.get(tier)
     if not tier_dir:
         print(f"  Skipping {name}: unknown tier {tier}")
-        return 0, 0
+        return 0, 0, 0
+
+    pattern_dir = ROOT / tier_dir / name
+    test_runners_dir = pattern_dir / "test_runners"
+    if not test_runners_dir.is_dir():
+        print(f"  Error: {name} has no test_runners/ directory")
+        print("         Patterns must have test_runners/ with judge definitions.")
+        return 0, 0, 0
 
     subdir = "solutions" if solution else "problems"
-    work_dir = ROOT / tier_dir / name / subdir
+    work_dir = pattern_dir / subdir
     if not work_dir.exists():
         print(f"  Skipping {name}: no {subdir}/ directory")
-        return 0, 0
+        return 0, 0, 0
 
-    ref_dir = ROOT / tier_dir / name / "solutions"
-    if not ref_dir.exists():
-        print(f"  Skipping {name}: no solutions/ directory")
-        return 0, 0
+    stem_to_judge = {}
+    for tr_file in sorted(test_runners_dir.glob("*.py")):
+        if tr_file.name.startswith("_"):
+            continue
+        module_name = f"{tier_dir}.{name}.test_runners.{tr_file.stem}"
+        try:
+            mod = importlib.import_module(module_name)
+        except ImportError:
+            continue
+        for attr_name in dir(mod):
+            cls = getattr(mod, attr_name)
+            if isinstance(cls, type) and issubclass(cls, JudgeBase) and cls is not JudgeBase:
+                stem_to_judge[tr_file.stem] = cls
+                break
 
-    files = sorted(f for f in ref_dir.iterdir() if f.suffix == ".py" and not f.name.startswith("_"))
-    if not files:
-        print(f"  Skipping {name}: no solution files")
-        return 0, 0
+    if not stem_to_judge:
+        print(f"  Error: {name} has no judges in test_runners/")
+        return 0, 0, 0
 
-    if lang:
-        suffix_map = {"c": ".c", "cpp": ".cpp", "rs": ".rs", "js": ".mjs"}
-        if lang not in suffix_map:
-            print(f"  Skipping {name}: unknown language '{lang}'")
-            return 0, 0
-        target_suffix = suffix_map[lang]
-        files = [f for f in files if (work_dir / f"{f.stem}{target_suffix}").exists()]
-        if not files:
-            print(f"  Skipping {name}: no {lang} counterparts found in {subdir}/")
-            return 0, 0
-
-    display_name = name.replace("_", " ").title()
+    effective_lang = lang or "py"
+    suffix = _SUFFIX_MAP.get(effective_lang, ".py")
+    lang_label = f" ({effective_lang})" if lang else ""
     mode_label = "solution" if solution else "problem"
-    lang_label = f" ({lang})" if lang else ""
+    display_name = name.replace("_", " ").title()
+
+    files = []
+    for stem, judge_cls in sorted(stem_to_judge.items()):
+        target = work_dir / f"{stem}{suffix}"
+        if target.exists():
+            files.append((target, stem, judge_cls))
+
+    if not files:
+        print(f"\n  {display_name}{lang_label}: no {effective_lang} files in {subdir}/")
+        return 0, 0, 0
+
     print(f"\n  {display_name}{lang_label} ({len(files)} {mode_label}s)")
     print("  " + "-" * 50)
 
@@ -114,136 +193,61 @@ def _run_pattern(pattern, lang=None, solution=False):
     failed = 0
     skipped = 0
 
-    for f in files:
-        if lang:
-            from src.runners.wasm_runner import wasm_sandbox_active, compile_to_wasm, run_wasm, _get_javy_plugin
+    for target, stem, judge_cls in files:
+        if _is_stub(target):
+            skipped += 1
+            print(f"    [SKIP] {target.name}")
+            continue
 
-            target_file = work_dir / f"{f.stem}{target_suffix}"
+        judge = judge_cls()
+        case_passed = 0
+        case_failed = 0
+        case_details = []
 
-            if wasm_sandbox_active() and lang in ("c", "cpp", "rs", "js"):
-                _STUB_PATTERNS = {
-                    "c": [r"(?<!\S)abort\(\)"],
-                    "cpp": [r"(?<!\S)abort\(\)"],
-                    "rs": [r"(?<!\S)todo!\(\)"],
-                    "js": [r"(?<!\S)throw\s+new\s+Error\(\"NotImplementedError\"\)"],
-                }
-                source_text = target_file.read_text(errors="replace")
-                is_stub = any(re.search(p, source_text, re.MULTILINE) for p in _STUB_PATTERNS.get(lang, []))
+        for tc in judge.test_cases:
+            stdin = judge.to_stdin(tc.input)
+            expected = tc.expected
 
-                if is_stub:
-                    skipped += 1
-                    print(f"    [SKIP] {f.stem}{target_suffix}")
-                    continue
-
-                try:
-                    wasm_path = compile_to_wasm(target_file, lang)
-                    plugin = _get_javy_plugin() if lang == "js" else None
-                    result = run_wasm(wasm_path, target_file.parent, preload_plugin=plugin)
-                    if result.get("timed_out"):
-                        status = "FAIL"
-                        failed += 1
-                        print(f"    [{status}] {f.stem}{target_suffix}")
-                        print(f"             {result.get('error', 'Timed out')}")
-                        continue
-                    if result["exit_code"] == 0:
-                        status = "PASS"
-                        passed += 1
-                    else:
-                        status = "FAIL"
-                        failed += 1
-                        skipped += sum(1 for line in result["output"].split("\n") if "SKIP" in line)
-                        if result["exit_code"] != 2:
-                            skipped = 0
-                    print(f"    [{status}] {f.stem}{target_suffix}")
-                    if status == "FAIL" and result.get("output"):
-                        for line in result["output"].strip().split("\n")[-5:]:
-                            print(f"             {line}")
-                    continue
-                except Exception as e:
-                    print(f"    [FAIL] {f.stem}{target_suffix}")
-                    print(f"             {e}")
-                    failed += 1
-                    continue
-
-            from src.runners import CRunner, CppRunner, JSRunner, RustRunner
-
-            runners = {"c": CRunner, "cpp": CppRunner, "rs": RustRunner, "js": JSRunner}
-            runner = runners[lang]()
-            results = runner.run_all(target_file)
-            file_passed = sum(1 for r in results if r["status"] == "PASS")
-            file_failed = sum(1 for r in results if r["status"] not in ("PASS", "SKIP"))
-            file_skipped = sum(1 for r in results if r["status"] == "SKIP")
-            passed += file_passed
-            failed += file_failed
-            skipped += file_skipped
-            status = "SKIP" if file_failed == 0 and file_skipped > 0 else ("PASS" if file_failed == 0 else "FAIL")
-            print(f"    [{status}] {f.stem}{target_suffix}")
-            for r in results:
-                if r["status"] != "PASS":
-                    err = r.get("error", "")
-                    out = r.get("output", "")
-                    if err:
-                        for line in err.strip().split("\n"):
-                            print(f"             {line}")
-                    elif out:
-                        for line in out.strip().split("\n")[-5:]:
-                            print(f"             {line}")
-        else:
-            from src.runners.wasm_runner import wasm_sandbox_active, run_python_wasm
-
-            target_file = work_dir / f.name
-            if wasm_sandbox_active():
-                result = run_python_wasm(target_file, ROOT)
-                if result.get("timed_out"):
-                    status = "FAIL"
-                    failed += 1
-                    print(f"    [{status}] {f.name}")
-                    print(f"             {result.get('error', 'Timed out')}")
-                    continue
-                if result["exit_code"] == 0:
-                    status = "PASS"
-                    passed += 1
-                elif result["exit_code"] == 2:
-                    status = "SKIP"
-                    skipped += 1
-                else:
-                    status = "FAIL"
-                    failed += 1
-                print(f"    [{status}] {f.name}")
-                output = result.get("output", "")
-                if status == "FAIL" and output.strip():
-                    for line in output.strip().split("\n"):
-                        print(f"    │ {line}")
-                continue
-            target_file = work_dir / f.name
-            try:
-                result = subprocess.run(
-                    [sys.executable, str(target_file)],
-                    capture_output=True,
-                    text=True,
-                    timeout=10,
-                )
-            except subprocess.TimeoutExpired:
-                status = "FAIL"
-                failed += 1
-                print(f"    [{status}] {f.name}")
-                print("    │ Timed out after 10s — possible infinite loop")
-                continue
-            if result.returncode == 0:
-                status = "PASS"
-                passed += 1
-            elif result.returncode == 2:
-                status = "SKIP"
-                skipped += 1
+            if effective_lang == "py":
+                result = _run_python(target, stdin)
             else:
-                status = "FAIL"
-                failed += 1
+                result = _run_wasm_lang(target, effective_lang, stdin, work_dir)
 
-            print(f"    [{status}] {f.name}")
-            output = (result.stdout or "") + (result.stderr or "")
-            if status == "FAIL" and output.strip():
-                for line in output.strip().split("\n"):
-                    print(f"    │ {line}")
+            if result.get("timed_out"):
+                case_failed += 1
+                case_details.append(f"    {tc.label}: TIMEOUT")
+                continue
+
+            if result["exit_code"] != 0:
+                if "NotImplementedError" in result["output"]:
+                    case_passed = 0
+                    case_failed = 0
+                    break
+                case_failed += 1
+                case_details.append(f"    {tc.label}: exit={result['exit_code']}")
+                if result["output"]:
+                    for line in result["output"].strip().split("\n")[-3:]:
+                        case_details.append(f"      {line}")
+                continue
+
+            if judge.check_stdout(result["output"], expected):
+                case_passed += 1
+            else:
+                case_failed += 1
+                case_details.append(f"    {tc.label}: expected={expected!r}, got={result['output'].strip()!r}")
+
+        total = len(judge.test_cases)
+        if case_passed == 0 and case_failed == 0:
+            skipped += 1
+            print(f"    [SKIP] {target.name}")
+        elif case_failed == 0:
+            passed += 1
+            print(f"    [PASS] {target.name} ({case_passed}/{total} tests)")
+        else:
+            failed += 1
+            print(f"    [FAIL] {target.name} ({case_passed}/{total} tests)")
+            for detail in case_details[:8]:
+                print(detail)
 
     return passed, failed, skipped
 

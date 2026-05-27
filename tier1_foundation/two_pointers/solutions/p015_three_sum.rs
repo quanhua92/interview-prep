@@ -42,73 +42,49 @@
  * Hint: Sort, iterate i, nested two pointers for remaining pair, skip duplicates.
  */
 
+use wasm_libs::*;
 
-fn three_sum(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
-    nums.sort();
-    let n = nums.len();
-    let mut result: Vec<Vec<i32>> = Vec::new();
-    let mut i = 0;
-    while i < n.saturating_sub(2) {
-        if i > 0 && nums[i] == nums[i - 1] {
-            i += 1;
-            continue;
-        }
-        let (mut left, mut right) = (i + 1, n - 1);
-        while left < right {
-            let total = nums[i] + nums[left] + nums[right];
-            if total < 0 {
-                left += 1;
-            } else if total > 0 {
-                right -= 1;
-            } else {
-                result.push(vec![nums[i], nums[left], nums[right]]);
-                while left < right && nums[left] == nums[left + 1] { left += 1; }
-                while left < right && nums[right] == nums[right - 1] { right -= 1; }
-                left += 1;
-                right -= 1;
+impl Solution {
+    fn three_sum(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
+        nums.sort();
+        let n = nums.len();
+        let mut result: Vec<Vec<i32>> = Vec::new();
+        let mut i = 0;
+        while i < n.saturating_sub(2) {
+            if i > 0 && nums[i] == nums[i - 1] {
+                i += 1;
+                continue;
             }
+            let (mut left, mut right) = (i + 1, n - 1);
+            while left < right {
+                let total = nums[i] + nums[left] + nums[right];
+                if total < 0 {
+                    left += 1;
+                } else if total > 0 {
+                    right -= 1;
+                } else {
+                    result.push(vec![nums[i], nums[left], nums[right]]);
+                    while left < right && nums[left] == nums[left + 1] { left += 1; }
+                    while left < right && nums[right] == nums[right - 1] { right -= 1; }
+                    left += 1;
+                    right -= 1;
+                }
+            }
+            i += 1;
         }
-        i += 1;
+        for t in &mut result { t.sort(); }
+        result.sort();
+        result
     }
-    for t in &mut result { t.sort(); }
-    result.sort();
-    result
 }
 
-fn main() {
-    struct Case { label: &'static str, input: &'static [i32], expected: &'static [i32], expected_triplets: usize }
-    let tests: &[Case] = &[
-        Case { label: "example 1", input: &[-1, 0, 1, 2, -1, -4], expected: &[-1, -1, 2, -1, 0, 1], expected_triplets: 2 },
-        Case { label: "no triplets", input: &[0, 1, 1], expected: &[], expected_triplets: 0 },
-        Case { label: "all zeros", input: &[0, 0, 0], expected: &[0, 0, 0], expected_triplets: 1 },
-        Case { label: "empty", input: &[], expected: &[], expected_triplets: 0 },
-        Case { label: "adjacent duplicate pairs", input: &[-2, 0, 0, 2, 2], expected: &[-2, 0, 2], expected_triplets: 1 },
-        Case { label: "all identical values", input: &[0, 0, 0, 0, 0], expected: &[0, 0, 0], expected_triplets: 1 },
-        Case { label: "skip-i with left/right dup", input: &[-3, -3, 0, 1, 1, 2, 2], expected: &[-3, 1, 2], expected_triplets: 1 },
-        Case { label: "triple duplicate", input: &[-2, 0, 0, 0, 2, 2, 2], expected: &[-2, 0, 2, 0, 0, 0], expected_triplets: 2 },
-    ];
+struct Solution;
 
-    println!("\n============================================================");
-    println!("  15. 3Sum");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = three_sum(tc.input.to_vec());
-        let mut exp: Vec<Vec<i32>> = Vec::new();
-        for j in 0..tc.expected_triplets {
-            exp.push(tc.expected[j*3..j*3+3].to_vec());
-        }
-        for t in &mut exp { t.sort(); }
-        exp.sort();
-        if got == exp {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {:?}\n    Got:      {:?}", exp, got);
-        }
+fn main() {
+    let nums = read_ints();
+    let triplets = Solution::three_sum(nums);
+    for t in &triplets {
+        write_ints(t);
     }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    std::process::exit(0);
 }

@@ -32,8 +32,7 @@
  *         def findPairs(self, nums: List[int], k: int) -> int:
  */
 
-
-#include <stdio.h>
+#include "io.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -66,56 +65,15 @@ static int findPairs(const int *nums, int nums_size, int k) {
     return count;
 }
 
-int main(void) {
-    int passed = 0, total = 7;
-    printf("\n============================================================\n");
-    printf("  532. K-diff Pairs in an Array\n");
-    printf("============================================================\n");
-
-    {
-        int nums[] = {3, 1, 4, 1, 5};
-        int got = findPairs(nums, 5, 2);
-        if (got == 2) { passed++; printf("  Test 1 (example 1): PASS\n"); }
-        else { printf("  Test 1 (example 1): FAIL\n  Expected: 2, Got: %d\n", got); }
-    }
-    {
-        int nums[] = {1, 2, 3, 4, 5};
-        int got = findPairs(nums, 5, 1);
-        if (got == 4) { passed++; printf("  Test 2 (example 2): PASS\n"); }
-        else { printf("  Test 2 (example 2): FAIL\n  Expected: 4, Got: %d\n", got); }
-    }
-    {
-        int nums[] = {1, 3, 1, 5, 4};
-        int got = findPairs(nums, 5, 0);
-        if (got == 1) { passed++; printf("  Test 3 (example 3): PASS\n"); }
-        else { printf("  Test 3 (example 3): FAIL\n  Expected: 1, Got: %d\n", got); }
-    }
-    {
-        int nums[] = {1};
-        int got = findPairs(nums, 1, 1);
-        if (got == 0) { passed++; printf("  Test 4 (single element): PASS\n"); }
-        else { printf("  Test 4 (single element): FAIL\n  Expected: 0, Got: %d\n", got); }
-    }
-    {
-        int nums[] = {1, 1, 1, 1};
-        int got = findPairs(nums, 4, 0);
-        if (got == 1) { passed++; printf("  Test 5 (all same k=0): PASS\n"); }
-        else { printf("  Test 5 (all same k=0): FAIL\n  Expected: 1, Got: %d\n", got); }
-    }
-    {
-        int nums[] = {1, 2, 3, 4, 5};
-        int got = findPairs(nums, 5, 100);
-        if (got == 0) { passed++; printf("  Test 6 (k larger than range): PASS\n"); }
-        else { printf("  Test 6 (k larger than range): FAIL\n  Expected: 0, Got: %d\n", got); }
-    }
-    {
-        int nums[] = {-1, -2, -3, -4, -5};
-        int got = findPairs(nums, 5, 1);
-        if (got == 4) { passed++; printf("  Test 7 (all negatives): PASS\n"); }
-        else { printf("  Test 7 (all negatives): FAIL\n  Expected: 4, Got: %d\n", got); }
-    }
-
-    printf("\n  %d/%d passed\n", passed, total);
-    printf("============================================================\n\n");
-    return passed == total ? 0 : 1;
+int main(void)
+{
+    int n;
+    int *nums = read_ints(&n);
+    int k_len;
+    int *k_arr = read_ints(&k_len);
+    int k = k_arr[0];
+    free(k_arr);
+    write_int(findPairs(nums, n, k));
+    free(nums);
+    return 0;
 }

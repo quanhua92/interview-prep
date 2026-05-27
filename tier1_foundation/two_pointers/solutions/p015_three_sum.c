@@ -42,8 +42,7 @@
  * Hint: Sort, iterate i, nested two pointers for remaining pair, skip duplicates.
  */
 
-
-#include <stdio.h>
+#include "io.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -82,68 +81,16 @@ int *threeSum(int *nums, int n, int *return_size)
     return result;
 }
 
-static int triplet_cmp(const void *a, const void *b)
-{
-    const int *ta = (const int *)a, *tb = (const int *)b;
-    for (int i = 0; i < 3; i++) {
-        if (ta[i] != tb[i]) return ta[i] - tb[i];
-    }
-    return 0;
-}
-
-static int results_eq(int *got, int gn, int *exp, int en)
-{
-    if (gn != en) return 0;
-    for (int i = 0; i < gn; i++) {
-        qsort(got + i * 3, 3, sizeof(int), cmp_int);
-        qsort(exp + i * 3, 3, sizeof(int), cmp_int);
-    }
-    qsort(got, gn, 3 * sizeof(int), triplet_cmp);
-    qsort(exp, en, 3 * sizeof(int), triplet_cmp);
-    return memcmp(got, exp, gn * 3 * sizeof(int)) == 0;
-}
-
 int main(void)
 {
-    struct {
-        const char *label;
-        int input[8];
-        int n;
-        int expected[30];
-        int expected_triplets;
-    } tests[] = {
-        {"example 1",             {-1, 0, 1, 2, -1, -4}, 6, {-1, -1, 2, -1, 0, 1}, 2},
-        {"no triplets",           {0, 1, 1},              3, {},                     0},
-        {"all zeros",             {0, 0, 0},              3, {0, 0, 0},              1},
-        {"empty",                 {},                     0, {},                     0},
-        {"adjacent duplicate pairs", {-2, 0, 0, 2, 2},   5, {-2, 0, 2},             1},
-        {"all identical values",  {0, 0, 0, 0, 0},        5, {0, 0, 0},              1},
-        {"skip-i with left/right dup", {-3, -3, 0, 1, 1, 2, 2}, 7, {-3, 1, 2},     1},
-        {"triple duplicate",      {-2, 0, 0, 0, 2, 2, 2}, 7, {-2, 0, 2, 0, 0, 0},  2},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  15. 3Sum\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int buf[64];
-        memcpy(buf, tests[i].input, tests[i].n * sizeof(int));
-        int got_count = 0;
-        int *got = threeSum(buf, tests[i].n, &got_count);
-        int exp[64];
-        memcpy(exp, tests[i].expected, tests[i].expected_triplets * 3 * sizeof(int));
-        if (results_eq(got, got_count, exp, tests[i].expected_triplets)) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected %d triplets, got %d\n", tests[i].expected_triplets, got_count);
-        }
-        free(got);
+    int n;
+    int *nums = read_ints(&n);
+    int triplet_count;
+    int *result = threeSum(nums, n, &triplet_count);
+    for (int i = 0; i < triplet_count; i++) {
+        write_ints(result + i * 3, 3);
     }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    free(nums);
+    free(result);
+    return 0;
 }

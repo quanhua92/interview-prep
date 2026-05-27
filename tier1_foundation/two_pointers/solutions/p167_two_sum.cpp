@@ -38,7 +38,8 @@
  */
 
 
-#include "cpptest.h"
+#include "io.h"
+#include <vector>
 
 std::vector<int> twoSum(const std::vector<int> &numbers, int target)
 {
@@ -57,15 +58,9 @@ std::vector<int> twoSum(const std::vector<int> &numbers, int target)
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1",              {2, 7, 11, 15},        9,   {1, 2}},
-        {"example 2",              {2, 3, 4},             6,   {1, 3}},
-        {"example 3",              {-1, 0},               -1,  {1, 2}},
-        {"all negatives",          {-10, -6, -4, -2},     -10, {2, 3}},
-        {"exactly two elements",   {1, 2},                3,   {1, 2}},
-        {"negative positive cross", {-5, -3, 0, 2, 4, 6}, 1,   {1, 6}},
-        {"middle elements",        {1, 3, 4, 5, 7, 10, 11}, 9, {3, 4}},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("167. Two Sum II - Input Array Is Sorted", twoSum, tests, n_tests);
+    std::vector<int> numbers = read_ints();
+    std::vector<int> target_line = read_ints();
+    int target = target_line[0];
+    write_ints(twoSum(numbers, target));
+    return 0;
 }

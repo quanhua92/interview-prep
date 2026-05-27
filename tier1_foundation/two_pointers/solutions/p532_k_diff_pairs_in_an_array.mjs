@@ -28,6 +28,8 @@
  *     - 0 <= k <= 107
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(nums, k) {
   if (k < 0) return 0;
   nums = [...nums].sort((a, b) => a - b);
@@ -51,27 +53,6 @@ function solve(nums, k) {
   return count;
 }
 
-// --- tests ---
-const tests = [
-  { label: "example 1", input: [[3, 1, 4, 1, 5], 2], expected: 2 },
-  { label: "example 2", input: [[1, 2, 3, 4, 5], 1], expected: 4 },
-  { label: "example 3", input: [[1, 3, 1, 5, 4], 0], expected: 1 },
-  { label: "single element", input: [[1], 1], expected: 0 },
-  { label: "all same k=0", input: [[1, 1, 1, 1], 0], expected: 1 },
-  { label: "k larger than range", input: [[1, 2, 3, 4, 5], 100], expected: 0 },
-  { label: "all negatives", input: [[-1, -2, -3, -4, -5], 1], expected: 4 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+const k = readInt();
+writeInt(solve(nums, k));

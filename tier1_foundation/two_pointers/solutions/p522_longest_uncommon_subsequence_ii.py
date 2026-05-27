@@ -24,42 +24,31 @@ Template (python3):
         def findLUSlength(self, strs: List[str]) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "522. Longest Uncommon Subsequence II"
-    test_cases = [
-        TestCase(input=["aba", "cdc", "eae"], expected=3, label="example 1"),
-        TestCase(input=["aaa", "aaa", "aa"], expected=-1, label="example 2"),
-        TestCase(input=["a", "b", "c", "d"], expected=1, label="all length 1 different"),
-        TestCase(input=["abc", "abc", "abc"], expected=-1, label="all identical"),
-        TestCase(input=["a", "a", "ab", "abc"], expected=3, label="one string longer than rest"),
-        TestCase(input=["abc", "abd", "abe"], expected=3, label="same length different chars"),
-    ]
+def solve(strs: list[str]) -> int:
+    def is_subseq(a: str, b: str) -> bool:
+        i = 0
+        for ch in b:
+            if i < len(a) and a[i] == ch:
+                i += 1
+        return i == len(a)
 
-    def solve(self, strs: list[str]) -> int:
-        def is_subseq(a: str, b: str) -> bool:
-            i = 0
-            for ch in b:
-                if i < len(a) and a[i] == ch:
-                    i += 1
-            return i == len(a)
-
-        strs.sort(key=len, reverse=True)
-        for i, candidate in enumerate(strs):
-            is_uncommon = True
-            for j, other in enumerate(strs):
-                if i != j and is_subseq(candidate, other):
-                    is_uncommon = False
-                    break
-            if is_uncommon:
-                return len(candidate)
-        return -1
+    strs.sort(key=len, reverse=True)
+    for i, candidate in enumerate(strs):
+        is_uncommon = True
+        for j, other in enumerate(strs):
+            if i != j and is_subseq(candidate, other):
+                is_uncommon = False
+                break
+        if is_uncommon:
+            return len(candidate)
+    return -1
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    strs = [read_line() for _ in range(n)]
+    result = solve(strs)
+    write_int(result)

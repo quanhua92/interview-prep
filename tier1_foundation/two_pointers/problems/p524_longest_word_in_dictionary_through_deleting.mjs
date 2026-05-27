@@ -17,54 +17,16 @@
  *     - 1 <= dictionary.length <= 1000
  *     - 1 <= dictionary[i].length <= 1000
  *     - s and dictionary[i] consist of lowercase English letters.
- * 
- * Template (python3):
- *     class Solution:
- *         def findLongestWord(self, s: str, dictionary: List[str]) -> str:
  */
-function solve(s, dictionary)
-  function isSubseq(word, target)
-    let i = 0;
-    for (const ch of target)
-      if (i < word.length && word[i] === ch)
-        i++;
-      }
-    }
-    return i === word.length;
-  }
 
-  let best = "";
-  for (const word of dictionary)
-    if (isSubseq(word, s))
-      if (word.length > best.length || (word.length === best.length && word < best))
-        best = word;
-      }
-    }
-  }
-  return best; {
-    throw new Error("NotImplementedError");
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
+function solve(s, dictionary) {
+  throw new Error("NotImplementedError");
 }
 
-// --- tests ---
-const tests = [
-  { label: "example 1", input: ["abpcplea", ["ale", "apple", "monkey", "plea"]], expected: "apple" },
-  { label: "example 2", input: ["abpcplea", ["a", "b", "c"]], expected: "a" },
-  { label: "empty dictionary", input: ["abpcplea", []], expected: "" },
-  { label: "no match", input: ["abc", ["xyz", "def"]], expected: "" },
-  { label: "same length lexicographical tie", input: ["abpcplea", ["apple", "ale", "abpple"]], expected: "abpple" },
-  { label: "longer dict words than s", input: ["a", ["a", "aa", "aaa"]], expected: "a" },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const s = readLine();
+const dictSize = readInt();
+const dictionary = [];
+for (let i = 0; i < dictSize; i++) dictionary.push(readLine());
+writeString(solve(s, dictionary));

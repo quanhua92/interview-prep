@@ -24,14 +24,9 @@
  *         def findLUSlength(self, strs: List[str]) -> int:
  */
 
-
-#include <stdio.h>
+#include "io.h"
 #include <stdlib.h>
 #include <string.h>
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "ctest.h"
-#pragma GCC diagnostic pop
 
 static int is_subseq(const char *a, const char *b)
 {
@@ -70,39 +65,16 @@ static int findLUSlength(const char **strs, int n)
 
 int main(void)
 {
-    const char *t1[] = {"aba","cdc","eae"};
-    const char *t2[] = {"aaa","aaa","aa"};
-    const char *t3[] = {"a","b","c","d"};
-    const char *t4[] = {"abc","abc","abc"};
-    const char *t5[] = {"a","a","ab","abc"};
-    const char *t6[] = {"abc","abd","abe"};
-
-    const char *label[] = {
-        "example 1", "example 2", "all length 1 different",
-        "all identical", "one string longer than rest", "same length different chars"
-    };
-    const char **strs[] = {t1, t2, t3, t4, t5, t6};
-    int ns[] = {3, 3, 4, 3, 4, 3};
-    int expected[] = {3, -1, 1, -1, 3, 3};
-    int ntests = 6;
-    int passed = 0;
-
-    printf("\n============================================================\n");
-    printf("  522. Longest Uncommon Subsequence II\n");
-    printf("============================================================\n");
-
-    for (int i = 0; i < ntests; i++) {
-        int got = findLUSlength(strs[i], ns[i]);
-        if (got == expected[i]) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, label[i]);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, label[i]);
-            printf("    Expected: %d\n    Got:      %d\n", expected[i], got);
-        }
+    int n_line_count;
+    int *n_arr = read_ints(&n_line_count);
+    int n = n_arr[0];
+    free(n_arr);
+    const char **strs = malloc(n * sizeof(const char *));
+    for (int i = 0; i < n; i++) {
+        strs[i] = read_line();
     }
-
-    printf("\n  %d/%d passed\n", passed, ntests);
-    printf("============================================================\n\n");
-    return passed == ntests ? 0 : 1;
+    write_int(findLUSlength(strs, n));
+    for (int i = 0; i < n; i++) free((void *)strs[i]);
+    free(strs);
+    return 0;
 }

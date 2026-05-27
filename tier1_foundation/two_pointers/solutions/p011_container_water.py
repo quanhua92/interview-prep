@@ -34,37 +34,23 @@ Template (python3):
 Hint: Start with pointers at both ends and move the shorter one inward.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "11. Container With Most Water"
-    test_cases = [
-        TestCase(input=[1, 8, 6, 2, 5, 4, 8, 3, 7], expected=49, label="example 1"),
-        TestCase(input=[1, 1], expected=1, label="example 2"),
-        TestCase(input=[4, 3, 2, 1, 4], expected=16, label="symmetric"),
-        TestCase(input=[0, 0, 0, 0], expected=0, label="all zeros"),
-        TestCase(input=[1, 2, 3, 4, 5], expected=6, label="strictly increasing"),
-        TestCase(input=[5, 4, 3, 2, 1], expected=6, label="strictly decreasing"),
-        TestCase(input=[10000, 10000], expected=10000, label="max height two elements"),
-        TestCase(input=[2, 2, 2, 2, 2], expected=8, label="all same height"),
-    ]
-
-    def solve(self, height: list[int]) -> int:
-        left, right = 0, len(height) - 1
-        max_area = 0
-        while left < right:
-            area = min(height[left], height[right]) * (right - left)
-            max_area = max(max_area, area)
-            if height[left] < height[right]:
-                left += 1
-            else:
-                right -= 1
-        return max_area
+def solve(height: list[int]) -> int:
+    left, right = 0, len(height) - 1
+    max_area = 0
+    while left < right:
+        area = min(height[left], height[right]) * (right - left)
+        max_area = max(max_area, area)
+        if height[left] < height[right]:
+            left += 1
+        else:
+            right -= 1
+    return max_area
 
 
 if __name__ == "__main__":
-    Solution().run()
+    height = read_ints()
+    result = solve(height)
+    write_int(result)

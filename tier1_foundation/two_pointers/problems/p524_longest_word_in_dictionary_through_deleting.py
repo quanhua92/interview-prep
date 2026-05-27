@@ -23,30 +23,16 @@ Template (python3):
         def findLongestWord(self, s: str, dictionary: List[str]) -> str:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "524. Longest Word in Dictionary through Deleting"
-    test_cases = [
-        TestCase(
-            input=("abpcplea", ["ale", "apple", "monkey", "plea"]),
-            expected="apple",
-            label="example 1",
-        ),
-        TestCase(input=("abpcplea", ["a", "b", "c"]), expected="a", label="example 2"),
-        TestCase(input=("abpcplea", []), expected="", label="empty dictionary"),
-        TestCase(input=("abc", ["xyz", "def"]), expected="", label="no match"),
-        TestCase(input=("abpcplea", ["apple", "ale", "abpple"]), expected="abpple", label="same length lexicographical tie"),
-        TestCase(input=("a", ["a", "aa", "aaa"]), expected="a", label="longer dict words than s"),
-    ]
-
-    def solve(self, s: str, dictionary: list[str]) -> str:
-        raise NotImplementedError("TODO: Implement solve(self, s, dictionary) -> str")
+def solve(s: str, dictionary: list[str]) -> str:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    s = read_line()
+    dict_size = read_int()
+    dictionary = [read_line() for _ in range(dict_size)]
+    result = solve(s, dictionary)
+    write_string(result)

@@ -23,26 +23,15 @@ Template (python3):
         def isSubsequence(self, s: str, t: str) -> bool:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "392. Is Subsequence"
-    test_cases = [
-        TestCase(input=("abc", "ahbgdc"), expected=True, label="example 1"),
-        TestCase(input=("axc", "ahbgdc"), expected=False, label="example 2"),
-        TestCase(input=("", "ahbgdc"), expected=True, label="empty s is subsequence"),
-        TestCase(input=("abc", "abc"), expected=True, label="s equals t"),
-        TestCase(input=("abcd", "abc"), expected=False, label="s longer than t"),
-        TestCase(input=("z", "aaaaa"), expected=False, label="single char not found"),
-    ]
-
-    def solve(self, s: str, t: str) -> bool:
-        raise NotImplementedError("TODO: Implement solve(self, s, t) -> bool")
+def solve(s: str, t: str) -> bool:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    s = read_line()
+    t = read_line()
+    result = solve(s, t)
+    write_bool(result)

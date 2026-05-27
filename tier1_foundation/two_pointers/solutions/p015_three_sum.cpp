@@ -43,10 +43,7 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+#include "io.h"
 #include <algorithm>
 #include <vector>
 
@@ -78,38 +75,9 @@ std::vector<std::vector<int>> threeSum(std::vector<int> nums)
 
 int main(void)
 {
-    struct TC {
-        const char *label;
-        std::vector<int> input;
-        std::vector<std::vector<int>> expected;
-    };
-    TC tests[] = {
-        {"example 1", {-1, 0, 1, 2, -1, -4}, {{-1, -1, 2}, {-1, 0, 1}}},
-        {"no triplets", {0, 1, 1}, {}},
-        {"all zeros", {0, 0, 0}, {{0, 0, 0}}},
-        {"empty", {}, {}},
-        {"adjacent duplicate pairs", {-2, 0, 0, 2, 2}, {{-2, 0, 2}}},
-        {"all identical values", {0, 0, 0, 0, 0}, {{0, 0, 0}}},
-        {"skip-i with left/right dup", {-3, -3, 0, 1, 1, 2, 2}, {{-3, 1, 2}}},
-        {"triple duplicate", {-2, 0, 0, 0, 2, 2, 2}, {{-2, 0, 2}, {0, 0, 0}}},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  15. 3Sum\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        auto got = threeSum(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected %zu triplets, got %zu\n", tests[i].expected.size(), got.size());
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    std::vector<int> nums = read_ints();
+    auto result = threeSum(nums);
+    for (const auto &t : result)
+        write_ints(t);
+    return 0;
 }

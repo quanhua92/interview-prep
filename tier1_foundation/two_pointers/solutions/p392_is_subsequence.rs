@@ -23,50 +23,32 @@
  *         def isSubsequence(self, s: str, t: str) -> bool:
  */
 
+use wasm_libs::*;
 
-fn is_subsequence(s: &str, t: &str) -> bool {
-    let mut it = s.chars();
-    let mut si = match it.next() {
-        Some(c) => c,
-        None => return true,
-    };
-    for c in t.chars() {
-        if c == si {
-            si = match it.next() {
-                Some(c) => c,
-                None => return true,
-            };
+impl Solution {
+    fn is_subsequence(s: &str, t: &str) -> bool {
+        let mut it = s.chars();
+        let mut si = match it.next() {
+            Some(c) => c,
+            None => return true,
+        };
+        for c in t.chars() {
+            if c == si {
+                si = match it.next() {
+                    Some(c) => c,
+                    None => return true,
+                };
+            }
         }
+        false
     }
-    false
 }
 
-fn main() {
-    struct Case<'a> { label: &'a str, s: &'a str, t: &'a str, expected: bool }
-    let tests: &[Case] = &[
-        Case { label: "example 1", s: "abc", t: "ahbgdc", expected: true },
-        Case { label: "example 2", s: "axc", t: "ahbgdc", expected: false },
-        Case { label: "empty s is subsequence", s: "", t: "ahbgdc", expected: true },
-        Case { label: "s equals t", s: "abc", t: "abc", expected: true },
-        Case { label: "s longer than t", s: "abcd", t: "abc", expected: false },
-        Case { label: "single char not found", s: "z", t: "aaaaa", expected: false },
-    ];
+struct Solution;
 
-    println!("\n============================================================");
-    println!("  392. Is Subsequence");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = is_subsequence(tc.s, tc.t);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {:?}\n    Got:      {:?}", tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+fn main() {
+    let s = read_line();
+    let t = read_line();
+    write_bool(Solution::is_subsequence(&s, &t));
+    std::process::exit(0);
 }

@@ -42,34 +42,15 @@ Template (python3):
 Hint: Sort, iterate i, nested two pointers for remaining pair, skip duplicates.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "15. 3Sum"
-    test_cases = [
-        TestCase(
-            input=[-1, 0, 1, 2, -1, -4],
-            expected=sorted([sorted(t) for t in [[-1, -1, 2], [-1, 0, 1]]]),
-            label="example 1",
-        ),
-        TestCase(input=[0, 1, 1], expected=[], label="no triplets"),
-        TestCase(input=[0, 0, 0], expected=[[0, 0, 0]], label="all zeros"),
-        TestCase(input=[], expected=[], label="empty"),
-        TestCase(input=[-2, 0, 0, 2, 2], expected=[[-2, 0, 2]], label="adjacent duplicate pairs"),
-        TestCase(input=[0, 0, 0, 0, 0], expected=[[0, 0, 0]], label="all identical values"),
-        TestCase(input=[-3, -3, 0, 1, 1, 2, 2], expected=[[-3, 1, 2]], label="skip-i with left/right dup"),
-        TestCase(input=[-2, 0, 0, 0, 2, 2, 2], expected=[[-2, 0, 2], [0, 0, 0]], label="triple duplicate"),
-    ]
-
-    def solve(self, nums: list[int]) -> list[list[int]]:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, nums: list[int]) -> list[list[int]]"
-        )
+def solve(nums: list[int]) -> list[list[int]]:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    triplets = solve(nums)
+    for t in triplets:
+        write_ints(t)

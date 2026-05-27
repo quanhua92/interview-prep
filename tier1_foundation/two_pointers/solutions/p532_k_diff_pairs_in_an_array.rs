@@ -32,77 +32,41 @@
  *         def findPairs(self, nums: List[int], k: int) -> int:
  */
 
+use wasm_libs::*;
 
-fn find_pairs(nums: &[i32], k: i32) -> i32 {
-    if k < 0 { return 0; }
-    let mut arr: Vec<i32> = nums.to_vec();
-    arr.sort();
-    let n = arr.len();
-    let mut count = 0;
-    let mut left: usize = 0;
-    let mut right: usize = 1;
-    while right < n {
-        let diff = arr[right] - arr[left];
-        if diff < k {
-            right += 1;
-        } else if diff > k {
-            left += 1;
-        } else {
-            count += 1;
-            let lv = arr[left];
-            let rv = arr[right];
-            while left < n && arr[left] == lv { left += 1; }
-            while right < n && arr[right] == rv { right += 1; }
+impl Solution {
+    fn find_pairs(nums: &[i32], k: i32) -> i32 {
+        if k < 0 { return 0; }
+        let mut arr: Vec<i32> = nums.to_vec();
+        arr.sort();
+        let n = arr.len();
+        let mut count = 0;
+        let mut left: usize = 0;
+        let mut right: usize = 1;
+        while right < n {
+            let diff = arr[right] - arr[left];
+            if diff < k {
+                right += 1;
+            } else if diff > k {
+                left += 1;
+            } else {
+                count += 1;
+                let lv = arr[left];
+                let rv = arr[right];
+                while left < n && arr[left] == lv { left += 1; }
+                while right < n && arr[right] == rv { right += 1; }
+            }
+            if left == right { right += 1; }
         }
-        if left == right { right += 1; }
+        count
     }
-    count
 }
 
+struct Solution;
+
 fn main() {
-    let mut passed = 0;
-    let total = 7;
-    println!("\n============================================================");
-    println!("  532. K-diff Pairs in an Array");
-    println!("============================================================");
-
-    {
-        let got = find_pairs(&[3, 1, 4, 1, 5], 2);
-        if got == 2 { passed += 1; println!("  Test 1 (example 1): PASS"); }
-        else { println!("  Test 1 (example 1): FAIL\n  Expected: 2, Got: {}", got); }
-    }
-    {
-        let got = find_pairs(&[1, 2, 3, 4, 5], 1);
-        if got == 4 { passed += 1; println!("  Test 2 (example 2): PASS"); }
-        else { println!("  Test 2 (example 2): FAIL\n  Expected: 4, Got: {}", got); }
-    }
-    {
-        let got = find_pairs(&[1, 3, 1, 5, 4], 0);
-        if got == 1 { passed += 1; println!("  Test 3 (example 3): PASS"); }
-        else { println!("  Test 3 (example 3): FAIL\n  Expected: 1, Got: {}", got); }
-    }
-    {
-        let got = find_pairs(&[1], 1);
-        if got == 0 { passed += 1; println!("  Test 4 (single element): PASS"); }
-        else { println!("  Test 4 (single element): FAIL\n  Expected: 0, Got: {}", got); }
-    }
-    {
-        let got = find_pairs(&[1, 1, 1, 1], 0);
-        if got == 1 { passed += 1; println!("  Test 5 (all same k=0): PASS"); }
-        else { println!("  Test 5 (all same k=0): FAIL\n  Expected: 1, Got: {}", got); }
-    }
-    {
-        let got = find_pairs(&[1, 2, 3, 4, 5], 100);
-        if got == 0 { passed += 1; println!("  Test 6 (k larger than range): PASS"); }
-        else { println!("  Test 6 (k larger than range): FAIL\n  Expected: 0, Got: {}", got); }
-    }
-    {
-        let got = find_pairs(&[-1, -2, -3, -4, -5], 1);
-        if got == 4 { passed += 1; println!("  Test 7 (all negatives): PASS"); }
-        else { println!("  Test 7 (all negatives): FAIL\n  Expected: 4, Got: {}", got); }
-    }
-
-    println!("\n  {}/{} passed", passed, total);
-    println!("============================================================\n");
-    std::process::exit(if passed == total { 0 } else { 1 });
+    let nums = read_ints();
+    let k = read_int();
+    write_int(Solution::find_pairs(&nums, k));
+    std::process::exit(0);
 }

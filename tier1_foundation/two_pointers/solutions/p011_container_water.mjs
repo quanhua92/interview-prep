@@ -30,6 +30,8 @@
  * Hint: Start with pointers at both ends and move the shorter one inward.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(height) {
   let left = 0, right = height.length - 1;
   let maxArea = 0;
@@ -45,28 +47,5 @@ function solve(height) {
   return maxArea;
 }
 
-// --- tests ---
-const tests = [
-  { label: "example 1", input: [[1, 8, 6, 2, 5, 4, 8, 3, 7]], expected: 49 },
-  { label: "example 2", input: [[1, 1]], expected: 1 },
-  { label: "symmetric", input: [[4, 3, 2, 1, 4]], expected: 16 },
-  { label: "all zeros", input: [[0, 0, 0, 0]], expected: 0 },
-  { label: "strictly increasing", input: [[1, 2, 3, 4, 5]], expected: 6 },
-  { label: "strictly decreasing", input: [[5, 4, 3, 2, 1]], expected: 6 },
-  { label: "max height two elements", input: [[10000, 10000]], expected: 10000 },
-  { label: "all same height", input: [[2, 2, 2, 2, 2]], expected: 8 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const height = readInts();
+writeInt(solve(height));

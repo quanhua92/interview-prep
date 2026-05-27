@@ -21,6 +21,10 @@ _JAVY_PLUGIN_PATH: Path | None = None
 _PYTHON_WASM = os.environ.get("PYTHON_WASM", "/opt/python-wasi/python.wasm")
 _PYTHON_WASM_HOME = os.environ.get("PYTHON_WASM_HOME", "/opt/python-wasi")
 
+_WASM_LIBS_DIR = Path("src/wasm_libs")
+
+_COMPILED_LIBS: dict[str, Path | None] = {"rs": None}
+
 _COMPILE_TIMEOUTS = {
     "c": 5,
     "cpp": 5,
@@ -66,6 +70,8 @@ def _wasm_cache_path(content: bytes, suffix: str = ".wasm") -> Path:
     h = hashlib.md5(content).hexdigest()
     return _WASM_CACHE_DIR / f"{h}{suffix}"
 
+
+# --- Legacy compile functions (ctest.h, cpptest.h, rstest.rs) -- used by non-judge topics ---
 
 def _compile_c(source: Path, out: Path) -> None:
     cmd = [
@@ -149,6 +155,98 @@ _COMPILE_FUNCS = {
     "js": _compile_js,
 }
 
+# --- Judge compile functions (wasm_libs) -- used by judge-mode topics ---
+
+def _compile_wasm_libs_rs(out_dir: Path) -> Path:
+    if _COMPILED_LIBS["rs"] is not None and _COMPILED_LIBS["rs"].exists():
+        return _COMPILED_LIBS["rs"]
+    lib_out = out_dir / "libwasm_libs.rlib"
+    subprocess.run(
+        [
+            "rustc", "--edition", "2024", "-O",
+            "--target", "wasm32-wasip1",
+            str(_WASM_LIBS_DIR / "rs" / "lib.rs"),
+            "--crate-type", "lib", "--crate-name", "wasm_libs",
+            "-o", str(lib_out),
+        ],
+        capture_output=True, text=True, timeout=60, check=True,
+    )
+    _COMPILED_LIBS["rs"] = lib_out
+    return lib_out
+
+
+def _judge_compile_c(source: Path, out: Path) -> None:
+    cmd = [
+        _WASI_SDK_CLANG,
+        "--target=wasm32-wasip1",
+        "--sysroot", _WASI_SDK_SYSROOT,
+        "-O2", "-Wall", "-Wextra",
+        "-Isrc/wasm_libs/c",
+        str(source),
+        str(_WASM_LIBS_DIR / "c" / "io.c"),
+        "-o", str(out), "-lm",
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=_COMPILE_TIMEOUTS["c"])
+    if result.returncode != 0:
+        raise RuntimeError(f"C compilation failed:\n{result.stderr}")
+
+
+def _judge_compile_cpp(source: Path, out: Path) -> None:
+    cmd = [
+        _WASI_SDK_CLANGPP,
+        "--target=wasm32-wasip1",
+        "--sysroot", _WASI_SDK_SYSROOT,
+        "-O2", "-Wall", "-Wextra", "-fno-exceptions",
+        "-Isrc/wasm_libs/cpp",
+        str(source),
+        str(_WASM_LIBS_DIR / "cpp" / "io.cpp"),
+        "-o", str(out),
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=_COMPILE_TIMEOUTS["cpp"])
+    if result.returncode != 0:
+        raise RuntimeError(f"C++ compilation failed:\n{result.stderr}")
+
+
+def _judge_compile_rust(source: Path, out: Path) -> None:
+    lib_out = _compile_wasm_libs_rs(out.parent)
+    cmd = [
+        "rustc", "--edition", "2024", "-O",
+        "--target", "wasm32-wasip1",
+        str(source), "--extern", f"wasm_libs={lib_out}",
+        "-o", str(out),
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=_COMPILE_TIMEOUTS["rs"])
+    if result.returncode != 0:
+        raise RuntimeError(f"Rust compilation failed:\n{result.stderr}")
+
+
+def _judge_compile_js(source: Path, out: Path) -> None:
+    bundled = out.with_suffix(".bundled.mjs")
+    subprocess.run(
+        [
+            "npx", "esbuild", str(source), "--bundle", "--format=esm",
+            "--platform=neutral", "--outfile", str(bundled),
+        ],
+        capture_output=True, text=True, timeout=10,
+    )
+    plugin = _get_javy_plugin()
+    if plugin:
+        cmd = [_JAVY_BIN, "build", "-C", "dynamic=y", "-C", f"plugin={plugin}", "-o", str(out), str(bundled)]
+    else:
+        cmd = [_JAVY_BIN, "build", "-o", str(out), str(bundled)]
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=_COMPILE_TIMEOUTS["js"])
+    bundled.unlink(missing_ok=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"Javy compilation failed:\n{result.stderr}")
+
+
+_JUDGE_COMPILE_FUNCS = {
+    "c": _judge_compile_c,
+    "cpp": _judge_compile_cpp,
+    "rs": _judge_compile_rust,
+    "js": _judge_compile_js,
+}
+
 
 def compile_to_wasm(source: Path, lang: str) -> Path:
     if lang not in _COMPILE_FUNCS and lang != "py":
@@ -181,7 +279,30 @@ def compile_to_wasm(source: Path, lang: str) -> Path:
         out.unlink(missing_ok=True)
 
 
-def run_wasm(wasm_path: Path, source_dir: Path, timeout: int = _WASM_TIMEOUT, preload_plugin: Path | None = None) -> dict:
+def judge_compile_to_wasm(source: Path, lang: str) -> Path:
+    if lang not in _JUDGE_COMPILE_FUNCS and lang != "py":
+        raise ValueError(f"Unsupported language for judge compilation: {lang}")
+
+    content = source.read_bytes()
+    cached = _wasm_cache_path(content, suffix=".judge.wasm")
+    if cached.exists():
+        return cached
+
+    with tempfile.NamedTemporaryFile(suffix=".wasm", delete=False, dir="/tmp") as tmp:
+        out = Path(tmp.name)
+
+    try:
+        if lang == "py":
+            raise ValueError("Python does not compile to WASM — use python.wasm directly")
+        _JUDGE_COMPILE_FUNCS[lang](source, out)
+        cached.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(out, cached)
+        return cached
+    finally:
+        out.unlink(missing_ok=True)
+
+
+def run_wasm(wasm_path: Path, source_dir: Path, timeout: int = _WASM_TIMEOUT, preload_plugin: Path | None = None, stdin_text: str = "") -> dict:
     cmd = [
         _WASMTIME_BIN, "run",
         "-W", f"fuel={_WASM_FUEL}",
@@ -195,6 +316,7 @@ def run_wasm(wasm_path: Path, source_dir: Path, timeout: int = _WASM_TIMEOUT, pr
     try:
         result = subprocess.run(
             cmd,
+            input=stdin_text,
             capture_output=True,
             text=True,
             timeout=timeout + 10,
@@ -213,7 +335,7 @@ def run_wasm(wasm_path: Path, source_dir: Path, timeout: int = _WASM_TIMEOUT, pr
         return {"exit_code": -1, "output": "", "timed_out": False, "error": "wasmtime not found. Install wasmtime to use the WASM sandbox."}
 
 
-def run_python_wasm(source: Path, project_root: Path, timeout: int = _WASM_TIMEOUT) -> dict:
+def run_python_wasm(source: Path, project_root: Path, timeout: int = _WASM_TIMEOUT, stdin_text: str = "") -> dict:
     if not Path(_PYTHON_WASM).exists():
         return {"exit_code": -1, "output": "", "timed_out": False, "error": f"python.wasm not found at {_PYTHON_WASM}"}
 
@@ -233,6 +355,7 @@ def run_python_wasm(source: Path, project_root: Path, timeout: int = _WASM_TIMEO
     try:
         result = subprocess.run(
             cmd,
+            input=stdin_text,
             capture_output=True,
             text=True,
             timeout=timeout + 10,

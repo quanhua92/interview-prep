@@ -37,8 +37,8 @@
  * Hint: Use two pointers from both ends of the sorted array.
  */
 
-
-#include "ctest.h"
+#include "io.h"
+#include <stdlib.h>
 
 int *two_sum(const int *numbers, int n, int target, int *return_size)
 {
@@ -63,15 +63,16 @@ int *two_sum(const int *numbers, int n, int target, int *return_size)
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1",              {2, 7, 11, 15},        4, 9,  {1, 2}, 2},
-        {"example 2",              {2, 3, 4},             3, 6,  {1, 3}, 2},
-        {"example 3",              {-1, 0},               2, -1, {1, 2}, 2},
-        {"all negatives",          {-10, -6, -4, -2},      4, -10, {2, 3}, 2},
-        {"exactly two elements",   {1, 2},                2, 3,  {1, 2}, 2},
-        {"negative positive cross", {-5, -3, 0, 2, 4, 6}, 6, 1,  {1, 6}, 2},
-        {"middle elements",        {1, 3, 4, 5, 7, 10, 11}, 7, 9, {3, 4}, 2},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("167. Two Sum II - Input Array Is Sorted", two_sum, tests, n_tests);
+    int n;
+    int *numbers = read_ints(&n);
+    int k;
+    int *target_line = read_ints(&k);
+    int target = target_line[0];
+    free(target_line);
+    int return_size;
+    int *result = two_sum(numbers, n, target, &return_size);
+    write_ints(result, return_size);
+    free(numbers);
+    free(result);
+    return 0;
 }

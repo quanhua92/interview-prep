@@ -25,16 +25,11 @@
  */
 
 
-#include <cstdio>
+#include "io.h"
+#include <algorithm>
 #include <cstdlib>
-#include <cstring>
 #include <string>
 #include <vector>
-#include <algorithm>
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
 
 static bool is_subseq(const std::string &a, const std::string &b)
 {
@@ -68,37 +63,10 @@ static int findLUSlength(std::vector<std::string> strs)
 
 int main(void)
 {
-    struct {
-        const char *label;
-        std::vector<std::string> strs;
-        int expected;
-    } tests[] = {
-        {"example 1", {"aba","cdc","eae"}, 3},
-        {"example 2", {"aaa","aaa","aa"}, -1},
-        {"all length 1 different", {"a","b","c","d"}, 1},
-        {"all identical", {"abc","abc","abc"}, -1},
-        {"one string longer than rest", {"a","a","ab","abc"}, 3},
-        {"same length different chars", {"abc","abd","abe"}, 3},
-    };
-    int ntests = sizeof(tests) / sizeof(tests[0]);
-    int passed = 0;
-
-    printf("\n============================================================\n");
-    printf("  522. Longest Uncommon Subsequence II\n");
-    printf("============================================================\n");
-
-    for (int i = 0; i < ntests; i++) {
-        int got = findLUSlength(tests[i].strs);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-
-    printf("\n  %d/%d passed\n", passed, ntests);
-    printf("============================================================\n\n");
-    return passed == ntests ? 0 : 1;
+    int n = std::stoi(read_line());
+    std::vector<std::string> strs(n);
+    for (int i = 0; i < n; i++)
+        strs[i] = read_line();
+    write_int(findLUSlength(strs));
+    return 0;
 }
