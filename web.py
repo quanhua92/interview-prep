@@ -283,7 +283,7 @@ def health_check():
         "wasmtime": ["wasmtime", "--version"],
         "wasi-sdk-clang": [wasm_runner._WASI_SDK_CLANG, "--version"],
         "javy": [wasm_runner._JAVY_BIN, "--version"],
-        "python-wasm": ["wasmtime", "--dir", "/tmp", wasm_runner._PYTHON_WASM, "-c", "pass"],
+        "python-wasm": ["wasmtime", "--dir", wasm_runner._PYTHON_WASM_HOME, "--env", f"PYTHONHOME={wasm_runner._PYTHON_WASM_HOME}", wasm_runner._PYTHON_WASM, "-c", "pass"],
     }
     for name, cmd in runtimes.items():
         try:

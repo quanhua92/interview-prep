@@ -135,7 +135,7 @@ The WASM sandbox is **implemented and wired end-to-end**. Code runs inside wasmt
 - `.env.example` — configurable toolchain paths (see [Configuration](#configuration))
 - `python-dotenv` — `.env` loaded at `web.py` import time, env vars inherited by `run.py` subprocess
 - `docker-compose.yml` — `WASM_SANDBOX=auto` with commented-out toolchain path overrides
-- `Dockerfile` — installs wasmtime, wasi-sdk v33, javy v8.1.1, python-3.12.0.wasm
+- `Dockerfile` — installs wasmtime, wasi-sdk v33, javy v8.1.1, CPython 3.14.5 WASI build
 - MD5-based `.wasm` cache in `/tmp/wasm-cache/` — avoids recompiling identical source
 - `WASM_SANDBOX=auto` — enables WASM when wasmtime available, falls back to native
 - `WASM_SANDBOX=0` — disables sandbox, uses native subprocess directly
@@ -163,7 +163,8 @@ See [`.env.example`](../.env.example) for all variables:
 | `WASI_SDK_CLANGPP` | `/opt/wasi-sdk/bin/clang++` | wasi-sdk clang++ for C++ |
 | `WASI_SDK_SYSROOT` | `/opt/wasi-sdk/share/wasi-sysroot` | wasi-sdk sysroot |
 | `JAVY_BIN` | `javy` | Javy binary for JS → WASM |
-| `PYTHON_WASM` | `/opt/python.wasm` | Python WASM interpreter |
+| `PYTHON_WASM` | `/opt/python-wasi/python.wasm` | Python WASM interpreter binary |
+| `PYTHON_WASM_HOME` | `/opt/python-wasi` | Python WASM install dir (contains `lib/python3.14/`) |
 | `WASM_CACHE_DIR` | `/tmp/wasm-cache` | Directory for compiled `.wasm` cache |
 
 `load_dotenv()` runs at `web.py` module import time, before `wasm_runner.py` reads `os.environ.get()`. Env vars are inherited by `run.py` subprocess (no need for `load_dotenv()` in `run.py`). Exported env vars take precedence over `.env` file values.

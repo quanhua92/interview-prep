@@ -1,7 +1,7 @@
 FROM python:3.14-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc g++ rustc nodejs curl ca-certificates xz-utils \
+    gcc g++ rustc nodejs curl ca-certificates xz-utils unzip \
   && rm -rf /var/lib/apt/lists/*
 
 RUN curl https://wasmtime.dev/install.sh -sSf | bash
@@ -22,9 +22,11 @@ RUN ARCH=$(case "$(uname -m)" in x86_64) echo "x86_64" ;; aarch64|arm64) echo "a
     curl -L "https://github.com/bytecodealliance/javy/releases/download/v${JAVY_VERSION}/javy-${ARCH}-linux-v${JAVY_VERSION}.gz" \
     | gunzip > /usr/local/bin/javy && chmod +x /usr/local/bin/javy
 
-ARG PYTHON_WASM_VERSION=3.12.0
-RUN curl -L "https://github.com/vmware-labs/webassembly-language-runtimes/releases/download/python%2F${PYTHON_WASM_VERSION}%2B20231211-040d5a6/python-${PYTHON_WASM_VERSION}.wasm" \
-    -o /opt/python.wasm
+ARG PYTHON_WASM_VERSION=3.14.5
+RUN curl -L "https://github.com/brettcannon/cpython-wasi-build/releases/download/v${PYTHON_WASM_VERSION}/python-${PYTHON_WASM_VERSION}-wasi_sdk-24.zip" \
+    -o /tmp/python-wasi.zip \
+    && unzip -q /tmp/python-wasi.zip -d /opt/python-wasi \
+    && rm /tmp/python-wasi.zip
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 

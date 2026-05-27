@@ -3,6 +3,7 @@
 A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, AI-assisted interview scenarios, data analytics, low-level design, and production engineering. Track progress across 144 coding problems and 145 topics with a unified CLI dashboard. Solutions available in **Python, C, C++, Rust, and JavaScript**.
 
 **Features:**
+- **WASM sandbox** — all code runs inside wasmtime (no native subprocess, no special Docker flags)
 - Progress ring, stats cards, and per-section breakdowns
 - **Code Editor** — auto-loads all in-progress problem files with CodeMirror syntax highlighting
 - **Save & Run** — edit code in the browser, save (`Ctrl+S`), and run (`Ctrl+R`) directly from the editor header
@@ -82,6 +83,20 @@ uv run python main.py report
 # Launch interactive web dashboard (0.0.0.0:8888)
 uv run python main.py start
 ```
+
+## WASM Sandbox
+
+Code runs inside **wasmtime** (WebAssembly runtime), not native subprocess. No special Docker flags needed — just `docker compose up`.
+
+| Language | Toolchain | Compile | .wasm size |
+|---|---|---|---|
+| C | wasi-sdk (clang `wasm32-wasip1`) | ~60ms | ~100KB |
+| C++ | wasi-sdk (clang++ `-fno-exceptions`) | ~340ms | ~200KB |
+| Rust | rustc `wasm32-wasip1` + rstest rlib | ~70ms | ~1.9MB |
+| JavaScript | [Javy](https://github.com/bytecodealliance/javy) dynamic linking | ~500ms | ~3KB |
+| Python | [CPython 3.14.5 WASI](https://github.com/brettcannon/cpython-wasi-build) (Tier 2) | N/A (pre-built) | 28MB |
+
+**Security:** Fuel-based CPU limit, hard memory cap, wall-clock timeout, no network, no filesystem access unless explicitly mapped. See [docs/WASM_SANDBOX.md](docs/WASM_SANDBOX.md) for full details.
 
 
 ## Project Structure

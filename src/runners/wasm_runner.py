@@ -18,7 +18,8 @@ _WASI_SDK_CLANGPP = os.environ.get("WASI_SDK_CLANGPP", "/opt/wasi-sdk/bin/clang+
 _JAVY_BIN = os.environ.get("JAVY_BIN", "javy")
 _JAVY_PLUGIN_NS = "javy-default-plugin-v3"
 _JAVY_PLUGIN_PATH: Path | None = None
-_PYTHON_WASM = os.environ.get("PYTHON_WASM", "/opt/python.wasm")
+_PYTHON_WASM = os.environ.get("PYTHON_WASM", "/opt/python-wasi/python.wasm")
+_PYTHON_WASM_HOME = os.environ.get("PYTHON_WASM_HOME", "/opt/python-wasi")
 
 _COMPILE_TIMEOUTS = {
     "c": 5,
@@ -27,7 +28,7 @@ _COMPILE_TIMEOUTS = {
     "js": 10,
 }
 
-_WASM_FUEL = 2_000_000_000
+_WASM_FUEL = 5_000_000_000
 _WASM_TIMEOUT = 120
 _WASM_MAX_MEMORY = 268435456
 
@@ -216,13 +217,16 @@ def run_python_wasm(source: Path, project_root: Path, timeout: int = _WASM_TIMEO
     if not Path(_PYTHON_WASM).exists():
         return {"exit_code": -1, "output": "", "timed_out": False, "error": f"python.wasm not found at {_PYTHON_WASM}"}
 
+    python_home = Path(_PYTHON_WASM_HOME)
     cmd = [
         _WASMTIME_BIN, "run",
         "-W", f"fuel={_WASM_FUEL}",
         "-W", f"timeout={timeout}s",
         "-W", f"max-memory-size={_WASM_MAX_MEMORY}",
-        "--env", f"PYTHONPATH={project_root}",
+        "--dir", str(python_home),
         "--dir", str(project_root),
+        "--env", f"PYTHONHOME={python_home}",
+        "--env", f"PYTHONPATH={project_root}",
         _PYTHON_WASM,
         "--", str(source),
     ]
