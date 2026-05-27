@@ -5,12 +5,17 @@ from pathlib import Path
 import subprocess
 import sys
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import uvicorn
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 import tracker
+from src.runners.wasm_runner import wasm_sandbox_active
 
 app = FastAPI()
 
@@ -256,45 +261,11 @@ def record_attempt(req: AttemptRequest):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-import resource as _resource
 import shutil
 
-BWRAP_TIME_LIMIT = 120
+from src.runners import wasm_runner
 
-
-_BWRAP_BASE = [
-    "--unshare-user",
-    "--unshare-pid",
-    "--unshare-ipc",
-    "--unshare-uts",
-    "--die-with-parent",
-    "--new-session",
-]
-
-
-def _detect_bwrap() -> bool:
-    if not shutil.which("bwrap"):
-        return False
-    try:
-        r = subprocess.run(
-            [
-                "bwrap",
-                *_BWRAP_BASE,
-                "--ro-bind", "/usr", "/usr",
-                "--ro-bind", "/bin", "/bin",
-                "--ro-bind", "/lib", "/lib",
-                "--ro-bind", "/lib64", "/lib64",
-                "--dev", "/dev",
-                "--", "/bin/true",
-            ],
-            capture_output=True, timeout=5,
-        )
-        return r.returncode == 0
-    except (subprocess.TimeoutExpired, OSError):
-        return False
-
-
-_USE_BWRAP = _detect_bwrap()
+WASM_TIME_LIMIT = 120
 
 
 @app.get("/api/health")
@@ -302,68 +273,28 @@ def health_check():
     checks = {
         "status": "ok",
         "sandbox": {
-            "type": "bwrap" if _USE_BWRAP else "none (direct subprocess)",
-            "bwrap_available": bool(shutil.which("bwrap")),
-            "bwrap_namespaces": _USE_BWRAP,
-            "sandbox_active": _USE_BWRAP,
+            "type": "wasm" if wasm_runner.wasm_available() else "none (direct subprocess)",
+            "wasmtime_available": wasm_runner.wasm_available(),
+            "sandbox_active": wasm_runner.wasm_available(),
         },
         "runtimes": {},
     }
     runtimes = {
-        "python": ["/usr/local/bin/python3", "--version"],
-        "gcc": ["gcc", "--version"],
-        "g++": ["g++", "--version"],
-        "rustc": ["rustc", "--version"],
-        "node": ["node", "--version"],
+        "wasmtime": ["wasmtime", "--version"],
+        "wasi-sdk-clang": [wasm_runner._WASI_SDK_CLANG, "--version"],
+        "javy": [wasm_runner._JAVY_BIN, "--version"],
+        "python-wasm": ["wasmtime", "--dir", "/tmp", wasm_runner._PYTHON_WASM, "-c", "pass"],
     }
     for name, cmd in runtimes.items():
         try:
-            r = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
-            version = r.stdout.strip().split("\n")[0] if r.stdout.strip() else "not found"
-            checks["runtimes"][name] = {"available": True, "version": version}
+            r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+            if r.returncode == 0:
+                checks["runtimes"][name] = {"available": True}
+            else:
+                checks["runtimes"][name] = {"available": False, "error": r.stderr.strip()[:200]}
         except (FileNotFoundError, subprocess.TimeoutExpired):
-            checks["runtimes"][name] = {"available": False, "version": None}
+            checks["runtimes"][name] = {"available": False}
     return checks
-
-
-def _set_resource_limits():
-    _resource.setrlimit(_resource.RLIMIT_AS, (2048 * 1024 * 1024, 2048 * 1024 * 1024))
-    _resource.setrlimit(_resource.RLIMIT_NPROC, (128, 128))
-    _resource.setrlimit(_resource.RLIMIT_NOFILE, (1024, 1024))
-
-
-def _run_sandboxed(cmd: list[str], timeout: int = 120) -> subprocess.CompletedProcess:
-    if _USE_BWRAP:
-        return subprocess.run(
-            [
-                "bwrap",
-                *_BWRAP_BASE,
-                "--ro-bind", "/usr", "/usr",
-                "--ro-bind", "/bin", "/bin",
-                "--ro-bind", "/lib", "/lib",
-                "--ro-bind", "/lib64", "/lib64",
-                "--ro-bind", "/etc", "/etc",
-                "--ro-bind", "/app", "/app",
-                "--bind", "/app/progress", "/app/progress",
-                "--bind", "/tmp", "/tmp",
-                "--dev", "/dev",
-                "--chdir", "/app",
-                "--",
-                *cmd,
-            ],
-            capture_output=True,
-            text=True,
-            timeout=timeout + 10,
-            preexec_fn=_set_resource_limits,
-        )
-    return subprocess.run(
-        cmd,
-        capture_output=True,
-        text=True,
-        timeout=timeout + 10,
-        cwd=str(tracker.ROOT),
-        preexec_fn=_set_resource_limits,
-    )
 
 
 @app.post("/api/run")
@@ -375,23 +306,29 @@ def run_problems(lang: list[str] = Query(default=["py"]), pattern: str | None = 
             raise HTTPException(status_code=400, detail=f"Invalid lang: {l}. Must be one of {valid_langs}")
     results = []
     for l in langs:
-        sandbox_cmd = ["/usr/local/bin/python3", "/app/run.py"]
+        run_cmd = ["/usr/local/bin/python3", "/app/run.py"]
         if all_patterns:
-            sandbox_cmd.append("--all")
+            run_cmd.append("--all")
         if pattern:
-            sandbox_cmd.append(pattern)
+            run_cmd.append(pattern)
         if l != "py":
-            sandbox_cmd.extend(["--lang", l])
+            run_cmd.extend(["--lang", l])
         if solution:
-            sandbox_cmd.append("--solution")
+            run_cmd.append("--solution")
         try:
-            result = _run_sandboxed(sandbox_cmd, timeout=BWRAP_TIME_LIMIT)
+            result = subprocess.run(
+                run_cmd,
+                capture_output=True,
+                text=True,
+                timeout=WASM_TIME_LIMIT + 10,
+                cwd=str(tracker.ROOT),
+            )
             output = result.stdout
             if result.stderr:
                 output += "\n" + result.stderr
-            results.append({"lang": l, "output": output, "exit_code": result.returncode})
+            results.append({"lang": l, "runtime": "wasm" if wasm_sandbox_active() else "native", "output": output, "exit_code": result.returncode})
         except subprocess.TimeoutExpired:
-            results.append({"lang": l, "error": f"Timed out after {BWRAP_TIME_LIMIT} seconds"})
+            results.append({"lang": l, "runtime": "wasm" if wasm_sandbox_active() else "native", "error": f"Timed out after {WASM_TIME_LIMIT} seconds"})
     return {"results": results}
 
 

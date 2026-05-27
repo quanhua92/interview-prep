@@ -4,6 +4,15 @@ services:
     build: .
     ports:
       - "8888:8888"
+    environment:
+      - WASM_SANDBOX=auto  # auto | 1 (force wasm) | 0 (force native)
+      # WASMTIME_BIN=wasmtime
+      # WASI_SDK_CLANG=/opt/wasi-sdk/bin/clang
+      # WASI_SDK_CLANGPP=/opt/wasi-sdk/bin/clang++
+      # WASI_SDK_SYSROOT=/opt/wasi-sdk/share/wasi-sysroot
+      # JAVY_BIN=javy
+      # PYTHON_WASM=/opt/python.wasm
+      # WASM_CACHE_DIR=/tmp/wasm-cache
     volumes:
       - ./progress:/app/progress
       - ./static:/app/static

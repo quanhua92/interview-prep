@@ -13,6 +13,7 @@ Usage:
     python run.py --solution             Run solutions instead of problem stubs
     python run.py --solution --lang c    Run all C solutions
 """
+import re
 import subprocess
 import sys
 
@@ -115,9 +116,56 @@ def _run_pattern(pattern, lang=None, solution=False):
 
     for f in files:
         if lang:
-            from src.runners import CRunner, CppRunner, JSRunner, RustRunner
+            from src.runners.wasm_runner import wasm_sandbox_active, compile_to_wasm, run_wasm
 
             target_file = work_dir / f"{f.stem}{target_suffix}"
+
+            if wasm_sandbox_active() and lang in ("c", "cpp", "rs", "js"):
+                _STUB_PATTERNS = {
+                    "c": [r"(?<!\S)abort\(\)"],
+                    "cpp": [r"(?<!\S)abort\(\)"],
+                    "rs": [r"(?<!\S)todo!\(\)"],
+                    "js": [r"(?<!\S)throw\s+new\s+Error\(\"NotImplementedError\"\)"],
+                }
+                source_text = target_file.read_text(errors="replace")
+                is_stub = any(re.search(p, source_text, re.MULTILINE) for p in _STUB_PATTERNS.get(lang, []))
+
+                if is_stub:
+                    skipped += 1
+                    print(f"    [SKIP] {f.stem}{target_suffix}")
+                    continue
+
+                try:
+                    wasm_path = compile_to_wasm(target_file, lang)
+                    result = run_wasm(wasm_path, target_file.parent)
+                    if result.get("timed_out"):
+                        status = "FAIL"
+                        failed += 1
+                        print(f"    [{status}] {f.stem}{target_suffix}")
+                        print(f"             {result.get('error', 'Timed out')}")
+                        continue
+                    if result["exit_code"] == 0:
+                        status = "PASS"
+                        passed += 1
+                    else:
+                        status = "FAIL"
+                        failed += 1
+                        skipped += sum(1 for line in result["output"].split("\n") if "SKIP" in line)
+                        if result["exit_code"] != 2:
+                            skipped = 0
+                    print(f"    [{status}] {f.stem}{target_suffix}")
+                    if status == "FAIL" and result.get("output"):
+                        for line in result["output"].strip().split("\n")[-5:]:
+                            print(f"             {line}")
+                    continue
+                except Exception as e:
+                    print(f"    [FAIL] {f.stem}{target_suffix}")
+                    print(f"             {e}")
+                    failed += 1
+                    continue
+
+            from src.runners import CRunner, CppRunner, JSRunner, RustRunner
+
             runners = {"c": CRunner, "cpp": CppRunner, "rs": RustRunner, "js": JSRunner}
             runner = runners[lang]()
             results = runner.run_all(target_file)
@@ -140,6 +188,32 @@ def _run_pattern(pattern, lang=None, solution=False):
                         for line in out.strip().split("\n")[-5:]:
                             print(f"             {line}")
         else:
+            from src.runners.wasm_runner import wasm_sandbox_active, run_python_wasm
+
+            target_file = work_dir / f.name
+            if wasm_sandbox_active():
+                result = run_python_wasm(target_file, ROOT)
+                if result.get("timed_out"):
+                    status = "FAIL"
+                    failed += 1
+                    print(f"    [{status}] {f.name}")
+                    print(f"             {result.get('error', 'Timed out')}")
+                    continue
+                if result["exit_code"] == 0:
+                    status = "PASS"
+                    passed += 1
+                elif result["exit_code"] == 2:
+                    status = "SKIP"
+                    skipped += 1
+                else:
+                    status = "FAIL"
+                    failed += 1
+                print(f"    [{status}] {f.name}")
+                output = result.get("output", "")
+                if status == "FAIL" and output.strip():
+                    for line in output.strip().split("\n"):
+                        print(f"    │ {line}")
+                continue
             target_file = work_dir / f.name
             try:
                 result = subprocess.run(
