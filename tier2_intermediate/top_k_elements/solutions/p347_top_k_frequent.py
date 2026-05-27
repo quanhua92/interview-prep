@@ -29,30 +29,17 @@ Template (python3):
 Hint: Use a frequency counter and a min-heap of size k.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 from collections import Counter
 
 
-class Solution(Problem):
-    name = "347. Top K Frequent Elements"
-    test_cases = [
-        TestCase(input=([1, 1, 1, 2, 2, 3], 2), expected=[1, 2], label="example 1"),
-        TestCase(input=([1], 1), expected=[1], label="example 2"),
-        TestCase(input=([7, 7, 7, 7, 1, 2, 2, 2], 2), expected=[7, 2], label="distinct frequencies"),
-        TestCase(input=([1, 2, 3, 4, 5, 6], 3), expected=[6, 5, 4], label="all freq 1"),
-        TestCase(input=([1, 1, 1, 1], 1), expected=[1], label="all same element"),
-        TestCase(input=([1, 1, 2, 2, 2, 3, 3, 3, 3], 2), expected=[3, 2], label="clear frequency ranking"),
-        TestCase(input=([-1, -1, -1, 2, 2], 1), expected=[-1], label="negative numbers"),
-        TestCase(input=([0, 0, 0, 0, 1, 1, 2], 2), expected=[0, 1], label="zero values"),
-    ]
-
-    def solve(self, nums: list[int], k: int) -> list[int]:
-        count = Counter(nums)
-        return [item for item, _ in sorted(count.items(), key=lambda x: (-x[1], -x[0]))[:k]]
+def solve(nums: list[int], k: int) -> list[int]:
+    count = Counter(nums)
+    return [item for item, _ in sorted(count.items(), key=lambda x: (-x[1], -x[0]))[:k]]
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    k = read_int()
+    result = solve(nums, k)
+    write_ints(result)

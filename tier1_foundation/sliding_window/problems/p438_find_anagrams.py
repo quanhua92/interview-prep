@@ -31,29 +31,15 @@ Template (python3):
 Hint: Use a sliding window with frequency counters to compare against pattern.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "438. Find All Anagrams in a String"
-    test_cases = [
-        TestCase(input=("cbaebabacd", "abc"), expected=[0, 6], label="example 1"),
-        TestCase(input=("abab", "ab"), expected=[0, 1, 2], label="example 2"),
-        TestCase(input=("af", "bf"), expected=[], label="no anagrams"),
-        TestCase(input=("abc", "abc"), expected=[0], label="exact match single"),
-        TestCase(input=("aaaaaaaaaa", "aa"), expected=[0, 1, 2, 3, 4, 5, 6, 7, 8], label="all same chars"),
-        TestCase(input=("abacbabc", "abc"), expected=[1, 2, 3, 5], label="overlapping anagrams"),
-        TestCase(input=("a", "aa"), expected=[], label="pattern longer than string"),
-    ]
-
-    def solve(self, s: str, p: str) -> list[int]:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, s: str, p: str) -> list[int]"
-        )
+def solve(s: str, p: str) -> list[int]:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    s = read_line()
+    p = read_line()
+    result = solve(s, p)
+    write_ints(result)

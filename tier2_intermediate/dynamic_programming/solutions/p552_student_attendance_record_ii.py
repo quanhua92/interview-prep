@@ -29,48 +29,32 @@ Template (python3):
         def checkRecord(self, n: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "552. Student Attendance Record II"
-    test_cases = [
-        TestCase(input=2, expected=8, label="example 1"),
-        TestCase(input=1, expected=3, label="example 2"),
-        TestCase(input=10101, expected=183236316, label="example 3"),
-        TestCase(input=3, expected=19, label="n=3"),
-        TestCase(input=4, expected=43, label="n=4"),
-        TestCase(input=10, expected=3536, label="n=10"),
-    ]
-
-    def solve(self, n: int) -> int:
-        mod = 10**9 + 7
-        # dp[i][a][l]: i days, a=total absent (0/1), l=consecutive late (0/1/2)
-        dp = [[[0] * 3 for _ in range(2)] for _ in range(n + 1)]
-        dp[0][0][0] = 1
-        for i in range(n):
-            for a in range(2):
-                for cl in range(3):
-                    val = dp[i][a][cl]
-                    if val == 0:
-                        continue
-                    # Add P
-                    dp[i + 1][a][0] = (dp[i + 1][a][0] + val) % mod
-                    # Add A
-                    if a < 1:
-                        dp[i + 1][a + 1][0] = (dp[i + 1][a + 1][0] + val) % mod
-                    # Add L
-                    if cl < 2:
-                        dp[i + 1][a][cl + 1] = (dp[i + 1][a][cl + 1] + val) % mod
-        result = 0
+def solve(n: int) -> int:
+    mod = 10**9 + 7
+    dp = [[[0] * 3 for _ in range(2)] for _ in range(n + 1)]
+    dp[0][0][0] = 1
+    for i in range(n):
         for a in range(2):
             for cl in range(3):
-                result = (result + dp[n][a][cl]) % mod
-        return result
+                val = dp[i][a][cl]
+                if val == 0:
+                    continue
+                dp[i + 1][a][0] = (dp[i + 1][a][0] + val) % mod
+                if a < 1:
+                    dp[i + 1][a + 1][0] = (dp[i + 1][a + 1][0] + val) % mod
+                if cl < 2:
+                    dp[i + 1][a][cl + 1] = (dp[i + 1][a][cl + 1] + val) % mod
+    result = 0
+    for a in range(2):
+        for cl in range(3):
+            result = (result + dp[n][a][cl]) % mod
+    return result
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    result = solve(n)
+    write_int(result)

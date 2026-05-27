@@ -37,29 +37,27 @@
  * Hint: Add non-overlapping before, merge overlapping, add non-overlapping after.
  */
 
+#include "io.h"
+#include <stdlib.h>
 
-#include "ctest.h"
-
-int* solve(int* arr, int arr_n, int num_intervals, int* ret_size) {
-    (void)arr_n;
-    int new_start = arr[2 * num_intervals];
-    int new_end = arr[2 * num_intervals + 1];
+void solve(int num_intervals, int intervals[][2], int new_interval[2])
+{
+    int new_start = new_interval[0];
+    int new_end = new_interval[1];
     int cap = (num_intervals + 1) * 2;
-    int* result = malloc(cap * sizeof(int));
-    if (!result) { *ret_size = 0; return NULL; }
-
+    int *result = malloc(cap * sizeof(int));
     int ri = 0;
     int i = 0;
 
-    while (i < num_intervals && arr[2 * i + 1] < new_start) {
-        result[ri++] = arr[2 * i];
-        result[ri++] = arr[2 * i + 1];
+    while (i < num_intervals && intervals[i][1] < new_start) {
+        result[ri++] = intervals[i][0];
+        result[ri++] = intervals[i][1];
         i++;
     }
 
-    while (i < num_intervals && arr[2 * i] <= new_end) {
-        if (arr[2 * i] < new_start) new_start = arr[2 * i];
-        if (arr[2 * i + 1] > new_end) new_end = arr[2 * i + 1];
+    while (i < num_intervals && intervals[i][0] <= new_end) {
+        if (intervals[i][0] < new_start) new_start = intervals[i][0];
+        if (intervals[i][1] > new_end) new_end = intervals[i][1];
         i++;
     }
 
@@ -67,45 +65,32 @@ int* solve(int* arr, int arr_n, int num_intervals, int* ret_size) {
     result[ri++] = new_end;
 
     while (i < num_intervals) {
-        result[ri++] = arr[2 * i];
-        result[ri++] = arr[2 * i + 1];
+        result[ri++] = intervals[i][0];
+        result[ri++] = intervals[i][1];
         i++;
     }
 
-    *ret_size = ri;
-    return result;
+    for (int j = 0; j < ri; j += 2) {
+        int row[2] = {result[j], result[j + 1]};
+        write_ints(row, 2);
+    }
+    free(result);
 }
 
-int main(void) {
-    TestCase tests[] = {
-        {"example 1",
-         {1,3,6,9,2,5}, 6, 2,
-         {1,5,6,9}, 4},
-        {"example 2",
-         {1,2,3,5,6,7,8,10,12,16,4,8}, 12, 5,
-         {1,2,3,10,12,16}, 6},
-        {"empty intervals",
-         {5,7}, 2, 0,
-         {5,7}, 2},
-        {"contained",
-         {1,5,2,3}, 4, 1,
-         {1,5}, 2},
-        {"insert before all",
-         {3,5,6,9,1,2}, 6, 2,
-         {1,2,3,5,6,9}, 6},
-        {"insert after all",
-         {1,2,3,5,6,9}, 6, 2,
-         {1,2,3,5,6,9}, 6},
-        {"merge with first interval",
-         {1,3,6,9,0,2}, 6, 2,
-         {0,3,6,9}, 4},
-        {"merge with last interval",
-         {1,3,6,9,8,10}, 6, 2,
-         {1,3,6,10}, 4},
-        {"bridge gap between intervals",
-         {1,2,4,5,2,4}, 6, 2,
-         {1,5}, 2},
-    };
-
-    RUN_TESTS("57. Insert Interval", solve, tests, 9);
+int main(void)
+{
+    int n = read_int();
+    int (*intervals)[2] = malloc(n * sizeof(*intervals));
+    for (int i = 0; i < n; i++) {
+        int *row = read_ints(NULL);
+        intervals[i][0] = row[0];
+        intervals[i][1] = row[1];
+        free(row);
+    }
+    int *ni = read_ints(NULL);
+    int new_interval[2] = {ni[0], ni[1]};
+    free(ni);
+    solve(n, intervals, new_interval);
+    free(intervals);
+    return 0;
 }

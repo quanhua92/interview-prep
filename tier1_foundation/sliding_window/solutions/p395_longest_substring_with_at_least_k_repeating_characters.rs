@@ -25,8 +25,9 @@
  *         def longestSubstring(self, s: str, k: int) -> int:
  */
 
+use wasm_libs::*;
 
-fn longest_substring(s: &str, k: i32) -> i32 {
+fn solve(s: &str, k: i32) -> i32 {
     let k = k as usize;
     let bytes = s.as_bytes();
     let n = bytes.len();
@@ -68,33 +69,9 @@ fn longest_substring(s: &str, k: i32) -> i32 {
 }
 
 fn main() {
-    struct Test<'a> {
-        s: &'a str,
-        k: i32,
-        expected: i32,
-        label: &'a str,
-    }
-    let tests: &[Test] = &[
-        Test { s: "aaabb", k: 3, expected: 3, label: "example 1" },
-        Test { s: "ababbc", k: 2, expected: 5, label: "example 2" },
-        Test { s: "ababacb", k: 3, expected: 0, label: "no valid substring" },
-        Test { s: "a", k: 1, expected: 1, label: "single char k=1" },
-        Test { s: "a", k: 2, expected: 0, label: "single char k>1" },
-        Test { s: "bbaaacbd", k: 3, expected: 3, label: "multiple runs" },
-    ];
-    let total = tests.len();
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = longest_substring(tc.s, tc.k);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}", tc.expected);
-            println!("    Got:      {}", got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, total);
-    std::process::exit(if passed == total { 0 } else { 1 });
+    let s = read_line();
+    let k = read_int();
+    let result = solve(&s, k);
+    write_int(result);
+    std::process::exit(0);
 }

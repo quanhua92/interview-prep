@@ -26,9 +26,9 @@
  *         def trapRainWater(self, heightMap: List[List[int]]) -> int:
  */
 
-
-#include <stdio.h>
+#include "io.h"
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct { int h, r, c; } Cell;
 
@@ -64,7 +64,7 @@ static Cell heap_pop(Cell *heap, int *sz)
     return top;
 }
 
-int trapRainWater(int *heightMap, int m, int n)
+static int trapRainWater(int *heightMap, int m, int n)
 {
     if (m < 3 || n < 3) return 0;
 
@@ -108,36 +108,19 @@ int trapRainWater(int *heightMap, int m, int n)
 
 int main(void)
 {
-    struct {
-        const char *label;
-        int *input;
-        int m, n;
-        int expected;
-    } tests[] = {
-        {"example 1",     (int[]){1,4,3,1,3,2, 3,2,1,3,2,4, 2,3,3,2,3,1},       3, 6, 4},
-        {"example 2",     (int[]){3,3,3,3,3, 3,2,2,2,3, 3,2,1,2,3, 3,2,2,2,3, 3,3,3,3,3}, 5, 5, 10},
-        {"1x1 no trap",   (int[]){1},                                         1, 1, 0},
-        {"3x3 basin",     (int[]){5,5,5, 5,1,5, 5,5,5},                       3, 3, 4},
-        {"2x4 no interior", (int[]){5,5,5,5, 5,5,5,5},                       2, 4, 0},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  407. Trapping Rain Water II\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int got = trapRainWater(tests[i].input, tests[i].m, tests[i].n);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
+    int dims_len;
+    int *dims = read_ints(&dims_len);
+    int m = dims[0], n = dims[1];
+    free(dims);
+    int *flat = malloc(m * n * sizeof(int));
+    for (int r = 0; r < m; r++) {
+        int row_len;
+        int *row = read_ints(&row_len);
+        for (int c = 0; c < n; c++) flat[r * n + c] = row[c];
+        free(row);
     }
-
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    int result = trapRainWater(flat, m, n);
+    write_int(result);
+    free(flat);
+    return 0;
 }

@@ -14,12 +14,12 @@
  * Example 2:
  *     Input: a = "aaa", b = "bbb"
  *     Output: 3
- *     Explanation: The longest uncommon subsequences are "aaa" and "bbb".
+ *     Explanation: The longest uncommon subsequences are "aaa" and "bbb".
  *
  * Example 3:
  *     Input: a = "aaa", b = "aaa"
  *     Output: -1
- *     Explanation: Every subsequence of string a is also a subsequence of string b. Similarly, every subsequence of string b is also a subsequence of string a. So the answer would be -1.
+ *     Explanation: Every subsequence of string a is also a subsequence of string b. Similarly, every subsequence of string b is also a subsequence of string a. So the answer would be -1.
  *
  * Constraints:
  *     - 1 <= a.length, b.length <= 100
@@ -34,8 +34,8 @@
  *         def findLUSlength(self, a: str, b: str) -> int:
  */
 
-
-#include "cpptest.h"
+#include "io.h"
+#include <string>
 
 int findLUSlength(const std::string &a, const std::string &b)
 {
@@ -43,33 +43,10 @@ int findLUSlength(const std::string &a, const std::string &b)
     return (int)std::max(a.size(), b.size());
 }
 
-void __attribute__((unused)) _use_harness_fns(void)
+int main(void)
 {
-    (void)print_arr;
-}
-
-int main()
-{
-    struct { const char *a; const char *b; int expected; const char *label; } tests[] = {
-        {"aba", "cdc", 3, "example 1"},
-        {"aaa", "bbb", 3, "example 2"},
-        {"aaa", "aaa", -1, "example 3"},
-        {"a", "b", 1, "single char different"},
-        {"a", "aa", 2, "one is subsequence of other"},
-        {"abc", "abcde", 5, "one longer than other"},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = findLUSlength(tests[i].a, tests[i].b);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    std::string a = read_line();
+    std::string b = read_line();
+    write_int(findLUSlength(a, b));
+    return 0;
 }

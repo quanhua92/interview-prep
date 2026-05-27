@@ -31,13 +31,12 @@
  */
 
 
-#include <stdio.h>
+#include "io.h"
 #include <stdlib.h>
-#include <string.h>
 
 static int cmp_int(const void *a, const void *b) { return *(const int *)a - *(const int *)b; }
 
-int numberOfBoomerangs(int points[][2], int n)
+static int numberOfBoomerangs(int points[][2], int n)
 {
     int result = 0;
     for (int i = 0; i < n; i++) {
@@ -64,37 +63,18 @@ int numberOfBoomerangs(int points[][2], int n)
 
 int main(void)
 {
-    struct {
-        const char *label;
-        int points[8][2];
-        int n;
-        int expected;
-    } tests[] = {
-        {"example 1", {{0,0},{1,0},{2,0}}, 3, 2},
-        {"example 2", {{1,1},{2,2},{3,3}}, 3, 2},
-        {"example 3", {{1,1}}, 1, 0},
-        {"only 2 points", {{0,0},{1,0}}, 2, 0},
-        {"square 4 points", {{0,0},{0,1},{1,0},{1,1}}, 4, 8},
-        {"isoceles triangle", {{0,0},{1,1},{1,-1}}, 3, 2},
-        {"isoceles different heights", {{0,0},{3,4},{3,-4}}, 3, 2},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
+    int cnt;
+    int *header = read_ints(&cnt);
+    int n = header[0];
+    free(header);
 
-    printf("\n============================================================\n");
-    printf("  447. Number of Boomerangs\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int got = numberOfBoomerangs(tests[i].points, tests[i].n);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
+    int points[500][2];
+    for (int i = 0; i < n; i++) {
+        int *row = read_ints(&cnt);
+        points[i][0] = row[0];
+        points[i][1] = row[1];
+        free(row);
     }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    write_int(numberOfBoomerangs(points, n));
+    return 0;
 }

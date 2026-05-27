@@ -47,10 +47,11 @@
  *     # return ans
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 #include <queue>
 #include <climits>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -69,8 +70,8 @@ static void free_tree(TreeNode *root) {
     delete root;
 }
 
-static vector<int> solve(const vector<int> &vals) {
-    if (vals.empty() || vals[0] == NULL_VAL) return {};
+static string solve(const vector<int> &vals) {
+    if (vals.empty() || vals[0] == NULL_VAL) return "";
     TreeNode *root = new TreeNode(vals[0]);
     queue<TreeNode *> bq;
     bq.push(root);
@@ -101,44 +102,31 @@ static vector<int> solve(const vector<int> &vals) {
             result.push_back(NULL_VAL);
         }
     }
-    while (!result.empty() && result.back() == NULL_VAL) {
-        result.pop_back();
-    }
+    while (!result.empty() && result.back() == NULL_VAL) result.pop_back();
     free_tree(root);
-    return result;
+    ostringstream oss;
+    for (size_t j = 0; j < result.size(); j++) {
+        if (j > 0) oss << " ";
+        if (result[j] == NULL_VAL) oss << "null";
+        else oss << result[j];
+    }
+    return oss.str();
 }
 
-int main() {
-    (void)print_arr;
-    struct TC {
-        string label;
-        vector<int> vals;
-        vector<int> expected;
-    };
-    TC tests[] = {
-        {"example 1", {2,1,3}, {2,1,3}},
-        {"empty tree", {}, {}},
-        {"single node", {1}, {1}},
-        {"bst with left subtree", {3,1,4,NULL_VAL,2}, {3,1,4,NULL_VAL,2}},
-        {"balanced bst 3 levels", {5,3,8,1,4,7,9}, {5,3,8,1,4,7,9}},
-        {"complete bst", {4,2,5,1,3}, {4,2,5,1,3}},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        vector<int> got = solve(tests[i].vals);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label.c_str());
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label.c_str());
-            printf("    Expected: ");
-            print_arr(tests[i].expected);
-            printf("\n    Got:      ");
-            print_arr(got);
-            printf("\n");
-        }
+int main(void)
+{
+    int n = read_int();
+    if (n == 0) return 0;
+    string line = read_line();
+    vector<int> vals;
+    vals.reserve(n);
+    istringstream iss(line);
+    string tok;
+    for (int i = 0; i < n && iss >> tok; i++) {
+        if (tok == "null") vals.push_back(NULL_VAL);
+        else vals.push_back(stoi(tok));
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+    string result = solve(vals);
+    write_string(result);
+    return 0;
 }

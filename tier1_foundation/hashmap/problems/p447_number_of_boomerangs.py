@@ -30,27 +30,34 @@ Template (python3):
         def numberOfBoomerangs(self, points: List[List[int]]) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "447. Number of Boomerangs"
-    test_cases = [
-        TestCase(input=[[0, 0], [1, 0], [2, 0]], expected=2, label="example 1"),
-        TestCase(input=[[1, 1], [2, 2], [3, 3]], expected=2, label="example 2"),
-        TestCase(input=[[1, 1]], expected=0, label="example 3"),
-        TestCase(input=[[0, 0], [1, 0]], expected=0, label="only 2 points"),
-        TestCase(input=[[0, 0], [0, 1], [1, 0], [1, 1]], expected=8, label="square 4 points"),
-        TestCase(input=[[0, 0], [1, 1], [1, -1]], expected=2, label="isoceles triangle"),
-        TestCase(input=[[0, 0], [3, 4], [3, -4]], expected=2, label="isoceles different heights"),
-    ]
-
-    def solve(self, points: list[list[int]]) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, points) -> int")
+def solve(points: list[list[int]]) -> int:
+    result = 0
+    for p in points:
+        dists = []
+        for q in points:
+            if p is q:
+                continue
+            dx = p[0] - q[0]
+            dy = p[1] - q[1]
+            dists.append(dx * dx + dy * dy)
+        dists.sort()
+        left = 0
+        while left < len(dists):
+            right = left
+            while right < len(dists) and dists[right] == dists[left]:
+                right += 1
+            count = right - left
+            result += count * (count - 1)
+            left = right
+    return result
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    points = []
+    for _ in range(n):
+        points.append(read_ints())
+    write_int(solve(points))

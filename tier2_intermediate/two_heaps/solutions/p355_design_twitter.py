@@ -57,10 +57,7 @@ Template (python3):
     # obj.unfollow(followerId,followeeId)
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 import heapq
 
 
@@ -93,22 +90,23 @@ class Twitter:
             self.following[followerId].discard(followeeId)
 
 
-class Solution(Problem):
-    name = "355. Design Twitter"
-    test_cases = [
-        TestCase(input=(), expected=None, label="example 1"),
-    ]
-
-    def solve(self) -> None:
-        twitter = Twitter()
-        twitter.postTweet(1, 5)
-        assert twitter.getNewsFeed(1) == [5], "getNewsFeed(1) after postTweet(1,5)"
-        twitter.follow(1, 2)
-        twitter.postTweet(2, 6)
-        assert twitter.getNewsFeed(1) == [6, 5], "getNewsFeed(1) with follow"
-        twitter.unfollow(1, 2)
-        assert twitter.getNewsFeed(1) == [5], "getNewsFeed(1) after unfollow"
+def solve(num_ops: int) -> None:
+    twitter = Twitter()
+    for _ in range(num_ops):
+        op_name = read_line()
+        arg_count = read_int()
+        args = [read_int() for _ in range(arg_count)]
+        if op_name == "postTweet":
+            twitter.postTweet(args[0], args[1])
+        elif op_name == "getNewsFeed":
+            feed = twitter.getNewsFeed(args[0])
+            write_ints(feed)
+        elif op_name == "follow":
+            twitter.follow(args[0], args[1])
+        elif op_name == "unfollow":
+            twitter.unfollow(args[0], args[1])
 
 
 if __name__ == "__main__":
-    Solution().run()
+    num_ops = read_int()
+    solve(num_ops)

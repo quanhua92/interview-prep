@@ -46,12 +46,9 @@
  *     # obj.reset()
  */
 
-
-#include <cstdio>
-#include <cstdlib>
+#include "io.h"
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>
 
 static int solve(int m, int n, int num_flips)
 {
@@ -72,26 +69,9 @@ static int solve(int m, int n, int num_flips)
 
 int main(void)
 {
-    struct Tc { const char *label; int m, n, num_flips, expected; bool pass; };
-    std::vector<Tc> tests = {
-        {"single cell one flip", 1, 1, 1, 1, false},
-        {"flip all cells in 2x2", 2, 2, 4, 4, false},
-        {"column matrix flip all", 3, 1, 3, 3, false},
-    };
-
-    int passed = 0;
-    for (auto &tc : tests) {
-        int got = solve(tc.m, tc.n, tc.num_flips);
-        tc.pass = (got == tc.expected);
-        if (tc.pass) passed++;
-    }
-
-    printf("\n============================================================\n");
-    printf("  519. Random Flip Matrix\n");
-    printf("============================================================\n");
-    for (int i = 0; i < (int)tests.size(); i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, (int)tests.size());
-    printf("============================================================\n");
-    return passed == (int)tests.size() ? 0 : 1;
+    int m = read_int();
+    int n = read_int();
+    int num_flips = read_int();
+    write_int(solve(m, n, num_flips));
+    return 0;
 }

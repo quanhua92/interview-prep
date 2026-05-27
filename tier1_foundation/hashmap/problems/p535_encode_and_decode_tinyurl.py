@@ -36,40 +36,32 @@ Template (python3):
     # codec.decode(codec.encode(url))
 """
 
-import sys
+import hashlib
 
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "535. Encode and Decode TinyURL"
-    test_cases = [
-        TestCase(
-            input="https://leetcode.com/problems/design-tinyurl",
-            expected="https://leetcode.com/problems/design-tinyurl",
-            label="example 1",
-        ),
-        TestCase(
-            input="https://example.com/path/to/resource?query=1&param=2#section",
-            expected="https://example.com/path/to/resource?query=1&param=2#section",
-            label="URL with query and fragment",
-        ),
-        TestCase(
-            input="http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u",
-            expected="http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u",
-            label="URL with many path segments",
-        ),
-        TestCase(
-            input="https://site.com",
-            expected="https://site.com",
-            label="minimal URL",
-        ),
-    ]
+class Codec:
+    def __init__(self):
+        self.url_map: dict[str, str] = {}
+        self.short_map: dict[str, str] = {}
 
-    def solve(self, longUrl: str) -> str:
-        raise NotImplementedError("TODO: Implement solve(self, longUrl) -> str")
+    def encode(self, longUrl: str) -> str:
+        key = hashlib.md5(longUrl.encode()).hexdigest()[:6]
+        self.url_map[key] = longUrl
+        self.short_map[key] = longUrl
+        return f"http://tinyurl.com/{key}"
+
+    def decode(self, shortUrl: str) -> str:
+        key = shortUrl.split("/")[-1]
+        return self.short_map[key]
+
+
+def solve(longUrl: str) -> str:
+    codec = Codec()
+    return codec.decode(codec.encode(longUrl))
 
 
 if __name__ == "__main__":
-    Solution().run()
+    url = read_line()
+    write_string(solve(url))

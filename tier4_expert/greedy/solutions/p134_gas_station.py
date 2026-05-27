@@ -43,46 +43,26 @@ Template (python3):
 Hint: Track total_surplus and current_surplus. If current_surplus < 0, reset start to next station.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "134. Gas Station"
-    test_cases = [
-        TestCase(
-            input=([1, 2, 3, 4, 5], [3, 4, 5, 1, 2]), expected=3, label="example 1"
-        ),
-        TestCase(input=([2, 3, 4], [3, 4, 3]), expected=-1, label="example 2"),
-        TestCase(
-            input=([5, 1, 2, 3, 4], [4, 4, 1, 5, 1]), expected=4, label="example 3"
-        ),
-        TestCase(input=([5], [4]), expected=0, label="single station possible"),
-        TestCase(input=([3], [4]), expected=-1, label="single station impossible"),
-        TestCase(input=([0, 0, 0], [0, 0, 0]), expected=0, label="all zeros"),
-        TestCase(
-            input=([10, 0, 0, 0, 0], [1, 1, 1, 1, 1]),
-            expected=0,
-            label="large surplus at start",
-        ),
-    ]
+def solve(gas: list[int], cost: list[int]) -> int:
+    total_surplus = 0
+    current_surplus = 0
+    start = 0
 
-    def solve(self, gas: list[int], cost: list[int]) -> int:
-        total_surplus = 0
-        current_surplus = 0
-        start = 0
+    for i in range(len(gas)):
+        total_surplus += gas[i] - cost[i]
+        current_surplus += gas[i] - cost[i]
+        if current_surplus < 0:
+            start = i + 1
+            current_surplus = 0
 
-        for i in range(len(gas)):
-            total_surplus += gas[i] - cost[i]
-            current_surplus += gas[i] - cost[i]
-            if current_surplus < 0:
-                start = i + 1
-                current_surplus = 0
-
-        return start if total_surplus >= 0 else -1
+    return start if total_surplus >= 0 else -1
 
 
 if __name__ == "__main__":
-    Solution().run()
+    gas = read_ints()
+    cost = read_ints()
+    result = solve(gas, cost)
+    write_int(result)

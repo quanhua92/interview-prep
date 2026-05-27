@@ -32,60 +32,17 @@
  * Hint: Fast pointer moves 2 steps, slow moves 1, return slow.to_list().
  */
 
-function buildList(arr) {
-  if (arr.length === 0) return null;
-  const dummy = { val: 0, next: null };
-  let curr = dummy;
-  for (const val of arr) {
-    curr.next = { val, next: null };
-    curr = curr.next;
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
+function solve(vals) {
+  let slow = 0, fast = 0;
+  while (fast + 1 < vals.length && fast + 2 < vals.length) {
+    slow++;
+    fast += 2;
   }
-  return dummy.next;
+  if (fast + 1 < vals.length) slow++;
+  return vals.slice(slow);
 }
 
-function toList(node) {
-  const result = [];
-  while (node) {
-    result.push(node.val);
-    node = node.next;
-  }
-  return result;
-}
-
-function middleNode(head) {
-  let slow = head;
-  let fast = head;
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-  return toList(slow);
-}
-
-function solve(input) {
-  return middleNode(input);
-}
-
-// --- tests ---
-const tests = [
-  { label: "odd length", input: buildList([1, 2, 3, 4, 5]), expected: [3, 4, 5] },
-  { label: "even length", input: buildList([1, 2, 3, 4, 5, 6]), expected: [4, 5, 6] },
-  { label: "single node", input: buildList([1]), expected: [1] },
-  { label: "two nodes", input: buildList([1, 2]), expected: [2] },
-  { label: "three nodes", input: buildList([1, 2, 3]), expected: [2, 3] },
-  { label: "negative values", input: buildList([1, -2, 3, -4, 5]), expected: [3, -4, 5] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const vals = readInts();
+writeInts(solve(vals));

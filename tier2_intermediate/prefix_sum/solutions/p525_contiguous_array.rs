@@ -29,10 +29,9 @@
  */
 
 use std::collections::HashMap;
-use rstest::TestCase;
-use rstest::run_tests;
+use wasm_libs::*;
 
-fn find_max_length(nums: &[i32], _target: i32) -> Vec<i32> {
+fn find_max_length(nums: &[i32]) -> i32 {
     let mut first: HashMap<i32, i32> = HashMap::new();
     first.insert(0, -1);
     let mut max_len = 0;
@@ -48,17 +47,11 @@ fn find_max_length(nums: &[i32], _target: i32) -> Vec<i32> {
             first.insert(count, i as i32);
         }
     }
-    vec![max_len]
+    max_len
 }
 
 fn main() {
-    let tests: &[TestCase] = &[
-        TestCase { label: "example 1", input_arr: &[0, 1], target: 0, expected: &[2] },
-        TestCase { label: "example 2", input_arr: &[0, 1, 0], target: 0, expected: &[2] },
-        TestCase { label: "example 3", input_arr: &[0, 1, 1, 1, 1, 1, 0, 0, 0], target: 0, expected: &[6] },
-        TestCase { label: "single element", input_arr: &[1], target: 0, expected: &[0] },
-        TestCase { label: "balanced halves", input_arr: &[0, 0, 0, 0, 1, 1, 1, 1], target: 0, expected: &[8] },
-        TestCase { label: "middle balanced", input_arr: &[0, 0, 1, 0, 0, 0, 1, 1], target: 0, expected: &[6] },
-    ];
-    std::process::exit(run_tests!("525. Contiguous Array", find_max_length, tests));
+    let nums = read_ints();
+    write_int(find_max_length(&nums));
+    std::process::exit(0);
 }

@@ -28,15 +28,14 @@
  *         def findMaxLength(self, nums: List[int]) -> int:
  */
 
-#include "cpptest.h"
-#include <vector>
+#include "io.h"
 #include <unordered_map>
+#include <vector>
 
 using namespace std;
 
-vector<int> find_max_length(const vector<int>& nums, int target)
+int find_max_length(const vector<int>& nums)
 {
-    (void)target;
     unordered_map<int, int> first;
     first[0] = -1;
     int max_len = 0;
@@ -49,19 +48,12 @@ vector<int> find_max_length(const vector<int>& nums, int target)
             first[count] = i;
         }
     }
-    return {max_len};
+    return max_len;
 }
 
-int main()
+int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {0, 1}, 0, {2}},
-        {"example 2", {0, 1, 0}, 0, {2}},
-        {"example 3", {0, 1, 1, 1, 1, 1, 0, 0, 0}, 0, {6}},
-        {"single element", {1}, 0, {0}},
-        {"balanced halves", {0, 0, 0, 0, 1, 1, 1, 1}, 0, {8}},
-        {"middle balanced", {0, 0, 1, 0, 0, 0, 1, 1}, 0, {6}},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("525. Contiguous Array", find_max_length, tests, n);
+    vector<int> nums = read_ints();
+    write_int(find_max_length(nums));
+    return 0;
 }

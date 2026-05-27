@@ -24,7 +24,7 @@ Example 3:
 Constraints:
     - n == candyType.length
     - 2 <= n <= 104
-    - n is even.
+    - n is even.
     - -105 <= candyType[i] <= 105
 
 Hint: To maximize the number of kinds of candies, we should try to distribute candies such that Alice will gain all kinds.
@@ -37,39 +37,22 @@ Template (python3):
         def distributeCandies(self, candyType: List[int]) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "575. Distribute Candies"
-    test_cases = [
-        TestCase(input=[1, 1, 2, 2, 3, 3], expected=3, label="example 1"),
-        TestCase(input=[1, 1, 2, 3], expected=2, label="example 2"),
-        TestCase(input=[6, 6, 6, 6], expected=1, label="example 3"),
-        TestCase(input=[1, 2, 3, 4], expected=2, label="all unique types"),
-        TestCase(input=[-1, -1, 2, 2], expected=2, label="negative candy types"),
-        TestCase(input=[100000, -100000, 0, 50000], expected=2, label="boundary values"),
-        TestCase(input=[1, 2, 1, 2, 1, 2, 3, 4], expected=4, label="eight candies mixed"),
-    ]
-
-    def solve(self, candyType: list[int]) -> int:
-        candyType.sort()
-        unique = 1
-        limit = len(candyType) // 2
-        left, right = 0, 1
-        while right < len(candyType) and unique < limit:
-            if candyType[right] != candyType[left]:
-                unique += 1
-                left = right
-            right += 1
-        return min(unique, limit)
-
-    def solve_alternative(self, candyType: list[int]) -> int:
-        return min(len(set(candyType)), len(candyType) // 2)
+def solve(candyType: list[int]) -> int:
+    candyType.sort()
+    unique = 1
+    limit = len(candyType) // 2
+    left, right = 0, 1
+    while right < len(candyType) and unique < limit:
+        if candyType[right] != candyType[left]:
+            unique += 1
+            left = right
+        right += 1
+    return min(unique, limit)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    candyType = read_ints()
+    write_int(solve(candyType))

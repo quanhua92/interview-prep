@@ -47,10 +47,12 @@
  *     # return ans
  */
 
-
+use wasm_libs::*;
 use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::rc::Rc;
+
+const NULL_VAL: i32 = i32::MIN;
 
 struct TreeNode {
     val: i32,
@@ -58,12 +60,14 @@ struct TreeNode {
     right: Option<Rc<RefCell<TreeNode>>>,
 }
 
-const NULL_VAL: i32 = i32::MIN;
+fn parse_tree_line(line: &str) -> Vec<i32> {
+    line.split_whitespace()
+        .map(|s| if s == "null" { NULL_VAL } else { s.parse().unwrap() })
+        .collect()
+}
 
 fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
-    if vals.is_empty() || vals[0] == NULL_VAL {
-        return None;
-    }
+    if vals.is_empty() || vals[0] == NULL_VAL { return None; }
     let root = Rc::new(RefCell::new(TreeNode { val: vals[0], left: None, right: None }));
     let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
     queue.push_back(Rc::clone(&root));
@@ -90,60 +94,44 @@ fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
     Some(root)
 }
 
-fn solve(vals: &[i32]) -> Vec<i32> {
-    if vals.is_empty() || vals[0] == NULL_VAL {
-        return vec![];
-    }
-    let root = build_tree(vals).unwrap();
-    let mut result = Vec::new();
-    let mut queue: VecDeque<Option<Rc<RefCell<TreeNode>>>> = VecDeque::new();
-    queue.push_back(Some(Rc::clone(&root)));
-    while !queue.is_empty() {
-        let node = queue.pop_front().unwrap();
-        match node {
-            Some(n) => {
-                let n_ref = n.borrow();
-                result.push(n_ref.val);
-                let left = n_ref.left.clone();
-                let right = n_ref.right.clone();
-                drop(n_ref);
-                if left.is_some() || right.is_some() {
-                    queue.push_back(left);
-                    queue.push_back(right);
+impl Solution {
+    fn solve(vals: &[i32]) -> Vec<i32> {
+        if vals.is_empty() || vals[0] == NULL_VAL { return vec![]; }
+        let root = build_tree(vals).unwrap();
+        let mut result = Vec::new();
+        let mut queue: VecDeque<Option<Rc<RefCell<TreeNode>>>> = VecDeque::new();
+        queue.push_back(Some(Rc::clone(&root)));
+        while !queue.is_empty() {
+            let node = queue.pop_front().unwrap();
+            match node {
+                Some(n) => {
+                    let n_ref = n.borrow();
+                    result.push(n_ref.val);
+                    let left = n_ref.left.clone();
+                    let right = n_ref.right.clone();
+                    drop(n_ref);
+                    if left.is_some() || right.is_some() {
+                        queue.push_back(left);
+                        queue.push_back(right);
+                    }
                 }
-            }
-            None => {
-                result.push(NULL_VAL);
+                None => { result.push(NULL_VAL); }
             }
         }
+        while !result.is_empty() && *result.last().unwrap() == NULL_VAL { result.pop(); }
+        result
     }
-    while !result.is_empty() && *result.last().unwrap() == NULL_VAL {
-        result.pop();
-    }
-    result
 }
 
+struct Solution;
+
 fn main() {
-    let tests: Vec<(&str, Vec<i32>, Vec<i32>)> = vec![
-        ("example 1", vec![2,1,3], vec![2,1,3]),
-        ("empty tree", vec![], vec![]),
-        ("single node", vec![1], vec![1]),
-        ("bst with left subtree", vec![3,1,4,NULL_VAL,2], vec![3,1,4,NULL_VAL,2]),
-        ("balanced bst 3 levels", vec![5,3,8,1,4,7,9], vec![5,3,8,1,4,7,9]),
-        ("complete bst", vec![4,2,5,1,3], vec![4,2,5,1,3]),
-    ];
-    let mut passed = 0;
-    for (i, (label, vals, expected)) in tests.iter().enumerate() {
-        let got = solve(vals);
-        if got == *expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, label);
-            println!("    Expected: {:?}", expected);
-            println!("    Got:      {:?}", got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let n = read_int();
+    if n == 0 { return; }
+    let line = read_line();
+    let vals = parse_tree_line(&line);
+    let result = Solution::solve(&vals);
+    let parts: Vec<String> = result.iter().map(|&v| if v == NULL_VAL { "null".to_string() } else { v.to_string() }).collect();
+    write_string(&parts.join(" "));
+    std::process::exit(0);
 }

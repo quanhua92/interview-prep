@@ -4,7 +4,7 @@
  * Topics: Array, Hash Table, Math, Design, Randomized
  *
  * Implement the RandomizedSet class:
- * You must implement the functions of the class such that each function works in average O(1) time complexity.
+ * You must implement the functions of the class such that each function works in average O(1) time complexity.
  * Example 1:
  *     Input
  * Example 1:
@@ -25,7 +25,7 @@
  *
  * Constraints:
  *     - -231 <= val <= 231 - 1
- *     - At most 2 * 105 calls will be made to insert, remove, and getRandom.
+ *     - At most 2 * 105 calls will be made to insert, remove, and getRandom.
  *     - There will be at least one element in the data structure when getRandom is called.
  *
  * Template (python3):
@@ -52,11 +52,10 @@
  */
 
 
-#include <cstdio>
+#include "io.h"
 #include <cstdlib>
-#include <cstring>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 class MT19937 {
     static const int N = 624;
@@ -163,73 +162,23 @@ public:
     }
 };
 
-int main(void) {
-    int passed = 0, total = 4;
-    printf("\n============================================================\n");
-    printf("  380. Insert Delete GetRandom O(1)\n");
-    printf("============================================================\n");
+int main(void)
+{
+    std::vector<int> header = read_ints();
+    int num_ops = header[0];
 
-    {
-        RandomizedSet rs(42);
-        int results[6];
-        results[0] = rs.insert(1);
-        results[1] = rs.remove(2);
-        results[2] = rs.insert(2);
-        results[3] = rs.remove(1);
-        results[4] = rs.insert(2);
-        results[5] = rs.getRandom();
-        int expected[] = {1, 0, 1, 1, 0, 2};
-        int ok = 1;
-        for (int i = 0; i < 6; i++) if (results[i] != expected[i]) ok = 0;
-        if (ok) { passed++; printf("  Test 1 (example 1): PASS\n"); }
-        else { printf("  Test 1 (example 1): FAIL\n"); }
-    }
-    {
-        RandomizedSet rs(42);
-        int results[6];
-        results[0] = rs.insert(10);
-        results[1] = rs.insert(20);
-        results[2] = rs.insert(30);
-        results[3] = rs.getRandom();
-        results[4] = rs.remove(20);
-        results[5] = rs.getRandom();
-        int expected[] = {1, 1, 1, 30, 1, 10};
-        int ok = 1;
-        for (int i = 0; i < 6; i++) if (results[i] != expected[i]) ok = 0;
-        if (ok) { passed++; printf("  Test 2 (insert multiple then remove middle): PASS\n"); }
-        else { printf("  Test 2 (insert multiple then remove middle): FAIL\n"); }
-    }
-    {
-        RandomizedSet rs(42);
-        int results[5];
-        results[0] = rs.insert(5);
-        results[1] = rs.getRandom();
-        results[2] = rs.remove(5);
-        results[3] = rs.insert(5);
-        results[4] = rs.getRandom();
-        int expected[] = {1, 5, 1, 1, 5};
-        int ok = 1;
-        for (int i = 0; i < 5; i++) if (results[i] != expected[i]) ok = 0;
-        if (ok) { passed++; printf("  Test 3 (single element cycle): PASS\n"); }
-        else { printf("  Test 3 (single element cycle): FAIL\n"); }
-    }
-    {
-        RandomizedSet rs(42);
-        int results[6];
-        results[0] = rs.insert(1);
-        results[1] = rs.insert(2);
-        results[2] = rs.remove(1);
-        results[3] = rs.remove(2);
-        results[4] = rs.insert(3);
-        results[5] = rs.getRandom();
-        int expected[] = {1, 1, 1, 1, 1, 3};
-        int ok = 1;
-        for (int i = 0; i < 6; i++) if (results[i] != expected[i]) ok = 0;
-        if (ok) { passed++; printf("  Test 4 (remove all then insert new): PASS\n"); }
-        else { printf("  Test 4 (remove all then insert new): FAIL\n"); }
-    }
+    RandomizedSet rs(42);
 
-    printf("\n  %d/%d passed\n", passed, total);
-    printf("============================================================\n\n");
-    return passed == total ? 0 : 1;
+    for (int i = 0; i < num_ops; i++) {
+        std::string op = read_line();
+        std::vector<int> args = read_ints();
+        if (op == "insert") {
+            write_bool(rs.insert(args[0]));
+        } else if (op == "remove") {
+            write_bool(rs.remove(args[0]));
+        } else if (op == "getRandom") {
+            write_int(rs.getRandom());
+        }
+    }
+    return 0;
 }

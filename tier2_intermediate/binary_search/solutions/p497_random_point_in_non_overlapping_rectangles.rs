@@ -48,10 +48,11 @@
  *     # param_1 = obj.pick()
  */
 
+use wasm_libs::*;
 
-fn solve_prefix_sums(rects: &Vec<Vec<i32>>) -> Vec<i32> {
+fn solve(rects: &Vec<Vec<i32>>) -> Vec<i32> {
     let mut prefix = Vec::new();
-    let mut total = 0;
+    let mut total: i32 = 0;
     for r in rects {
         let area = (r[2] - r[0] + 1) * (r[3] - r[1] + 1);
         total += area;
@@ -61,25 +62,12 @@ fn solve_prefix_sums(rects: &Vec<Vec<i32>>) -> Vec<i32> {
 }
 
 fn main() {
-    let tests: Vec<(&str, Vec<Vec<i32>>, Vec<i32>)> = vec![
-        ("area sum for two rectangles", vec![vec![-2,-2,1,1],vec![2,2,4,6]], vec![16,31]),
-        ("area for single 3x3 rectangle", vec![vec![0,0,2,2]], vec![9]),
-        ("single point rectangle", vec![vec![0,0,0,0]], vec![1]),
-        ("negative and positive rects same size", vec![vec![-5,-5,-3,-3],vec![1,1,3,3]], vec![9,18]),
-        ("different sized rects", vec![vec![1,1,2,2],vec![3,3,5,5]], vec![4,13]),
-    ];
-
-    let mut passed = 0;
-    println!("\n============================================================");
-    println!("  497. Random Point in Non-overlapping Rectangles");
-    println!("============================================================");
-    for (i, (label, rects, expected)) in tests.iter().enumerate() {
-        let got = solve_prefix_sums(rects);
-        let ok = got == *expected;
-        if ok { passed += 1; }
-        println!("  Test {} ({}): {}", i + 1, label, if ok { "PASS" } else { "FAIL" });
+    let cols = read_int() as usize;
+    let mut rects: Vec<Vec<i32>> = Vec::new();
+    for _ in 0..cols {
+        rects.push(read_ints());
     }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let result = solve(&rects);
+    write_ints(&result);
+    std::process::exit(0);
 }

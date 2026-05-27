@@ -42,9 +42,11 @@
  */
 
 
-#include "cpptest.h"
+#include "io.h"
+#include <vector>
 
-static std::vector<int> findOrder(int numCourses, const std::vector<std::vector<int>>& prerequisites) {
+std::vector<int> findOrder(int numCourses, const std::vector<std::vector<int>>& prerequisites)
+{
     std::vector<std::vector<int>> adj(numCourses);
     std::vector<int> inDegree(numCourses, 0);
     for (const auto& p : prerequisites) {
@@ -68,39 +70,17 @@ static std::vector<int> findOrder(int numCourses, const std::vector<std::vector<
     return {};
 }
 
-struct TC {
-    const char *label;
-    int numCourses;
-    std::vector<std::vector<int>> prereqs;
-    std::vector<int> expected;
-};
+int main(void)
+{
+    auto header = read_ints();
+    int numCourses = header[0];
+    int pairCount = header[1];
 
-int main(void) {
-    TC tests[] = {
-        {"example 1", 2, {{1,0}}, {0,1}},
-        {"example 2", 4, {{1,0},{2,0},{3,1},{3,2}}, {0,1,2,3}},
-        {"no prerequisites", 1, {}, {0}},
-        {"cycle returns empty", 2, {{1,0},{0,1}}, {}},
-        {"3-node cycle", 3, {{0,1},{1,2},{2,0}}, {}},
-        {"all depend on course 0", 4, {{0,1},{0,2},{0,3}}, {1,2,3,0}},
-        {"linear chain", 3, {{2,1},{1,0}}, {0,1,2}},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        std::vector<int> got = findOrder(tests[i].numCourses, tests[i].prereqs);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: ");
-            print_arr(tests[i].expected);
-            printf("\n    Got:      ");
-            print_arr(got);
-            printf("\n");
-        }
+    std::vector<std::vector<int>> prerequisites;
+    for (int i = 0; i < pairCount; i++) {
+        prerequisites.push_back(read_ints());
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+
+    write_ints(findOrder(numCourses, prerequisites));
+    return 0;
 }

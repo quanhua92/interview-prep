@@ -32,36 +32,14 @@ Template (python3):
 Hint: Fast pointer moves 2 steps, slow moves 1, return slow.to_list().
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase, ListNode
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "876. Middle of the Linked List"
-    test_cases = [
-        TestCase(
-            input=(ListNode.from_list([1, 2, 3, 4, 5]),),
-            expected=[3, 4, 5],
-            label="odd length",
-        ),
-        TestCase(
-            input=(ListNode.from_list([1, 2, 3, 4, 5, 6]),),
-            expected=[4, 5, 6],
-            label="even length",
-        ),
-        TestCase(input=(ListNode.from_list([1]),), expected=[1], label="single node"),
-        TestCase(input=(ListNode.from_list([1, 2]),), expected=[2], label="two nodes"),
-        TestCase(input=(ListNode.from_list([1, 2, 3]),), expected=[2, 3], label="three nodes"),
-        TestCase(input=(ListNode.from_list([1, -2, 3, -4, 5]),), expected=[3, -4, 5], label="negative values"),
-    ]
-
-    def solve(self, head: ListNode | None) -> list[int]:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, head: ListNode | None) -> list[int]"
-        )
+def solve(vals: list[int]) -> list[int]:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    vals = read_ints()
+    result = solve(vals)
+    write_ints(result)

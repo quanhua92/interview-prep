@@ -31,10 +31,7 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "ctest.h"
-#pragma GCC diagnostic pop
+#include "io.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -102,30 +99,8 @@ char *nearestPalindromic(const char *n) {
 }
 
 int main(void) {
-    printf("\n============================================================\n");
-    printf("  564. Find the Closest Palindrome\n");
-    printf("============================================================\n");
-    struct { const char *label; const char *input; const char *expected; } tests[] = {
-        {"example 1", "123", "121"},
-        {"example 2", "1", "0"},
-        {"edge at 10", "10", "9"},
-        {"two same digits", "99", "101"},
-        {"power of 10", "100", "99"},
-        {"four digit", "1283", "1331"},
-    };
-    int tc = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < tc; i++) {
-        char *got = nearestPalindromic(tests[i].input);
-        if (strcmp(got, tests[i].expected) == 0) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %s, Got: %s\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, tc);
-    printf("============================================================\n\n");
-    return passed == tc ? 0 : 1;
+    char *n = read_line();
+    write_string(nearestPalindromic(n));
+    free(n);
+    return 0;
 }

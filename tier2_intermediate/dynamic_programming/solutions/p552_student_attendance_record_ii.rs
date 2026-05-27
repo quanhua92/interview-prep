@@ -29,11 +29,11 @@
  *         def checkRecord(self, n: int) -> int:
  */
 
+use wasm_libs::*;
 
-use rstest;
-
-fn check_record(n: i32) -> i32 {
-    let mod_val = 1_000_000_007i64;
+impl Solution {
+    fn check_record(n: i32) -> i32 {
+        let mod_val = 1_000_000_007i64;
     let mut dp = [[[0i64; 3]; 2]; 2];
     dp[0][0][0] = 1;
     for i in 0..n as usize {
@@ -62,28 +62,12 @@ fn check_record(n: i32) -> i32 {
         }
     }
     result as i32
+    }
 }
 
+struct Solution;
+
 fn main() {
-    struct TC { label: &'static str, n: i32, expected: i32 }
-    let tests: &[TC] = &[
-        TC { label: "example 1", n: 2, expected: 8 },
-        TC { label: "example 2", n: 1, expected: 3 },
-        TC { label: "example 3", n: 10101, expected: 183236316 },
-        TC { label: "n=3", n: 3, expected: 19 },
-        TC { label: "n=4", n: 4, expected: 43 },
-        TC { label: "n=10", n: 10, expected: 3536 },
-    ];
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = check_record(tc.n);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL (expected {}, got {})", i + 1, tc.label, tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let n = read_int();
+    write_int(check_record(n));
 }

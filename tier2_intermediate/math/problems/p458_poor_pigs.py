@@ -29,7 +29,7 @@ Example 2:
 
 Constraints:
     - 1 <= buckets <= 1000
-    - 1 <= minutesToDie <= minutesToTest <= 100
+    - 1 <= minutesToDie <= minutesToTest <= 100
 
 Hint: What if you only have one shot? Eg. 4 buckets, 15 mins to die, and 15 mins to test.
 Hint: How many states can we generate with x pigs and T tests?
@@ -40,28 +40,14 @@ Template (python3):
         def poorPigs(self, buckets: int, minutesToDie: int, minutesToTest: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "458. Poor Pigs"
-    test_cases = [
-        TestCase(input=(4, 15, 15), expected=2, label="example 1"),
-        TestCase(input=(4, 15, 30), expected=2, label="example 2"),
-        TestCase(input=(1, 100, 100), expected=0, label="single bucket"),
-        TestCase(input=(125, 1, 1), expected=7, label="single test round"),
-        TestCase(input=(1000, 15, 60), expected=5, label="large buckets"),
-        TestCase(input=(8, 15, 30), expected=2, label="medium buckets"),
-    ]
-
-    def solve(self, buckets: int, minutesToDie: int, minutesToTest: int) -> int:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, buckets, minutesToDie, minutesToTest) -> int"
-        )
+def solve(buckets: int, minutesToDie: int, minutesToTest: int) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    vals = read_ints()
+    result = solve(vals[0], vals[1], vals[2])
+    write_int(result)

@@ -31,29 +31,15 @@ Template (python3):
 Hint: Use a sliding window where you shrink from the left when product >= k.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "713. Subarray Product Less Than K"
-    test_cases = [
-        TestCase(input=([10, 5, 2, 6], 100), expected=8, label="example 1"),
-        TestCase(input=([1, 2, 3], 0), expected=0, label="zero k"),
-        TestCase(input=([1, 1, 1], 2), expected=6, label="all ones"),
-        TestCase(input=([1, 2, 3], 0), expected=0, label="k equals 0"),
-        TestCase(input=([1, 2, 3], 1), expected=0, label="k equals 1"),
-        TestCase(input=([1000, 1000, 1000], 1000000), expected=3, label="all large numbers"),
-        TestCase(input=([10, 5, 2, 6], 8), expected=3, label="small k many singles"),
-    ]
-
-    def solve(self, nums: list[int], k: int) -> int:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, nums: list[int], k: int) -> int"
-        )
+def solve(nums: list[int], k: int) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    k = read_int()
+    result = solve(nums, k)
+    write_int(result)

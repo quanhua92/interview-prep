@@ -48,51 +48,21 @@ Template (python3):
     # param_1 = obj.pick()
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "497. Random Point in Non-overlapping Rectangles"
-    test_cases = [
-        TestCase(
-            input=[[-2, -2, 1, 1], [2, 2, 4, 6]],
-            expected=[16, 31],
-            label="area sum for two rectangles",
-        ),
-        TestCase(
-            input=[[0, 0, 2, 2]],
-            expected=[9],
-            label="area for single 3x3 rectangle",
-        ),
-        TestCase(
-            input=[[0, 0, 0, 0]],
-            expected=[1],
-            label="single point rectangle",
-        ),
-        TestCase(
-            input=[[-5, -5, -3, -3], [1, 1, 3, 3]],
-            expected=[9, 18],
-            label="negative and positive rects same size",
-        ),
-        TestCase(
-            input=[[1, 1, 2, 2], [3, 3, 5, 5]],
-            expected=[4, 13],
-            label="different sized rects",
-        ),
-    ]
-
-    def solve(self, rects: list[list[int]]) -> list[int]:
-        prefix = []
-        total = 0
-        for x1, y1, x2, y2 in rects:
-            area = (x2 - x1 + 1) * (y2 - y1 + 1)
-            total += area
-            prefix.append(total)
-        return prefix
+def solve(rects: list[list[int]]) -> list[int]:
+    prefix = []
+    total = 0
+    for x1, y1, x2, y2 in rects:
+        area = (x2 - x1 + 1) * (y2 - y1 + 1)
+        total += area
+        prefix.append(total)
+    return prefix
 
 
 if __name__ == "__main__":
-    Solution().run()
+    cols = read_int()
+    rects = [read_ints() for _ in range(cols)]
+    result = solve(rects)
+    write_ints(result)

@@ -35,14 +35,11 @@
  *     - When you encounter an opening bracket, push it to the top of the stack.
  *     - When you encounter a closing bracket, check if the top of the stack was the opening for it. If yes, pop it from the stack. Otherwise, return false.
  *
- * Template (python3):
- *     class Solution:
- *         def isValid(self, s: str) -> bool:
- *
  * Hint: Use a stack to match opening and closing brackets.
  */
 
-#include "ctest.h"
+#include "io.h"
+#include <stdlib.h>
 
 static int is_valid(const char *s) {
     char stack[10001];
@@ -62,42 +59,10 @@ static int is_valid(const char *s) {
     return top == 0;
 }
 
-int main(void) {
-    (void)th_print_arr;
-    (void)th_arr_eq;
-
-    struct { const char *input; int expected; const char *label; } tests[] = {
-        {"()", 1, "simple pair"},
-        {"()[]{}", 1, "mixed brackets"},
-        {"(]", 0, "mismatched"},
-        {"([)]", 0, "interleaved"},
-        {"{[]}", 1, "nested"},
-        {"(", 0, "single opening"},
-        {")", 0, "single closing"},
-        {"((((", 0, "only openings"},
-        {"))))", 0, "only closings"},
-        {"((({{{[[[]]]}}})))", 1, "deeply nested"},
-    };
-
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    printf("\n============================================================\n");
-    printf("  20. Valid Parentheses\n");
-    printf("============================================================\n");
-
-    for (int i = 0; i < n; i++) {
-        int got = is_valid(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-    return passed == n ? 0 : 1;
+int main(void)
+{
+    char *s = read_line();
+    write_bool(is_valid(s));
+    free(s);
+    return 0;
 }

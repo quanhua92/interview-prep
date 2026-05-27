@@ -4,7 +4,7 @@
  * Topics: Array, Hash Table, Math, Design, Randomized
  *
  * Implement the RandomizedSet class:
- * You must implement the functions of the class such that each function works in average O(1) time complexity.
+ * You must implement the functions of the class such that each function works in average O(1) time complexity.
  * Example 1:
  *     Input
  * Example 1:
@@ -25,7 +25,7 @@
  *
  * Constraints:
  *     - -231 <= val <= 231 - 1
- *     - At most 2 * 105 calls will be made to insert, remove, and getRandom.
+ *     - At most 2 * 105 calls will be made to insert, remove, and getRandom.
  *     - There will be at least one element in the data structure when getRandom is called.
  *
  * Template (python3):
@@ -52,6 +52,7 @@
  */
 
 
+#include "io.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -222,81 +223,29 @@ static int rs_get_random(RandomizedSet *rs) {
     return rs->vals[mt_randrange(&rs->rng, rs->val_size)];
 }
 
-int main(void) {
-    int passed = 0, total = 4;
-    printf("\n============================================================\n");
-    printf("  380. Insert Delete GetRandom O(1)\n");
-    printf("============================================================\n");
+int main(void)
+{
+    int n;
+    int *n_arr = read_ints(&n);
+    int num_ops = n_arr[0];
+    free(n_arr);
 
-    {
-        RandomizedSet rs;
-        rs_init(&rs, 42);
-        int results[6];
-        results[0] = rs_insert(&rs, 1);
-        results[1] = rs_remove(&rs, 2);
-        results[2] = rs_insert(&rs, 2);
-        results[3] = rs_remove(&rs, 1);
-        results[4] = rs_insert(&rs, 2);
-        results[5] = rs_get_random(&rs);
-        int expected[] = {1, 0, 1, 1, 0, 2};
-        int ok = 1;
-        for (int i = 0; i < 6; i++) if (results[i] != expected[i]) ok = 0;
-        if (ok) { passed++; printf("  Test 1 (example 1): PASS\n"); }
-        else { printf("  Test 1 (example 1): FAIL\n"); }
-        rs_free(&rs);
-    }
-    {
-        RandomizedSet rs;
-        rs_init(&rs, 42);
-        int results[6];
-        results[0] = rs_insert(&rs, 10);
-        results[1] = rs_insert(&rs, 20);
-        results[2] = rs_insert(&rs, 30);
-        results[3] = rs_get_random(&rs);
-        results[4] = rs_remove(&rs, 20);
-        results[5] = rs_get_random(&rs);
-        int expected[] = {1, 1, 1, 30, 1, 10};
-        int ok = 1;
-        for (int i = 0; i < 6; i++) if (results[i] != expected[i]) ok = 0;
-        if (ok) { passed++; printf("  Test 2 (insert multiple then remove middle): PASS\n"); }
-        else { printf("  Test 2 (insert multiple then remove middle): FAIL\n"); }
-        rs_free(&rs);
-    }
-    {
-        RandomizedSet rs;
-        rs_init(&rs, 42);
-        int results[5];
-        results[0] = rs_insert(&rs, 5);
-        results[1] = rs_get_random(&rs);
-        results[2] = rs_remove(&rs, 5);
-        results[3] = rs_insert(&rs, 5);
-        results[4] = rs_get_random(&rs);
-        int expected[] = {1, 5, 1, 1, 5};
-        int ok = 1;
-        for (int i = 0; i < 5; i++) if (results[i] != expected[i]) ok = 0;
-        if (ok) { passed++; printf("  Test 3 (single element cycle): PASS\n"); }
-        else { printf("  Test 3 (single element cycle): FAIL\n"); }
-        rs_free(&rs);
-    }
-    {
-        RandomizedSet rs;
-        rs_init(&rs, 42);
-        int results[6];
-        results[0] = rs_insert(&rs, 1);
-        results[1] = rs_insert(&rs, 2);
-        results[2] = rs_remove(&rs, 1);
-        results[3] = rs_remove(&rs, 2);
-        results[4] = rs_insert(&rs, 3);
-        results[5] = rs_get_random(&rs);
-        int expected[] = {1, 1, 1, 1, 1, 3};
-        int ok = 1;
-        for (int i = 0; i < 6; i++) if (results[i] != expected[i]) ok = 0;
-        if (ok) { passed++; printf("  Test 4 (remove all then insert new): PASS\n"); }
-        else { printf("  Test 4 (remove all then insert new): FAIL\n"); }
-        rs_free(&rs);
-    }
+    RandomizedSet rs;
+    rs_init(&rs, 42);
 
-    printf("\n  %d/%d passed\n", passed, total);
-    printf("============================================================\n\n");
-    return passed == total ? 0 : 1;
+    for (int i = 0; i < num_ops; i++) {
+        char *op = read_line();
+        int *args = read_ints(&n);
+        if (strcmp(op, "insert") == 0) {
+            write_bool(rs_insert(&rs, args[0]));
+        } else if (strcmp(op, "remove") == 0) {
+            write_bool(rs_remove(&rs, args[0]));
+        } else if (strcmp(op, "getRandom") == 0) {
+            write_int(rs_get_random(&rs));
+        }
+        free(op);
+        free(args);
+    }
+    rs_free(&rs);
+    return 0;
 }

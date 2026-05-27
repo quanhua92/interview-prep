@@ -48,8 +48,7 @@
  *     # param_1 = obj.getRandom()
  */
 
-
-use rstest::TestCase;
+use wasm_libs::*;
 
 struct ListNode {
     val: i32,
@@ -75,34 +74,8 @@ fn solve(head: &Option<Box<ListNode>>) -> i32 {
 }
 
 fn main() {
-    let tests: &[TestCase] = &[
-        TestCase { label: "middle of odd-length list", input_arr: &[1, 2, 3], target: 0, expected: &[2] },
-        TestCase { label: "middle of even-length list", input_arr: &[1, 2, 3, 4], target: 0, expected: &[3] },
-        TestCase { label: "single node", input_arr: &[4], target: 0, expected: &[4] },
-        TestCase { label: "two nodes", input_arr: &[1, 2], target: 0, expected: &[2] },
-        TestCase { label: "three nodes", input_arr: &[5, 6, 7], target: 0, expected: &[6] },
-        TestCase { label: "five nodes", input_arr: &[1, 2, 3, 4, 5], target: 0, expected: &[3] },
-    ];
-
-    println!("\n============================================================");
-    println!("  382. Linked List Random Node");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let head = build_list(tc.input_arr);
-        let got = solve(&head);
-        if got == tc.expected[0] {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}", tc.expected[0]);
-            println!("    Got:      {}", got);
-        }
-    }
-    let total = tests.len();
-    println!("\n  {}/{} passed", passed, total);
-    println!("============================================================\n");
-
-    std::process::exit(if passed == total { 0 } else { 1 });
+    let arr = read_ints();
+    let head = build_list(&arr);
+    write_int(solve(&head));
+    std::process::exit(0);
 }

@@ -27,7 +27,8 @@
  */
 
 
-#include <stdio.h>
+#include "io.h"
+#include <stdlib.h>
 
 int majorityElement(int *nums, int n)
 {
@@ -47,37 +48,9 @@ int majorityElement(int *nums, int n)
 
 int main(void)
 {
-    struct {
-        const char *label;
-        int input[10];
-        int n;
-        int expected;
-    } tests[] = {
-        {"example 1",      {3, 2, 3},          3, 3},
-        {"example 2",      {2, 2, 1, 1, 1, 2, 2}, 7, 2},
-        {"single element",  {1},                1, 1},
-        {"majority at end", {1, 2, 3, 2, 2},    5, 2},
-        {"all same",        {5, 5, 5, 5, 5},    5, 5},
-        {"negative majority", {-1, -1, 2},       3, -1},
-        {"two elements",    {3, 3},             2, 3},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  169. Majority Element\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int got = majorityElement(tests[i].input, tests[i].n);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    int n;
+    int *nums = read_ints(&n);
+    write_int(majorityElement(nums, n));
+    free(nums);
+    return 0;
 }

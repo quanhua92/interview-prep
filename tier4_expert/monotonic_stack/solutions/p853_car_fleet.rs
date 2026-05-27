@@ -13,17 +13,14 @@
  * Example 1:
  *     Input: target = 12, position = [10,8,0,5,3], speed = [2,4,1,1,3]
  *     Output: 3
- *     Explanation:
  *
  * Example 2:
  *     Input: target = 10, position = [3], speed = [3]
  *     Output: 1
- *     Explanation:
  *
  * Example 3:
  *     Input: target = 100, position = [0,2,4], speed = [4,2,1]
  *     Output: 1
- *     Explanation:
  *
  * Constraints:
  *     - n == position.length == speed.length
@@ -40,51 +37,34 @@
  * Hint: Sort by position desc, calculate time to target. A car forms a new fleet only if it arrives before the current fleet.
  */
 
+use wasm_libs::*;
 
-fn car_fleet(target: i32, position: &[i32], speed: &[i32]) -> i32 {
-    let n = position.len();
-    if n == 0 { return 0; }
-    let mut idx: Vec<usize> = (0..n).collect();
-    idx.sort_by(|&a, &b| position[b].cmp(&position[a]));
+impl Solution {
+    fn car_fleet(target: i32, position: &[i32], speed: &[i32]) -> i32 {
+        let n = position.len();
+        if n == 0 { return 0; }
+        let mut idx: Vec<usize> = (0..n).collect();
+        idx.sort_by(|&a, &b| position[b].cmp(&position[a]));
 
-    let mut fleets = 0;
-    let mut slowest = -1.0f64;
-    for &i in &idx {
-        let time = (target - position[i]) as f64 / speed[i] as f64;
-        if time > slowest {
-            fleets += 1;
-            slowest = time;
+        let mut fleets = 0;
+        let mut slowest = -1.0f64;
+        for &i in &idx {
+            let time = (target - position[i]) as f64 / speed[i] as f64;
+            if time > slowest {
+                fleets += 1;
+                slowest = time;
+            }
         }
+        fleets
     }
-    fleets
 }
 
-fn main() {
-    struct Case { label: &'static str, target: i32, position: &'static [i32], speed: &'static [i32], expected: i32 }
-    let tests: &[Case] = &[
-        Case { label: "example 1", target: 12, position: &[10, 8, 0, 5, 3], speed: &[2, 4, 1, 1, 3], expected: 3 },
-        Case { label: "example 2", target: 10, position: &[3], speed: &[3], expected: 1 },
-        Case { label: "all merge", target: 100, position: &[0, 2, 4], speed: &[4, 2, 1], expected: 1 },
-        Case { label: "two cars no merge", target: 10, position: &[8, 0], speed: &[2, 1], expected: 2 },
-        Case { label: "two cars merge", target: 10, position: &[0, 3], speed: &[3, 2], expected: 1 },
-        Case { label: "all same speed", target: 10, position: &[1, 2, 3], speed: &[1, 1, 1], expected: 3 },
-    ];
+struct Solution;
 
-    println!("\n============================================================");
-    println!("  853. Car Fleet");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = car_fleet(tc.target, tc.position, tc.speed);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}, Got: {}", tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+fn main() {
+    let target = read_int();
+    let position = read_ints();
+    let speed = read_ints();
+    write_int(Solution::car_fleet(target, &position, &speed));
+    std::process::exit(0);
 }

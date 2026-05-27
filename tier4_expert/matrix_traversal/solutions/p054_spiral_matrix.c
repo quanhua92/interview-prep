@@ -33,7 +33,7 @@
  */
 
 
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 
 static int *spiralOrder(const int *flat, int rows, int cols, int *ret_size)
@@ -64,63 +64,26 @@ static int *spiralOrder(const int *flat, int rows, int cols, int *ret_size)
     return result;
 }
 
-typedef struct {
-    const char *label;
-    const int *input;
-    int rows, cols;
-    const int *expected;
-    int expected_n;
-} SpirTC;
-
 int main(void)
 {
-    int in1[] = {1,2,3, 4,5,6, 7,8,9};
-    int ex1[] = {1,2,3,6,9,8,7,4,5};
-    int in2[] = {1,2,3,4, 5,6,7,8, 9,10,11,12};
-    int ex2[] = {1,2,3,4,8,12,11,10,9,5,6,7};
-    int in3[] = {7};
-    int ex3[] = {7};
-    int in4[] = {1,2,3,4};
-    int ex4[] = {1,2,3,4};
-    int in5[] = {1, 2, 3, 4};
-    int ex5[] = {1,2,3,4};
-    int in6[] = {1,2, 3,4};
-    int ex6[] = {1,2,4,3};
-    int in7[] = {1,2,3,4,5, 6,7,8,9,10};
-    int ex7[] = {1,2,3,4,5,10,9,8,7,6};
-
-    SpirTC tests[] = {
-        {"example 1", in1, 3, 3, ex1, 9},
-        {"example 2", in2, 3, 4, ex2, 12},
-        {"single element", in3, 1, 1, ex3, 1},
-        {"single row", in4, 1, 4, ex4, 4},
-        {"single column", in5, 4, 1, ex5, 4},
-        {"2x2 matrix", in6, 2, 2, ex6, 4},
-        {"2 rows many columns", in7, 2, 5, ex7, 10},
-    };
-
-    int n_tests = (int)(sizeof(tests) / sizeof(tests[0]));
-    printf("\n============================================================\n");
-    printf("  54. Spiral Matrix\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int t = 0; t < n_tests; t++) {
-        SpirTC *tc = &tests[t];
-        int ret_size = 0;
-        int *got = spiralOrder(tc->input, tc->rows, tc->cols, &ret_size);
-        int ok = th_arr_eq(got, ret_size, tc->expected, tc->expected_n);
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", t + 1, tc->label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", t + 1, tc->label);
-            printf("    Expected: "); th_print_arr(tc->expected, tc->expected_n);
-            printf("\n    Got:      "); th_print_arr(got, ret_size);
-            printf("\n");
-        }
-        free(got);
+    int n;
+    int *size_line = read_ints(&n);
+    int cols = size_line[0];
+    free(size_line);
+    int rows = cols;
+    int total = rows * cols;
+    int *flat = malloc(total * sizeof(int));
+    for (int i = 0; i < rows; i++) {
+        int count;
+        int *row = read_ints(&count);
+        for (int j = 0; j < cols; j++)
+            flat[i * cols + j] = row[j];
+        free(row);
     }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    int ret_size = 0;
+    int *result = spiralOrder(flat, rows, cols, &ret_size);
+    write_ints(result, ret_size);
+    free(flat);
+    free(result);
+    return 0;
 }

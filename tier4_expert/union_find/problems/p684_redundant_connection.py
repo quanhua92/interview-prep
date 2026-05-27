@@ -31,39 +31,18 @@ Template (python3):
 Hint: Use Union-Find to detect the first edge that connects two already-connected nodes.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "684. Redundant Connection"
-    test_cases = [
-        TestCase(input=[[1, 2], [1, 3], [2, 3]], expected=[2, 3], label="example 1"),
-        TestCase(
-            input=[[1, 2], [2, 3], [3, 4], [1, 4], [1, 5]],
-            expected=[1, 4],
-            label="example 2",
-        ),
-        TestCase(input=[[1, 2], [2, 3], [3, 1]], expected=[3, 1], label="triangle of 3"),
-        TestCase(
-            input=[[1, 2], [1, 3], [1, 4], [1, 5], [2, 3]],
-            expected=[2, 3],
-            label="redundant at end star",
-        ),
-        TestCase(
-            input=[[1, 2], [1, 3], [1, 4], [2, 3]],
-            expected=[2, 3],
-            label="last edge closes triangle",
-        ),
-    ]
-
-    def solve(self, edges: list[list[int]]) -> list[int]:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, edges: list[list[int]]) -> list[int]"
-        )
+def solve(edges: list[list[int]]) -> list[int]:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    edges = []
+    for _ in range(n):
+        row = read_ints()
+        edges.append([row[0], row[1]])
+    result = solve(edges)
+    write_ints(result)

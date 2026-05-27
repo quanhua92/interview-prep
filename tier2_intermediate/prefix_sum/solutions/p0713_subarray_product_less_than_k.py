@@ -31,41 +31,29 @@ Template (python3):
 Hint: Use a sliding window where you shrink from the left when product >= k.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "713. Subarray Product Less Than K"
-    test_cases = [
-        TestCase(input=([10, 5, 2, 6], 100), expected=8, label="example 1"),
-        TestCase(input=([1, 2, 3], 0), expected=0, label="zero k"),
-        TestCase(input=([1, 1, 1], 2), expected=6, label="all ones"),
-        TestCase(input=([1, 2, 3], 0), expected=0, label="k equals 0"),
-        TestCase(input=([1, 2, 3], 1), expected=0, label="k equals 1"),
-        TestCase(input=([1000, 1000, 1000], 1000000), expected=3, label="all large numbers"),
-        TestCase(input=([10, 5, 2, 6], 8), expected=3, label="small k many singles"),
-    ]
+def solve(nums: list[int], k: int) -> int:
+    if k <= 1:
+        return 0
 
-    def solve(self, nums: list[int], k: int) -> int:
-        if k <= 1:
-            return 0
+    count = 0
+    product = 1
+    left = 0
 
-        count = 0
-        product = 1
-        left = 0
+    for right in range(len(nums)):
+        product *= nums[right]
+        while product >= k:
+            product //= nums[left]
+            left += 1
+        count += right - left + 1
 
-        for right in range(len(nums)):
-            product *= nums[right]
-            while product >= k:
-                product //= nums[left]
-                left += 1
-            count += right - left + 1
-
-        return count
+    return count
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    k = read_int()
+    result = solve(nums, k)
+    write_int(result)

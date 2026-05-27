@@ -30,8 +30,7 @@
  *         def checkInclusion(self, s1: str, s2: str) -> bool:
  */
 
-
-#include <stdio.h>
+#include "io.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -57,26 +56,11 @@ static int checkInclusion(const char *s1, const char *s2)
 
 int main(void)
 {
-    struct { const char *label; const char *s1; const char *s2; int expected; } tests[] = {
-        {"example 1",             "ab", "eidbaooo",       1},
-        {"example 2",             "ab", "eidboaoo",       0},
-        {"single char match",     "a",  "a",              1},
-        {"permutation at end",    "adc","dcda",           1},
-        {"no match large string", "abc","ccccbbbbaaaa",   0},
-        {"s1 longer than s2",     "ab", "a",              0},
-    };
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = checkInclusion(tests[i].s1, tests[i].s2);
-        if (got == tests[i].expected) {
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-            passed++;
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    char *s1 = read_line();
+    char *s2 = read_line();
+    int result = checkInclusion(s1, s2);
+    write_bool(result);
+    free(s1);
+    free(s2);
+    return 0;
 }

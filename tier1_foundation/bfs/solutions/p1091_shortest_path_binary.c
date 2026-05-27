@@ -35,10 +35,10 @@
  * Hint: BFS from (0,0) with 8 directions, return distance to (n-1,n-1) or -1.
  */
 
+#include "io.h"
+#include <stdlib.h>
 
-#include "ctest.h"
-
-static int shortestPathBinaryMatrix(int grid[100][100], int n) {
+int solve(int **grid, int n) {
     if (grid[0][0] == 1 || grid[n - 1][n - 1] == 1) return -1;
     if (n == 1) return 1;
     int queue[30000];
@@ -68,39 +68,20 @@ static int shortestPathBinaryMatrix(int grid[100][100], int n) {
     return -1;
 }
 
-typedef struct {
-    const char *label;
-    int grid[100][100];
+int main(void)
+{
     int n;
-    int expected;
-} TC;
-
-int main(void) {
-    (void)th_print_arr;
-    (void)th_arr_eq;
-    TC tests[] = {
-        {"example 1", {{0,1},{1,0}}, 2, 2},
-        {"example 2", {{0,0,0},{1,1,0},{1,1,0}}, 3, 4},
-        {"blocked", {{1,0},{0,1}}, 2, -1},
-        {"single cell", {{0}}, 1, 1},
-        {"3x3 all open (diagonal)", {{0,0,0},{0,0,0},{0,0,0}}, 3, 3},
-        {"2x2 all open (diagonal)", {{0,0},{0,0}}, 2, 2},
-        {"3x3 only corners open", {{0,1,1},{1,1,1},{1,1,0}}, 3, -1},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        int grid[100][100];
-        memcpy(grid, tests[i].grid, sizeof(grid));
-        int got = shortestPathBinaryMatrix(grid, tests[i].n);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
+    int *size_line = read_ints(&n);
+    int cols = size_line[0];
+    free(size_line);
+    int **grid = (int **)malloc(sizeof(int *) * cols);
+    for (int i = 0; i < cols; i++) {
+        int row_n;
+        grid[i] = read_ints(&row_n);
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+    int result = solve(grid, cols);
+    write_int(result);
+    for (int i = 0; i < cols; i++) free(grid[i]);
+    free(grid);
+    return 0;
 }

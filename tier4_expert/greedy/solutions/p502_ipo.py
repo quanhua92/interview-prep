@@ -35,38 +35,29 @@ Template (python3):
         def findMaximizedCapital(self, k: int, w: int, profits: List[int], capital: List[int]) -> int:
 """
 
-import sys
+import heapq
 
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "502. IPO"
-    test_cases = [
-        TestCase(input=(2, 0, [1, 2, 3], [0, 1, 1]), expected=4, label="example 1"),
-        TestCase(input=(3, 0, [1, 2, 3], [0, 1, 2]), expected=6, label="example 2"),
-        TestCase(input=(1, 0, [1, 2, 3], [0, 0, 0]), expected=3, label="k less than projects"),
-        TestCase(input=(10, 0, [1, 2], [0, 0]), expected=3, label="k more than projects"),
-        TestCase(input=(1, 1, [5], [1]), expected=6, label="single project"),
-        TestCase(input=(2, 5, [3, 4], [1, 2]), expected=12, label="all affordable"),
-    ]
-
-    def solve(self, k: int, w: int, profits: list[int], capital: list[int]) -> int:
-        import heapq
-
-        projects = sorted(zip(capital, profits))
-        max_heap: list[int] = []
-        i = 0
-        for _ in range(k):
-            while i < len(projects) and projects[i][0] <= w:
-                heapq.heappush(max_heap, -projects[i][1])
-                i += 1
-            if not max_heap:
-                break
-            w += -heapq.heappop(max_heap)
-        return w
+def solve(k: int, w: int, profits: list[int], capital: list[int]) -> int:
+    projects = sorted(zip(capital, profits))
+    max_heap: list[int] = []
+    i = 0
+    for _ in range(k):
+        while i < len(projects) and projects[i][0] <= w:
+            heapq.heappush(max_heap, -projects[i][1])
+            i += 1
+        if not max_heap:
+            break
+        w += -heapq.heappop(max_heap)
+    return w
 
 
 if __name__ == "__main__":
-    Solution().run()
+    k = read_int()
+    w = read_int()
+    profits = read_ints()
+    capital = read_ints()
+    result = solve(k, w, profits, capital)
+    write_int(result)

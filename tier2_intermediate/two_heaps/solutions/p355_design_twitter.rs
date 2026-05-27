@@ -7,7 +7,6 @@
  * Implement the Twitter class:
  * Example 1:
  *     Input
- * Example 1:
  *     ["Twitter", "postTweet", "getNewsFeed", "follow", "postTweet", "getNewsFeed", "unfollow", "getNewsFeed"]
  *     [[], [1, 5], [1], [1, 2], [2, 6], [1], [1, 2], [1]]
  *     Output
@@ -32,7 +31,6 @@
  *
  * Template (python3):
  *     class Twitter:
- *
  *         def __init__(self):
  *
  *
@@ -48,7 +46,6 @@
  *         def unfollow(self, followerId: int, followeeId: int) -> None:
  *
  *
- *
  *     # Your Twitter object will be instantiated and called as such:
  *     # obj = Twitter()
  *     # obj.postTweet(userId,tweetId)
@@ -57,7 +54,7 @@
  *     # obj.unfollow(followerId,followeeId)
  */
 
-
+use wasm_libs::*;
 use std::collections::{BinaryHeap, HashSet};
 use std::cmp::Ordering;
 
@@ -143,28 +140,26 @@ impl Twitter {
 fn main() {
     let mut tw = Twitter::new();
 
-    println!("\n============================================================");
-    println!("  355. Design Twitter");
-    println!("============================================================");
+    let num_ops = read_int();
+    for _ in 0..num_ops {
+        let op = read_line();
+        let arg_count = read_int();
+        let mut args = Vec::new();
+        for _ in 0..arg_count {
+            args.push(read_int());
+        }
 
-    tw.post_tweet(1, 5);
-    let feed = tw.get_news_feed(1);
-    let ok1 = feed.len() == 1 && feed[0] == 5;
-    println!("  Test 1 (post + feed): {}", if ok1 { "PASS" } else { "FAIL" });
+        match op.as_str() {
+            "postTweet" => tw.post_tweet(args[0] as usize, args[1]),
+            "getNewsFeed" => {
+                let feed = tw.get_news_feed(args[0] as usize);
+                write_ints(&feed);
+            }
+            "follow" => tw.follow(args[0] as usize, args[1] as usize),
+            "unfollow" => tw.unfollow(args[0] as usize, args[1] as usize),
+            _ => {}
+        }
+    }
 
-    tw.follow(1, 2);
-    tw.post_tweet(2, 6);
-    let feed = tw.get_news_feed(1);
-    let ok2 = feed.len() == 2 && feed[0] == 6 && feed[1] == 5;
-    println!("  Test 2 (follow + merge feed): {}", if ok2 { "PASS" } else { "FAIL" });
-
-    tw.unfollow(1, 2);
-    let feed = tw.get_news_feed(1);
-    let ok3 = feed.len() == 1 && feed[0] == 5;
-    println!("  Test 3 (unfollow): {}", if ok3 { "PASS" } else { "FAIL" });
-
-    let passed = if ok1 && ok2 && ok3 { 3 } else { 0 };
-    println!("\n  {}/3 passed", passed);
-    println!("============================================================\n");
-    std::process::exit(if passed == 3 { 0 } else { 1 });
+    std::process::exit(0);
 }

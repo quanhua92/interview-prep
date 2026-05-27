@@ -51,84 +51,67 @@ Template (python3):
     # param_3 = obj.getRandom()
 """
 
-import sys
-
-sys.path.insert(0, ".")
 import random
 
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
 class RandomizedSet:
     def __init__(self):
         random.seed(42)
+        self.vals: list[int] = []
+        self.idx_map: dict[int, int] = {}
 
     def insert(self, val: int) -> bool:
-        raise NotImplementedError
+        if val in self.idx_map:
+            return False
+        self.idx_map[val] = len(self.vals)
+        self.vals.append(val)
+        return True
 
     def remove(self, val: int) -> bool:
-        raise NotImplementedError
+        if val not in self.idx_map:
+            return False
+        idx = self.idx_map[val]
+        last = self.vals[-1]
+        self.vals[idx] = last
+        self.idx_map[last] = idx
+        self.vals.pop()
+        del self.idx_map[val]
+        return True
 
     def getRandom(self) -> int:
-        raise NotImplementedError
+        return random.choice(self.vals)
 
 
-class Solution(Problem):
-    name = "380. Insert Delete GetRandom O(1)"
-    test_cases = [
-        TestCase(
-            input={
-                "ops": ["insert", "remove", "insert", "remove", "insert", "getRandom"],
-                "args": [[1], [2], [2], [1], [2], []],
-            },
-            expected=[True, False, True, True, False, 2],
-            label="example 1",
-        ),
-        TestCase(
-            input={
-                "ops": [
-                    "insert",
-                    "insert",
-                    "insert",
-                    "getRandom",
-                    "remove",
-                    "getRandom",
-                ],
-                "args": [[10], [20], [30], [], [20], []],
-            },
-            expected=[True, True, True, 30, True, 10],
-            label="insert multiple then remove middle",
-        ),
-        TestCase(
-            input={
-                "ops": ["insert", "getRandom", "remove", "insert", "getRandom"],
-                "args": [[5], [], [5], [5], []],
-            },
-            expected=[True, 5, True, True, 5],
-            label="single element cycle",
-        ),
-        TestCase(
-            input={
-                "ops": ["insert", "insert", "remove", "remove", "insert", "getRandom"],
-                "args": [[1], [2], [1], [2], [3], []],
-            },
-            expected=[True, True, True, True, True, 3],
-            label="remove all then insert new",
-        ),
-    ]
-
-    def solve(self, ops: list[str], args: list) -> list:
-        rs = RandomizedSet()
-        results = []
-        for op, arg in zip(ops, args):
-            if op == "insert":
-                results.append(rs.insert(arg[0]))
-            elif op == "remove":
-                results.append(rs.remove(arg[0]))
-            elif op == "getRandom":
-                results.append(rs.getRandom())
-        return results
+def solve(ops: list[str], args: list) -> list:
+    rs = RandomizedSet()
+    results = []
+    for op, arg in zip(ops, args):
+        if op == "insert":
+            results.append(rs.insert(arg[0]))
+        elif op == "remove":
+            results.append(rs.remove(arg[0]))
+        elif op == "getRandom":
+            results.append(rs.getRandom())
+    return results
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    ops = []
+    args = []
+    for _ in range(n):
+        ops.append(read_line())
+    for _ in range(n):
+        line = read_line()
+        if line:
+            args.append([int(x) for x in line.split()])
+        else:
+            args.append([])
+    result = solve(ops, args)
+    for r in result:
+        if isinstance(r, bool):
+            write_bool(r)
+        else:
+            write_int(r)

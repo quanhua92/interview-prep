@@ -27,10 +27,12 @@
  *         def findBottomLeftValue(self, root: Optional[TreeNode]) -> int:
  */
 
-
+use wasm_libs::*;
 use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::rc::Rc;
+
+const NULL_VAL: i32 = i32::MIN;
 
 struct TreeNode {
     val: i32,
@@ -38,12 +40,14 @@ struct TreeNode {
     right: Option<Rc<RefCell<TreeNode>>>,
 }
 
-const NULL_VAL: i32 = i32::MIN;
+fn parse_tree_line(line: &str) -> Vec<i32> {
+    line.split_whitespace()
+        .map(|s| if s == "null" { NULL_VAL } else { s.parse().unwrap() })
+        .collect()
+}
 
 fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
-    if vals.is_empty() || vals[0] == NULL_VAL {
-        return None;
-    }
+    if vals.is_empty() || vals[0] == NULL_VAL { return None; }
     let root = Rc::new(RefCell::new(TreeNode { val: vals[0], left: None, right: None }));
     let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
     queue.push_back(Rc::clone(&root));
@@ -70,52 +74,35 @@ fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
     Some(root)
 }
 
-fn find_bottom_left_value(root: Rc<RefCell<TreeNode>>) -> i32 {
-    let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
-    queue.push_back(root);
-    let mut result = queue[0].borrow().val;
-    while !queue.is_empty() {
-        let sz = queue.len();
-        result = queue[0].borrow().val;
-        for _ in 0..sz {
-            let node = queue.pop_front().unwrap();
-            let (left, right) = {
-                let n = node.borrow();
-                (n.left.clone(), n.right.clone())
-            };
-            if let Some(l) = left {
-                queue.push_back(l);
-            }
-            if let Some(r) = right {
-                queue.push_back(r);
+impl Solution {
+    fn find_bottom_left_value(root: Rc<RefCell<TreeNode>>) -> i32 {
+        let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
+        queue.push_back(root);
+        let mut result = queue[0].borrow().val;
+        while !queue.is_empty() {
+            let sz = queue.len();
+            result = queue[0].borrow().val;
+            for _ in 0..sz {
+                let node = queue.pop_front().unwrap();
+                let (left, right) = {
+                    let n = node.borrow();
+                    (n.left.clone(), n.right.clone())
+                };
+                if let Some(l) = left { queue.push_back(l); }
+                if let Some(r) = right { queue.push_back(r); }
             }
         }
+        result
     }
-    result
 }
 
+struct Solution;
+
 fn main() {
-    let tests: Vec<(&str, Vec<i32>, i32)> = vec![
-        ("example 1", vec![2, 1, 3], 1),
-        ("example 2", vec![1, 2, 3, 4, NULL_VAL, 5, 6, NULL_VAL, NULL_VAL, 7], 7),
-        ("single node", vec![1], 1),
-        ("left child only", vec![1, 2], 2),
-        ("right child only", vec![1, NULL_VAL, 2], 2),
-        ("left skewed deep", vec![1, 2, NULL_VAL, 3, NULL_VAL, 4], 4),
-    ];
-    let mut passed = 0;
-    for (i, (label, vals, expected)) in tests.iter().enumerate() {
-        let root = build_tree(vals).unwrap();
-        let got = find_bottom_left_value(root);
-        if got == *expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, label);
-            println!("    Expected: {}", expected);
-            println!("    Got:      {}", got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let n = read_int();
+    let line = read_line();
+    let vals = parse_tree_line(&line);
+    let root = build_tree(&vals).unwrap();
+    write_int(Solution::find_bottom_left_value(root));
+    std::process::exit(0);
 }

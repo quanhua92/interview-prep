@@ -35,58 +35,37 @@
  * Hint: Trust score array: for each [a,b], scores[a]-=1 and scores[b]+=1. Judge has score n-1.
  */
 
+use wasm_libs::*;
 
-fn find_judge(n: i32, trust: &[(i32, i32)]) -> i32 {
-    let mut scores = vec![0i32; (n + 1) as usize];
-    for &(a, b) in trust {
-        scores[a as usize] -= 1;
-        scores[b as usize] += 1;
-    }
-    for i in 1..=n as usize {
-        if scores[i] == n - 1 {
-            return i as i32;
+impl Solution {
+    fn find_judge(n: i32, trust: &[(i32, i32)]) -> i32 {
+        let mut scores = vec![0i32; (n + 1) as usize];
+        for &(a, b) in trust {
+            scores[a as usize] -= 1;
+            scores[b as usize] += 1;
         }
+        for i in 1..=n as usize {
+            if scores[i] == n - 1 {
+                return i as i32;
+            }
+        }
+        -1
     }
-    -1
 }
 
-struct TC {
-    label: &'static str,
-    n: i32,
-    trust: &'static [(i32, i32)],
-    expected: i32,
-}
+struct Solution;
 
 fn main() {
-    let tests: &[TC] = &[
-        TC { label: "example 1", n: 2, trust: &[(1,2)], expected: 2 },
-        TC { label: "example 2", n: 3, trust: &[(1,3),(2,3)], expected: 3 },
-        TC { label: "no judge", n: 3, trust: &[(1,3),(2,3),(3,1)], expected: -1 },
-        TC { label: "single person", n: 1, trust: &[], expected: 1 },
-        TC { label: "judge candidate trusts someone", n: 4, trust: &[(1,3),(2,3),(4,3),(3,4)], expected: -1 },
-        TC { label: "no trust relationships n>1", n: 3, trust: &[], expected: -1 },
-        TC { label: "mutual trust no judge", n: 2, trust: &[(1,2),(2,1)], expected: -1 },
-    ];
+    let header = read_ints();
+    let n = header[0];
+    let trust_count = header[1] as usize;
 
-    println!("\n============================================================");
-    println!("  997. Find the Town Judge");
-    println!("============================================================");
-
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = find_judge(tc.n, tc.trust);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}", tc.expected);
-            println!("    Got:      {}", got);
-        }
+    let mut trust: Vec<(i32, i32)> = Vec::new();
+    for _ in 0..trust_count {
+        let pair = read_ints();
+        trust.push((pair[0], pair[1]));
     }
 
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    write_int(Solution::find_judge(n, &trust));
+    std::process::exit(0);
 }

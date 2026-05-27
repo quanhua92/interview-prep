@@ -30,7 +30,7 @@
  * Constraints:
  *     - 0 <= value <= 104
  *     - At most 3 * 104 calls will be made to addNum and getIntervals.
- *     - At most 102 calls will be made to getIntervals.
+ *     - At most 102 calls will be made to getIntervals.
  *
  * Template (python3):
  *     class SummaryRanges:
@@ -51,6 +51,7 @@
  *     # param_2 = obj.getIntervals()
  */
 
+use wasm_libs::*;
 
 fn solve_intervals(values: &[i32]) -> Vec<Vec<i32>> {
     let mut intervals: Vec<Vec<i32>> = Vec::new();
@@ -72,26 +73,8 @@ fn solve_intervals(values: &[i32]) -> Vec<Vec<i32>> {
 }
 
 fn main() {
-    let tests: Vec<(&str, Vec<i32>, Vec<i32>)> = vec![
-        ("example from problem", vec![1,3,7,2,6], vec![1,3,6,7]),
-        ("adjacent values merge", vec![1,0], vec![0,1]),
-        ("single zero", vec![0], vec![0,0]),
-        ("no merges sorted output", vec![100,1,50], vec![1,1,50,50,100,100]),
-        ("empty stream", vec![], vec![]),
-    ];
-
-    let mut passed = 0;
-    println!("\n============================================================");
-    println!("  352. Data Stream as Disjoint Intervals");
-    println!("============================================================");
-    for (i, (label, values, expected_flat)) in tests.iter().enumerate() {
-        let got = solve_intervals(values);
-        let got_flat: Vec<i32> = got.iter().flat_map(|iv| iv.iter().copied()).collect();
-        let ok = got_flat == *expected_flat;
-        if ok { passed += 1; }
-        println!("  Test {} ({}): {}", i + 1, label, if ok { "PASS" } else { "FAIL" });
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let values = read_ints();
+    let result = solve_intervals(&values);
+    write_matrix(&result);
+    std::process::exit(0);
 }

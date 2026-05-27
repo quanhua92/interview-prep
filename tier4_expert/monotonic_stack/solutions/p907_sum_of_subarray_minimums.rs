@@ -28,66 +28,46 @@
  * Hint: Use a monotonic stack to find the number of subarrays where each element is the minimum.
  */
 
+use wasm_libs::*;
 
 const MOD: i64 = 1_000_000_007;
 
-fn sum_subarray_mins(arr: &[i32]) -> i32 {
-    let n = arr.len();
-    let mut left: Vec<i64> = vec![0; n];
-    let mut right: Vec<i64> = vec![0; n];
-    let mut stack: Vec<usize> = Vec::new();
+impl Solution {
+    fn sum_subarray_mins(arr: &[i32]) -> i32 {
+        let n = arr.len();
+        let mut left: Vec<i64> = vec![0; n];
+        let mut right: Vec<i64> = vec![0; n];
+        let mut stack: Vec<usize> = Vec::new();
 
-    for i in 0..n {
-        while !stack.is_empty() && arr[*stack.last().unwrap()] >= arr[i] {
-            stack.pop();
+        for i in 0..n {
+            while !stack.is_empty() && arr[*stack.last().unwrap()] >= arr[i] {
+                stack.pop();
+            }
+            left[i] = if stack.is_empty() { (i + 1) as i64 } else { (i - stack.last().unwrap()) as i64 };
+            stack.push(i);
         }
-        left[i] = if stack.is_empty() { (i + 1) as i64 } else { (i - stack.last().unwrap()) as i64 };
-        stack.push(i);
-    }
 
-    stack.clear();
-    for i in (0..n).rev() {
-        while !stack.is_empty() && arr[*stack.last().unwrap()] > arr[i] {
-            stack.pop();
+        stack.clear();
+        for i in (0..n).rev() {
+            while !stack.is_empty() && arr[*stack.last().unwrap()] > arr[i] {
+                stack.pop();
+            }
+            right[i] = if stack.is_empty() { (n - i) as i64 } else { (stack.last().unwrap() - i) as i64 };
+            stack.push(i);
         }
-        right[i] = if stack.is_empty() { (n - i) as i64 } else { (stack.last().unwrap() - i) as i64 };
-        stack.push(i);
-    }
 
-    let mut total: i64 = 0;
-    for i in 0..n {
-        total = (total + arr[i] as i64 * left[i] * right[i]) % MOD;
+        let mut total: i64 = 0;
+        for i in 0..n {
+            total = (total + arr[i] as i64 * left[i] * right[i]) % MOD;
+        }
+        total as i32
     }
-    total as i32
 }
 
-fn main() {
-    struct Case { label: &'static str, input: &'static [i32], expected: i32 }
-    let tests: &[Case] = &[
-        Case { label: "example 1", input: &[3, 1, 2, 4], expected: 17 },
-        Case { label: "example 2", input: &[11, 81, 94, 43, 3], expected: 444 },
-        Case { label: "single element", input: &[1], expected: 1 },
-        Case { label: "two elements", input: &[2, 1], expected: 4 },
-        Case { label: "all same", input: &[3, 3, 3], expected: 18 },
-        Case { label: "strictly increasing", input: &[1, 2, 3], expected: 10 },
-        Case { label: "strictly decreasing", input: &[3, 2, 1], expected: 10 },
-    ];
+struct Solution;
 
-    println!("\n============================================================");
-    println!("  907. Sum of Subarray Minimums");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = sum_subarray_mins(tc.input);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}, Got: {}", tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+fn main() {
+    let arr = read_ints();
+    write_int(Solution::sum_subarray_mins(&arr));
+    std::process::exit(0);
 }

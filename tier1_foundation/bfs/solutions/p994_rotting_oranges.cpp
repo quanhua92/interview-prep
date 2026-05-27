@@ -34,25 +34,21 @@
  * Hint: Use BFS starting from all rotten oranges simultaneously.
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 #include <queue>
 #include <utility>
 
 using namespace std;
 
-static int orangesRotting(vector<vector<int>> &grid) {
+static int solve(vector<vector<int>> &grid) {
     int rows = (int)grid.size();
     int cols = (int)grid[0].size();
     queue<pair<int,int>> q;
     int fresh = 0;
     for (int r = 0; r < rows; r++) {
         for (int c = 0; c < cols; c++) {
-            if (grid[r][c] == 2) {
-                q.push({r, c});
-            } else if (grid[r][c] == 1) {
-                fresh++;
-            }
+            if (grid[r][c] == 2) q.push({r, c});
+            else if (grid[r][c] == 1) fresh++;
         }
     }
     if (fresh == 0) return 0;
@@ -79,35 +75,14 @@ static int orangesRotting(vector<vector<int>> &grid) {
     return fresh == 0 ? minutes : -1;
 }
 
-int main() {
-    (void)print_arr;
-    struct TC {
-        string label;
-        vector<vector<int>> grid;
-        int expected;
-    };
-    TC tests[] = {
-        {"example 1", {{2,1,1},{1,1,0},{0,1,1}}, 4},
-        {"example 2", {{2,1,1},{0,1,1},{1,0,1}}, -1},
-        {"no fresh", {{0,2}}, 0},
-        {"single fresh no rotten", {{1}}, -1},
-        {"single rotten", {{2}}, 0},
-        {"all fresh no rotten", {{1,1,1},{1,1,1},{1,1,1}}, -1},
-        {"multiple rotten sources", {{2,2},{1,1},{0,1}}, 2},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        vector<vector<int>> grid = tests[i].grid;
-        int got = orangesRotting(grid);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label.c_str());
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label.c_str());
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
+int main(void)
+{
+    int n = read_int();
+    (void)n;
+    vector<vector<int>> grid;
+    for (int i = 0; i < n; i++) {
+        grid.push_back(read_ints());
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+    write_int(solve(grid));
+    return 0;
 }

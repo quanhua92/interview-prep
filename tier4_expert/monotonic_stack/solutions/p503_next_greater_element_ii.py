@@ -25,35 +25,23 @@ Template (python3):
         def nextGreaterElements(self, nums: List[int]) -> List[int]:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "503. Next Greater Element II"
-    test_cases = [
-        TestCase(input=[1, 2, 1], expected=[2, -1, 2], label="example 1"),
-        TestCase(input=[1, 2, 3, 4, 3], expected=[2, 3, 4, -1, 4], label="example 2"),
-        TestCase(input=[5], expected=[-1], label="single element"),
-        TestCase(input=[2, 2, 2], expected=[-1, -1, -1], label="all same"),
-        TestCase(input=[5, 4, 3, 2], expected=[-1, 5, 5, 5], label="strictly decreasing wraps"),
-        TestCase(input=[-3, -2, -1], expected=[-2, -1, -1], label="with negatives"),
-    ]
-
-    def solve(self, nums: list[int]) -> list[int]:
-        n = len(nums)
-        result = [-1] * n
-        stack: list[int] = []
-        for i in range(2 * n):
-            idx = i % n
-            while stack and nums[stack[-1]] < nums[idx]:
-                result[stack.pop()] = nums[idx]
-            if i < n:
-                stack.append(idx)
-        return result
+def solve(nums: list[int]) -> list[int]:
+    n = len(nums)
+    result = [-1] * n
+    stack: list[int] = []
+    for i in range(2 * n):
+        idx = i % n
+        while stack and nums[stack[-1]] < nums[idx]:
+            result[stack.pop()] = nums[idx]
+        if i < n:
+            stack.append(idx)
+    return result
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    result = solve(nums)
+    write_ints(result)

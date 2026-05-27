@@ -22,52 +22,25 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+#include "io.h"
 #include <algorithm>
-using namespace std;
 
 int nextGreaterElement(int n) {
-    string digits = to_string(n);
+    std::string digits = std::to_string(n);
     int i = (int)digits.size() - 2;
     while (i >= 0 && digits[i] >= digits[i + 1]) i--;
     if (i < 0) return -1;
     int j = (int)digits.size() - 1;
     while (digits[j] <= digits[i]) j--;
-    swap(digits[i], digits[j]);
-    reverse(digits.begin() + i + 1, digits.end());
-    long long val = stoll(digits);
+    std::swap(digits[i], digits[j]);
+    std::reverse(digits.begin() + i + 1, digits.end());
+    long long val = std::stoll(digits);
     if (val > 2147483647LL) return -1;
     return (int)val;
 }
 
 int main() {
-    printf("\n============================================================\n");
-    printf("  556. Next Greater Element III\n");
-    printf("============================================================\n");
-    struct T { const char *label; int input; int expected; };
-    std::vector<T> tests = {
-        {"example 1", 12, 21},
-        {"example 2", 21, -1},
-        {"single digit", 1, -1},
-        {"all same digits", 11, -1},
-        {"classic example", 230241, 230412},
-        {"max 32-bit int", 2147483647, -1},
-    };
-    int passed = 0;
-    for (int i = 0; i < (int)tests.size(); i++) {
-        int got = nextGreaterElement(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d, Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, (int)tests.size());
-    printf("============================================================\n\n");
-    return passed == (int)tests.size() ? 0 : 1;
+    std::vector<int> vals = read_ints();
+    write_int(nextGreaterElement(vals[0]));
+    return 0;
 }

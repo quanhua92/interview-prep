@@ -38,70 +38,46 @@
  */
 
 
-#include "cpptest.h"
+#include "io.h"
+#include <algorithm>
+#include <vector>
 
-std::vector<int> solve(std::vector<int> arr, int num_intervals) {
-    int new_start = arr[2 * num_intervals];
-    int new_end = arr[2 * num_intervals + 1];
-    std::vector<int> result;
-    result.reserve((num_intervals + 1) * 2);
-
+void solve(std::vector<std::vector<int>> &intervals, std::vector<int> &new_interval)
+{
+    std::vector<std::vector<int>> result;
     int i = 0;
+    int n = (int)intervals.size();
 
-    while (i < num_intervals && arr[2 * i + 1] < new_start) {
-        result.push_back(arr[2 * i]);
-        result.push_back(arr[2 * i + 1]);
+    while (i < n && intervals[i][1] < new_interval[0]) {
+        result.push_back(intervals[i]);
         i++;
     }
 
-    while (i < num_intervals && arr[2 * i] <= new_end) {
-        new_start = std::min(new_start, arr[2 * i]);
-        new_end = std::max(new_end, arr[2 * i + 1]);
+    while (i < n && intervals[i][0] <= new_interval[1]) {
+        new_interval[0] = std::min(new_interval[0], intervals[i][0]);
+        new_interval[1] = std::max(new_interval[1], intervals[i][1]);
+        i++;
+    }
+    result.push_back(new_interval);
+
+    while (i < n) {
+        result.push_back(intervals[i]);
         i++;
     }
 
-    result.push_back(new_start);
-    result.push_back(new_end);
-
-    while (i < num_intervals) {
-        result.push_back(arr[2 * i]);
-        result.push_back(arr[2 * i + 1]);
-        i++;
+    for (const auto &row : result) {
+        write_ints(row);
     }
-
-    return result;
 }
 
-int main() {
-    TestCase tests[] = {
-        {"example 1",
-         {1,3,6,9,2,5}, 2,
-         {1,5,6,9}},
-        {"example 2",
-         {1,2,3,5,6,7,8,10,12,16,4,8}, 5,
-         {1,2,3,10,12,16}},
-        {"empty intervals",
-         {5,7}, 0,
-         {5,7}},
-        {"contained",
-         {1,5,2,3}, 1,
-         {1,5}},
-        {"insert before all",
-         {3,5,6,9,1,2}, 2,
-         {1,2,3,5,6,9}},
-        {"insert after all",
-         {1,2,3,5,6,9}, 2,
-         {1,2,3,5,6,9}},
-        {"merge with first interval",
-         {1,3,6,9,0,2}, 2,
-         {0,3,6,9}},
-        {"merge with last interval",
-         {1,3,6,9,8,10}, 2,
-         {1,3,6,10}},
-        {"bridge gap between intervals",
-         {1,2,4,5,2,4}, 2,
-         {1,5}},
-    };
-
-    RUN_TESTS("57. Insert Interval", solve, tests, 9);
+int main()
+{
+    int n = read_int();
+    std::vector<std::vector<int>> intervals(n);
+    for (int i = 0; i < n; i++) {
+        intervals[i] = read_ints();
+    }
+    std::vector<int> new_interval = read_ints();
+    solve(intervals, new_interval);
+    return 0;
 }

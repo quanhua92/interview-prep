@@ -25,6 +25,8 @@
  *         def longestSubstring(self, s: str, k: int) -> int:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(s, k) {
   let maxLen = 0;
   for (let t = 1; t <= 26; t++) {
@@ -52,25 +54,6 @@ function solve(s, k) {
   return maxLen;
 }
 
-const tests = [
-  { label: "example 1", input: ["aaabb", 3], expected: 3 },
-  { label: "example 2", input: ["ababbc", 2], expected: 5 },
-  { label: "no valid substring", input: ["ababacb", 3], expected: 0 },
-  { label: "single char k=1", input: ["a", 1], expected: 1 },
-  { label: "single char k>1", input: ["a", 2], expected: 0 },
-  { label: "multiple runs", input: ["bbaaacbd", 3], expected: 3 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const s = readLine();
+const k = readInt();
+writeInt(solve(s, k));

@@ -34,26 +34,10 @@
  * Hints:
  *     - You should be familiar with how a Trie works. If not, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.
  *
- * Template (python3):
- *     class WordDictionary:
- *
- *         def __init__(self):
- *
- *
- *         def addWord(self, word: str) -> None:
- *
- *
- *         def search(self, word: str) -> bool:
- *
- *
- *
- *     # Your WordDictionary object will be instantiated and called as such:
- *     # obj = WordDictionary()
- *     # obj.addWord(word)
- *     # param_2 = obj.search(word)
- *
  * Hint: Build a Trie from the word list, then search with DFS handling '.' wildcards by trying all children.
  */
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
 
 class TrieNode {
   constructor() {
@@ -104,25 +88,17 @@ function solve(words, searchWords) {
   return searchWords.map((sw) => wd.search(sw));
 }
 
-const tests = [
-  { label: "example 1", input: [["bad", "dad", "mad"], ["pad", "bad", ".ad", "b.."]], expected: [false, true, true, true] },
-  { label: "example 2", input: [["a", "ab"], ["a", ".a", "ab"]], expected: [true, false, true] },
-  { label: "all dots pattern", input: [["abc"], ["...", ".."]], expected: [true, false] },
-  { label: "single char dot matches multiple", input: [["a", "b"], ["."]], expected: [true] },
-  { label: "dot at beginning", input: [["abc", "xbc"], [".bc"]], expected: [true] },
-  { label: "dot in middle and at end", input: [["abc"], ["a.c", "a.."]], expected: [true, true] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const nWords = readInt();
+const words = [];
+for (let i = 0; i < nWords; i++) {
+  words.push(readLine());
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nSearches = readInt();
+const searchWords = [];
+for (let i = 0; i < nSearches; i++) {
+  searchWords.push(readLine());
+}
+const results = solve(words, searchWords);
+for (const r of results) {
+  writeBool(r);
+}

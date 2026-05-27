@@ -33,23 +33,14 @@ Template (python3):
             '''
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "470. Implement Rand10() Using Rand7()"
-    test_cases = [
-        TestCase(input=5, expected=True, label="generates 5 values in range [1, 10]"),
-        TestCase(input=1, expected=True, label="single value"),
-        TestCase(input=100, expected=True, label="100 values"),
-    ]
-
-    def solve(self, n: int) -> bool:
-        raise NotImplementedError("TODO: Implement solve(self, n: int) -> bool")
+def solve(n: int) -> bool:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    result = solve(n)
+    write_bool(result)

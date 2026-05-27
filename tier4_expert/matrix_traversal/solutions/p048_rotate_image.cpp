@@ -30,10 +30,7 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+#include "io.h"
 #include <algorithm>
 
 static void rotate(std::vector<std::vector<int>> &matrix)
@@ -46,39 +43,15 @@ static void rotate(std::vector<std::vector<int>> &matrix)
         std::reverse(row.begin(), row.end());
 }
 
-typedef struct {
-    const char *label;
-    std::vector<std::vector<int>> input;
-    std::vector<std::vector<int>> expected;
-} MatTC;
-
 int main(void)
 {
-    MatTC tests[] = {
-        {"example 1", {{1,2,3},{4,5,6},{7,8,9}}, {{7,4,1},{8,5,2},{9,6,3}}},
-        {"example 2", {{5,1,9,11},{2,4,8,10},{13,3,6,7},{15,14,12,16}}, {{15,13,2,5},{14,3,4,1},{12,6,8,9},{16,7,10,11}}},
-        {"single element", {{1}}, {{1}}},
-        {"2x2 matrix", {{1,2},{3,4}}, {{3,1},{4,2}}},
-        {"negative values", {{-1,-2,-3},{-4,-5,-6},{-7,-8,-9}}, {{-7,-4,-1},{-8,-5,-2},{-9,-6,-3}}},
-    };
-
-    int n_tests = (int)(sizeof(tests) / sizeof(tests[0]));
-    printf("\n============================================================\n");
-    printf("  48. Rotate Image\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int t = 0; t < n_tests; t++) {
-        MatTC &tc = tests[t];
-        rotate(tc.input);
-        bool ok = tc.input == tc.expected;
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", t + 1, tc.label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", t + 1, tc.label);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    std::vector<int> header = read_ints();
+    int rows = header[0];
+    std::vector<std::vector<int>> matrix;
+    for (int i = 0; i < rows; i++)
+        matrix.push_back(read_ints());
+    rotate(matrix);
+    for (const auto &row : matrix)
+        write_ints(row);
+    return 0;
 }

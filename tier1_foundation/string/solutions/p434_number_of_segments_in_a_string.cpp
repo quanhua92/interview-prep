@@ -24,8 +24,8 @@
  *         def countSegments(self, s: str) -> int:
  */
 
-
-#include "cpptest.h"
+#include "io.h"
+#include <string>
 
 int countSegments(const std::string &s)
 {
@@ -42,33 +42,9 @@ int countSegments(const std::string &s)
     return count;
 }
 
-void __attribute__((unused)) _use_harness_fns(void)
+int main(void)
 {
-    (void)print_arr;
-}
-
-int main()
-{
-    struct { const char *s; int expected; const char *label; } tests[] = {
-        {"Hello, my name is John", 5, "example 1"},
-        {"Hello", 1, "example 2"},
-        {"", 0, "empty string"},
-        {"   ", 0, "only spaces"},
-        {"    foo    bar   ", 2, "leading/trailing/multiple spaces"},
-        {"a b c d e", 5, "single char segments"},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = countSegments(tests[i].s);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    std::string s = read_line();
+    write_int(countSegments(s));
+    return 0;
 }

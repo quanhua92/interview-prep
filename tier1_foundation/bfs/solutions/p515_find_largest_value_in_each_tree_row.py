@@ -27,67 +27,61 @@ Template (python3):
         def largestValues(self, root: Optional[TreeNode]) -> List[int]:
 """
 
+from src.wasm_libs.py.io import *
 import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase, TreeNode
+from collections import deque
 
 
-class Solution(Problem):
-    name = "515. Find Largest Value in Each Tree Row"
-    test_cases = [
-        TestCase(
-            input=TreeNode.from_list([1, 3, 2, 5, 3, None, 9]),
-            expected=[1, 3, 9],
-            label="example 1",
-        ),
-        TestCase(
-            input=TreeNode.from_list([1, 2, 3]),
-            expected=[1, 3],
-            label="example 2",
-        ),
-        TestCase(
-            input=TreeNode.from_list([]),
-            expected=[],
-            label="empty tree",
-        ),
-        TestCase(
-            input=TreeNode.from_list([-1, -2, -3, -4]),
-            expected=[-1, -2, -4],
-            label="negative values",
-        ),
-        TestCase(
-            input=TreeNode.from_list([1, 2, None, 3]),
-            expected=[1, 2, 3],
-            label="left chain",
-        ),
-        TestCase(
-            input=TreeNode.from_list([5]),
-            expected=[5],
-            label="single node",
-        ),
-    ]
+def build_tree(vals: list[int]) -> list | None:
+    if not vals or vals[0] is None:
+        return None
+    root = {"val": vals[0], "left": None, "right": None}
+    queue = deque([root])
+    i = 1
+    while queue and i < len(vals):
+        node = queue.popleft()
+        if i < len(vals) and vals[i] is not None:
+            node["left"] = {"val": vals[i], "left": None, "right": None}
+            queue.append(node["left"])
+        i += 1
+        if i < len(vals) and vals[i] is not None:
+            node["right"] = {"val": vals[i], "left": None, "right": None}
+            queue.append(node["right"])
+        i += 1
+    return root
 
-    def solve(self, root: TreeNode) -> list[int]:
-        from collections import deque
 
-        if not root:
-            return []
-        result = []
-        queue = deque([root])
-        while queue:
-            level_size = len(queue)
-            max_val = float("-inf")
-            for _ in range(level_size):
-                node = queue.popleft()
-                max_val = max(max_val, node.val)
-                if node.left:
-                    queue.append(node.left)
-                if node.right:
-                    queue.append(node.right)
-            result.append(max_val)
-        return result
+def solve(vals: list[int]) -> list[int]:
+    root = build_tree(vals)
+    if not root:
+        return []
+    result = []
+    queue = deque([root])
+    while queue:
+        level_size = len(queue)
+        max_val = float("-inf")
+        for _ in range(level_size):
+            node = queue.popleft()
+            max_val = max(max_val, node["val"])
+            if node["left"]:
+                queue.append(node["left"])
+            if node["right"]:
+                queue.append(node["right"])
+        result.append(max_val)
+    return result
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    if n == 0:
+        sys.exit(0)
+    else:
+        tokens = read_line().split()
+        vals = []
+        for t in tokens:
+            if t == "null":
+                vals.append(None)
+            else:
+                vals.append(int(t))
+        result = solve(vals)
+        write_ints(result)

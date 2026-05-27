@@ -30,8 +30,7 @@
  *         def findRotateSteps(self, ring: str, key: str) -> int:
  */
 
-
-#include "ctest.h"
+#include "io.h"
 #include <string.h>
 #include <limits.h>
 
@@ -70,25 +69,10 @@ int findRotateSteps(const char *ring, const char *key) {
 }
 
 int main(void) {
-    int passed = 0;
-    int total = 5;
-    struct TC { const char *label; const char *ring; const char *key; int expected; };
-    struct TC tests[] = {
-        {"example 1", "godding", "gd", 4},
-        {"example 2", "godding", "godding", 13},
-        {"single char ring and key", "a", "a", 1},
-        {"reverse order key", "abc", "cba", 6},
-        {"repeated chars", "aaaaa", "aaa", 3},
-    };
-    for (int i = 0; i < total; i++) {
-        int got = findRotateSteps(tests[i].ring, tests[i].key);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, total);
-    return passed == total ? 0 : 1;
+    char *ring = read_line();
+    char *key = read_line();
+    write_int(findRotateSteps(ring, key));
+    free(ring);
+    free(key);
+    return 0;
 }

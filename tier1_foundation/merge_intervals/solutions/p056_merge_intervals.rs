@@ -27,44 +27,35 @@
  * Hint: Sort intervals by start time, then merge overlapping ones.
  */
 
+use wasm_libs::*;
 
-use rstest::{TestCase, run_tests};
-
-fn solve(flat: &[i32], _target: i32) -> Vec<i32> {
-    let n = flat.len() / 2;
-    if n == 0 {
-        return vec![];
+fn solve(intervals: &mut Vec<[i32; 2]>) {
+    if intervals.is_empty() {
+        return;
     }
-
-    let mut iv: Vec<[i32; 2]> = (0..n).map(|i| [flat[i * 2], flat[i * 2 + 1]]).collect();
-    iv.sort_by_key(|p| p[0]);
-
-    let mut res = vec![iv[0][0], iv[0][1]];
-
-    for i in 1..n {
-        if iv[i][0] <= *res.last().unwrap() {
-            let last = res.last_mut().unwrap();
-            *last = (*last).max(iv[i][1]);
+    intervals.sort_by_key(|p| p[0]);
+    let mut merged: Vec<[i32; 2]> = vec![intervals[0]];
+    for i in 1..intervals.len() {
+        let last = merged.last_mut().unwrap();
+        if intervals[i][0] <= last[1] {
+            last[1] = last[1].max(intervals[i][1]);
         } else {
-            res.push(iv[i][0]);
-            res.push(iv[i][1]);
+            merged.push(intervals[i]);
         }
     }
-
-    res
+    for row in &merged {
+        write_ints(row);
+    }
 }
 
 fn main() {
-    static TESTS: &[TestCase] = &[
-        TestCase { label: "example 1", input_arr: &[1,3,2,6,8,10,15,18], target: 0, expected: &[1,6,8,10,15,18] },
-        TestCase { label: "example 2", input_arr: &[1,4,4,5], target: 0, expected: &[1,5] },
-        TestCase { label: "overlapping start", input_arr: &[1,4,0,4], target: 0, expected: &[0,4] },
-        TestCase { label: "single interval", input_arr: &[1,1], target: 0, expected: &[1,1] },
-        TestCase { label: "all overlap into one", input_arr: &[1,4,2,3,3,5], target: 0, expected: &[1,5] },
-        TestCase { label: "no overlaps", input_arr: &[1,2,3,4,5,6], target: 0, expected: &[1,2,3,4,5,6] },
-        TestCase { label: "interval contains others", input_arr: &[1,10,2,3,4,5], target: 0, expected: &[1,10] },
-        TestCase { label: "adjacent intervals touching", input_arr: &[1,2,2,3,3,4], target: 0, expected: &[1,4] },
-    ];
-
-    std::process::exit(run_tests!("P56: Merge Intervals", solve, TESTS));
+    let n = read_int();
+    let mut intervals: Vec<[i32; 2]> = (0..n)
+        .map(|_| {
+            let row = read_ints();
+            [row[0], row[1]]
+        })
+        .collect();
+    solve(&mut intervals);
+    std::process::exit(0);
 }

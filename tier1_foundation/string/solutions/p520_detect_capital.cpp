@@ -22,13 +22,11 @@
  *         def detectCapitalUse(self, word: str) -> bool:
  */
 
-
-#include <cstdio>
-#include <cstdlib>
+#include "io.h"
 #include <cctype>
 #include <string>
 
-static bool detectCapitalUse(const std::string &word)
+bool detectCapitalUse(const std::string &word)
 {
     int upper = 0;
     for (char c : word)
@@ -38,29 +36,9 @@ static bool detectCapitalUse(const std::string &word)
     return upper == len || upper == 0 || (first_upper && upper == 1);
 }
 
-int main()
+int main(void)
 {
-    struct { const char *label; const char *input; bool expected; } tests[] = {
-        {"example 1",       "USA",      true},
-        {"example 2",       "FlaG",     false},
-        {"single lowercase","a",        true},
-        {"single uppercase","Z",        true},
-        {"all lowercase",   "leetcode", true},
-        {"title case",      "Google",   true},
-        {"lowercase then uppercase", "mL", false},
-    };
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        bool got = detectCapitalUse(tests[i].input);
-        if (got == tests[i].expected) {
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-            passed++;
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %s\n    Got: %s\n", tests[i].expected ? "true" : "false", got ? "true" : "false");
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    std::string word = read_line();
+    write_bool(detectCapitalUse(word));
+    return 0;
 }

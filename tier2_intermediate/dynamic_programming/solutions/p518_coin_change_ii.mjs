@@ -36,6 +36,8 @@
  *         def change(self, amount: int, coins: List[int]) -> int:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(amount, coins) {
   const dp = new Array(amount + 1).fill(0);
   dp[0] = 1;
@@ -47,25 +49,6 @@ function solve(amount, coins) {
   return dp[amount];
 }
 
-const tests = [
-  { label: "example 1", input: [5, [1, 2, 5]], expected: 4 },
-  { label: "example 2", input: [3, [2]], expected: 0 },
-  { label: "example 3", input: [10, [10]], expected: 1 },
-  { label: "zero amount", input: [0, [1, 2, 5]], expected: 1 },
-  { label: "single coin exact amount", input: [1, [1]], expected: 1 },
-  { label: "large amount", input: [500, [1, 2, 5]], expected: 12701 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const amount = readInt();
+const coins = readInts();
+writeInt(solve(amount, coins));

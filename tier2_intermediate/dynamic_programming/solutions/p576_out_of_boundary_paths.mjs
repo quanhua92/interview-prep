@@ -30,51 +30,39 @@
  *         def findPaths(self, m: int, n: int, maxMove: int, startRow: int, startColumn: int) -> int:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(m, n, maxMove, startRow, startColumn) {
-  const mod = 10 ** 9 + 7;
-  const dp = Array.from({ length: maxMove + 1 }, () =>
-    Array.from({ length: m }, () => new Array(n).fill(0))
-  );
-  const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-  dp[0][startRow][startColumn] = 1;
-  let result = 0;
+  const mod = 1000000007n;
+  const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
+  let dp = new Array(m * n).fill(0n);
+  let nxt = new Array(m * n).fill(0n);
+  dp[startRow * n + startColumn] = 1n;
+  let result = 0n;
   for (let move = 0; move < maxMove; move++) {
+    nxt.fill(0n);
     for (let r = 0; r < m; r++) {
       for (let c = 0; c < n; c++) {
-        if (dp[move][r][c] === 0) continue;
+        const val = dp[r * n + c];
+        if (val === 0n) continue;
         for (const [dr, dc] of dirs) {
-          const nr = r + dr;
-          const nc = c + dc;
+          const nr = r + dr, nc = c + dc;
           if (nr >= 0 && nr < m && nc >= 0 && nc < n) {
-            dp[move + 1][nr][nc] = (dp[move + 1][nr][nc] + dp[move][r][c]) % mod;
+            nxt[nr * n + nc] = (nxt[nr * n + nc] + val) % mod;
           } else {
-            result = (result + dp[move][r][c]) % mod;
+            result = (result + val) % mod;
           }
         }
       }
     }
+    [dp, nxt] = [nxt, dp];
   }
-  return result;
+  return Number(result);
 }
 
-const tests = [
-  { label: "example 1", input: [2, 2, 2, 0, 0], expected: 6 },
-  { label: "example 2", input: [1, 3, 3, 0, 1], expected: 12 },
-  { label: "1x1 grid single move", input: [1, 1, 1, 0, 0], expected: 4 },
-  { label: "corner 1 move", input: [2, 2, 1, 0, 0], expected: 2 },
-  { label: "zero moves", input: [3, 3, 0, 1, 1], expected: 0 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const m = readInt();
+const n = readInt();
+const mm = readInt();
+const sr = readInt();
+const sc = readInt();
+writeInt(solve(m, n, mm, sr, sc));

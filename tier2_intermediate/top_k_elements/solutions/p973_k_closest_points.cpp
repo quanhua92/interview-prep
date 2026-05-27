@@ -4,7 +4,7 @@
  * Topics: Array, Math, Divide and Conquer, Geometry, Sorting, Heap (Priority Queue), Quickselect
  *
  * Given an array of points where points[i] = [xi, yi] represents a point on the X-Y plane and an integer k, return the k closest points to the origin (0, 0).
- * The distance between two points on the X-Y plane is the Euclidean distance (i.e., √(x1 - x2)2 + (y1 - y2)2).
+ * The distance between two points on the X-Y plane is the Euclidean distance (i.e., sqrt((x1 - x2)^2 + (y1 - y2)^2)).
  * You may return the answer in any order. The answer is guaranteed to be unique (except for the order that it is in).
  *
  * Example 1:
@@ -32,11 +32,7 @@
  * Hint: Use a max-heap of size k keyed by negative distance squared.
  */
 
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+#include "io.h"
 #include <algorithm>
 #include <vector>
 
@@ -54,40 +50,14 @@ std::vector<std::vector<int>> kClosest(std::vector<std::vector<int>> points, int
 
 int main(void)
 {
-    struct TC {
-        const char *label;
-        std::vector<std::vector<int>> input;
-        int k;
-        std::vector<std::vector<int>> expected;
-    };
-    TC tests[] = {
-        {"example 1",          {{1, 3}, {-2, 2}},                  1, {{-2, 2}}},
-        {"example 2 (sorted)", {{3, 3}, {5, -1}, {-2, 4}},         2, {{-2, 4}, {3, 3}}},
-        {"origin itself",      {{0, 0}},                           1, {{0, 0}}},
-        {"tie on distance",    {{1, 0}, {0, 1}, {2, 0}},            2, {{0, 1}, {1, 0}}},
-        {"negative coords",    {{-1, -1}, {2, 2}, {3, 3}},         1, {{-1, -1}}},
-        {"two tied closest",   {{1, 0}, {0, 1}, {2, 0}},            2, {{0, 1}, {1, 0}}},
-        {"all same point",     {{1, 1}, {1, 1}, {1, 1}},           2, {{1, 1}, {1, 1}}},
-        {"origin is closest",  {{3, 4}, {0, 0}, {1, 1}},           1, {{0, 0}}},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  973. K Closest Points to Origin\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        auto got = kClosest(tests[i].input, tests[i].k);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected %zu points, got %zu\n", tests[i].expected.size(), got.size());
-        }
-    }
-
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    std::vector<int> flat = read_ints();
+    std::vector<int> k_arr = read_ints();
+    int k = k_arr[0];
+    std::vector<std::vector<int>> points;
+    for (size_t i = 0; i < flat.size(); i += 2)
+        points.push_back({flat[i], flat[i + 1]});
+    auto result = kClosest(points, k);
+    for (const auto &p : result)
+        write_ints(p);
+    return 0;
 }

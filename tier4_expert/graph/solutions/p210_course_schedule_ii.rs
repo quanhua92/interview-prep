@@ -41,74 +41,53 @@
  * Hint: Use Kahn's algorithm (topological sort with BFS) to produce a valid course order.
  */
 
-
 use std::collections::VecDeque;
+use wasm_libs::*;
 
-fn find_order(num_courses: usize, prerequisites: &[(i32, i32)]) -> Vec<i32> {
-    let mut adj: Vec<Vec<usize>> = vec![vec![]; num_courses];
-    let mut in_degree: Vec<i32> = vec![0; num_courses];
-    for &(course, prereq) in prerequisites {
-        let c = course as usize;
-        let p = prereq as usize;
-        adj[p].push(c);
-        in_degree[c] += 1;
-    }
-    let mut queue: VecDeque<usize> = VecDeque::new();
-    for i in 0..num_courses {
-        if in_degree[i] == 0 {
-            queue.push_back(i);
+impl Solution {
+    fn find_order(num_courses: usize, prerequisites: &[(i32, i32)]) -> Vec<i32> {
+        let mut adj: Vec<Vec<usize>> = vec![vec![]; num_courses];
+        let mut in_degree: Vec<i32> = vec![0; num_courses];
+        for &(course, prereq) in prerequisites {
+            let c = course as usize;
+            let p = prereq as usize;
+            adj[p].push(c);
+            in_degree[c] += 1;
         }
-    }
-    let mut order: Vec<i32> = Vec::new();
-    while let Some(node) = queue.pop_front() {
-        order.push(node as i32);
-        for &nb in &adj[node] {
-            in_degree[nb] -= 1;
-            if in_degree[nb] == 0 {
-                queue.push_back(nb);
+        let mut queue: VecDeque<usize> = VecDeque::new();
+        for i in 0..num_courses {
+            if in_degree[i] == 0 {
+                queue.push_back(i);
             }
         }
+        let mut order: Vec<i32> = Vec::new();
+        while let Some(node) = queue.pop_front() {
+            order.push(node as i32);
+            for &nb in &adj[node] {
+                in_degree[nb] -= 1;
+                if in_degree[nb] == 0 {
+                    queue.push_back(nb);
+                }
+            }
+        }
+        if order.len() == num_courses { order } else { vec![] }
     }
-    if order.len() == num_courses { order } else { vec![] }
 }
 
-struct TC {
-    label: &'static str,
-    num_courses: usize,
-    prereqs: &'static [(i32, i32)],
-    expected: &'static [i32],
-}
+struct Solution;
 
 fn main() {
-    let tests: &[TC] = &[
-        TC { label: "example 1", num_courses: 2, prereqs: &[(1,0)], expected: &[0,1] },
-        TC { label: "example 2", num_courses: 4, prereqs: &[(1,0),(2,0),(3,1),(3,2)], expected: &[0,1,2,3] },
-        TC { label: "no prerequisites", num_courses: 1, prereqs: &[], expected: &[0] },
-        TC { label: "cycle returns empty", num_courses: 2, prereqs: &[(1,0),(0,1)], expected: &[] },
-        TC { label: "3-node cycle", num_courses: 3, prereqs: &[(0,1),(1,2),(2,0)], expected: &[] },
-        TC { label: "all depend on course 0", num_courses: 4, prereqs: &[(0,1),(0,2),(0,3)], expected: &[1,2,3,0] },
-        TC { label: "linear chain", num_courses: 3, prereqs: &[(2,1),(1,0)], expected: &[0,1,2] },
-    ];
+    let header = read_ints();
+    let num_courses = header[0] as usize;
+    let pair_count = header[1] as usize;
 
-    println!("\n============================================================");
-    println!("  210. Course Schedule II");
-    println!("============================================================");
-
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = find_order(tc.num_courses, tc.prereqs);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {:?}", tc.expected);
-            println!("    Got:      {:?}", got);
-        }
+    let mut prerequisites: Vec<(i32, i32)> = Vec::new();
+    for _ in 0..pair_count {
+        let pair = read_ints();
+        prerequisites.push((pair[0], pair[1]));
     }
 
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let order = Solution::find_order(num_courses, &prerequisites);
+    write_ints(&order);
+    std::process::exit(0);
 }

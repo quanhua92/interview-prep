@@ -25,76 +25,38 @@
  *         def getMaxRepetitions(self, s1: str, n1: int, s2: str, n2: int) -> int:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(s1, n1, s2, n2) {
   if (n1 === 0) return 0;
-  const s2Len = s2.length;
-  const s1Len = s1.length;
-
+  const s2Len = s2.length, s1Len = s1.length;
   const s1Set = new Set(s1);
-  for (const ch of s2) {
-    if (!s1Set.has(ch)) return 0;
-  }
-
+  for (const ch of s2) { if (!s1Set.has(ch)) return 0; }
   const indexMap = new Map();
-  let count = 0;
-  let s2Index = 0;
-
+  let count = 0, s2Index = 0;
   for (let i = 0; i < n1; i++) {
     for (let j = 0; j < s1Len; j++) {
-      if (s1[j] === s2[s2Index]) {
-        s2Index++;
-        if (s2Index === s2Len) {
-          count++;
-          s2Index = 0;
-        }
-      }
+      if (s1[j] === s2[s2Index]) { s2Index++; if (s2Index === s2Len) { count++; s2Index = 0; } }
     }
     if (indexMap.has(s2Index)) {
       const [prevI, prevCount] = indexMap.get(s2Index);
-      const cycleLen = i - prevI;
-      const cycleCount = count - prevCount;
-      const remaining = n1 - 1 - i;
-      const fullCycles = Math.floor(remaining / cycleLen);
+      const cycleLen = i - prevI, cycleCount = count - prevCount;
+      const remaining = n1 - 1 - i, fullCycles = Math.floor(remaining / cycleLen);
       count += fullCycles * cycleCount;
       const processed = i + fullCycles * cycleLen + 1;
       for (let ii = processed; ii < n1; ii++) {
         for (let jj = 0; jj < s1Len; jj++) {
-          if (s1[jj] === s2[s2Index]) {
-            s2Index++;
-            if (s2Index === s2Len) {
-              count++;
-              s2Index = 0;
-            }
-          }
+          if (s1[jj] === s2[s2Index]) { s2Index++; if (s2Index === s2Len) { count++; s2Index = 0; } }
         }
       }
       break;
-    } else {
-      indexMap.set(s2Index, [i, count]);
-    }
+    } else { indexMap.set(s2Index, [i, count]); }
   }
   return Math.floor(count / n2);
 }
 
-const tests = [
-  { label: "example 1", input: ["acb", 4, "ab", 2], expected: 2 },
-  { label: "example 2", input: ["acb", 1, "acb", 1], expected: 1 },
-  { label: "single char repeated", input: ["a", 100, "a", 1], expected: 100 },
-  { label: "impossible char", input: ["a", 1, "b", 1], expected: 0 },
-  { label: "each s1 yields one s2 match", input: ["abc", 10, "ac", 1], expected: 10 },
-  { label: "overlap matching", input: ["aba", 3, "ab", 1], expected: 3 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const s1 = readLine();
+const n1 = readInt();
+const s2 = readLine();
+const n2 = readInt();
+writeInt(solve(s1, n1, s2, n2));

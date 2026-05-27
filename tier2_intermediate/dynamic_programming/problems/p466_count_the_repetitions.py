@@ -25,26 +25,17 @@ Template (python3):
         def getMaxRepetitions(self, s1: str, n1: int, s2: str, n2: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "466. Count The Repetitions"
-    test_cases = [
-        TestCase(input=("acb", 4, "ab", 2), expected=2, label="example 1"),
-        TestCase(input=("acb", 1, "acb", 1), expected=1, label="example 2"),
-        TestCase(input=("a", 100, "a", 1), expected=100, label="single char repeated"),
-        TestCase(input=("a", 1, "b", 1), expected=0, label="impossible char"),
-        TestCase(input=("abc", 10, "ac", 1), expected=10, label="each s1 yields one s2 match"),
-        TestCase(input=("aba", 3, "ab", 1), expected=3, label="overlap matching"),
-    ]
-
-    def solve(self, s1: str, n1: int, s2: str, n2: int) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, s1, n1, s2, n2) -> int")
+def solve(s1: str, n1: int, s2: str, n2: int) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    s1 = read_line()
+    n1 = read_int()
+    s2 = read_line()
+    n2 = read_int()
+    result = solve(s1, n1, s2, n2)
+    write_int(result)

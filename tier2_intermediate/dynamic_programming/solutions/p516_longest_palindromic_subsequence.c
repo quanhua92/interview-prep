@@ -24,8 +24,7 @@
  *         def longestPalindromeSubseq(self, s: str) -> int:
  */
 
-
-#include "ctest.h"
+#include "io.h"
 #include <string.h>
 
 int longestPalindromeSubseq(const char *s) {
@@ -47,25 +46,8 @@ int longestPalindromeSubseq(const char *s) {
 }
 
 int main(void) {
-    struct { const char *label; const char *s; int expected; } tests[] = {
-        {"example 1", "bbbab", 4},
-        {"example 2", "cbbd", 2},
-        {"single char", "a", 1},
-        {"two same chars", "aa", 2},
-        {"all distinct", "abcdef", 1},
-        {"full palindrome", "aabbaa", 6},
-    };
-    int tn = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < tn; i++) {
-        int got = longestPalindromeSubseq(tests[i].s);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, tn);
-    return passed == tn ? 0 : 1;
+    char *s = read_line();
+    write_int(longestPalindromeSubseq(s));
+    free(s);
+    return 0;
 }

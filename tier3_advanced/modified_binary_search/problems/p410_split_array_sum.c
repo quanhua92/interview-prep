@@ -30,21 +30,8 @@
  * 
  * Hint: Binary search the answer in [max(nums), sum(nums)] and check feasibility greedily.
  */
-#include <stdio.h>
-#include <limits.h>
-
-typedef struct {
-    const char *label;
-    int nums[1000];
-    int nums_n;
-    int k;
-    long long expected;
-} TestCase;
-
-static int feasible(int *nums, int nums_n, long long max_sum, int k)
-{
-    abort();
-}
+#include "io.h"
+#include <stdlib.h>
 
 long long splitArray(int *nums, int numsSize, int k)
 {
@@ -53,33 +40,13 @@ long long splitArray(int *nums, int numsSize, int k)
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {7,2,5,10,8}, 5, 2, 18},
-        {"example 2", {1,2,3,4,5}, 5, 2, 9},
-        {"example 3", {1,4,4}, 3, 3, 4},
-        {"k equals length", {1,2,3,4,5}, 5, 5, 5},
-        {"single element", {5}, 1, 1, 5},
-        {"all zeros", {0,0,0,0}, 4, 2, 0},
-        {"uniform values", {1,1,1,1,1,1,1,1}, 8, 4, 2},
-        {"large values", {1000000,1000000,1000000}, 3, 2, 2000000},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  410. Split Array Largest Sum\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        long long got = splitArray(tests[i].nums, tests[i].nums_n, tests[i].k);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %lld\n    Got:      %lld\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-    return passed == n ? 0 : 1;
+    int n;
+    int *nums = read_ints(&n);
+    int kk;
+    int *k_line = read_ints(&kk);
+    int k = k_line[0];
+    free(k_line);
+    write_int((int)splitArray(nums, n, k));
+    free(nums);
+    return 0;
 }

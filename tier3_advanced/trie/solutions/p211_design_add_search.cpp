@@ -55,11 +55,10 @@
  * Hint: Build a Trie from the word list, then search with DFS handling '.' wildcards by trying all children.
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 struct TrieNode {
     std::unordered_map<char, TrieNode*> children;
@@ -102,52 +101,19 @@ private:
     }
 };
 
-int main() {
-    (void)print_arr;
-
-    struct TC {
-        const char *label;
-        std::vector<const char*> words;
-        std::vector<const char*> searches;
-        std::vector<int> expected;
-    };
-
-    TC tests[] = {
-        {"example 1", {"bad","dad","mad"}, {"pad","bad",".ad","b.."}, {0,1,1,1}},
-        {"example 2", {"a","ab"}, {"a",".a","ab"}, {1,0,1}},
-        {"all dots pattern", {"abc"}, {"...",".."}, {1,0}},
-        {"single char dot matches multiple", {"a","b"}, {"."}, {1}},
-        {"dot at beginning", {"abc","xbc"}, {"bc"}, {0}},
-        {"dot in middle and at end", {"abc"}, {"a.c","a.."}, {1,1}},
-    };
-
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    printf("\n============================================================\n");
-    printf("  211. Design Add and Search Words Data Structure\n");
-    printf("============================================================\n");
-
-    for (int t = 0; t < n; t++) {
-        WordDictionary wd;
-        for (auto w : tests[t].words)
-            wd.addWord(w);
-
-        int ok = 1;
-        for (int i = 0; i < (int)tests[t].searches.size(); i++) {
-            bool got = wd.search(tests[t].searches[i]);
-            if ((int)got != tests[t].expected[i]) { ok = 0; break; }
-        }
-
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", t + 1, tests[t].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", t + 1, tests[t].label);
-        }
+int main(void) {
+    int n_words = read_int();
+    WordDictionary wd;
+    for (int i = 0; i < n_words; i++) {
+        std::string w = read_line();
+        wd.addWord(w);
     }
 
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-    return passed == n ? 0 : 1;
+    int n_searches = read_int();
+    for (int i = 0; i < n_searches; i++) {
+        std::string s = read_line();
+        write_bool(wd.search(s));
+    }
+
+    return 0;
 }

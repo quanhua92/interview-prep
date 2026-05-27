@@ -2,115 +2,29 @@
  * P355: Design Twitter [PREMIUM] (Medium)
  * https://leetcode.com/problems/design-twitter/
  * Topics: Hash Table, Linked List, Design, Heap (Priority Queue)
- * 
- * Design a simplified version of Twitter where users can post tweets, follow/unfollow another user, and is able to see the 10 most recent tweets in the user's news feed.
- * Implement the Twitter class:
- * Example 1:
- *     Input
- * Example 1:
- *     ["Twitter", "postTweet", "getNewsFeed", "follow", "postTweet", "getNewsFeed", "unfollow", "getNewsFeed"]
- *     [[], [1, 5], [1], [1, 2], [2, 6], [1], [1, 2], [1]]
- *     Output
- *     [null, null, [5], null, null, [6, 5], null, [5]]
- * 
- *     Explanation
- *     Twitter twitter = new Twitter();
- *     twitter.postTweet(1, 5); // User 1 posts a new tweet (id = 5).
- *     twitter.getNewsFeed(1);  // User 1's news feed should return a list with 1 tweet id -> [5]. return [5]
- *     twitter.follow(1, 2);    // User 1 follows user 2.
- *     twitter.postTweet(2, 6); // User 2 posts a new tweet (id = 6).
- *     twitter.getNewsFeed(1);  // User 1's news feed should return a list with 2 tweet ids -> [6, 5]. Tweet id 6 should precede tweet id 5 because it is posted after tweet id 5.
- *     twitter.unfollow(1, 2);  // User 1 unfollows user 2.
- *     twitter.getNewsFeed(1);  // User 1's news feed should return a list with 1 tweet id -> [5], since user 1 is no longer following user 2.
- * 
+ *
+ * Design a simplified version of Twitter where users can post tweets, follow/unfollow another user,
+ * and is able to see the 10 most recent tweets in the user's news feed.
+ *
  * Constraints:
  *     - 1 <= userId, followerId, followeeId <= 500
  *     - 0 <= tweetId <= 104
  *     - All the tweets have unique IDs.
  *     - At most 3 * 104 calls will be made to postTweet, getNewsFeed, follow, and unfollow.
  *     - A user cannot follow himself.
- * 
+ *
  * Template (python3):
  *     class Twitter:
- * 
  *         def __init__(self):
- * 
- * 
  *         def postTweet(self, userId: int, tweetId: int) -> None:
- * 
- * 
  *         def getNewsFeed(self, userId: int) -> List[int]:
- * 
- * 
  *         def follow(self, followerId: int, followeeId: int) -> None:
- * 
- * 
  *         def unfollow(self, followerId: int, followeeId: int) -> None:
- * 
- * 
- * 
- *     # Your Twitter object will be instantiated and called as such:
- *     # obj = Twitter()
- *     # obj.postTweet(userId,tweetId)
- *     # param_2 = obj.getNewsFeed(userId)
- *     # obj.follow(followerId,followeeId)
- *     # obj.unfollow(followerId,followeeId)
  */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
-#include <queue>
-#include <vector>
-#include <unordered_set>
 
-class Twitter {
-    struct Tweet { int tweet_id; int time; int next; };
-    std::vector<Tweet> pool;
-    std::vector<int> head;
-    std::vector<std::unordered_set<int>> following;
-    int clock;
-public:
-    Twitter() : head(505, -1), following(505), clock(0) {}
-
-    void postTweet(int userId, int tweetId) {
-        abort();
-    }
-
-    std::vector<int> getNewsFeed(int userId) {
-        abort();
-    }
-
-    void follow(int followerId, int followeeId) { abort(); }
-    void unfollow(int followerId, int followeeId) { abort(); }
-};
+#include "io.h"
 
 int main(void)
 {
-    Twitter tw;
-
-    printf("\n============================================================\n");
-    printf("  355. Design Twitter\n");
-    printf("============================================================\n");
-
-    tw.postTweet(1, 5);
-    auto feed = tw.getNewsFeed(1);
-    int ok1 = feed.size() == 1 && feed[0] == 5;
-    printf("  Test 1 (post + feed): %s\n", ok1 ? "PASS" : "FAIL");
-
-    tw.follow(1, 2);
-    tw.postTweet(2, 6);
-    feed = tw.getNewsFeed(1);
-    int ok2 = feed.size() == 2 && feed[0] == 6 && feed[1] == 5;
-    printf("  Test 2 (follow + merge feed): %s\n", ok2 ? "PASS" : "FAIL");
-
-    tw.unfollow(1, 2);
-    feed = tw.getNewsFeed(1);
-    int ok3 = feed.size() == 1 && feed[0] == 5;
-    printf("  Test 3 (unfollow): %s\n", ok3 ? "PASS" : "FAIL");
-
-    int passed = (ok1 && ok2 && ok3) ? 3 : 0;
-    printf("\n  %d/3 passed\n", passed);
-    printf("============================================================\n\n");
-    return passed == 3 ? 0 : 1;
+    abort();
 }

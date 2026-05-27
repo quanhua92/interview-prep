@@ -11,21 +11,9 @@
  * Example 2:
  *     Input: root = [1,2,3,4,null,5,6,null,null,7]
  *     Output: 7
- *
- * Constraints:
- *     - The number of nodes in the tree is in the range [1, 104].
- *     - -231 <= Node.val <= 231 - 1
- *
- * Template (python3):
- *     # Definition for a binary tree node.
- *     # class TreeNode:
- *     #     def __init__(self, val=0, left=None, right=None):
- *     #         self.val = val
- *     #         self.left = left
- *     #         self.right = right
- *     class Solution:
- *         def findBottomLeftValue(self, root: Optional[TreeNode]) -> int:
  */
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
 
 function buildTree(arr) {
   if (arr.length === 0) return null;
@@ -48,7 +36,8 @@ function buildTree(arr) {
   return root;
 }
 
-function findBottomLeftValue(root) {
+function solve(vals) {
+  const root = buildTree(vals);
   const queue = [root];
   let result = 0;
   while (queue.length > 0) {
@@ -63,30 +52,7 @@ function findBottomLeftValue(root) {
   return result;
 }
 
-function solve(input) {
-  return findBottomLeftValue(input);
-}
-
-// --- tests ---
-const tests = [
-  { label: "example 1", input: buildTree([2, 1, 3]), expected: 1 },
-  { label: "example 2", input: buildTree([1, 2, 3, 4, null, 5, 6, null, null, 7]), expected: 7 },
-  { label: "single node", input: buildTree([1]), expected: 1 },
-  { label: "left child only", input: buildTree([1, 2]), expected: 2 },
-  { label: "right child only", input: buildTree([1, null, 2]), expected: 2 },
-  { label: "left skewed deep", input: buildTree([1, 2, null, 3, null, 4]), expected: 4 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const n = readInt();
+const tokens = readLine().split(' ');
+const vals = tokens.map(t => t === 'null' ? null : parseInt(t, 10));
+writeInt(solve(vals));

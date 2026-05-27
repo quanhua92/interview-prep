@@ -28,7 +28,7 @@
  */
 
 
-use std::process::exit;
+use wasm_libs::*;
 
 fn find_diagonal_order(mat: &Vec<Vec<i32>>) -> Vec<i32>
 {
@@ -59,41 +59,19 @@ fn find_diagonal_order(mat: &Vec<Vec<i32>>) -> Vec<i32>
     result
 }
 
-struct DiagTC {
-    label: &'static str,
-    input: Vec<Vec<i32>>,
-    expected: Vec<i32>,
+fn read_int_matrix() -> Vec<Vec<i32>> {
+    let header = read_ints();
+    let cols = header[0] as usize;
+    let mut matrix = Vec::with_capacity(cols);
+    for _ in 0..cols {
+        matrix.push(read_ints());
+    }
+    matrix
 }
 
 fn main()
 {
-    let tests: Vec<DiagTC> = vec![
-        DiagTC { label: "example 1", input: vec![vec![1,2,3],vec![4,5,6],vec![7,8,9]], expected: vec![1,2,4,7,5,3,6,8,9] },
-        DiagTC { label: "example 2", input: vec![vec![1,2],vec![3,4],vec![5,6]], expected: vec![1,2,3,5,4,6] },
-        DiagTC { label: "single element", input: vec![vec![1]], expected: vec![1] },
-        DiagTC { label: "single row", input: vec![vec![1,2,3,4]], expected: vec![1,2,3,4] },
-        DiagTC { label: "single column", input: vec![vec![1],vec![2],vec![3],vec![4]], expected: vec![1,2,3,4] },
-        DiagTC { label: "2x4 rectangular", input: vec![vec![1,2,3,4],vec![5,6,7,8]], expected: vec![1,2,5,6,3,4,7,8] },
-        DiagTC { label: "negative values 2x2", input: vec![vec![-1,-2],vec![3,4]], expected: vec![-1,-2,3,4] },
-    ];
-
-    println!("\n============================================================");
-    println!("  498. Diagonal Traverse");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = find_diagonal_order(&tc.input);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {:?}", tc.expected);
-            println!("    Got:      {:?}", got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    if passed == tests.len() { exit(0); } else { exit(1); }
+    let mat = read_int_matrix();
+    let result = find_diagonal_order(&mat);
+    write_ints(&result);
 }

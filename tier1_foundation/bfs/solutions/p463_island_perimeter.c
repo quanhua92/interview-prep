@@ -31,41 +31,31 @@
  *         def islandPerimeter(self, grid: List[List[int]]) -> int:
  */
 
-#include "ctest.h"
+#include "io.h"
+#include <stdlib.h>
 
-static int islandPerimeter(int **grid, int gridSize, int *gridColSize) {
+int solve(int **grid, int gridSize, int *gridColSize) {
     int dr[] = {0, 0, 1, -1};
     int dc[] = {1, -1, 0, 0};
     int visited[100][100];
     int perimeter = 0;
     int qr[10000], qc[10000];
     int front = 0, back = 0;
-
     memset(visited, 0, sizeof(visited));
-
     for (int r = 0; r < gridSize; r++) {
         for (int c = 0; c < gridColSize[r]; c++) {
             if (grid[r][c] == 1) {
-                qr[back] = r;
-                qc[back] = c;
-                back++;
+                qr[back] = r; qc[back] = c; back++;
                 visited[r][c] = 1;
-
                 while (front < back) {
-                    int cr = qr[front];
-                    int cc = qc[front];
-                    front++;
+                    int cr = qr[front]; int cc = qc[front]; front++;
                     for (int d = 0; d < 4; d++) {
-                        int nr = cr + dr[d];
-                        int nc = cc + dc[d];
-                        if (nr < 0 || nr >= gridSize || nc < 0 || nc >= gridColSize[0]
-                            || grid[nr][nc] == 0) {
+                        int nr = cr + dr[d]; int nc = cc + dc[d];
+                        if (nr < 0 || nr >= gridSize || nc < 0 || nc >= gridColSize[0] || grid[nr][nc] == 0) {
                             perimeter++;
                         } else if (!visited[nr][nc]) {
                             visited[nr][nc] = 1;
-                            qr[back] = nr;
-                            qc[back] = nc;
-                            back++;
+                            qr[back] = nr; qc[back] = nc; back++;
                         }
                     }
                 }
@@ -76,53 +66,22 @@ static int islandPerimeter(int **grid, int gridSize, int *gridColSize) {
     return 0;
 }
 
-typedef struct {
-    const char *label;
-    int *flat;
-    int rows, cols;
-    int expected;
-} TC;
-
-int main(void) {
-    (void)th_print_arr;
-    (void)th_arr_eq;
-
-    int g1[] = {0,1,0,0, 1,1,1,0, 0,1,0,0, 1,1,0,0};
-    int g2[] = {1};
-    int g3[] = {1,0};
-    int g4[] = {1,1,1};
-    int g5[] = {1,1,1};
-    int g6[] = {1,1,1,1};
-    int g7[] = {1,1,1,1,1,1};
-
-    TC tests[] = {
-        {"example 1", g1, 4, 4, 16},
-        {"example 2", g2, 1, 1, 4},
-        {"example 3", g3, 1, 2, 4},
-        {"horizontal line of 3", g4, 1, 3, 8},
-        {"vertical line of 3", g5, 3, 1, 8},
-        {"2x2 block", g6, 2, 2, 8},
-        {"3x2 block", g7, 2, 3, 10},
-    };
-
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        int *grid[100];
-        int cs[100];
-        for (int j = 0; j < tests[i].rows; j++) {
-            grid[j] = tests[i].flat + j * tests[i].cols;
-            cs[j] = tests[i].cols;
-        }
-        int got = islandPerimeter(grid, tests[i].rows, cs);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
+int main(void)
+{
+    int n;
+    int *size_line = read_ints(&n);
+    int rows = size_line[0];
+    free(size_line);
+    int **grid = (int **)malloc(sizeof(int *) * rows);
+    int cs[100];
+    for (int i = 0; i < rows; i++) {
+        int row_n;
+        grid[i] = read_ints(&row_n);
+        cs[i] = row_n;
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+    int result = solve(grid, rows, cs);
+    write_int(result);
+    for (int i = 0; i < rows; i++) free(grid[i]);
+    free(grid);
+    return 0;
 }

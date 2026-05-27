@@ -21,8 +21,7 @@
  *         def largestPalindrome(self, n: int) -> int:
  */
 
-
-use rstest;
+use wasm_libs::*;
 
 fn largest_palindrome(n: i32) -> i32 {
     if n == 1 { return 9; }
@@ -48,24 +47,7 @@ fn largest_palindrome(n: i32) -> i32 {
 }
 
 fn main() {
-    struct TC { label: &'static str, n: i32, expected: i32 }
-    let tests: &[TC] = &[
-        TC { label: "example 1", n: 2, expected: 987 },
-        TC { label: "example 2", n: 1, expected: 9 },
-        TC { label: "3 digits", n: 3, expected: 123 },
-        TC { label: "4 digits", n: 4, expected: 597 },
-        TC { label: "8 digits (max n)", n: 8, expected: 475 },
-    ];
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = largest_palindrome(tc.n);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL (expected {}, got {})", i + 1, tc.label, tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let vals = read_ints();
+    write_int(largest_palindrome(vals[0]));
+    std::process::exit(0);
 }

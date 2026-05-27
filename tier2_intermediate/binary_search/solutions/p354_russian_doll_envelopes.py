@@ -26,36 +26,25 @@ Template (python3):
         def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
 """
 
-import sys
+import bisect
 
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "354. Russian Doll Envelopes"
-    test_cases = [
-        TestCase(input=[[5, 4], [6, 4], [6, 7], [2, 3]], expected=3, label="example 1"),
-        TestCase(input=[[1, 1], [1, 1], [1, 1]], expected=1, label="example 2"),
-        TestCase(input=[[1, 1]], expected=1, label="single envelope"),
-        TestCase(input=[[1, 2], [2, 3], [3, 4]], expected=3, label="strictly increasing"),
-        TestCase(input=[[4, 5], [4, 6], [6, 7], [2, 3], [1, 1]], expected=4, label="width ties sorted by height desc"),
-        TestCase(input=[[2, 100], [3, 200], [4, 300], [5, 250]], expected=3, label="height breaks chain"),
-    ]
-
-    def solve(self, envelopes: list[list[int]]) -> int:
-        import bisect
-
-        envelopes.sort(key=lambda x: (x[0], -x[1]))
-        heights: list[int] = []
-        for _, h in envelopes:
-            idx = bisect.bisect_left(heights, h)
-            if idx == len(heights):
-                heights.append(h)
-            else:
-                heights[idx] = h
-        return len(heights)
+def solve(envelopes: list[list[int]]) -> int:
+    envelopes.sort(key=lambda x: (x[0], -x[1]))
+    heights: list[int] = []
+    for _, h in envelopes:
+        idx = bisect.bisect_left(heights, h)
+        if idx == len(heights):
+            heights.append(h)
+        else:
+            heights[idx] = h
+    return len(heights)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    cols = read_int()
+    envelopes = [read_ints() for _ in range(cols)]
+    result = solve(envelopes)
+    write_int(result)

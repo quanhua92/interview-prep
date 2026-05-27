@@ -32,26 +32,15 @@ Template (python3):
         def checkSubarraySum(self, nums: List[int], k: int) -> bool:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "523. Continuous Subarray Sum"
-    test_cases = [
-        TestCase(input=([23, 2, 4, 6, 7], 6), expected=True, label="example 1"),
-        TestCase(input=([23, 2, 6, 4, 7], 6), expected=True, label="example 2"),
-        TestCase(input=([23, 2, 6, 4, 7], 13), expected=False, label="example 3"),
-        TestCase(input=([5, 0, 0], 3), expected=True, label="two zeros sum to 0"),
-        TestCase(input=([1, 2], 4), expected=False, label="no valid subarray"),
-        TestCase(input=([0, 0], 1), expected=True, label="two zeros always valid"),
-    ]
-
-    def solve(self, nums: list[int], k: int) -> bool:
-        raise NotImplementedError("TODO: Implement solve(self, nums, k) -> bool")
+def solve(nums: list[int], k: int) -> bool:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    k = read_int()
+    result = solve(nums, k)
+    write_bool(result)

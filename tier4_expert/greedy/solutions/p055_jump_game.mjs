@@ -27,6 +27,8 @@
  * Hint: Track the farthest reachable index; if you pass it, the end is unreachable.
  */
 
+import { readInts, writeBool } from "src/wasm_libs/js/io.mjs";
+
 function solve(nums) {
   let maxReach = 0;
   for (let i = 0; i < nums.length; i++) {
@@ -36,26 +38,5 @@ function solve(nums) {
   return true;
 }
 
-const tests = [
-  { label: "example 1", input: [[2, 3, 1, 1, 4]], expected: true },
-  { label: "example 2", input: [[3, 2, 1, 0, 4]], expected: false },
-  { label: "single element", input: [[0]], expected: true },
-  { label: "all ones", input: [[1, 1, 1, 1, 1]], expected: true },
-  { label: "big jump from start", input: [[5, 0, 0, 0, 0]], expected: true },
-  { label: "stuck at start", input: [[0, 1]], expected: false },
-  { label: "two elements reachable", input: [[2, 0]], expected: true },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+writeBool(solve(nums));

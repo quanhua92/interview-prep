@@ -26,7 +26,7 @@
  *
  * Hints:
  *     - You would need to optimize your backtracking to pass the larger test. Could you stop backtracking earlier?
- *     - If the current candidate does not exist in all words&#39; prefix, you could stop backtracking immediately. What kind of data structure could answer such query efficiently? Does a hash table work? Why or why not? How about a Trie? If you would like to learn how to implement a basic trie, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.
+ *     - If the current candidate does not exist in all words' prefix, you could stop backtracking immediately. What kind of data structure could answer such query efficiently? Does a hash table work? Why or why not? How about a Trie? If you would like to learn how to implement a basic trie, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.
  *
  * Template (python3):
  *     class Solution:
@@ -35,9 +35,7 @@
  * Hint: Build a Trie from the word list, then use DFS on the board to find matching words.
  */
 
-
-#[allow(unused_imports)]
-use rstest;
+use wasm_libs::*;
 use std::collections::HashMap;
 
 struct TrieNode {
@@ -51,14 +49,14 @@ impl TrieNode {
     }
 }
 
-fn find_words(board: &mut Vec<Vec<char>>, words: &[&str]) -> Vec<String> {
+fn find_words(board: &mut Vec<Vec<char>>, words: &[String]) -> Vec<String> {
     let mut root = TrieNode::new();
-    for &w in words {
+    for w in words {
         let mut cur = &mut root;
         for ch in w.chars() {
             cur = cur.children.entry(ch).or_insert_with(|| Box::new(TrieNode::new()));
         }
-        cur.word = Some(w.to_string());
+        cur.word = Some(w.clone());
     }
 
     let rows = board.len();
@@ -110,62 +108,26 @@ fn find_words(board: &mut Vec<Vec<char>>, words: &[&str]) -> Vec<String> {
 }
 
 fn main() {
-    struct TC<'a> {
-        label: &'a str,
-        board: Vec<Vec<char>>,
-        words: &'a [&'a str],
-        expected: Vec<&'a str>,
+    let rows = read_int() as usize;
+    let cols = read_int() as usize;
+
+    let mut board = Vec::new();
+    for _ in 0..rows {
+        let line = read_line();
+        board.push(line.chars().collect::<Vec<char>>());
     }
 
-    let tests: Vec<TC> = vec![
-        TC { label: "example 1",
-             board: vec![vec!['o','a','a','n'],vec!['e','t','a','e'],vec!['i','h','k','r'],vec!['i','f','l','v']],
-             words: &["oath","pea","eat","rain"],
-             expected: vec!["eat","oath"] },
-        TC { label: "example 2",
-             board: vec![vec!['a','b'],vec!['c','d']],
-             words: &["abcb"],
-             expected: vec![] },
-        TC { label: "1x1 board single char",
-             board: vec![vec!['a']],
-             words: &["a"],
-             expected: vec!["a"] },
-        TC { label: "word not on board",
-             board: vec![vec!['a','b'],vec!['c','d']],
-             words: &["xyz"],
-             expected: vec![] },
-        TC { label: "same letter grid",
-             board: vec![vec!['a','a'],vec!['a','a']],
-             words: &["aaaa"],
-             expected: vec!["aaaa"] },
-        TC { label: "prefix is also a word",
-             board: vec![vec!['o','a','a','n'],vec!['e','t','a','e'],vec!['i','h','k','r'],vec!['i','f','l','v']],
-             words: &["oath","oat"],
-             expected: vec!["oat","oath"] },
-    ];
-
-    println!("\n============================================================");
-    println!("  212. Word Search II");
-    println!("============================================================");
-
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let mut board = tc.board.clone();
-        let got = find_words(&mut board, tc.words);
-        let exp: Vec<&str> = tc.expected.iter().copied().collect();
-        let got_refs: Vec<&str> = got.iter().map(|s| s.as_str()).collect();
-        if got_refs == exp {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {:?}", exp);
-            println!("    Got:      {:?}", got_refs);
-        }
+    let nw = read_int() as usize;
+    let mut words = Vec::new();
+    for _ in 0..nw {
+        words.push(read_line());
     }
 
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
+    let result = find_words(&mut board, &words);
+    write_int(result.len() as i32);
+    for w in &result {
+        write_string(w);
+    }
 
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    std::process::exit(0);
 }

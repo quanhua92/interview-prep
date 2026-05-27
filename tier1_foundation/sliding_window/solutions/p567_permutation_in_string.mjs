@@ -26,6 +26,16 @@
  * Hint: What about hash table?  An array of size 26?
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
+function mapsEqual(a, b) {
+  if (a.size !== b.size) return false;
+  for (const [k, v] of a) {
+    if (b.get(k) !== v) return false;
+  }
+  return true;
+}
+
 function solve(s1, s2) {
   const n1 = s1.length, n2 = s2.length;
   if (n1 > n2) return false;
@@ -56,34 +66,6 @@ function solve(s1, s2) {
   return false;
 }
 
-function mapsEqual(a, b) {
-  if (a.size !== b.size) return false;
-  for (const [k, v] of a) {
-    if (b.get(k) !== v) return false;
-  }
-  return true;
-}
-
-// --- tests ---
-const tests = [
-  { label: "example 1", input: ["ab", "eidbaooo"], expected: true },
-  { label: "example 2", input: ["ab", "eidboaoo"], expected: false },
-  { label: "single char match", input: ["a", "a"], expected: true },
-  { label: "permutation at end", input: ["adc", "dcda"], expected: true },
-  { label: "no match large string", input: ["abc", "ccccbbbbaaaa"], expected: false },
-  { label: "s1 longer than s2", input: ["ab", "a"], expected: false },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const s1 = readLine();
+const s2 = readLine();
+writeBool(solve(s1, s2));

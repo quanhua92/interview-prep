@@ -26,47 +26,16 @@ Template (python3):
         def trapRainWater(self, heightMap: List[List[int]]) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "407. Trapping Rain Water II"
-    test_cases = [
-        TestCase(
-            input=[[1, 4, 3, 1, 3, 2], [3, 2, 1, 3, 2, 4], [2, 3, 3, 2, 3, 1]],
-            expected=4,
-            label="example 1",
-        ),
-        TestCase(
-            input=[
-                [3, 3, 3, 3, 3],
-                [3, 2, 2, 2, 3],
-                [3, 2, 1, 2, 3],
-                [3, 2, 2, 2, 3],
-                [3, 3, 3, 3, 3],
-            ],
-            expected=10,
-            label="example 2",
-        ),
-        TestCase(input=[[1]], expected=0, label="1x1 no trap"),
-        TestCase(
-            input=[[5, 5, 5], [5, 1, 5], [5, 5, 5]],
-            expected=4,
-            label="3x3 basin",
-        ),
-        TestCase(
-            input=[[5, 5, 5, 5], [5, 5, 5, 5]],
-            expected=0,
-            label="2x4 no interior",
-        ),
-    ]
-
-    def solve(self, heightMap: list[list[int]]) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, heightMap) -> int")
+def solve(heightMap: list[list[int]]) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    dims = read_ints()
+    m, n = dims[0], dims[1]
+    heightMap = [read_ints() for _ in range(m)]
+    result = solve(heightMap)
+    write_int(result)

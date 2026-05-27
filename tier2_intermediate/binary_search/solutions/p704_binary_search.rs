@@ -29,6 +29,7 @@
  * Hint: Use the classic binary search pattern with left and right pointers.
  */
 
+use wasm_libs::*;
 
 fn search(nums: &[i32], target: i32) -> i32 {
     let mut left: i32 = 0;
@@ -47,30 +48,8 @@ fn search(nums: &[i32], target: i32) -> i32 {
 }
 
 fn main() {
-    let tests: Vec<(&str, Vec<i32>, i32, i32)> = vec![
-        ("example 1", vec![-1,0,3,5,9,12], 9, 4),
-        ("example 2", vec![-1,0,3,5,9,12], 2, -1),
-        ("single element", vec![5], 5, 0),
-        ("below range", vec![-1,0,3,5,9,12], -2, -1),
-        ("last element", vec![-1,0,3,5,9,12], 12, 5),
-        ("two elements first", vec![1,2], 1, 0),
-        ("two elements last", vec![1,2], 2, 1),
-        ("large array middle target", (-5000..=5000).collect(), 0, 5000),
-        ("target between elements", vec![2,4,6,8,10], 5, -1),
-        ("all negative found last", vec![-3,-2,-1], -1, 2),
-    ];
-
-    let mut passed = 0;
-    println!("\n============================================================");
-    println!("  704. Binary Search");
-    println!("============================================================");
-    for (i, (label, nums, target, expected)) in tests.iter().enumerate() {
-        let got = search(nums, *target);
-        let ok = got == *expected;
-        if ok { passed += 1; }
-        println!("  Test {} ({}): {}", i + 1, label, if ok { "PASS" } else { "FAIL" });
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let nums = read_ints();
+    let target = read_int();
+    write_int(search(&nums, target));
+    std::process::exit(0);
 }

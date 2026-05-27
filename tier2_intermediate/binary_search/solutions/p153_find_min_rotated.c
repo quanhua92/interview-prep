@@ -46,8 +46,8 @@
  * Hint: Compare mid element with the rightmost to decide which half contains the minimum.
  */
 
-
-#include <stdio.h>
+#include "io.h"
+#include <stdlib.h>
 
 int findMin(int *nums, int numsSize)
 {
@@ -64,33 +64,9 @@ int findMin(int *nums, int numsSize)
 
 int main(void)
 {
-    struct { const char *label; int nums[10]; int n; int expected; int pass; } tests[] = {
-        { "example 1", {3,4,5,1,2}, 5, 1, 0 },
-        { "example 2", {4,5,6,7,0,1,2}, 7, 0, 0 },
-        { "single element", {1}, 1, 1, 0 },
-        { "not rotated", {11,13,15,17}, 4, 11, 0 },
-        { "two elements rotated", {2,1}, 2, 1, 0 },
-        { "two elements not rotated", {1,2}, 2, 1, 0 },
-        { "negative numbers", {-3,-2,-1,-5,-4}, 5, -5, 0 },
-        { "rotated by 1", {2,3,4,5,1}, 5, 1, 0 },
-        { "rotated by n-1", {5,1,2,3,4}, 5, 1, 0 },
-        { "three elements rotated", {3,1,2}, 3, 1, 0 },
-    };
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    for (int i = 0; i < n; i++) {
-        int got = findMin(tests[i].nums, tests[i].n);
-        tests[i].pass = (got == tests[i].expected);
-        if (tests[i].pass) passed++;
-    }
-
-    printf("\n============================================================\n");
-    printf("  153. Find Minimum in Rotated Sorted Array\n");
-    printf("============================================================\n");
-    for (int i = 0; i < n; i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n");
-    return passed == n ? 0 : 1;
+    int n;
+    int *nums = read_ints(&n);
+    write_int(findMin(nums, n));
+    free(nums);
+    return 0;
 }

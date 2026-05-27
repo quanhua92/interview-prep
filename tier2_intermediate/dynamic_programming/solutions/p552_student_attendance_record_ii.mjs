@@ -29,55 +29,30 @@
  *         def checkRecord(self, n: int) -> int:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(n) {
-  const mod = 10 ** 9 + 7;
-  const dp = Array.from({ length: n + 1 }, () =>
-    Array.from({ length: 2 }, () => new Array(3).fill(0))
-  );
-  dp[0][0][0] = 1;
+  const mod = 1000000007n;
+  const dp = Array.from({length: 2}, () => Array.from({length: 2}, () => new Array(3).fill(0n)));
+  dp[0][0][0] = 1n;
   for (let i = 0; i < n; i++) {
+    const cur = i % 2, nxt = 1 - cur;
+    for (let a = 0; a < 2; a++) for (let l = 0; l < 3; l++) dp[nxt][a][l] = 0n;
     for (let a = 0; a < 2; a++) {
-      for (let cl = 0; cl < 3; cl++) {
-        const val = dp[i][a][cl];
-        if (val === 0) continue;
-        dp[i + 1][a][0] = (dp[i + 1][a][0] + val) % mod;
-        if (a < 1) {
-          dp[i + 1][a + 1][0] = (dp[i + 1][a + 1][0] + val) % mod;
-        }
-        if (cl < 2) {
-          dp[i + 1][a][cl + 1] = (dp[i + 1][a][cl + 1] + val) % mod;
-        }
+      for (let l = 0; l < 3; l++) {
+        const val = dp[cur][a][l];
+        if (val === 0n) continue;
+        dp[nxt][a][0] = (dp[nxt][a][0] + val) % mod;
+        if (a < 1) dp[nxt][a + 1][0] = (dp[nxt][a + 1][0] + val) % mod;
+        if (l < 2) dp[nxt][a][l + 1] = (dp[nxt][a][l + 1] + val) % mod;
       }
     }
   }
-  let result = 0;
-  for (let a = 0; a < 2; a++) {
-    for (let cl = 0; cl < 3; cl++) {
-      result = (result + dp[n][a][cl]) % mod;
-    }
-  }
-  return result;
+  const last = n % 2;
+  let result = 0n;
+  for (let a = 0; a < 2; a++) for (let l = 0; l < 3; l++) result = (result + dp[last][a][l]) % mod;
+  return Number(result);
 }
 
-const tests = [
-  { label: "example 1", input: 2, expected: 8 },
-  { label: "example 2", input: 1, expected: 3 },
-  { label: "example 3", input: 10101, expected: 183236316 },
-  { label: "n=3", input: 3, expected: 19 },
-  { label: "n=4", input: 4, expected: 43 },
-  { label: "n=10", input: 10, expected: 3536 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const n = readInt();
+writeInt(solve(n));

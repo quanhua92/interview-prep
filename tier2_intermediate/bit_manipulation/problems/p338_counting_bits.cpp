@@ -2,9 +2,9 @@
  * P338: Counting Bits (Easy)
  * https://leetcode.com/problems/counting-bits/
  * Topics: Dynamic Programming, Bit Manipulation
- * 
+ *
  * Given an integer n, return an array ans of length n + 1 such that for each i (0 <= i <= n), ans[i] is the number of 1's in the binary representation of i.
- * 
+ *
  * Example 1:
  *     Input: n = 2
  *     Output: [0,1,1]
@@ -12,7 +12,7 @@
  *     0 --> 0
  *     1 --> 1
  *     2 --> 10
- * 
+ *
  * Example 2:
  *     Input: n = 5
  *     Output: [0,1,1,2,1,2]
@@ -23,62 +23,31 @@
  *     3 --> 11
  *     4 --> 100
  *     5 --> 101
- * 
+ *
  * Constraints:
  *     - 0 <= n <= 105
- * 
+ *
  * Hints:
  *     - You should make use of what you have produced already.
  *     - Divide the numbers in ranges like [2-3], [4-7], [8-15] and so on. And try to generate new range from previous.
  *     - Or does the odd/even status of the number help you in calculating the number of 1s?
- * 
+ *
  * Template (python3):
  *     class Solution:
  *         def countBits(self, n: int) -> List[int]:
- * 
+ *
  * Hint: DP approach: ans[i] = ans[i >> 1] + (i & 1).
  */
-#include "cpptest.h"
+
+#include "io.h"
 
 static std::vector<int> countBits(int n) {
     abort();
 }
 
 int main() {
-    struct { const char *label; int input; std::vector<int> expected; } tests[] = {
-        {"example 1", 2, {0, 1, 1}},
-        {"example 2", 5, {0, 1, 1, 2, 1, 2}},
-        {"zero", 0, {0}},
-        {"one", 1, {0, 1}},
-        {"power-of-2 minus 1", 7, {0, 1, 1, 2, 1, 2, 2, 3}},
-        {"four bits all", 15, {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4}},
-        {"power of 2", 16, {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1}},
-    };
-
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    printf("\n============================================================\n");
-    printf("  338. Counting Bits\n");
-    printf("============================================================\n");
-
-    for (int i = 0; i < n; i++) {
-        std::vector<int> got = countBits(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: ");
-            print_arr(tests[i].expected);
-            printf("\n    Got:      ");
-            print_arr(got);
-            printf("\n");
-        }
-    }
-
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-
-    return passed == n ? 0 : 1;
+    int n = read_int();
+    std::vector<int> result = countBits(n);
+    write_ints(result);
+    return 0;
 }

@@ -27,9 +27,7 @@
  *         def canCross(self, stones: List[int]) -> bool:
  */
 
-
-#include "cpptest.h"
-#include <vector>
+#include "io.h"
 #include <cstring>
 
 bool canCross(std::vector<int> stones) {
@@ -58,27 +56,8 @@ bool canCross(std::vector<int> stones) {
     return false;
 }
 
-int main() {
-    struct TC { const char *label; std::vector<int> stones; int expected; };
-    std::vector<TC> tests = {
-        {"example 1", {0,1,3,5,6,8,12,17}, 1},
-        {"example 2", {0,1,2,3,4,8,9,11}, 0},
-        {"minimum 2 stones", {0,1}, 1},
-        {"gap too large for first jump", {0,2}, 0},
-        {"increasing jumps 1,2,3,4,5,6", {0,1,3,6,10,15,21}, 1},
-        {"consecutive stones", {0,1,2,3,4,5,6,7,8,9}, 1},
-    };
-    int total = (int)tests.size();
-    int passed = 0;
-    for (int i = 0; i < total; i++) {
-        int got = canCross(tests[i].stones);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, total);
-    return passed == total ? 0 : 1;
+int main(void) {
+    std::vector<int> stones = read_ints();
+    write_bool(canCross(stones));
+    return 0;
 }

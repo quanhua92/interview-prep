@@ -28,10 +28,7 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
 #include "ctest.h"
-#pragma GCC diagnostic pop
 #include <stdbool.h>
 
 bool canJump(int *nums, int numsSize) {
@@ -44,31 +41,10 @@ bool canJump(int *nums, int numsSize) {
 }
 
 int main(void) {
-    printf("\n============================================================\n");
-    printf("  55. Jump Game\n");
-    printf("============================================================\n");
-    struct { const char *label; int nums[10]; int n; int expected; } tests[] = {
-        {"example 1", {2,3,1,1,4}, 5, 1},
-        {"example 2", {3,2,1,0,4}, 5, 0},
-        {"single element", {0}, 1, 1},
-        {"all ones", {1,1,1,1,1}, 5, 1},
-        {"big jump from start", {5,0,0,0,0}, 5, 1},
-        {"stuck at start", {0,1}, 2, 0},
-        {"two elements reachable", {2,0}, 2, 1},
-    };
-    int tc = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < tc; i++) {
-        int got = canJump(tests[i].nums, tests[i].n);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d, Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, tc);
-    printf("============================================================\n\n");
-    return passed == tc ? 0 : 1;
+    int n;
+    int *nums = read_ints(&n);
+    int result = canJump(nums, n);
+    write_bool(result);
+    free(nums);
+    return 0;
 }

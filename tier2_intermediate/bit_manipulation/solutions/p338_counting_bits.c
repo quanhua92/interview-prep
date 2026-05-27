@@ -39,7 +39,7 @@
  * Hint: DP approach: ans[i] = ans[i >> 1] + (i & 1).
  */
 
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 
 static int *countBits(int n, int *returnSize) {
@@ -53,43 +53,10 @@ static int *countBits(int n, int *returnSize) {
 }
 
 int main(void) {
-    struct { const char *label; int input; int expected[17]; int expected_n; } tests[] = {
-        {"example 1", 2, {0, 1, 1}, 3},
-        {"example 2", 5, {0, 1, 1, 2, 1, 2}, 6},
-        {"zero", 0, {0}, 1},
-        {"one", 1, {0, 1}, 2},
-        {"power-of-2 minus 1", 7, {0, 1, 1, 2, 1, 2, 2, 3}, 8},
-        {"four bits all", 15, {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4}, 16},
-        {"power of 2", 16, {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1}, 17},
-    };
-
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    printf("\n============================================================\n");
-    printf("  338. Counting Bits\n");
-    printf("============================================================\n");
-
-    for (int i = 0; i < n; i++) {
-        int retSize = 0;
-        int *got = countBits(tests[i].input, &retSize);
-        if (th_arr_eq(got, retSize, tests[i].expected, tests[i].expected_n)) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: ");
-            th_print_arr(tests[i].expected, tests[i].expected_n);
-            printf("\n    Got:      ");
-            if (got) th_print_arr(got, retSize);
-            else printf("NULL");
-            printf("\n");
-        }
-        free(got);
-    }
-
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-
-    return passed == n ? 0 : 1;
+    int n = read_int();
+    int retSize = 0;
+    int *result = countBits(n, &retSize);
+    write_ints(result, retSize);
+    free(result);
+    return 0;
 }

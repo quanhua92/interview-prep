@@ -47,6 +47,8 @@
  * Hint: Use a max-heap for the lower half and a min-heap for the upper half.
  */
 
+import { readInts } from '../../wasm_libs/js/io.mjs';
+
 class MinHeap {
   constructor() {
     this.heap = [];
@@ -88,14 +90,14 @@ class MinHeap {
       if (left < n && this.heap[left] < this.heap[smallest]) smallest = left;
       if (right < n && this.heap[right] < this.heap[smallest]) smallest = right;
       if (smallest !== i) {
-        [this.heap[i], this.heap[smallest]] = [this.heap[smallest], this.heap[i]];
+        [this.heap[smallest], this.heap[i]] = [this.heap[i], this.heap[smallest]];
         i = smallest;
       } else break;
     }
   }
 }
 
-function solve(stream, _unused) {
+function solve(stream) {
   const small = new MinHeap();
   const large = new MinHeap();
   const medians = [];
@@ -118,27 +120,8 @@ function solve(stream, _unused) {
   return medians;
 }
 
-const tests = [
-  { label: "stream median", input: [[5, 15, 1, 3], "median"], expected: [5.0, 10.0, 5.0, 4.0] },
-  { label: "two elements", input: [[1, 2], "median"], expected: [1.0, 1.5] },
-  { label: "single element", input: [[42], "median"], expected: [42.0] },
-  { label: "all same", input: [[3, 3, 3, 3], "median"], expected: [3.0, 3.0, 3.0, 3.0] },
-  { label: "negative numbers", input: [[-5, -3, -1, 0], "median"], expected: [-5.0, -4.0, -3.0, -2.0] },
-  { label: "alternating high low", input: [[100, 0, 100, 0, 100, 0], "median"], expected: [100.0, 50.0, 100.0, 50.0, 100.0, 50.0] },
-  { label: "descending order", input: [[10, 9, 8, 7, 6, 5], "median"], expected: [10.0, 9.5, 9.0, 8.5, 8.0, 7.5] },
-  { label: "extreme values", input: [[-100000, 100000], "median"], expected: [-100000.0, 0.0] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const stream = readInts();
+const result = solve(stream);
+for (const m of result) {
+  console.log(m);
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);

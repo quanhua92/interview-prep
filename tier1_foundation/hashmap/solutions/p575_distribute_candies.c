@@ -24,7 +24,7 @@
  * Constraints:
  *     - n == candyType.length
  *     - 2 <= n <= 104
- *     - n is even.
+ *     - n is even.
  *     - -105 <= candyType[i] <= 105
  *
  * Hint: To maximize the number of kinds of candies, we should try to distribute candies such that Alice will gain all kinds.
@@ -38,9 +38,8 @@
  */
 
 
-#include <stdio.h>
+#include "io.h"
 #include <stdlib.h>
-#include <limits.h>
 
 static int cmp_int(const void *a, const void *b) {
     return (*(const int *)a) - (*(const int *)b);
@@ -59,56 +58,11 @@ static int distributeCandies(const int *candyType, int n) {
     return unique < limit ? unique : limit;
 }
 
-int main(void) {
-    int passed = 0, total = 7;
-    printf("\n============================================================\n");
-    printf("  575. Distribute Candies\n");
-    printf("============================================================\n");
-
-    {
-        int arr[] = {1, 1, 2, 2, 3, 3};
-        int got = distributeCandies(arr, 6);
-        if (got == 3) { passed++; printf("  Test 1 (example 1): PASS\n"); }
-        else { printf("  Test 1 (example 1): FAIL\n  Expected: 3, Got: %d\n", got); }
-    }
-    {
-        int arr[] = {1, 1, 2, 3};
-        int got = distributeCandies(arr, 4);
-        if (got == 2) { passed++; printf("  Test 2 (example 2): PASS\n"); }
-        else { printf("  Test 2 (example 2): FAIL\n  Expected: 2, Got: %d\n", got); }
-    }
-    {
-        int arr[] = {6, 6, 6, 6};
-        int got = distributeCandies(arr, 4);
-        if (got == 1) { passed++; printf("  Test 3 (example 3): PASS\n"); }
-        else { printf("  Test 3 (example 3): FAIL\n  Expected: 1, Got: %d\n", got); }
-    }
-    {
-        int arr[] = {1, 2, 3, 4};
-        int got = distributeCandies(arr, 4);
-        if (got == 2) { passed++; printf("  Test 4 (all unique types): PASS\n"); }
-        else { printf("  Test 4 (all unique types): FAIL\n  Expected: 2, Got: %d\n", got); }
-    }
-    {
-        int arr[] = {-1, -1, 2, 2};
-        int got = distributeCandies(arr, 4);
-        if (got == 2) { passed++; printf("  Test 5 (negative candy types): PASS\n"); }
-        else { printf("  Test 5 (negative candy types): FAIL\n  Expected: 2, Got: %d\n", got); }
-    }
-    {
-        int arr[] = {100000, -100000, 0, 50000};
-        int got = distributeCandies(arr, 4);
-        if (got == 2) { passed++; printf("  Test 6 (boundary values): PASS\n"); }
-        else { printf("  Test 6 (boundary values): FAIL\n  Expected: 2, Got: %d\n", got); }
-    }
-    {
-        int arr[] = {1, 2, 1, 2, 1, 2, 3, 4};
-        int got = distributeCandies(arr, 8);
-        if (got == 4) { passed++; printf("  Test 7 (eight candies mixed): PASS\n"); }
-        else { printf("  Test 7 (eight candies mixed): FAIL\n  Expected: 4, Got: %d\n", got); }
-    }
-
-    printf("\n  %d/%d passed\n", passed, total);
-    printf("============================================================\n\n");
-    return passed == total ? 0 : 1;
+int main(void)
+{
+    int n;
+    int *candyType = read_ints(&n);
+    write_int(distributeCandies(candyType, n));
+    free(candyType);
+    return 0;
 }

@@ -34,6 +34,8 @@
  * Hint: Build left and right product arrays, then combine.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(nums) {
   const n = nums.length;
   const output = new Array(n).fill(1);
@@ -53,26 +55,5 @@ function solve(nums) {
   return output;
 }
 
-const tests = [
-  { label: "example 1", input: [1, 2, 3, 4], expected: [24, 12, 8, 6] },
-  { label: "example 2", input: [-1, 1, 0, -3, 3], expected: [0, 0, 9, 0, 0] },
-  { label: "two elements", input: [1, 2], expected: [2, 1] },
-  { label: "all ones", input: [1, 1, 1], expected: [1, 1, 1] },
-  { label: "all negatives", input: [-1, -1, -1], expected: [1, 1, 1] },
-  { label: "two elements negative", input: [1, -1], expected: [-1, 1] },
-  { label: "all zeros", input: [0, 0, 0, 0], expected: [0, 0, 0, 0] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+writeInts(solve(nums));

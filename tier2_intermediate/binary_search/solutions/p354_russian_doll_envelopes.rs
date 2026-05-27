@@ -26,6 +26,7 @@
  *         def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
  */
 
+use wasm_libs::*;
 
 fn max_envelopes(mut envelopes: Vec<Vec<i32>>) -> i32 {
     if envelopes.len() <= 1 { return envelopes.len() as i32; }
@@ -44,26 +45,11 @@ fn max_envelopes(mut envelopes: Vec<Vec<i32>>) -> i32 {
 }
 
 fn main() {
-    let tests: Vec<(&str, Vec<Vec<i32>>, i32)> = vec![
-        ("example 1", vec![vec![5,4],vec![6,4],vec![6,7],vec![2,3]], 3),
-        ("example 2", vec![vec![1,1],vec![1,1],vec![1,1]], 1),
-        ("single envelope", vec![vec![1,2]], 1),
-        ("strictly increasing", vec![vec![1,2],vec![2,3],vec![3,4]], 3),
-        ("width ties sorted by height desc", vec![vec![4,5],vec![4,6],vec![6,7],vec![2,3],vec![1,1]], 4),
-        ("height breaks chain", vec![vec![2,100],vec![3,200],vec![4,300],vec![5,250]], 3),
-    ];
-
-    let mut passed = 0;
-    println!("\n============================================================");
-    println!("  354. Russian Doll Envelopes");
-    println!("============================================================");
-    for (i, (label, envelopes, expected)) in tests.iter().enumerate() {
-        let got = max_envelopes(envelopes.clone());
-        let ok = got == *expected;
-        if ok { passed += 1; }
-        println!("  Test {} ({}): {}", i + 1, label, if ok { "PASS" } else { "FAIL" });
+    let cols = read_int() as usize;
+    let mut envelopes: Vec<Vec<i32>> = Vec::new();
+    for _ in 0..cols {
+        envelopes.push(read_ints());
     }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    write_int(max_envelopes(envelopes));
+    std::process::exit(0);
 }

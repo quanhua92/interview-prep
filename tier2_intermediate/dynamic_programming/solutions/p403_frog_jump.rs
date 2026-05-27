@@ -27,10 +27,10 @@
  *         def canCross(self, stones: List[int]) -> bool:
  */
 
+use wasm_libs::*;
 
-use rstest;
-
-fn can_cross(stones: &[i32]) -> bool {
+impl Solution {
+    fn can_cross(stones: &[i32]) -> bool {
     let n = stones.len();
     let stones_i64: Vec<i64> = stones.iter().map(|&x| x as i64).collect();
     let mut dp = vec![vec![false; n + 1]; n];
@@ -49,28 +49,12 @@ fn can_cross(stones: &[i32]) -> bool {
         }
     }
     (0..=n).any(|k| dp[n - 1][k])
+    }
 }
 
+struct Solution;
+
 fn main() {
-    struct TC<'a> { label: &'a str, stones: &'static [i32], expected: bool }
-    let tests: &[TC] = &[
-        TC { label: "example 1", stones: &[0,1,3,5,6,8,12,17], expected: true },
-        TC { label: "example 2", stones: &[0,1,2,3,4,8,9,11], expected: false },
-        TC { label: "minimum 2 stones", stones: &[0,1], expected: true },
-        TC { label: "gap too large for first jump", stones: &[0,2], expected: false },
-        TC { label: "increasing jumps 1,2,3,4,5,6", stones: &[0,1,3,6,10,15,21], expected: true },
-        TC { label: "consecutive stones", stones: &[0,1,2,3,4,5,6,7,8,9], expected: true },
-    ];
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = can_cross(tc.stones);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL (expected {}, got {})", i + 1, tc.label, tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let stones = read_ints();
+    write_bool(can_cross(&stones));
 }

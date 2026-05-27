@@ -30,7 +30,7 @@
  *         def numberOfBoomerangs(self, points: List[List[int]]) -> int:
  */
 
-
+use wasm_libs::*;
 use std::collections::HashMap;
 
 fn number_of_boomerangs(points: &[(i32, i32)]) -> i32 {
@@ -51,32 +51,13 @@ fn number_of_boomerangs(points: &[(i32, i32)]) -> i32 {
 }
 
 fn main() {
-    struct Case<'a> { label: &'a str, points: &'a [(i32, i32)], expected: i32 }
-    let tests: &[Case] = &[
-        Case { label: "example 1", points: &[(0,0),(1,0),(2,0)], expected: 2 },
-        Case { label: "example 2", points: &[(1,1),(2,2),(3,3)], expected: 2 },
-        Case { label: "example 3", points: &[(1,1)], expected: 0 },
-        Case { label: "only 2 points", points: &[(0,0),(1,0)], expected: 0 },
-        Case { label: "square 4 points", points: &[(0,0),(0,1),(1,0),(1,1)], expected: 8 },
-        Case { label: "isoceles triangle", points: &[(0,0),(1,1),(1,-1)], expected: 2 },
-        Case { label: "isoceles different heights", points: &[(0,0),(3,4),(3,-4)], expected: 2 },
-    ];
-
-    println!("\n============================================================");
-    println!("  447. Number of Boomerangs");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = number_of_boomerangs(tc.points);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}\n    Got:      {}", tc.expected, got);
-        }
+    let header = read_ints();
+    let n = header[0] as usize;
+    let mut points: Vec<(i32, i32)> = Vec::new();
+    for _ in 0..n {
+        let row = read_ints();
+        points.push((row[0], row[1]));
     }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    write_int(number_of_boomerangs(&points));
+    std::process::exit(0);
 }

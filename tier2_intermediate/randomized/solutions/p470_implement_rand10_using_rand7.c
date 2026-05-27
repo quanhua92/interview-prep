@@ -33,8 +33,7 @@
  *             '''
  */
 
-#include "ctest.h"
-#include <stdlib.h>
+#include "io.h"
 
 static unsigned long rng_state = 12345;
 
@@ -53,40 +52,14 @@ static int rand10(void) {
     return (idx - 1) % 10 + 1;
 }
 
-int main(void) {
-    (void)th_print_arr;
-    (void)th_arr_eq;
-
-    struct { const char *label; int input; } tests[] = {
-        {"generates 5 values in range [1, 10]", 5},
-        {"single value", 1},
-        {"100 values", 100},
-    };
-
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    printf("\n============================================================\n");
-    printf("  470. Implement Rand10() Using Rand7()\n");
-    printf("============================================================\n");
-
+int main(void)
+{
+    int n = read_int();
+    int ok = 1;
     for (int i = 0; i < n; i++) {
-        int ok = 1;
-        for (int j = 0; j < tests[i].input; j++) {
-            int v = rand10();
-            if (v < 1 || v > 10) { ok = 0; break; }
-        }
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: all values in [1, 10]\n");
-        }
+        int v = rand10();
+        if (v < 1 || v > 10) { ok = 0; break; }
     }
-
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-
-    return passed == n ? 0 : 1;
+    write_bool(ok);
+    return 0;
 }

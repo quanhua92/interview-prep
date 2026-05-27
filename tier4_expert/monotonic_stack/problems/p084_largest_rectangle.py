@@ -26,28 +26,14 @@ Template (python3):
 Hint: Use a monotonic increasing stack with a sentinel to compute max rectangle area.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "84. Largest Rectangle in Histogram"
-    test_cases = [
-        TestCase(input=[2, 1, 5, 6, 2, 3], expected=10, label="example 1"),
-        TestCase(input=[2, 4], expected=4, label="example 2"),
-        TestCase(input=[5], expected=5, label="single element"),
-        TestCase(input=[3, 3, 3], expected=9, label="all same heights"),
-        TestCase(input=[2, 0, 2], expected=2, label="contains zero height"),
-        TestCase(input=[1, 2, 3, 4, 5], expected=9, label="strictly increasing"),
-    ]
-
-    def solve(self, heights: list[int]) -> int:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, heights: list[int]) -> int"
-        )
+def solve(heights: list[int]) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    heights = read_ints()
+    result = solve(heights)
+    write_int(result)

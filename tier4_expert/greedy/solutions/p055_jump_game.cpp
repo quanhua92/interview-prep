@@ -28,10 +28,7 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
 #include "cpptest.h"
-#pragma GCC diagnostic pop
 
 bool canJump(const std::vector<int> &nums) {
     int max_reach = 0;
@@ -43,31 +40,8 @@ bool canJump(const std::vector<int> &nums) {
 }
 
 int main() {
-    printf("\n============================================================\n");
-    printf("  55. Jump Game\n");
-    printf("============================================================\n");
-    struct T { const char *label; std::vector<int> nums; bool expected; };
-    std::vector<T> tests = {
-        {"example 1", {2,3,1,1,4}, true},
-        {"example 2", {3,2,1,0,4}, false},
-        {"single element", {0}, true},
-        {"all ones", {1,1,1,1,1}, true},
-        {"big jump from start", {5,0,0,0,0}, true},
-        {"stuck at start", {0,1}, false},
-        {"two elements reachable", {2,0}, true},
-    };
-    int passed = 0;
-    for (int i = 0; i < (int)tests.size(); i++) {
-        bool got = canJump(tests[i].nums);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d, Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, (int)tests.size());
-    printf("============================================================\n\n");
-    return passed == (int)tests.size() ? 0 : 1;
+    std::vector<int> nums = read_ints();
+    bool result = canJump(nums);
+    write_bool(result);
+    return 0;
 }

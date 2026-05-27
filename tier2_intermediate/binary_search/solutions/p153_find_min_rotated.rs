@@ -46,6 +46,7 @@
  * Hint: Compare mid element with the rightmost to decide which half contains the minimum.
  */
 
+use wasm_libs::*;
 
 fn find_min(nums: &[i32]) -> i32 {
     let (mut left, mut right) = (0, nums.len() as i32 - 1);
@@ -61,30 +62,7 @@ fn find_min(nums: &[i32]) -> i32 {
 }
 
 fn main() {
-    let tests: Vec<(&str, Vec<i32>, i32)> = vec![
-        ("example 1", vec![3,4,5,1,2], 1),
-        ("example 2", vec![4,5,6,7,0,1,2], 0),
-        ("single element", vec![1], 1),
-        ("not rotated", vec![11,13,15,17], 11),
-        ("two elements rotated", vec![2,1], 1),
-        ("two elements not rotated", vec![1,2], 1),
-        ("negative numbers", vec![-3,-2,-1,-5,-4], -5),
-        ("rotated by 1", vec![2,3,4,5,1], 1),
-        ("rotated by n-1", vec![5,1,2,3,4], 1),
-        ("three elements rotated", vec![3,1,2], 1),
-    ];
-
-    let mut passed = 0;
-    println!("\n============================================================");
-    println!("  153. Find Minimum in Rotated Sorted Array");
-    println!("============================================================");
-    for (i, (label, nums, expected)) in tests.iter().enumerate() {
-        let got = find_min(nums);
-        let ok = got == *expected;
-        if ok { passed += 1; }
-        println!("  Test {} ({}): {}", i + 1, label, if ok { "PASS" } else { "FAIL" });
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let nums = read_ints();
+    write_int(find_min(&nums));
+    std::process::exit(0);
 }

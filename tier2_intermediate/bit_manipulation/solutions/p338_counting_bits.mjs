@@ -39,6 +39,8 @@
  * Hint: DP approach: ans[i] = ans[i >> 1] + (i & 1).
  */
 
+import { readInt, writeInts } from '../../../wasm_libs/js/io.mjs';
+
 function solve(n) {
   const ans = new Array(n + 1).fill(0);
   for (let i = 1; i <= n; i++) {
@@ -47,26 +49,5 @@ function solve(n) {
   return ans;
 }
 
-const tests = [
-  { label: "example 1", input: 2, expected: [0, 1, 1] },
-  { label: "example 2", input: 5, expected: [0, 1, 1, 2, 1, 2] },
-  { label: "zero", input: 0, expected: [0] },
-  { label: "one", input: 1, expected: [0, 1] },
-  { label: "power-of-2 minus 1", input: 7, expected: [0, 1, 1, 2, 1, 2, 2, 3] },
-  { label: "four bits all", input: 15, expected: [0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4] },
-  { label: "power of 2", input: 16, expected: [0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const n = readInt();
+writeInts(solve(n));

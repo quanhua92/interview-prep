@@ -30,45 +30,36 @@ Template (python3):
         def findPaths(self, m: int, n: int, maxMove: int, startRow: int, startColumn: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "576. Out of Boundary Paths"
-    test_cases = [
-        TestCase(input=(2, 2, 2, 0, 0), expected=6, label="example 1"),
-        TestCase(input=(1, 3, 3, 0, 1), expected=12, label="example 2"),
-        TestCase(input=(1, 1, 1, 0, 0), expected=4, label="1x1 grid single move"),
-        TestCase(input=(2, 2, 1, 0, 0), expected=2, label="corner 1 move"),
-        TestCase(input=(3, 3, 0, 1, 1), expected=0, label="zero moves"),
-    ]
-
-    def solve(
-        self, m: int, n: int, maxMove: int, startRow: int, startColumn: int
-    ) -> int:
-        mod = 10**9 + 7
-        dp = [[[0] * n for _ in range(m)] for _ in range(maxMove + 1)]
-        dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-        dp[0][startRow][startColumn] = 1
-        result = 0
-        for move in range(maxMove):
-            for r in range(m):
-                for c in range(n):
-                    if dp[move][r][c] == 0:
-                        continue
-                    for dr, dc in dirs:
-                        nr, nc = r + dr, c + dc
-                        if 0 <= nr < m and 0 <= nc < n:
-                            dp[move + 1][nr][nc] = (
-                                dp[move + 1][nr][nc] + dp[move][r][c]
-                            ) % mod
-                        else:
-                            result = (result + dp[move][r][c]) % mod
-        return result
+def solve(m: int, n: int, max_move: int, start_row: int, start_col: int) -> int:
+    mod = 10**9 + 7
+    dp = [[[0] * n for _ in range(m)] for _ in range(max_move + 1)]
+    dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    dp[0][start_row][start_col] = 1
+    result = 0
+    for move in range(max_move):
+        for r in range(m):
+            for c in range(n):
+                if dp[move][r][c] == 0:
+                    continue
+                for dr, dc in dirs:
+                    nr, nc = r + dr, c + dc
+                    if 0 <= nr < m and 0 <= nc < n:
+                        dp[move + 1][nr][nc] = (
+                            dp[move + 1][nr][nc] + dp[move][r][c]
+                        ) % mod
+                    else:
+                        result = (result + dp[move][r][c]) % mod
+    return result
 
 
 if __name__ == "__main__":
-    Solution().run()
+    m = read_int()
+    n = read_int()
+    max_move = read_int()
+    start_row = read_int()
+    start_col = read_int()
+    result = solve(m, n, max_move, start_row, start_col)
+    write_int(result)

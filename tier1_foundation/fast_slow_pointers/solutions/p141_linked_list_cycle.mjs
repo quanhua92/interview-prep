@@ -43,28 +43,15 @@
  * Hint: Use Floyd's cycle-finding algorithm with fast and slow pointers.
  */
 
-function buildList(arr) {
-  if (arr.length === 0) return null;
-  const dummy = { val: 0, next: null };
-  let curr = dummy;
-  for (const val of arr) {
-    curr.next = { val, next: null };
-    curr = curr.next;
-  }
-  return dummy.next;
-}
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
 
-function hasCycle(head, pos) {
-  if (!head || !head.next) return false;
-  if (pos >= 0) {
-    let tail = head;
-    while (tail.next) tail = tail.next;
-    let cycleNode = head;
-    for (let i = 0; i < pos; i++) cycleNode = cycleNode.next;
-    tail.next = cycleNode;
-  }
-  let slow = head;
-  let fast = head;
+function solve(vals, pos) {
+  if (vals.length === 0) return false;
+  const nodes = vals.map(v => ({ val: v, next: null }));
+  for (let i = 0; i < nodes.length - 1; i++) nodes[i].next = nodes[i + 1];
+  if (pos >= 0) nodes[nodes.length - 1].next = nodes[pos];
+  let slow = nodes[0];
+  let fast = nodes[0];
   while (fast && fast.next) {
     slow = slow.next;
     fast = fast.next.next;
@@ -73,32 +60,6 @@ function hasCycle(head, pos) {
   return false;
 }
 
-function solve(head, pos) {
-  return hasCycle(head, pos);
-}
-
-// --- tests ---
-const tests = [
-  { label: "example 1", input: buildList([3, 2, 0, -4]), args: [1], expected: true },
-  { label: "example 2", input: buildList([1, 2]), args: [0], expected: true },
-  { label: "example 3", input: buildList([1]), args: [-1], expected: false },
-  { label: "empty list", input: null, args: [-1], expected: false },
-  { label: "two nodes no cycle", input: buildList([1, 2]), args: [-1], expected: false },
-  { label: "self-loop at tail", input: buildList([1, 2, 3]), args: [2], expected: true },
-  { label: "long list no cycle", input: buildList([1, 2, 3, 4, 5]), args: [-1], expected: false },
-  { label: "cycle back to head", input: buildList([1, 2, 3]), args: [0], expected: true },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input, t.args[0]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const vals = readInts();
+const pos = readInt();
+writeBool(solve(vals, pos));

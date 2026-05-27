@@ -30,7 +30,7 @@
  * Constraints:
  *     - 0 <= value <= 104
  *     - At most 3 * 104 calls will be made to addNum and getIntervals.
- *     - At most 102 calls will be made to getIntervals.
+ *     - At most 102 calls will be made to getIntervals.
  *
  * Template (python3):
  *     class SummaryRanges:
@@ -51,9 +51,10 @@
  *     # param_2 = obj.getIntervals()
  */
 
-
-#include <cstdio>
+#include "io.h"
+#include <algorithm>
 #include <cstdlib>
+#include <cstdio>
 #include <vector>
 
 std::vector<std::vector<int>> solve_intervals(const std::vector<int> &values)
@@ -77,35 +78,11 @@ std::vector<std::vector<int>> solve_intervals(const std::vector<int> &values)
 
 int main(void)
 {
-    struct Tc {
-        const char *label;
-        std::vector<int> values;
-        std::vector<int> expected_flat;
-        bool pass;
-    };
-    std::vector<Tc> tests = {
-        {"example from problem", {1,3,7,2,6}, {1,3,6,7}, false},
-        {"adjacent values merge", {1,0}, {0,1}, false},
-        {"single zero", {0}, {0,0}, false},
-        {"no merges sorted output", {100,1,50}, {1,1,50,50,100,100}, false},
-        {"empty stream", {}, {}, false},
-    };
-
-    int passed = 0;
-    for (auto &tc : tests) {
-        auto got = solve_intervals(tc.values);
-        std::vector<int> got_flat;
-        for (auto &iv : got) { got_flat.push_back(iv[0]); got_flat.push_back(iv[1]); }
-        tc.pass = (got_flat == tc.expected_flat);
-        if (tc.pass) passed++;
-    }
-
-    printf("\n============================================================\n");
-    printf("  352. Data Stream as Disjoint Intervals\n");
-    printf("============================================================\n");
-    for (int i = 0; i < (int)tests.size(); i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, (int)tests.size());
-    printf("============================================================\n");
-    return passed == (int)tests.size() ? 0 : 1;
+    int n;
+    int *values_arr = read_ints(&n);
+    std::vector<int> values(values_arr, values_arr + n);
+    free(values_arr);
+    auto result = solve_intervals(values);
+    write_matrix(result);
+    return 0;
 }

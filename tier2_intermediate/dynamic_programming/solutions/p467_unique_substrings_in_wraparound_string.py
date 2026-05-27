@@ -31,37 +31,25 @@ Template (python3):
         def findSubstringInWraproundString(self, s: str) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "467. Unique Substrings in Wraparound String"
-    test_cases = [
-        TestCase(input="a", expected=1, label="example 1"),
-        TestCase(input="cac", expected=2, label="example 2"),
-        TestCase(input="zab", expected=6, label="example 3"),
-        TestCase(input="aaaaa", expected=1, label="all same chars only a in wraparound"),
-        TestCase(input="zabcdefg", expected=36, label="wraparound chain length 8"),
-        TestCase(input="abcdefghijklmnopqrstuvwxyz", expected=351, label="full alphabet"),
-    ]
-
-    def solve(self, s: str) -> int:
-        max_len = [0] * 26
-        curr = 0
-        for i, ch in enumerate(s):
-            if i > 0 and (
-                ord(s[i]) - ord(s[i - 1]) == 1 or ord(s[i - 1]) - ord(s[i]) == 25
-            ):
-                curr += 1
-            else:
-                curr = 1
-            idx = ord(ch) - ord("a")
-            max_len[idx] = max(max_len[idx], curr)
-        return sum(max_len)
+def solve(s: str) -> int:
+    max_len = [0] * 26
+    curr = 0
+    for i, ch in enumerate(s):
+        if i > 0 and (
+            ord(s[i]) - ord(s[i - 1]) == 1 or ord(s[i - 1]) - ord(s[i]) == 25
+        ):
+            curr += 1
+        else:
+            curr = 1
+        idx = ord(ch) - ord("a")
+        max_len[idx] = max(max_len[idx], curr)
+    return sum(max_len)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    s = read_line()
+    result = solve(s)
+    write_int(result)

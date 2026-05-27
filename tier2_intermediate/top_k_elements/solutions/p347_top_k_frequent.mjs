@@ -22,12 +22,10 @@
  * Follow up:
  *     - Your algorithm's time complexity must be better than O(n log n), where n is the array's size.
  *
- * Template (python3):
- *     class Solution:
- *         def topKFrequent(self, nums: List[int], k: int) -> List[int]:
- *
  * Hint: Use a frequency counter and a min-heap of size k.
  */
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
 
 function solve(nums, k) {
   const count = new Map();
@@ -40,27 +38,6 @@ function solve(nums, k) {
     .map((e) => e[0]);
 }
 
-const tests = [
-  { label: "example 1", input: [[1, 1, 1, 2, 2, 3], 2], expected: [1, 2] },
-  { label: "example 2", input: [[1], 1], expected: [1] },
-  { label: "distinct frequencies", input: [[7, 7, 7, 7, 1, 2, 2, 2], 2], expected: [7, 2] },
-  { label: "all freq 1", input: [[1, 2, 3, 4, 5, 6], 3], expected: [6, 5, 4] },
-  { label: "all same element", input: [[1, 1, 1, 1], 1], expected: [1] },
-  { label: "clear frequency ranking", input: [[1, 1, 2, 2, 2, 3, 3, 3, 3], 2], expected: [3, 2] },
-  { label: "negative numbers", input: [[-1, -1, -1, 2, 2], 1], expected: [-1] },
-  { label: "zero values", input: [[0, 0, 0, 0, 1, 1, 2], 2], expected: [0, 1] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+const k = readInt();
+writeInts(solve(nums, k));

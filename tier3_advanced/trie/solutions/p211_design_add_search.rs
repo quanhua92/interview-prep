@@ -55,9 +55,7 @@
  * Hint: Build a Trie from the word list, then search with DFS handling '.' wildcards by trying all children.
  */
 
-
-#[allow(unused_imports)]
-use rstest;
+use wasm_libs::*;
 use std::collections::HashMap;
 
 struct TrieNode {
@@ -113,49 +111,18 @@ impl WordDictionary {
 }
 
 fn main() {
-    struct TC<'a> {
-        label: &'a str,
-        words: &'a [&'a str],
-        searches: &'a [&'a str],
-        expected: &'a [bool],
+    let n_words = read_int() as usize;
+    let mut wd = WordDictionary::new();
+    for _ in 0..n_words {
+        let w = read_line();
+        wd.add_word(&w);
     }
 
-    let tests: &[TC] = &[
-        TC { label: "example 1", words: &["bad","dad","mad"], searches: &["pad","bad",".ad","b.."], expected: &[false,true,true,true] },
-        TC { label: "example 2", words: &["a","ab"], searches: &["a",".a","ab"], expected: &[true,false,true] },
-        TC { label: "all dots pattern", words: &["abc"], searches: &["...",".."], expected: &[true,false] },
-        TC { label: "single char dot matches multiple", words: &["a","b"], searches: &["."], expected: &[true] },
-        TC { label: "dot at beginning", words: &["abc","xbc"], searches: &["bc"], expected: &[false] },
-        TC { label: "dot in middle and at end", words: &["abc"], searches: &["a.c","a.."], expected: &[true,true] },
-    ];
-
-    println!("\n============================================================");
-    println!("  211. Design Add and Search Words Data Structure");
-    println!("============================================================");
-
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let mut wd = WordDictionary::new();
-        for &w in tc.words {
-            wd.add_word(w);
-        }
-        let mut ok = true;
-        for (j, &s) in tc.searches.iter().enumerate() {
-            if wd.search(s) != tc.expected[j] {
-                ok = false;
-                break;
-            }
-        }
-        if ok {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-        }
+    let n_searches = read_int() as usize;
+    for _ in 0..n_searches {
+        let s = read_line();
+        write_bool(wd.search(&s));
     }
 
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    std::process::exit(0);
 }

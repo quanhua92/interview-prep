@@ -37,10 +37,10 @@
  * Hint: Use a queue to process nodes level by level.
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 #include <queue>
 #include <climits>
+#include <string>
 
 using namespace std;
 
@@ -79,7 +79,7 @@ static void free_tree(TreeNode *root) {
     delete root;
 }
 
-static vector<vector<int>> levelOrder(TreeNode *root) {
+static vector<vector<int>> solve(TreeNode *root) {
     vector<vector<int>> result;
     if (!root) return result;
     queue<TreeNode *> q;
@@ -98,36 +98,25 @@ static vector<vector<int>> levelOrder(TreeNode *root) {
     return result;
 }
 
-int main() {
-    (void)print_arr;
-    struct TC {
-        string label;
-        vector<int> vals;
-        vector<vector<int>> expected;
-    };
-    TC tests[] = {
-        {"example 1", {3,9,20,NULL_VAL,NULL_VAL,15,7}, {{3},{9,20},{15,7}}},
-        {"example 2", {1}, {{1}}},
-        {"empty", {}, {}},
-        {"right child only", {1,NULL_VAL,2}, {{1},{2}}},
-        {"left child only", {1,2}, {{1},{2}}},
-        {"full binary tree depth 2", {5,3,8,1,4,7,9}, {{5},{3,8},{1,4,7,9}}},
-        {"negative values", {-1,-2,-3}, {{-1},{-2,-3}}},
-        {"all same value", {1,1,1,1,1,1,1}, {{1},{1,1},{1,1,1,1}}},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        TreeNode *root = build_tree(tests[i].vals);
-        vector<vector<int>> got = levelOrder(root);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label.c_str());
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label.c_str());
-        }
-        free_tree(root);
+int main(void)
+{
+    int n = read_int();
+    if (n == 0) return 0;
+    string line = read_line();
+    vector<int> vals;
+    vals.reserve(n);
+    size_t pos = 0;
+    for (int i = 0; i < n; i++) {
+        size_t next = line.find(' ', pos);
+        string tok = (next == string::npos) ? line.substr(pos) : line.substr(pos, next - pos);
+        if (tok == "null") vals.push_back(NULL_VAL);
+        else vals.push_back(stoi(tok));
+        pos = (next == string::npos) ? string::npos : next + 1;
+        if (pos == string::npos) break;
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+    TreeNode *root = build_tree(vals);
+    vector<vector<int>> result = solve(root);
+    for (auto &row : result) write_ints(row);
+    free_tree(root);
+    return 0;
 }

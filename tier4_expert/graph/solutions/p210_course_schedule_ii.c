@@ -41,13 +41,11 @@
  * Hint: Use Kahn's algorithm (topological sort with BFS) to produce a valid course order.
  */
 
+#include "io.h"
+#include <stdlib.h>
 
-#include "ctest.h"
-
-static int *findOrder(int numCourses, int prerequisites[][2], int prereqSize, int *returnSize);
-__attribute__((unused)) static void _u(void) { (void)th_arr_eq; (void)th_print_arr; }
-
-static int *findOrder(int numCourses, int prerequisites[][2], int prereqSize, int *returnSize) {
+int *findOrder(int numCourses, int (*prereqs)[2], int prereqSize, int *returnSize)
+{
     int *inDegree = calloc(numCourses, sizeof(int));
     int *queue = malloc(numCourses * sizeof(int));
     int *order = malloc(numCourses * sizeof(int));
@@ -56,12 +54,12 @@ static int *findOrder(int numCourses, int prerequisites[][2], int prereqSize, in
     int *head = malloc(numCourses * sizeof(int));
 
     for (int i = 0; i < prereqSize; i++) {
-        inDegree[prerequisites[i][0]]++;
+        inDegree[prereqs[i][0]]++;
     }
     for (int i = 0; i < numCourses; i++) head[i] = -1;
     for (int i = 0; i < prereqSize; i++) {
-        int course = prerequisites[i][0];
-        int prereq = prerequisites[i][1];
+        int course = prereqs[i][0];
+        int prereq = prereqs[i][1];
         edges[i] = course;
         nxt[i] = head[prereq];
         head[prereq] = i;
@@ -94,59 +92,30 @@ static int *findOrder(int numCourses, int prerequisites[][2], int prereqSize, in
     return NULL;
 }
 
-typedef struct {
-    const char *label;
-    int numCourses;
-    int prereqs[10000][2];
-    int prereqSize;
-    int expected[2000];
-    int expected_n;
-} TC;
+int main(void)
+{
+    int n;
+    int *header = read_ints(&n);
+    int numCourses = header[0];
+    int pairCount = header[1];
+    free(header);
 
-static int is_valid_order(int *order, int n, int prereqs[][2], int prereqSize) {
-    int pos[2000];
-    for (int i = 0; i < n; i++) pos[order[i]] = i;
-    for (int i = 0; i < prereqSize; i++) {
-        if (pos[prereqs[i][0]] < pos[prereqs[i][1]]) return 0;
+    int (*prereqs)[2] = NULL;
+    if (pairCount > 0) {
+        prereqs = malloc(pairCount * sizeof(int[2]));
+        for (int i = 0; i < pairCount; i++) {
+            int k;
+            int *pair = read_ints(&k);
+            prereqs[i][0] = pair[0];
+            prereqs[i][1] = pair[1];
+            free(pair);
+        }
     }
-    return 1;
-}
 
-int main(void) {
-    TC tests[] = {
-        {"example 1", 2, {{1,0}}, 1, {0,1}, 2},
-        {"example 2", 4, {{1,0},{2,0},{3,1},{3,2}}, 4, {0,1,2,3}, 4},
-        {"no prerequisites", 1, {{0}}, 0, {0}, 1},
-        {"cycle returns empty", 2, {{1,0},{0,1}}, 2, {0}, 0},
-        {"3-node cycle", 3, {{0,1},{1,2},{2,0}}, 3, {0}, 0},
-        {"all depend on course 0", 4, {{0,1},{0,2},{0,3}}, 3, {1,2,3,0}, 4},
-        {"linear chain", 3, {{2,1},{1,0}}, 2, {0,1,2}, 3},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        int got_n = 0;
-        int *got = findOrder(tests[i].numCourses, tests[i].prereqs, tests[i].prereqSize, &got_n);
-        int ok;
-        if (tests[i].expected_n == 0) {
-            ok = (got_n == 0);
-        } else {
-            ok = (got_n == tests[i].expected_n) && is_valid_order(got, got_n, tests[i].prereqs, tests[i].prereqSize);
-        }
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: ");
-            th_print_arr(tests[i].expected, tests[i].expected_n);
-            printf("\n    Got:      ");
-            if (got) th_print_arr(got, got_n);
-            else printf("NULL");
-            printf("\n");
-        }
-        free(got);
-    }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+    int returnSize;
+    int *order = findOrder(numCourses, prereqs, pairCount, &returnSize);
+    write_ints(order, returnSize);
+    free(order);
+    free(prereqs);
+    return 0;
 }

@@ -32,7 +32,6 @@
  *
  * Template (python3):
  *     class Twitter:
- *
  *         def __init__(self):
  *
  *
@@ -48,7 +47,6 @@
  *         def unfollow(self, followerId: int, followeeId: int) -> None:
  *
  *
- *
  *     # Your Twitter object will be instantiated and called as such:
  *     # obj = Twitter()
  *     # obj.postTweet(userId,tweetId)
@@ -58,6 +56,7 @@
  */
 
 
+#include "io.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -116,7 +115,7 @@ static HeapEntry heap_pop(HeapEntry *h, int *hsz)
     return top;
 }
 
-static int *get_news_feed(int user_id, int *ret_size)
+static void get_news_feed(int user_id, int *feed, int *feed_size)
 {
     HeapEntry heap[MAX_USERS];
     int hsz = 0;
@@ -137,17 +136,15 @@ static int *get_news_feed(int user_id, int *ret_size)
         }
     }
 
-    static int result[FEED_SIZE];
-    *ret_size = 0;
-    while (hsz > 0 && *ret_size < FEED_SIZE) {
+    *feed_size = 0;
+    while (hsz > 0 && *feed_size < FEED_SIZE) {
         HeapEntry top = heap_pop(heap, &hsz);
-        result[(*ret_size)++] = top.tweet_id;
+        feed[(*feed_size)++] = top.tweet_id;
         int next = pool[top.next_node].next;
         if (next != -1) {
             heap_push(heap, &hsz, (HeapEntry){pool[next].tweet_id, pool[next].time, next, top.user_id});
         }
     }
-    return result;
 }
 
 static void do_follow(int follower_id, int followee_id)
@@ -164,29 +161,29 @@ int main(void)
 {
     twitter_init();
 
-    printf("\n============================================================\n");
-    printf("  355. Design Twitter\n");
-    printf("============================================================\n");
+    int num_ops = read_int();
+    for (int i = 0; i < num_ops; i++) {
+        char *op = read_line();
+        int arg_count = read_int();
+        int args[4];
+        for (int j = 0; j < arg_count; j++) {
+            args[j] = read_int();
+        }
+        free(op);
 
-    post_tweet(1, 5);
-    int sz;
-    int *feed = get_news_feed(1, &sz);
-    int ok1 = sz == 1 && feed[0] == 5;
-    printf("  Test 1 (post + feed): %s\n", ok1 ? "PASS" : "FAIL");
+        if (strcmp(op, "postTweet") == 0) {
+            post_tweet(args[0], args[1]);
+        } else if (strcmp(op, "getNewsFeed") == 0) {
+            int feed[FEED_SIZE];
+            int feed_size = 0;
+            get_news_feed(args[0], feed, &feed_size);
+            write_ints(feed, feed_size);
+        } else if (strcmp(op, "follow") == 0) {
+            do_follow(args[0], args[1]);
+        } else if (strcmp(op, "unfollow") == 0) {
+            do_unfollow(args[0], args[1]);
+        }
+    }
 
-    do_follow(1, 2);
-    post_tweet(2, 6);
-    feed = get_news_feed(1, &sz);
-    int ok2 = sz == 2 && feed[0] == 6 && feed[1] == 5;
-    printf("  Test 2 (follow + merge feed): %s\n", ok2 ? "PASS" : "FAIL");
-
-    do_unfollow(1, 2);
-    feed = get_news_feed(1, &sz);
-    int ok3 = sz == 1 && feed[0] == 5;
-    printf("  Test 3 (unfollow): %s\n", ok3 ? "PASS" : "FAIL");
-
-    int passed = (ok1 && ok2 && ok3) ? 3 : 0;
-    printf("\n  %d/3 passed\n", passed);
-    printf("============================================================\n\n");
-    return passed == 3 ? 0 : 1;
+    return 0;
 }

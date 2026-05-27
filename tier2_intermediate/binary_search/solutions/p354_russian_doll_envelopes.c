@@ -26,8 +26,7 @@
  *         def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
  */
 
-
-#include <stdio.h>
+#include "io.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -68,35 +67,19 @@ int maxEnvelopes(int **envelopes, int envelopesSize, int *envelopesColSize)
 
 int main(void)
 {
-    struct { const char *label; int env[10][2]; int n; int expected; int pass; } tests[] = {
-        { "example 1", {{5,4},{6,4},{6,7},{2,3}}, 4, 3, 0 },
-        { "example 2", {{1,1},{1,1},{1,1}}, 3, 1, 0 },
-        { "single envelope", {{1,2}}, 1, 1, 0 },
-        { "strictly increasing", {{1,2},{2,3},{3,4}}, 3, 3, 0 },
-        { "width ties sorted by height desc", {{4,5},{4,6},{6,7},{2,3},{1,1}}, 5, 4, 0 },
-        { "height breaks chain", {{2,100},{3,200},{4,300},{5,250}}, 4, 3, 0 },
-    };
-    int tn = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    for (int i = 0; i < tn; i++) {
-        int *env_ptrs[10];
-        int colSizes[10];
-        for (int j = 0; j < tests[i].n; j++) {
-            env_ptrs[j] = tests[i].env[j];
-            colSizes[j] = 2;
-        }
-        int got = maxEnvelopes(env_ptrs, tests[i].n, colSizes);
-        tests[i].pass = (got == tests[i].expected);
-        if (tests[i].pass) passed++;
+    int rows;
+    int *flat = read_ints(&rows);
+    int cols = flat[0];
+    int envelopesSize = cols;
+    int *envelopes_ptrs[100000];
+    int colSizes[100000];
+    int *envelopes_flat = flat + 1;
+    for (int i = 0; i < envelopesSize; i++) {
+        envelopes_ptrs[i] = envelopes_flat + i * 2;
+        colSizes[i] = 2;
     }
-
-    printf("\n============================================================\n");
-    printf("  354. Russian Doll Envelopes\n");
-    printf("============================================================\n");
-    for (int i = 0; i < tn; i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, tn);
-    printf("============================================================\n");
-    return passed == tn ? 0 : 1;
+    int result = maxEnvelopes(envelopes_ptrs, envelopesSize, colSizes);
+    write_int(result);
+    free(flat);
+    return 0;
 }

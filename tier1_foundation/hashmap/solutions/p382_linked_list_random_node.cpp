@@ -49,8 +49,7 @@
  */
 
 
-#include "cpptest.h"
-#include <cstdio>
+#include "io.h"
 #include <cstdlib>
 
 struct ListNode {
@@ -85,35 +84,11 @@ static int solve(ListNode *head) {
     return slow->val;
 }
 
-int main() {
-    TestCase tests[] = {
-        {"middle of odd-length list", {1, 2, 3}, 0, {2}},
-        {"middle of even-length list", {1, 2, 3, 4}, 0, {3}},
-        {"single node", {4}, 0, {4}},
-        {"two nodes", {1, 2}, 0, {2}},
-        {"three nodes", {5, 6, 7}, 0, {6}},
-        {"five nodes", {1, 2, 3, 4, 5}, 0, {3}},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  382. Linked List Random Node\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        ListNode *head = build_list(tests[i].input_arr);
-        int got = solve(head);
-        free_list(head);
-        if (got == tests[i].expected[0]) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label.c_str());
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label.c_str());
-            printf("    Expected: "); print_arr(tests[i].expected); printf("\n");
-            printf("    Got:      [%d]\n", got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-    return passed == n ? 0 : 1;
+int main(void)
+{
+    std::vector<int> arr = read_ints();
+    ListNode *head = build_list(arr);
+    write_int(solve(head));
+    free_list(head);
+    return 0;
 }

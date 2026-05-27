@@ -37,34 +37,27 @@
  * Hint: Add non-overlapping before, merge overlapping, add non-overlapping after.
  */
 
+use wasm_libs::*;
 
-use rstest::{TestCase, run_tests};
-
-fn solve(arr: &[i32], num_intervals: i32) -> Vec<i32> {
-    let num_intervals = num_intervals as usize;
-    let mut new_start = arr[2 * num_intervals];
-    let mut new_end = arr[2 * num_intervals + 1];
-    let mut result = Vec::with_capacity((num_intervals + 1) * 2);
+fn solve(intervals: &Vec<[i32; 2]>, new_interval: &mut [i32; 2]) -> Vec<[i32; 2]> {
+    let mut result: Vec<[i32; 2]> = Vec::with_capacity(intervals.len() + 1);
     let mut i = 0;
+    let n = intervals.len();
 
-    while i < num_intervals && arr[2 * i + 1] < new_start {
-        result.push(arr[2 * i]);
-        result.push(arr[2 * i + 1]);
+    while i < n && intervals[i][1] < new_interval[0] {
+        result.push(intervals[i]);
         i += 1;
     }
 
-    while i < num_intervals && arr[2 * i] <= new_end {
-        new_start = new_start.min(arr[2 * i]);
-        new_end = new_end.max(arr[2 * i + 1]);
+    while i < n && intervals[i][0] <= new_interval[1] {
+        new_interval[0] = new_interval[0].min(intervals[i][0]);
+        new_interval[1] = new_interval[1].max(intervals[i][1]);
         i += 1;
     }
+    result.push(*new_interval);
 
-    result.push(new_start);
-    result.push(new_end);
-
-    while i < num_intervals {
-        result.push(arr[2 * i]);
-        result.push(arr[2 * i + 1]);
+    while i < n {
+        result.push(intervals[i]);
         i += 1;
     }
 
@@ -72,17 +65,18 @@ fn solve(arr: &[i32], num_intervals: i32) -> Vec<i32> {
 }
 
 fn main() {
-    let tests: &[TestCase] = &[
-        TestCase { label: "example 1", input_arr: &[1,3,6,9,2,5], target: 2, expected: &[1,5,6,9] },
-        TestCase { label: "example 2", input_arr: &[1,2,3,5,6,7,8,10,12,16,4,8], target: 5, expected: &[1,2,3,10,12,16] },
-        TestCase { label: "empty intervals", input_arr: &[5,7], target: 0, expected: &[5,7] },
-        TestCase { label: "contained", input_arr: &[1,5,2,3], target: 1, expected: &[1,5] },
-        TestCase { label: "insert before all", input_arr: &[3,5,6,9,1,2], target: 2, expected: &[1,2,3,5,6,9] },
-        TestCase { label: "insert after all", input_arr: &[1,2,3,5,6,9], target: 2, expected: &[1,2,3,5,6,9] },
-        TestCase { label: "merge with first interval", input_arr: &[1,3,6,9,0,2], target: 2, expected: &[0,3,6,9] },
-        TestCase { label: "merge with last interval", input_arr: &[1,3,6,9,8,10], target: 2, expected: &[1,3,6,10] },
-        TestCase { label: "bridge gap between intervals", input_arr: &[1,2,4,5,2,4], target: 2, expected: &[1,5] },
-    ];
-
-    std::process::exit(run_tests!("57. Insert Interval", solve, tests));
+    let n = read_int();
+    let intervals: Vec<[i32; 2]> = (0..n)
+        .map(|_| {
+            let row = read_ints();
+            [row[0], row[1]]
+        })
+        .collect();
+    let ni = read_ints();
+    let mut new_interval = [ni[0], ni[1]];
+    let result = solve(&intervals, &mut new_interval);
+    for row in &result {
+        write_ints(row);
+    }
+    std::process::exit(0);
 }

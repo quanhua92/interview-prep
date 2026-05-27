@@ -29,26 +29,14 @@ Template (python3):
         def checkRecord(self, n: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "552. Student Attendance Record II"
-    test_cases = [
-        TestCase(input=2, expected=8, label="example 1"),
-        TestCase(input=1, expected=3, label="example 2"),
-        TestCase(input=10101, expected=183236316, label="example 3"),
-        TestCase(input=3, expected=19, label="n=3"),
-        TestCase(input=4, expected=43, label="n=4"),
-        TestCase(input=10, expected=3536, label="n=10"),
-    ]
-
-    def solve(self, n: int) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, n) -> int")
+def solve(n: int) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    result = solve(n)
+    write_int(result)

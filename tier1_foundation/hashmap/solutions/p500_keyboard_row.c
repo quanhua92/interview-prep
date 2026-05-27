@@ -31,8 +31,9 @@
  */
 
 
-#include "ctest.h"
+#include "io.h"
 #include <ctype.h>
+#include <string.h>
 
 static int get_row(char c)
 {
@@ -48,92 +49,28 @@ static int get_row(char c)
     return -1;
 }
 
-int findWords(const char *words[], int n, const char *result[])
+int main(void)
 {
-    int count = 0;
+    int cnt;
+    int *header = read_ints(&cnt);
+    int n = header[0];
+    free(header);
+
     for (int i = 0; i < n; i++) {
-        int row = get_row(words[i][0]);
+        char *word = read_line();
+        if (word[0] == '\0') continue;
+        int row = get_row(word[0]);
         int valid = 1;
-        for (int j = 1; words[i][j]; j++) {
-            if (get_row(words[i][j]) != row) {
+        for (int j = 1; word[j]; j++) {
+            if (get_row(word[j]) != row) {
                 valid = 0;
                 break;
             }
         }
         if (valid) {
-            result[count++] = words[i];
+            write_string(word);
         }
-    }
-    return count;
-}
-
-void __attribute__((unused)) _use_harness_fns(void)
-{
-    (void)th_print_arr;
-    (void)th_arr_eq;
-}
-
-int main(void)
-{
-    {
-        const char *words[] = {"Hello", "Alaska", "Dad", "Peace"};
-        const char *expected[] = {"Alaska", "Dad"};
-        const char *result[4];
-        int got_n = findWords(words, 4, result);
-        int exp_n = 2;
-        int pass = got_n == exp_n;
-        if (pass) {
-            for (int i = 0; i < exp_n; i++) {
-                if (strcmp(result[i], expected[i]) != 0) { pass = 0; break; }
-            }
-        }
-        printf("  Test 1 (example 1): %s\n", pass ? "PASS" : "FAIL");
-    }
-    {
-        const char *words[] = {"omk"};
-        const char *result[1];
-        int got_n = findWords(words, 1, result);
-        printf("  Test 2 (example 2): %s\n", got_n == 0 ? "PASS" : "FAIL");
-    }
-    {
-        const char *words[] = {"adsdf", "sfd"};
-        const char *expected[] = {"adsdf", "sfd"};
-        const char *result[2];
-        int got_n = findWords(words, 2, result);
-        int pass = got_n == 2;
-        if (pass) {
-            for (int i = 0; i < 2; i++) {
-                if (strcmp(result[i], expected[i]) != 0) { pass = 0; break; }
-            }
-        }
-        printf("  Test 3 (example 3): %s\n", pass ? "PASS" : "FAIL");
-    }
-    {
-        const char *words[] = {"a", "b", "c"};
-        const char *expected[] = {"a", "b", "c"};
-        const char *result[3];
-        int got_n = findWords(words, 3, result);
-        int pass = got_n == 3;
-        if (pass) {
-            for (int i = 0; i < 3; i++) {
-                if (strcmp(result[i], expected[i]) != 0) { pass = 0; break; }
-            }
-        }
-        printf("  Test 4 (single letter words): %s\n", pass ? "PASS" : "FAIL");
-    }
-    {
-        const char *words[] = {"qz", "asdf", "qzxc"};
-        const char *result[3];
-        int got_n = findWords(words, 3, result);
-        int pass = got_n == 1 && strcmp(result[0], "asdf") == 0;
-        printf("  Test 5 (mixed row words): %s\n", pass ? "PASS" : "FAIL");
-    }
-    {
-        const char *words[] = {"typewriter"};
-        const char *result[1];
-        int got_n = findWords(words, 1, result);
-        int pass = got_n == 1 && strcmp(result[0], "typewriter") == 0;
-        printf("  Test 6 (entire top row word): %s\n", pass ? "PASS" : "FAIL");
+        free(word);
     }
     return 0;
 }

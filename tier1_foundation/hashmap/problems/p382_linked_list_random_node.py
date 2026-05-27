@@ -48,51 +48,33 @@ Template (python3):
     # param_1 = obj.getRandom()
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import ListNode, Problem, TestCase
-from typing import Any
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "382. Linked List Random Node"
-    test_cases = [
-        TestCase(
-            input=ListNode.from_list([1, 2, 3]),
-            expected=2,
-            label="middle of odd-length list",
-        ),
-        TestCase(
-            input=ListNode.from_list([1, 2, 3, 4]),
-            expected=3,
-            label="middle of even-length list",
-        ),
-        TestCase(
-            input=ListNode.from_list([4]),
-            expected=4,
-            label="single node",
-        ),
-        TestCase(
-            input=ListNode.from_list([1, 2]),
-            expected=2,
-            label="two nodes",
-        ),
-        TestCase(
-            input=ListNode.from_list([5, 6, 7]),
-            expected=6,
-            label="three nodes",
-        ),
-        TestCase(
-            input=ListNode.from_list([1, 2, 3, 4, 5]),
-            expected=3,
-            label="five nodes",
-        ),
-    ]
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
 
-    def solve(self, head: ListNode) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, head: ListNode) -> int")
+
+def build_list(arr):
+    dummy = ListNode()
+    cur = dummy
+    for v in arr:
+        cur.next = ListNode(v)
+        cur = cur.next
+    return dummy.next
+
+
+def solve(head: ListNode) -> int:
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+    return slow.val
 
 
 if __name__ == "__main__":
-    Solution().run()
+    arr = read_ints()
+    head = build_list(arr)
+    write_int(solve(head))

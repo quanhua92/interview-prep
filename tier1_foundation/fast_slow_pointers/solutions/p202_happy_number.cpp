@@ -30,8 +30,15 @@
  * Hint: Use fast and slow pointers on the sequence of sum-of-squared-digits.
  */
 
+#include "io.h"
+#include <algorithm>
+#include <vector>
 
-#include "cpptest.h"
+static int read_int(void)
+{
+    std::string line = read_line();
+    return std::stoi(line);
+}
 
 static int get_next(int num)
 {
@@ -54,35 +61,9 @@ bool isHappy(int n)
     return fast == 1;
 }
 
-void __attribute__((unused)) _use_harness_fns(void)
+int main(void)
 {
-    (void)print_arr;
-}
-
-int main()
-{
-    TestCase tests[] = {
-        {"example 1", {}, 19, {1}},
-        {"example 2", {}, 2, {0}},
-        {"already happy", {}, 1, {1}},
-        {"small happy number", {}, 7, {1}},
-        {"enters 4-16 cycle", {}, 4, {0}},
-        {"power of 10", {}, 100, {1}},
-        {"large unhappy number", {}, 999999999, {0}},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = isHappy(tests[i].target);
-        if (got == tests[i].expected[0]) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label.c_str());
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label.c_str());
-            printf("    Expected: %d\n    Got:      %d\n",
-                   tests[i].expected[0], got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    int n = read_int();
+    write_bool(isHappy(n));
+    return 0;
 }

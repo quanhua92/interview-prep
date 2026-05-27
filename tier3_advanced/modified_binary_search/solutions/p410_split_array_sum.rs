@@ -31,6 +31,7 @@
  * Hint: Binary search the answer in [max(nums), sum(nums)] and check feasibility greedily.
  */
 
+use wasm_libs::*;
 
 fn feasible(nums: &[i32], max_sum: i64, k: i32) -> bool {
     let mut count = 1;
@@ -64,40 +65,9 @@ fn split_array(nums: &[i32], k: i32) -> i64 {
     left
 }
 
-struct TestCase {
-    label: &'static str,
-    nums: &'static [i32],
-    k: i32,
-    expected: i64,
-}
-
 fn main() {
-    let tests: &[TestCase] = &[
-        TestCase { label: "example 1", nums: &[7,2,5,10,8], k: 2, expected: 18 },
-        TestCase { label: "example 2", nums: &[1,2,3,4,5], k: 2, expected: 9 },
-        TestCase { label: "example 3", nums: &[1,4,4], k: 3, expected: 4 },
-        TestCase { label: "k equals length", nums: &[1,2,3,4,5], k: 5, expected: 5 },
-        TestCase { label: "single element", nums: &[5], k: 1, expected: 5 },
-        TestCase { label: "all zeros", nums: &[0,0,0,0], k: 2, expected: 0 },
-        TestCase { label: "uniform values", nums: &[1,1,1,1,1,1,1,1], k: 4, expected: 2 },
-        TestCase { label: "large values", nums: &[1000000,1000000,1000000], k: 2, expected: 2000000 },
-    ];
-
-    println!("\n============================================================");
-    println!("  410. Split Array Largest Sum");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = split_array(tc.nums, tc.k);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}\n    Got:      {}", tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let nums = read_ints();
+    let k = read_int();
+    write_int(split_array(&nums, k) as i32);
+    std::process::exit(0);
 }

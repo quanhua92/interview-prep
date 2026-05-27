@@ -62,49 +62,18 @@ Template (python3):
     # param_1 = obj.pickIndex()
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "528. Random Pick with Weight"
-    test_cases = [
-        TestCase(
-            input=[1],
-            expected=[1],
-            label="prefix sum for [1]",
-        ),
-        TestCase(
-            input=[1, 3],
-            expected=[1, 4],
-            label="prefix sum for [1, 3]",
-        ),
-        TestCase(
-            input=[3, 14, 1, 7],
-            expected=[3, 17, 18, 25],
-            label="prefix sum for [3, 14, 1, 7]",
-        ),
-        TestCase(
-            input=[5],
-            expected=[5],
-            label="single large weight",
-        ),
-        TestCase(
-            input=[10, 10, 10],
-            expected=[10, 20, 30],
-            label="equal weights",
-        ),
-    ]
-
-    def solve(self, w: list[int]) -> list[int]:
-        prefix = [0] * len(w)
-        prefix[0] = w[0]
-        for i in range(1, len(w)):
-            prefix[i] = prefix[i - 1] + w[i]
-        return prefix
+def solve(w: list[int]) -> list[int]:
+    prefix = [0] * len(w)
+    prefix[0] = w[0]
+    for i in range(1, len(w)):
+        prefix[i] = prefix[i - 1] + w[i]
+    return prefix
 
 
 if __name__ == "__main__":
-    Solution().run()
+    w = read_ints()
+    result = solve(w)
+    write_ints(result)

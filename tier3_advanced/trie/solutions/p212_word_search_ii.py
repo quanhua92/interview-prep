@@ -35,10 +35,7 @@ Template (python3):
 Hint: Build a Trie from the word list, then use DFS on the board to find matching words.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
 class TrieNode:
@@ -47,93 +44,55 @@ class TrieNode:
         self.word: str | None = None
 
 
-class Solution(Problem):
-    name = "212. Word Search II"
-    test_cases = [
-        TestCase(
-            input=(
-                [
-                    ["o", "a", "a", "n"],
-                    ["e", "t", "a", "e"],
-                    ["i", "h", "k", "r"],
-                    ["i", "f", "l", "v"],
-                ],
-                ["oath", "pea", "eat", "rain"],
-            ),
-            expected=["eat", "oath"],
-            label="example 1",
-        ),
-        TestCase(
-            input=([["a", "b"], ["c", "d"]], ["abcb"]), expected=[], label="example 2"
-        ),
-        TestCase(
-            input=([["a"]], ["a"]),
-            expected=["a"],
-            label="1x1 board single char",
-        ),
-        TestCase(
-            input=([["a", "b"], ["c", "d"]], ["xyz"]),
-            expected=[],
-            label="word not on board",
-        ),
-        TestCase(
-            input=([["a", "a"], ["a", "a"]], ["aaaa"]),
-            expected=["aaaa"],
-            label="same letter grid",
-        ),
-        TestCase(
-            input=(
-                [
-                    ["o", "a", "a", "n"],
-                    ["e", "t", "a", "e"],
-                    ["i", "h", "k", "r"],
-                    ["i", "f", "l", "v"],
-                ],
-                ["oath", "oat"],
-            ),
-            expected=["oat", "oath"],
-            label="prefix is also a word",
-        ),
-    ]
+def solve(board: list[list[str]], words: list[str]) -> list[str]:
+    rows, cols = len(board), len(board[0])
+    result: list[str] = []
 
-    def solve(self, board: list[list[str]], words: list[str]) -> list[str]:
-        rows, cols = len(board), len(board[0])
-        result: list[str] = []
+    def _build_trie(words: list[str]) -> TrieNode:
+        root = TrieNode()
+        for w in words:
+            node = root
+            for ch in w:
+                if ch not in node.children:
+                    node.children[ch] = TrieNode()
+                node = node.children[ch]
+            node.word = w
+        return root
 
-        def _build_trie(words: list[str]) -> TrieNode:
-            root = TrieNode()
-            for w in words:
-                node = root
-                for ch in w:
-                    if ch not in node.children:
-                        node.children[ch] = TrieNode()
-                    node = node.children[ch]
-                node.word = w
-            return root
+    def dfs(r: int, c: int, parent: TrieNode):
+        ch = board[r][c]
+        curr = parent.children.get(ch)
+        if not curr:
+            return
+        if curr.word:
+            result.append(curr.word)
+            curr.word = None
+        board[r][c] = "#"
+        for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and board[nr][nc] != "#":
+                dfs(nr, nc, curr)
+        board[r][c] = ch
+        if not curr.children:
+            parent.children.pop(ch)
 
-        def dfs(r: int, c: int, parent: TrieNode):
-            ch = board[r][c]
-            curr = parent.children.get(ch)
-            if not curr:
-                return
-            if curr.word:
-                result.append(curr.word)
-                curr.word = None  # avoid duplicates
-            board[r][c] = "#"
-            for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
-                nr, nc = r + dr, c + dc
-                if 0 <= nr < rows and 0 <= nc < cols and board[nr][nc] != "#":
-                    dfs(nr, nc, curr)
-            board[r][c] = ch
-            if not curr.children:
-                parent.children.pop(ch)
-
-        root = _build_trie(words)
-        for r in range(rows):
-            for c in range(cols):
-                dfs(r, c, root)
-        return sorted(result)
+    root = _build_trie(words)
+    for r in range(rows):
+        for c in range(cols):
+            dfs(r, c, root)
+    return sorted(result)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    rows = read_int()
+    cols = read_int()
+    board = []
+    for _ in range(rows):
+        line = read_line()
+        board.append(list(line))
+    n_words = read_int()
+    words = [read_line() for _ in range(n_words)]
+    result = solve(board, words)
+    write_int(len(result))
+    for w in result:
+        write_string(w)

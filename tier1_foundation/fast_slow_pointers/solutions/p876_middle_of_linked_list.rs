@@ -32,66 +32,24 @@
  * Hint: Fast pointer moves 2 steps, slow moves 1, return slow.to_list().
  */
 
-use rstest::TestCase;
+use wasm_libs::*;
 
-struct ListNode {
-    val: i32,
-    next: Option<Box<ListNode>>,
-}
-
-fn build_list(arr: &[i32]) -> Option<Box<ListNode>> {
-    let mut head: Option<Box<ListNode>> = None;
-    for &v in arr.iter().rev() {
-        head = Some(Box::new(ListNode { val: v, next: head }));
+fn solve(vals: &[i32]) -> Vec<i32> {
+    let n = vals.len();
+    let mut slow = 0usize;
+    let mut fast = 0usize;
+    while fast + 1 < n && fast + 2 < n {
+        slow += 1;
+        fast += 2;
     }
-    head
-}
-
-fn solve(head: &Option<Box<ListNode>>) -> Vec<i32> {
-    let mut slow = head.as_ref();
-    let mut fast = head.as_ref();
-    while fast.is_some() && fast.unwrap().next.is_some() {
-        slow = slow.unwrap().next.as_ref();
-        fast = fast.unwrap().next.as_ref().unwrap().next.as_ref();
+    if fast + 1 < n {
+        slow += 1;
     }
-    let mut result = Vec::new();
-    let mut p = slow;
-    while let Some(node) = p {
-        result.push(node.val);
-        p = node.next.as_ref();
-    }
-    result
+    vals[slow..].to_vec()
 }
 
 fn main() {
-    let tests: &[TestCase] = &[
-        TestCase { label: "odd length", input_arr: &[1, 2, 3, 4, 5], target: 0, expected: &[3, 4, 5] },
-        TestCase { label: "even length", input_arr: &[1, 2, 3, 4, 5, 6], target: 0, expected: &[4, 5, 6] },
-        TestCase { label: "single node", input_arr: &[1], target: 0, expected: &[1] },
-        TestCase { label: "two nodes", input_arr: &[1, 2], target: 0, expected: &[2] },
-        TestCase { label: "three nodes", input_arr: &[1, 2, 3], target: 0, expected: &[2, 3] },
-        TestCase { label: "negative values", input_arr: &[1, -2, 3, -4, 5], target: 0, expected: &[3, -4, 5] },
-    ];
-
-    println!("\n============================================================");
-    println!("  876. Middle of the Linked List");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let head = build_list(tc.input_arr);
-        let got = solve(&head);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {:?}", tc.expected);
-            println!("    Got:      {:?}", got);
-        }
-    }
-    let total = tests.len();
-    println!("\n  {}/{} passed", passed, total);
-    println!("============================================================\n");
-
-    std::process::exit(if passed == total { 0 } else { 1 });
+    let vals = read_ints();
+    write_ints(solve(&vals));
+    std::process::exit(0);
 }

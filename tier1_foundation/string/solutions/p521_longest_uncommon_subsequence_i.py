@@ -14,12 +14,12 @@ Example 1:
 Example 2:
     Input: a = "aaa", b = "bbb"
     Output: 3
-    Explanation: The longest uncommon subsequences are "aaa" and "bbb".
+    Explanation: The longest uncommon subsequences are "aaa" and "bbb".
 
 Example 3:
     Input: a = "aaa", b = "aaa"
     Output: -1
-    Explanation: Every subsequence of string a is also a subsequence of string b. Similarly, every subsequence of string b is also a subsequence of string a. So the answer would be -1.
+    Explanation: Every subsequence of string a is also a subsequence of string b. Similarly, every subsequence of string b is also a subsequence of string a. So the answer would be -1.
 
 Constraints:
     - 1 <= a.length, b.length <= 100
@@ -34,26 +34,15 @@ Template (python3):
         def findLUSlength(self, a: str, b: str) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "521. Longest Uncommon Subsequence I"
-    test_cases = [
-        TestCase(input=("aba", "cdc"), expected=3, label="example 1"),
-        TestCase(input=("aaa", "bbb"), expected=3, label="example 2"),
-        TestCase(input=("aaa", "aaa"), expected=-1, label="example 3"),
-        TestCase(input=("a", "b"), expected=1, label="single char different"),
-        TestCase(input=("a", "aa"), expected=2, label="one is subsequence of other"),
-        TestCase(input=("abc", "abcde"), expected=5, label="one longer than other"),
-    ]
-
-    def solve(self, a: str, b: str) -> int:
-        return -1 if a == b else max(len(a), len(b))
+def solve(a: str, b: str) -> int:
+    return -1 if a == b else max(len(a), len(b))
 
 
 if __name__ == "__main__":
-    Solution().run()
+    a = read_line()
+    b = read_line()
+    result = solve(a, b)
+    write_int(result)

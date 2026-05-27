@@ -26,31 +26,15 @@ Template (python3):
 Hint: Use a min-heap of size k to efficiently find the kth largest element.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "215. Kth Largest Element in an Array"
-    test_cases = [
-        TestCase(input=([3, 2, 1, 5, 6, 4], 2), expected=5, label="example 1"),
-        TestCase(input=([3, 2, 3, 1, 2, 4, 5, 5, 6], 4), expected=4, label="example 2"),
-        TestCase(input=([1], 1), expected=1, label="single element"),
-        TestCase(input=([-1, -2, -3], 1), expected=-1, label="negative numbers"),
-        TestCase(input=([5, 5, 5, 5], 2), expected=5, label="all duplicates"),
-        TestCase(input=([1, 2, 3], 3), expected=1, label="k equals length"),
-        TestCase(input=([-100, 0, 100], 2), expected=0, label="mixed negatives and zero"),
-        TestCase(input=(list(range(1, 101)), 50), expected=51, label="100 elements k=50"),
-        TestCase(input=([-1, -1, -1, -1], 3), expected=-1, label="all negative duplicates"),
-    ]
-
-    def solve(self, nums: list[int], k: int) -> int:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, nums: list[int], k: int) -> int"
-        )
+def solve(nums: list[int], k: int) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    k = read_int()
+    result = solve(nums, k)
+    write_int(result)

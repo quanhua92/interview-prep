@@ -29,7 +29,7 @@
  */
 
 
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 
 static int *updateMatrix(const int *flat, int rows, int cols, int *out_size)
@@ -71,63 +71,27 @@ static int *updateMatrix(const int *flat, int rows, int cols, int *out_size)
     return dist;
 }
 
-typedef struct {
-    const char *label;
-    const int *input;
-    int rows, cols;
-    const int *expected;
-} MatDistTC;
-
 int main(void)
 {
-    int in1[] = {0,0,0, 0,1,0, 0,0,0};
-    int ex1[] = {0,0,0, 0,1,0, 0,0,0};
-    int in2[] = {0,0,0, 0,1,0, 1,1,1};
-    int ex2[] = {0,0,0, 0,1,0, 1,2,1};
-    int in3[] = {0};
-    int ex3[] = {0};
-    int in4[] = {1, 0, 1};
-    int ex4[] = {1, 0, 1};
-    int in5[] = {0,1,1,1};
-    int ex5[] = {0,1,2,3};
-    int in6[] = {1,1,1, 1,0,1, 1,1,1};
-    int ex6[] = {2,1,2, 1,0,1, 2,1,2};
-    int in7[] = {1,1,0, 1,1,1, 0,1,1};
-    int ex7[] = {2,1,0, 1,2,1, 0,1,2};
-
-    MatDistTC tests[] = {
-        {"example 1", in1, 3, 3, ex1},
-        {"example 2", in2, 3, 3, ex2},
-        {"single zero", in3, 1, 1, ex3},
-        {"single column", in4, 3, 1, ex4},
-        {"single row", in5, 1, 4, ex5},
-        {"cross of ones around center zero", in6, 3, 3, ex6},
-        {"corner zeros", in7, 3, 3, ex7},
-    };
-
-    int n_tests = (int)(sizeof(tests) / sizeof(tests[0]));
-    printf("\n============================================================\n");
-    printf("  542. 01 Matrix\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int t = 0; t < n_tests; t++) {
-        MatDistTC *tc = &tests[t];
-        int out_size = 0;
-        int *got = updateMatrix(tc->input, tc->rows, tc->cols, &out_size);
-        int total = tc->rows * tc->cols;
-        int ok = th_arr_eq(got, out_size, tc->expected, total);
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", t + 1, tc->label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", t + 1, tc->label);
-            printf("    Expected: "); th_print_arr(tc->expected, total);
-            printf("\n    Got:      "); th_print_arr(got, out_size);
-            printf("\n");
-        }
-        free(got);
+    int n;
+    int *size_line = read_ints(&n);
+    int cols = size_line[0];
+    free(size_line);
+    int rows = cols;
+    int total = rows * cols;
+    int *flat = malloc(total * sizeof(int));
+    for (int i = 0; i < rows; i++) {
+        int count;
+        int *row = read_ints(&count);
+        for (int j = 0; j < cols; j++)
+            flat[i * cols + j] = row[j];
+        free(row);
     }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    int out_size = 0;
+    int *result = updateMatrix(flat, rows, cols, &out_size);
+    for (int i = 0; i < rows; i++)
+        write_ints(result + i * cols, cols);
+    free(flat);
+    free(result);
+    return 0;
 }

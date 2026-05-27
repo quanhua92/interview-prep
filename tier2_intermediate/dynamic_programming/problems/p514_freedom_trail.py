@@ -30,25 +30,15 @@ Template (python3):
         def findRotateSteps(self, ring: str, key: str) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "514. Freedom Trail"
-    test_cases = [
-        TestCase(input=("godding", "gd"), expected=4, label="example 1"),
-        TestCase(input=("godding", "godding"), expected=13, label="example 2"),
-        TestCase(input=("a", "a"), expected=1, label="single char ring and key"),
-        TestCase(input=("abc", "cba"), expected=6, label="reverse order key"),
-        TestCase(input=("aaaaa", "aaa"), expected=3, label="repeated chars"),
-    ]
-
-    def solve(self, ring: str, key: str) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, ring, key) -> int")
+def solve(ring: str, key: str) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    ring = read_line()
+    key = read_line()
+    result = solve(ring, key)
+    write_int(result)

@@ -28,10 +28,7 @@
  * Hint: Use a monotonic stack to find the number of subarrays where each element is the minimum.
  */
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include "io.h"
 #include <vector>
 
 static const long long MOD = 1000000007LL;
@@ -67,33 +64,7 @@ int sumSubarrayMins(const std::vector<int> &arr)
 
 int main(void)
 {
-    struct TC { const char *label; std::vector<int> input; int expected; };
-    TC tests[] = {
-        {"example 1", {3, 1, 2, 4}, 17},
-        {"example 2", {11, 81, 94, 43, 3}, 444},
-        {"single element", {1}, 1},
-        {"two elements", {2, 1}, 4},
-        {"all same", {3, 3, 3}, 18},
-        {"strictly increasing", {1, 2, 3}, 10},
-        {"strictly decreasing", {3, 2, 1}, 10},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  907. Sum of Subarray Minimums\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int got = sumSubarrayMins(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d, Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    std::vector<int> arr = read_ints();
+    write_int(sumSubarrayMins(arr));
+    return 0;
 }

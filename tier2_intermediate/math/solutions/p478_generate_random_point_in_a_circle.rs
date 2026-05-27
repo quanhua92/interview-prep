@@ -20,7 +20,7 @@
  *     solution.randPoint(); // return [0.36572, 0.17248]
  *
  * Constraints:
- *     - 0 < radius <= 108
+ *     - 0 < radius <= 108
  *     - -107 <= x_center, y_center <= 107
  *     - At most 3 * 104 calls will be made to randPoint.
  *
@@ -39,69 +39,37 @@
  *     # param_1 = obj.randPoint()
  */
 
+use wasm_libs::*;
+use std::io::{self, Write};
 
-struct CircleSolver {
-    radius: f64,
-    x_center: f64,
-    y_center: f64,
-    state: u64,
-}
+fn main() {
+    let line = read_line();
+    let parts: Vec<&str> = line.split_whitespace().collect();
+    let radius: f64 = parts[0].parse().unwrap();
+    let x_center: f64 = parts[1].parse().unwrap();
+    let y_center: f64 = parts[2].parse().unwrap();
+    let count = read_int();
 
-impl CircleSolver {
-    fn new(radius: f64, x_center: f64, y_center: f64) -> Self {
-        let state = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .map(|d| d.as_nanos() as u64)
-            .unwrap_or(12345);
-        Self { radius, x_center, y_center, state }
-    }
-    fn next_u64(&mut self) -> u64 {
-        self.state = self.state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
-        self.state
-    }
-    fn rand_point(&mut self) -> (f64, f64) {
+    let state = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_nanos() as u64)
+        .unwrap_or(12345);
+    let mut rng_state = state;
+
+    let mut out = io::stdout().lock();
+    for _ in 0..count {
         loop {
-            let ux = (self.next_u64() >> 11) as f64 / (1u64 << 53) as f64;
-            let uy = (self.next_u64() >> 11) as f64 / (1u64 << 53) as f64;
+            rng_state = rng_state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+            let ux = (rng_state >> 11) as f64 / (1u64 << 53) as f64;
+            rng_state = rng_state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+            let uy = (rng_state >> 11) as f64 / (1u64 << 53) as f64;
             let x = ux * 2.0 - 1.0;
             let y = uy * 2.0 - 1.0;
             if x * x + y * y <= 1.0 {
-                return (self.x_center + x * self.radius, self.y_center + y * self.radius);
+                writeln!(out, "{:.6} {:.6}", x_center + x * radius, y_center + y * radius).unwrap();
+                break;
             }
         }
     }
-}
-
-fn main() {
-    println!("\n============================================================");
-    println!("  478. Generate Random Point in a Circle");
-    println!("============================================================");
-    let tests: &[(&str, f64, f64, f64, i32)] = &[
-        ("points within unit circle", 1.0, 0.0, 0.0, 1000),
-        ("points within offset circle", 0.5, 1.0, 2.0, 1000),
-        ("tiny circle", 0.01, 0.0, 0.0, 100),
-        ("large offset center", 5.0, -100.0, 200.0, 500),
-        ("single point", 1.0, 0.0, 0.0, 1),
-    ];
-    let mut passed = 0;
-    for (i, (label, r, cx, cy, count)) in tests.iter().enumerate() {
-        let mut solver = CircleSolver::new(*r, *cx, *cy);
-        let mut ok = true;
-        for _ in 0..*count {
-            let (px, py) = solver.rand_point();
-            let dx = px - cx;
-            let dy = py - cy;
-            if dx * dx + dy * dy > r * r + 1e-9 { ok = false; break; }
-        }
-        if ok {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, label);
-            println!("    Some points outside circle!");
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    std::process::exit(0);
 }

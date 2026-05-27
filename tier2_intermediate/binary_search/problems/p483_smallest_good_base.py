@@ -29,30 +29,14 @@ Template (python3):
         def smallestGoodBase(self, n: str) -> str:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "483. Smallest Good Base"
-    test_cases = [
-        TestCase(input="13", expected="3", label="example 1"),
-        TestCase(input="4681", expected="8", label="example 2"),
-        TestCase(
-            input="1000000000000000000",
-            expected="999999999999999999",
-            label="example 3",
-        ),
-        TestCase(input="3", expected="2", label="smallest n equals 11 base 2"),
-        TestCase(input="7", expected="2", label="111 base 2"),
-        TestCase(input="31", expected="2", label="11111 base 2"),
-    ]
-
-    def solve(self, n: str) -> str:
-        raise NotImplementedError("TODO: Implement solve(self, n) -> str")
+def solve(n: str) -> str:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_line()
+    result = solve(n)
+    write_string(result)

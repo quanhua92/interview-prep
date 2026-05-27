@@ -37,6 +37,7 @@
  */
 
 
+#include "io.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -95,38 +96,12 @@ static char *solve(const char *longUrl) {
     return result;
 }
 
-int main(void) {
-    int passed = 0, total = 4;
-    printf("\n============================================================\n");
-    printf("  535. Encode and Decode TinyURL\n");
-    printf("============================================================\n");
-
-    {
-        char *got = solve("https://leetcode.com/problems/design-tinyurl");
-        if (strcmp(got, "https://leetcode.com/problems/design-tinyurl") == 0) { passed++; printf("  Test 1 (example 1): PASS\n"); }
-        else { printf("  Test 1 (example 1): FAIL\n  Expected: https://leetcode.com/problems/design-tinyurl, Got: %s\n", got); }
-        free(got);
-    }
-    {
-        char *got = solve("https://example.com/path/to/resource?query=1&param=2#section");
-        if (strcmp(got, "https://example.com/path/to/resource?query=1&param=2#section") == 0) { passed++; printf("  Test 2 (URL with query and fragment): PASS\n"); }
-        else { printf("  Test 2 (URL with query and fragment): FAIL\n  Expected: https://example.com/path/to/resource?query=1&param=2#section, Got: %s\n", got); }
-        free(got);
-    }
-    {
-        char *got = solve("http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u");
-        if (strcmp(got, "http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u") == 0) { passed++; printf("  Test 3 (URL with many path segments): PASS\n"); }
-        else { printf("  Test 3 (URL with many path segments): FAIL\n  Expected: http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u, Got: %s\n", got); }
-        free(got);
-    }
-    {
-        char *got = solve("https://site.com");
-        if (strcmp(got, "https://site.com") == 0) { passed++; printf("  Test 4 (minimal URL): PASS\n"); }
-        else { printf("  Test 4 (minimal URL): FAIL\n  Expected: https://site.com, Got: %s\n", got); }
-        free(got);
-    }
-
-    printf("\n  %d/%d passed\n", passed, total);
-    printf("============================================================\n\n");
-    return passed == total ? 0 : 1;
+int main(void)
+{
+    char *url = read_line();
+    char *result = solve(url);
+    write_string(result);
+    free(result);
+    free(url);
+    return 0;
 }

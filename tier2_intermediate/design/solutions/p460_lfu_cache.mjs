@@ -62,22 +62,65 @@
  *     # obj.put(key,value)
  */
 
-function solve() {
-  // Premium problem - implement solution here
-}
+import { readLine, readInt, writeInt, writeString } from '../../wasm_libs/js/io.mjs';
 
-const tests = [];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
+class LFUCache {
+  constructor(capacity) {
+    this.cap = capacity;
+    this.keyToVal = new Map();
+    this.keyToFreq = new Map();
+    this.freqToKeys = new Map();
+    this.minFreq = 0;
+  }
+
+  _updateFreq(key) {
+    const freq = this.keyToFreq.get(key);
+    const keys = this.freqToKeys.get(freq);
+    keys.delete(key);
+    if (keys.size === 0) this.freqToKeys.delete(freq);
+    this.keyToFreq.set(key, freq + 1);
+    if (!this.freqToKeys.has(freq + 1)) this.freqToKeys.set(freq + 1, new Set());
+    this.freqToKeys.get(freq + 1).add(key);
+  }
+
+  get(key) {
+    if (!this.keyToVal.has(key)) return -1;
+    this._updateFreq(key);
+    return this.keyToVal.get(key);
+  }
+
+  put(key, value) {
+    if (this.cap <= 0) return;
+    if (this.keyToVal.has(key)) {
+      this.keyToVal.set(key, value);
+      this._updateFreq(key);
+      return;
+    }
+    if (this.keyToVal.size >= this.cap) {
+      const evictKey = this.freqToKeys.get(this.minFreq).values().next().value;
+      this.freqToKeys.get(this.minFreq).delete(evictKey);
+      if (this.freqToKeys.get(this.minFreq).size === 0) this.freqToKeys.delete(this.minFreq);
+      this.keyToVal.delete(evictKey);
+      this.keyToFreq.delete(evictKey);
+    }
+    this.keyToVal.set(key, value);
+    this.keyToFreq.set(key, 1);
+    if (!this.freqToKeys.has(1)) this.freqToKeys.set(1, new Set());
+    this.freqToKeys.get(1).add(key);
+    this.minFreq = 1;
   }
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+
+const capacity = readInt();
+const numOps = readInt();
+const cache = new LFUCache(capacity);
+
+for (let i = 0; i < numOps; i++) {
+  const parts = readLine().split(/\s+/);
+  if (parts[0] === 'get') {
+    writeInt(cache.get(parseInt(parts[1], 10)));
+  } else {
+    cache.put(parseInt(parts[1], 10), parseInt(parts[2], 10));
+    writeString('null');
+  }
+}

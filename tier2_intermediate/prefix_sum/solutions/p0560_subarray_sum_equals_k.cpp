@@ -34,13 +34,13 @@
  * Hint: Use a hash map with prefix sums to count subarrays summing to k.
  */
 
-#include "cpptest.h"
-#include <vector>
+#include "io.h"
 #include <unordered_map>
+#include <vector>
 
 using namespace std;
 
-vector<int> subarray_sum(const vector<int>& nums, int k)
+int subarray_sum(const vector<int>& nums, int k)
 {
     unordered_map<long long, int> freq;
     freq[0] = 1;
@@ -51,20 +51,14 @@ vector<int> subarray_sum(const vector<int>& nums, int k)
         count += freq[curr - k];
         freq[curr]++;
     }
-    return {count};
+    return count;
 }
 
-int main()
+int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {1, 1, 1}, 2, {2}},
-        {"example 2", {1, 2, 3}, 3, {2}},
-        {"empty array", {}, 0, {0}},
-        {"single element equals k", {1}, 1, {1}},
-        {"single element not k", {1}, 2, {0}},
-        {"negatives with zero sum", {1, -1, 0}, 0, {3}},
-        {"all zeros", {0, 0, 0}, 0, {6}},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("560. Subarray Sum Equals K", subarray_sum, tests, n);
+    vector<int> nums = read_ints();
+    vector<int> target_line = read_ints();
+    int k = target_line[0];
+    write_int(subarray_sum(nums, k));
+    return 0;
 }

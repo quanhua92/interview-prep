@@ -30,6 +30,8 @@
  * Hint: Freq map + max_freq tracker, window valid when len - max_freq <= k. Left only moves right.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(s, k) {
   const freq = new Map();
   let maxFreq = 0;
@@ -48,27 +50,6 @@ function solve(s, k) {
   return maxLen;
 }
 
-const tests = [
-  { label: "example 1", input: ["ABAB", 2], expected: 4 },
-  { label: "example 2", input: ["AABABBA", 1], expected: 4 },
-  { label: "no changes needed", input: ["AAAA", 0], expected: 4 },
-  { label: "all unique", input: ["ABCDE", 1], expected: 2 },
-  { label: "single char, k=0", input: ["A", 0], expected: 1 },
-  { label: "single char, k > len", input: ["A", 5], expected: 1 },
-  { label: "no changes, partial run", input: ["AAAB", 0], expected: 3 },
-  { label: "change middle B to A", input: ["ABAA", 2], expected: 4 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const s = readLine();
+const k = readInt();
+writeInt(solve(s, k));

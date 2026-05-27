@@ -30,44 +30,32 @@ Template (python3):
         def checkInclusion(self, s1: str, s2: str) -> bool:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from collections import Counter
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "567. Permutation in String"
-    test_cases = [
-        TestCase(input=("ab", "eidbaooo"), expected=True, label="example 1"),
-        TestCase(input=("ab", "eidboaoo"), expected=False, label="example 2"),
-        TestCase(input=("a", "a"), expected=True, label="single char match"),
-        TestCase(input=("adc", "dcda"), expected=True, label="permutation at end"),
-        TestCase(input=("abc", "ccccbbbbaaaa"), expected=False, label="no match large string"),
-        TestCase(input=("ab", "a"), expected=False, label="s1 longer than s2"),
-    ]
-
-    def solve(self, s1: str, s2: str) -> bool:
-        from collections import Counter
-
-        n1, n2 = len(s1), len(s2)
-        if n1 > n2:
-            return False
-        target = Counter(s1)
-        window = Counter(s2[:n1])
+def solve(s1: str, s2: str) -> bool:
+    n1, n2 = len(s1), len(s2)
+    if n1 > n2:
+        return False
+    target = Counter(s1)
+    window = Counter(s2[:n1])
+    if window == target:
+        return True
+    for i in range(n1, n2):
+        left_ch = s2[i - n1]
+        if window[left_ch] == 1:
+            del window[left_ch]
+        else:
+            window[left_ch] -= 1
+        window[s2[i]] = window.get(s2[i], 0) + 1
         if window == target:
             return True
-        for i in range(n1, n2):
-            left_ch = s2[i - n1]
-            if window[left_ch] == 1:
-                del window[left_ch]
-            else:
-                window[left_ch] -= 1
-            window[s2[i]] = window.get(s2[i], 0) + 1
-            if window == target:
-                return True
-        return False
+    return False
 
 
 if __name__ == "__main__":
-    Solution().run()
+    s1 = read_line()
+    s2 = read_line()
+    result = solve(s1, s2)
+    write_bool(result)

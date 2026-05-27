@@ -24,6 +24,8 @@
  *         def countSegments(self, s: str) -> int:
  */
 
+import { readLine, writeInt } from '../../wasm_libs/js/io.mjs';
+
 function solve(s) {
   let count = 0;
   let inSegment = false;
@@ -38,25 +40,5 @@ function solve(s) {
   return count;
 }
 
-const tests = [
-  { label: "example 1", input: ["Hello, my name is John"], expected: 5 },
-  { label: "example 2", input: ["Hello"], expected: 1 },
-  { label: "empty string", input: [""], expected: 0 },
-  { label: "only spaces", input: ["   "], expected: 0 },
-  { label: "leading/trailing/multiple spaces", input: ["    foo    bar   "], expected: 2 },
-  { label: "single char segments", input: ["a b c d e"], expected: 5 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const s = readLine();
+writeInt(solve(s));

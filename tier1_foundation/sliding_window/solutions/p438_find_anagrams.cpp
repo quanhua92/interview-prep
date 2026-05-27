@@ -31,10 +31,9 @@
  * Hint: Use a sliding window with frequency counters to compare against pattern.
  */
 
-
-#include "cpptest.h"
-#include <string>
+#include "io.h"
 #include <array>
+#include <string>
 #include <vector>
 
 static std::vector<int> findAnagrams(const std::string &s, const std::string &p)
@@ -60,30 +59,10 @@ static std::vector<int> findAnagrams(const std::string &s, const std::string &p)
     return result;
 }
 
-int main()
+int main(void)
 {
-    struct { const char *label; const char *s; const char *p; std::vector<int> expected; } tests[] = {
-        {"example 1",           "cbaebabacd", "abc", {0, 6}},
-        {"example 2",           "abab",       "ab",  {0, 1, 2}},
-        {"no anagrams",         "af",         "bf",  {}},
-        {"exact match single",  "abc",        "abc", {0}},
-        {"all same chars",      "aaaaaaaaaa", "aa",  {0, 1, 2, 3, 4, 5, 6, 7, 8}},
-        {"overlapping anagrams","abacbabc",   "abc", {1, 2, 3, 5}},
-        {"pattern longer than string", "a",  "aa",  {}},
-    };
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        std::vector<int> got = findAnagrams(tests[i].s, tests[i].p);
-        if (got == tests[i].expected) {
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-            passed++;
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: "); print_arr(tests[i].expected); printf("\n");
-            printf("    Got:      "); print_arr(got); printf("\n");
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    std::string s = read_line();
+    std::string p = read_line();
+    write_ints(findAnagrams(s, p));
+    return 0;
 }

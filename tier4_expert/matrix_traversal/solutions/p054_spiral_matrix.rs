@@ -33,7 +33,7 @@
  */
 
 
-use std::process::exit;
+use wasm_libs::*;
 
 fn spiral_order(matrix: &Vec<Vec<i32>>) -> Vec<i32>
 {
@@ -71,41 +71,19 @@ fn spiral_order(matrix: &Vec<Vec<i32>>) -> Vec<i32>
     result
 }
 
-struct SpirTC {
-    label: &'static str,
-    input: Vec<Vec<i32>>,
-    expected: Vec<i32>,
+fn read_int_matrix() -> Vec<Vec<i32>> {
+    let header = read_ints();
+    let cols = header[0] as usize;
+    let mut matrix = Vec::with_capacity(cols);
+    for _ in 0..cols {
+        matrix.push(read_ints());
+    }
+    matrix
 }
 
 fn main()
 {
-    let tests: Vec<SpirTC> = vec![
-        SpirTC { label: "example 1", input: vec![vec![1,2,3],vec![4,5,6],vec![7,8,9]], expected: vec![1,2,3,6,9,8,7,4,5] },
-        SpirTC { label: "example 2", input: vec![vec![1,2,3,4],vec![5,6,7,8],vec![9,10,11,12]], expected: vec![1,2,3,4,8,12,11,10,9,5,6,7] },
-        SpirTC { label: "single element", input: vec![vec![7]], expected: vec![7] },
-        SpirTC { label: "single row", input: vec![vec![1,2,3,4]], expected: vec![1,2,3,4] },
-        SpirTC { label: "single column", input: vec![vec![1],vec![2],vec![3],vec![4]], expected: vec![1,2,3,4] },
-        SpirTC { label: "2x2 matrix", input: vec![vec![1,2],vec![3,4]], expected: vec![1,2,4,3] },
-        SpirTC { label: "2 rows many columns", input: vec![vec![1,2,3,4,5],vec![6,7,8,9,10]], expected: vec![1,2,3,4,5,10,9,8,7,6] },
-    ];
-
-    println!("\n============================================================");
-    println!("  54. Spiral Matrix");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = spiral_order(&tc.input);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {:?}", tc.expected);
-            println!("    Got:      {:?}", got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    if passed == tests.len() { exit(0); } else { exit(1); }
+    let matrix = read_int_matrix();
+    let result = spiral_order(&matrix);
+    write_ints(&result);
 }

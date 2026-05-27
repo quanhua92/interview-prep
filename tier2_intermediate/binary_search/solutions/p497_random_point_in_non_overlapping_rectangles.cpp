@@ -48,66 +48,27 @@
  *     # param_1 = obj.pick()
  */
 
-
-#include <cstdio>
+#include "io.h"
 #include <cstdlib>
+#include <cstdio>
 #include <vector>
-
-std::vector<int> solve_prefix_sums(const std::vector<std::vector<int>> &rects)
-{
-    std::vector<int> prefix;
-    int total = 0;
-    for (auto &r : rects) {
-        int area = (r[2] - r[0] + 1) * (r[3] - r[1] + 1);
-        total += area;
-        prefix.push_back(total);
-    }
-    return prefix;
-}
-
-static void print_arr(const std::vector<int> &a)
-{
-    printf("[");
-    for (size_t i = 0; i < a.size(); i++) {
-        if (i) printf(",");
-        printf("%d", a[i]);
-    }
-    printf("]");
-}
 
 int main(void)
 {
-    struct Tc {
-        const char *label;
-        std::vector<std::vector<int>> rects;
-        std::vector<int> expected;
-        bool pass;
-    };
-    std::vector<Tc> tests = {
-        {"area sum for two rectangles", {{-2,-2,1,1},{2,2,4,6}}, {16,31}, false},
-        {"area for single 3x3 rectangle", {{0,0,2,2}}, {9}, false},
-        {"single point rectangle", {{0,0,0,0}}, {1}, false},
-        {"negative and positive rects same size", {{-5,-5,-3,-3},{1,1,3,3}}, {9,18}, false},
-        {"different sized rects", {{1,1,2,2},{3,3,5,5}}, {4,13}, false},
-    };
-
-    int passed = 0;
-    for (auto &tc : tests) {
-        std::vector<int> got = solve_prefix_sums(tc.rects);
-        tc.pass = (got == tc.expected);
-        if (!tc.pass) {
-            printf("    Expected: "); print_arr(tc.expected); printf("\n");
-            printf("    Got:      "); print_arr(got); printf("\n");
-        }
-        if (tc.pass) passed++;
+    int total;
+    int *flat = read_ints(&total);
+    int cols = flat[0];
+    std::vector<int> result;
+    int prefix_total = 0;
+    for (int i = 0; i < cols; i++) {
+        int x1 = flat[1 + i * 4];
+        int y1 = flat[1 + i * 4 + 1];
+        int x2 = flat[1 + i * 4 + 2];
+        int y2 = flat[1 + i * 4 + 3];
+        prefix_total += (x2 - x1 + 1) * (y2 - y1 + 1);
+        result.push_back(prefix_total);
     }
-
-    printf("\n============================================================\n");
-    printf("  497. Random Point in Non-overlapping Rectangles\n");
-    printf("============================================================\n");
-    for (int i = 0; i < (int)tests.size(); i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, (int)tests.size());
-    printf("============================================================\n");
-    return passed == (int)tests.size() ? 0 : 1;
+    free(flat);
+    write_ints(result.data(), result.size());
+    return 0;
 }

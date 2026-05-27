@@ -27,8 +27,7 @@
  * Hint: Sort intervals by start time, then merge overlapping ones.
  */
 
-
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 
 static int pair_cmp(const void *a, const void *b)
@@ -36,55 +35,42 @@ static int pair_cmp(const void *a, const void *b)
     return ((const int *)a)[0] - ((const int *)b)[0];
 }
 
-int *solve(int *flat, int flat_n, int target, int *ret_size)
+void solve(int n, int intervals[][2])
 {
-    (void)target;
-    int n = flat_n / 2;
-    if (n <= 0) {
-        *ret_size = 0;
-        return NULL;
-    }
-
-    int (*s)[2] = malloc(n * sizeof(*s));
-    for (int i = 0; i < n; i++) {
-        s[i][0] = flat[i * 2];
-        s[i][1] = flat[i * 2 + 1];
-    }
-    qsort(s, n, sizeof(*s), pair_cmp);
-
-    int *res = malloc(n * 2 * sizeof(int));
-    res[0] = s[0][0];
-    res[1] = s[0][1];
+    if (n <= 0) return;
+    qsort(intervals, n, 2 * sizeof(int), pair_cmp);
+    int (*merged)[2] = malloc(n * sizeof(*merged));
+    merged[0][0] = intervals[0][0];
+    merged[0][1] = intervals[0][1];
     int cnt = 1;
-
     for (int i = 1; i < n; i++) {
-        if (s[i][0] <= res[2 * cnt - 1]) {
-            if (s[i][1] > res[2 * cnt - 1])
-                res[2 * cnt - 1] = s[i][1];
+        if (intervals[i][0] <= merged[cnt - 1][1]) {
+            if (intervals[i][1] > merged[cnt - 1][1])
+                merged[cnt - 1][1] = intervals[i][1];
         } else {
-            res[2 * cnt] = s[i][0];
-            res[2 * cnt + 1] = s[i][1];
+            merged[cnt][0] = intervals[i][0];
+            merged[cnt][1] = intervals[i][1];
             cnt++;
         }
     }
-
-    *ret_size = cnt * 2;
-    free(s);
-    return res;
+    for (int i = 0; i < cnt; i++) {
+        int row[2] = {merged[i][0], merged[i][1]};
+        write_ints(row, 2);
+    }
+    free(merged);
 }
 
 int main(void)
 {
-    TestCase cases[] = {
-        {"example 1",                   {1,3,2,6,8,10,15,18}, 8, 0, {1,6,8,10,15,18}, 6},
-        {"example 2",                   {1,4,4,5},             4, 0, {1,5},             2},
-        {"overlapping start",           {1,4,0,4},             4, 0, {0,4},             2},
-        {"single interval",             {1,1},                 2, 0, {1,1},             2},
-        {"all overlap into one",        {1,4,2,3,3,5},         6, 0, {1,5},             2},
-        {"no overlaps",                 {1,2,3,4,5,6},         6, 0, {1,2,3,4,5,6},    6},
-        {"interval contains others",    {1,10,2,3,4,5},        6, 0, {1,10},            2},
-        {"adjacent intervals touching", {1,2,2,3,3,4},         6, 0, {1,4},             2},
-    };
-
-    RUN_TESTS("P56: Merge Intervals", solve, cases, 8);
+    int n = read_int();
+    int (*intervals)[2] = malloc(n * sizeof(*intervals));
+    for (int i = 0; i < n; i++) {
+        int *row = read_ints(NULL);
+        intervals[i][0] = row[0];
+        intervals[i][1] = row[1];
+        free(row);
+    }
+    solve(n, intervals);
+    free(intervals);
+    return 0;
 }

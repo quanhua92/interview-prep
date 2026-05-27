@@ -33,12 +33,11 @@
  */
 
 
-#include <cstdio>
-#include <cstdlib>
-#include <vector>
+#include "io.h"
 #include <algorithm>
+#include <vector>
 
-static int findPoisonedDuration(const std::vector<int> &timeSeries, int duration)
+int solve(const std::vector<int> &timeSeries, int duration)
 {
     if (timeSeries.empty()) return 0;
     int total = 0;
@@ -50,26 +49,8 @@ static int findPoisonedDuration(const std::vector<int> &timeSeries, int duration
 
 int main()
 {
-    struct { const char *label; std::vector<int> input; int duration; int expected; } tests[] = {
-        {"example 1",                {1, 4},           2, 4},
-        {"example 2",                {1, 2},           2, 3},
-        {"single attack",            {1},              2, 2},
-        {"consecutive attacks, duration 1", {1,2,3,4,5}, 1, 5},
-        {"non-overlapping attacks",  {1, 3, 5, 7, 9},  2, 10},
-        {"duplicate timestamps",     {1, 1, 1, 1},     5, 5},
-    };
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = findPoisonedDuration(tests[i].input, tests[i].duration);
-        if (got == tests[i].expected) {
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-            passed++;
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    std::vector<int> timeSeries = read_ints();
+    int duration = read_int();
+    write_int(solve(timeSeries, duration));
+    return 0;
 }

@@ -29,6 +29,24 @@
  * Hint: Transpose the matrix first, then reverse each row.
  */
 
+import { readInts, writeInts } from '../../../wasm_libs/js/io.mjs';
+
+function readIntMatrix() {
+  const header = readInts();
+  const rows = header[0];
+  const matrix = [];
+  for (let i = 0; i < rows; i++) {
+    matrix.push(readInts());
+  }
+  return matrix;
+}
+
+function writeMatrix(mat) {
+  for (const row of mat) {
+    writeInts(row);
+  }
+}
+
 function solve(matrix) {
   const n = matrix.length;
   for (let i = 0; i < n; i++) {
@@ -42,24 +60,6 @@ function solve(matrix) {
   return matrix;
 }
 
-const tests = [
-  { label: "example 1", input: [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]], expected: [[7, 4, 1], [8, 5, 2], [9, 6, 3]] },
-  { label: "example 2", input: [[[5, 1, 9, 11], [2, 4, 8, 10], [13, 3, 6, 7], [15, 14, 12, 16]]], expected: [[15, 13, 2, 5], [14, 3, 4, 1], [12, 6, 8, 9], [16, 7, 10, 11]] },
-  { label: "single element", input: [[[1]]], expected: [[1]] },
-  { label: "2x2 matrix", input: [[[1, 2], [3, 4]]], expected: [[3, 1], [4, 2]] },
-  { label: "negative values", input: [[[-1, -2, -3], [-4, -5, -6], [-7, -8, -9]]], expected: [[-7, -4, -1], [-8, -5, -2], [-9, -6, -3]] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const matrix = readIntMatrix();
+const result = solve(matrix);
+writeMatrix(result);

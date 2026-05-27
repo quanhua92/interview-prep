@@ -20,7 +20,7 @@
  *     solution.randPoint(); // return [0.36572, 0.17248]
  *
  * Constraints:
- *     - 0 < radius <= 108
+ *     - 0 < radius <= 108
  *     - -107 <= x_center, y_center <= 107
  *     - At most 3 * 104 calls will be made to randPoint.
  *
@@ -40,51 +40,30 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+#include "io.h"
 #include <cmath>
+#include <cstdio>
 #include <random>
-
-struct CircleSolver {
-    double radius, x_center, y_center;
-    std::mt19937 rng;
-    std::uniform_real_distribution<double> dist{-1.0, 1.0};
-    CircleSolver(double r, double x, double y) : radius(r), x_center(x), y_center(y), rng(std::random_device{}()) {}
-    std::pair<double, double> randPoint() {
-        for (;;) {
-            double x = dist(rng), y = dist(rng);
-            if (x * x + y * y <= 1.0) return {x_center + x * radius, y_center + y * radius};
-        }
-    }
-};
+#include <sstream>
 
 int main() {
-    printf("\n============================================================\n");
-    printf("  478. Generate Random Point in a Circle\n");
-    printf("============================================================\n");
-    struct T { const char *label; double r, cx, cy; int count; };
-    std::vector<T> tests = {
-        {"points within unit circle", 1.0, 0.0, 0.0, 1000},
-        {"points within offset circle", 0.5, 1.0, 2.0, 1000},
-        {"tiny circle", 0.01, 0.0, 0.0, 100},
-        {"large offset center", 5.0, -100.0, 200.0, 500},
-        {"single point", 1.0, 0.0, 0.0, 1},
-    };
-    int passed = 0;
-    for (int i = 0; i < (int)tests.size(); i++) {
-        CircleSolver solver(tests[i].r, tests[i].cx, tests[i].cy);
-        bool ok = true;
-        for (int j = 0; j < tests[i].count; j++) {
-            auto [px, py] = solver.randPoint();
-            double dx = px - tests[i].cx, dy = py - tests[i].cy;
-            if (dx * dx + dy * dy > tests[i].r * tests[i].r + 1e-9) { ok = false; break; }
+    std::string line = read_line();
+    std::istringstream iss(line);
+    double radius, x_center, y_center;
+    iss >> radius >> x_center >> y_center;
+    int count = read_int();
+
+    std::mt19937 rng(std::random_device{}());
+    std::uniform_real_distribution<double> dist{-1.0, 1.0};
+
+    for (int i = 0; i < count; i++) {
+        double x, y;
+        for (;;) {
+            x = dist(rng);
+            y = dist(rng);
+            if (x * x + y * y <= 1.0) break;
         }
-        if (ok) { passed++; printf("  Test %d (%s): PASS\n", i + 1, tests[i].label); }
-        else { printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label); printf("    Some points outside circle!\n"); }
+        printf("%.6f %.6f\n", x_center + x * radius, y_center + y * radius);
     }
-    printf("\n  %d/%d passed\n", passed, (int)tests.size());
-    printf("============================================================\n\n");
-    return passed == (int)tests.size() ? 0 : 1;
+    return 0;
 }

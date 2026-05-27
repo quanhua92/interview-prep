@@ -22,15 +22,10 @@
  *     - 0 <= digits.length <= 4
  *     - digits[i] is a digit in the range ['2', '9'].
  *
- * Template (python3):
- *     class Solution:
- *         def letterCombinations(self, digits: str) -> List[str]:
- *
  * Hint: Map each digit to its letters and use backtracking to build all combinations.
  */
 
-
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -71,120 +66,25 @@ static int cmp_str(const void *a, const void *b) {
     return strcmp(*(const char *const *)a, *(const char *const *)b);
 }
 
-static char **letterCombinations(const char *digits, int *returnSize) {
+int main(void) {
+    char *digits = read_line();
     digits_len = (int)strlen(digits);
     result = NULL;
     result_count = 0;
     result_cap = 0;
     if (digits_len == 0) {
-        *returnSize = 0;
-        return NULL;
+        free(digits);
+        return 0;
     }
     path = malloc(digits_len + 1);
     backtrack(digits, 0);
     free(path);
     qsort(result, result_count, sizeof(char *), cmp_str);
-    *returnSize = result_count;
-    return result;
-}
-
-static int check_strs(char **got, int got_n, char **exp, int exp_n) {
-    if (got_n != exp_n) return 0;
-    qsort(got, got_n, sizeof(char *), cmp_str);
-    qsort(exp, exp_n, sizeof(char *), cmp_str);
-    for (int i = 0; i < got_n; i++) {
-        if (strcmp(got[i], exp[i]) != 0) return 0;
+    for (int i = 0; i < result_count; i++) {
+        write_string(result[i]);
+        free(result[i]);
     }
-    return 1;
-}
-
-int main(void) {
-    (void)th_print_arr;
-    (void)th_arr_eq;
-
-    printf("\n============================================================\n");
-    printf("  17. Letter Combinations of a Phone Number\n");
-    printf("============================================================\n");
-
-    int passed = 0;
-
-    {
-        int ret_sz;
-        char **got = letterCombinations("23", &ret_sz);
-        char *exp[] = {"ad","ae","af","bd","be","bf","cd","ce","cf"};
-        if (check_strs(got, ret_sz, exp, 9)) {
-            passed++; printf("  Test 1 (example 1): PASS\n");
-        } else {
-            printf("  Test 1 (example 1): FAIL\n");
-        }
-        for (int i = 0; i < ret_sz; i++) free(got[i]);
-        free(got);
-    }
-    {
-        int ret_sz;
-        char **got = letterCombinations("", &ret_sz);
-        if (ret_sz == 0) {
-            passed++; printf("  Test 2 (empty input): PASS\n");
-        } else {
-            printf("  Test 2 (empty input): FAIL\n");
-        }
-        for (int i = 0; i < ret_sz; i++) free(got[i]);
-        free(got);
-    }
-    {
-        int ret_sz;
-        char **got = letterCombinations("2", &ret_sz);
-        char *exp[] = {"a","b","c"};
-        if (check_strs(got, ret_sz, exp, 3)) {
-            passed++; printf("  Test 3 (single digit): PASS\n");
-        } else {
-            printf("  Test 3 (single digit): FAIL\n");
-        }
-        for (int i = 0; i < ret_sz; i++) free(got[i]);
-        free(got);
-    }
-    {
-        int ret_sz;
-        char **got = letterCombinations("7", &ret_sz);
-        char *exp[] = {"p","q","r","s"};
-        if (check_strs(got, ret_sz, exp, 4)) {
-            passed++; printf("  Test 4 (digit with 4 letters): PASS\n");
-        } else {
-            printf("  Test 4 (digit with 4 letters): FAIL\n");
-        }
-        for (int i = 0; i < ret_sz; i++) free(got[i]);
-        free(got);
-    }
-    {
-        int ret_sz;
-        char **got = letterCombinations("9", &ret_sz);
-        char *exp[] = {"w","x","y","z"};
-        if (check_strs(got, ret_sz, exp, 4)) {
-            passed++; printf("  Test 5 (digit 9): PASS\n");
-        } else {
-            printf("  Test 5 (digit 9): FAIL\n");
-        }
-        for (int i = 0; i < ret_sz; i++) free(got[i]);
-        free(got);
-    }
-    {
-        int ret_sz;
-        char **got = letterCombinations("79", &ret_sz);
-        char *exp[] = {
-            "pw","px","py","pz","qw","qx","qy","qz",
-            "rw","rx","ry","rz","sw","sx","sy","sz",
-        };
-        if (check_strs(got, ret_sz, exp, 16)) {
-            passed++; printf("  Test 6 (two 4-letter digits): PASS\n");
-        } else {
-            printf("  Test 6 (two 4-letter digits): FAIL\n");
-        }
-        for (int i = 0; i < ret_sz; i++) free(got[i]);
-        free(got);
-    }
-
-    printf("\n  %d/6 passed\n", passed);
-    printf("============================================================\n\n");
-
-    return passed == 6 ? 0 : 1;
+    free(result);
+    free(digits);
+    return 0;
 }

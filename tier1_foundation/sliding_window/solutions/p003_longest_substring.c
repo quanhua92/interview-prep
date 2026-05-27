@@ -35,8 +35,7 @@
  * Hint: Use a hash map to track the last index of each character.
  */
 
-
-#include <stdio.h>
+#include "io.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -58,29 +57,9 @@ static int lengthOfLongestSubstring(const char *s)
 
 int main(void)
 {
-    struct { const char *label; const char *input; int expected; } tests[] = {
-        {"example 1",                          "abcabcbb", 3},
-        {"example 2",                          "bbbbb",    1},
-        {"example 3",                          "pwwkew",   3},
-        {"empty string",                       "",         0},
-        {"single character",                   "a",        1},
-        {"single space",                       " ",        1},
-        {"two unique chars",                   "au",       2},
-        {"reset from duplicate after unique prefix", "dvdf", 3},
-        {"char seen before current window",    "tmmzuxt",  5},
-    };
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = lengthOfLongestSubstring(tests[i].input);
-        if (got == tests[i].expected) {
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-            passed++;
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    char *s = read_line();
+    int result = lengthOfLongestSubstring(s);
+    write_int(result);
+    free(s);
+    return 0;
 }

@@ -27,10 +27,10 @@
  *         def largestValues(self, root: Optional[TreeNode]) -> List[int]:
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 #include <climits>
 #include <queue>
+#include <string>
 
 using namespace std;
 
@@ -49,20 +49,13 @@ static TreeNode *build_tree(const vector<int> &vals) {
     q.push(root);
     size_t i = 1;
     while (!q.empty() && i < vals.size()) {
-        TreeNode *node = q.front();
-        q.pop();
+        TreeNode *node = q.front(); q.pop();
         if (i < vals.size()) {
-            if (vals[i] != NULL_VAL) {
-                node->left = new TreeNode(vals[i]);
-                q.push(node->left);
-            }
+            if (vals[i] != NULL_VAL) { node->left = new TreeNode(vals[i]); q.push(node->left); }
             i++;
         }
         if (i < vals.size()) {
-            if (vals[i] != NULL_VAL) {
-                node->right = new TreeNode(vals[i]);
-                q.push(node->right);
-            }
+            if (vals[i] != NULL_VAL) { node->right = new TreeNode(vals[i]); q.push(node->right); }
             i++;
         }
     }
@@ -76,7 +69,7 @@ static void free_tree(TreeNode *root) {
     delete root;
 }
 
-static vector<int> largestValues(TreeNode *root) {
+static vector<int> solve(TreeNode *root) {
     vector<int> result;
     if (!root) return result;
     queue<TreeNode *> q;
@@ -85,8 +78,7 @@ static vector<int> largestValues(TreeNode *root) {
         int sz = (int)q.size();
         int max_val = INT_MIN;
         for (int j = 0; j < sz; j++) {
-            TreeNode *node = q.front();
-            q.pop();
+            TreeNode *node = q.front(); q.pop();
             if (node->val > max_val) max_val = node->val;
             if (node->left) q.push(node->left);
             if (node->right) q.push(node->right);
@@ -96,38 +88,24 @@ static vector<int> largestValues(TreeNode *root) {
     return result;
 }
 
-int main() {
-    struct TC {
-        string label;
-        vector<int> vals;
-        vector<int> expected;
-    };
-    TC tests[] = {
-        {"example 1", {1, 3, 2, 5, 3, NULL_VAL, 9}, {1, 3, 9}},
-        {"example 2", {1, 2, 3}, {1, 3}},
-        {"empty tree", {}, {}},
-        {"negative values", {-1, -2, -3, -4}, {-1, -2, -4}},
-        {"left chain", {1, 2, NULL_VAL, 3}, {1, 2, 3}},
-        {"single node", {5}, {5}},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        TreeNode *root = build_tree(tests[i].vals);
-        vector<int> got = largestValues(root);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label.c_str());
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label.c_str());
-            printf("    Expected: ");
-            print_arr(tests[i].expected);
-            printf("\n    Got:      ");
-            print_arr(got);
-            printf("\n");
-        }
-        free_tree(root);
+int main(void)
+{
+    int n = read_int();
+    if (n == 0) return 0;
+    string line = read_line();
+    vector<int> vals;
+    vals.reserve(n);
+    size_t pos = 0;
+    for (int i = 0; i < n; i++) {
+        size_t next = line.find(' ', pos);
+        string tok = (next == string::npos) ? line.substr(pos) : line.substr(pos, next - pos);
+        if (tok == "null") vals.push_back(NULL_VAL);
+        else vals.push_back(stoi(tok));
+        pos = (next == string::npos) ? string::npos : next + 1;
+        if (pos == string::npos) break;
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+    TreeNode *root = build_tree(vals);
+    write_ints(solve(root));
+    free_tree(root);
+    return 0;
 }

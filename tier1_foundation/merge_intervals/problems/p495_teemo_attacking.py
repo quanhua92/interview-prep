@@ -32,28 +32,15 @@ Template (python3):
         def findPoisonedDuration(self, timeSeries: List[int], duration: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "495. Teemo Attacking"
-    test_cases = [
-        TestCase(input=([1, 4], 2), expected=4, label="example 1"),
-        TestCase(input=([1, 2], 2), expected=3, label="example 2"),
-        TestCase(input=([1], 2), expected=2, label="single attack"),
-        TestCase(input=([1, 2, 3, 4, 5], 1), expected=5, label="consecutive attacks, duration 1"),
-        TestCase(input=([1, 3, 5, 7, 9], 2), expected=10, label="non-overlapping attacks"),
-        TestCase(input=([1, 1, 1, 1], 5), expected=5, label="duplicate timestamps"),
-    ]
-
-    def solve(self, timeSeries: list[int], duration: int) -> int:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, timeSeries, duration) -> int"
-        )
+def solve(time_series: list[int], duration: int) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    time_series = read_ints()
+    duration = read_int()
+    result = solve(time_series, duration)
+    write_int(result)

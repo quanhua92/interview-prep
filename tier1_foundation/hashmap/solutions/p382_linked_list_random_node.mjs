@@ -27,26 +27,9 @@
  *     - The number of nodes in the linked list will be in the range [1, 104].
  *     - -104 <= Node.val <= 104
  *     - At most 104 calls will be made to getRandom.
- *
- * Template (python3):
- *     # Definition for singly-linked list.
- *     # class ListNode:
- *     #     def __init__(self, val=0, next=None):
- *     #         self.val = val
- *     #         self.next = next
- *     class Solution:
- *
- *         def __init__(self, head: Optional[ListNode]):
- *
- *
- *         def getRandom(self) -> int:
- *
- *
- *
- *     # Your Solution object will be instantiated and called as such:
- *     # obj = Solution(head)
- *     # param_1 = obj.getRandom()
  */
+
+import { readLine, readInts, writeInt } from '../../wasm_libs/js/io.mjs';
 
 function buildList(arr) {
   if (arr.length === 0) return null;
@@ -59,7 +42,8 @@ function buildList(arr) {
   return dummy.next;
 }
 
-function middleNode(head) {
+function solve(arr) {
+  let head = buildList(arr);
   let slow = head;
   let fast = head;
   while (fast && fast.next) {
@@ -69,30 +53,5 @@ function middleNode(head) {
   return slow.val;
 }
 
-function solve(input) {
-  return middleNode(input);
-}
-
-// --- tests ---
-const tests = [
-  { label: "middle of odd-length list", input: buildList([1, 2, 3]), expected: 2 },
-  { label: "middle of even-length list", input: buildList([1, 2, 3, 4]), expected: 3 },
-  { label: "single node", input: buildList([4]), expected: 4 },
-  { label: "two nodes", input: buildList([1, 2]), expected: 2 },
-  { label: "three nodes", input: buildList([5, 6, 7]), expected: 6 },
-  { label: "five nodes", input: buildList([1, 2, 3, 4, 5]), expected: 3 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const arr = readInts();
+writeInt(solve(arr));

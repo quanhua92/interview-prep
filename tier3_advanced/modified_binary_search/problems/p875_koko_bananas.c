@@ -31,21 +31,8 @@
  * 
  * Hint: Binary search on the eating speed, computing total hours for each candidate.
  */
-#include <stdio.h>
-#include <limits.h>
-
-typedef struct {
-    const char *label;
-    int piles[10000];
-    int piles_n;
-    long long h;
-    int expected;
-} TestCase;
-
-static long long hours_needed(int *piles, int piles_n, int k)
-{
-    abort();
-}
+#include "io.h"
+#include <stdlib.h>
 
 int minEatingSpeed(int *piles, int pilesSize, long long h)
 {
@@ -54,33 +41,13 @@ int minEatingSpeed(int *piles, int pilesSize, long long h)
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {3,6,7,11}, 4, 8, 4},
-        {"example 2", {30,11,23,4,20}, 5, 5, 30},
-        {"example 3", {30,11,23,4,20}, 5, 6, 23},
-        {"single pile single hour", {1}, 1, 1, 1},
-        {"single pile many hours", {312884470}, 1, 970709593, 1},
-        {"all ones h equals length", {1,1,1,1}, 4, 4, 1},
-        {"large values tight deadline", {1000000000,1000000000}, 2, 3, 1000000000},
-        {"uniform piles extra hours", {5,5,5,5,5}, 5, 10, 3},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  875. Koko Eating Bananas\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = minEatingSpeed(tests[i].piles, tests[i].piles_n, tests[i].h);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-    return passed == n ? 0 : 1;
+    int n;
+    int *piles = read_ints(&n);
+    int kk;
+    int *h_line = read_ints(&kk);
+    long long h = h_line[0];
+    free(h_line);
+    write_int(minEatingSpeed(piles, n, h));
+    free(piles);
+    return 0;
 }

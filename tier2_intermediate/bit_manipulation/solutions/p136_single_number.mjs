@@ -33,6 +33,8 @@
  * Hint: XOR all numbers — pairs cancel out, leaving the single number.
  */
 
+import { readInts, writeInt } from '../../../wasm_libs/js/io.mjs';
+
 function solve(nums) {
   let result = 0;
   for (const num of nums) {
@@ -41,26 +43,5 @@ function solve(nums) {
   return result;
 }
 
-const tests = [
-  { label: "example 1", input: [2, 2, 1], expected: 1 },
-  { label: "example 2", input: [4, 1, 2, 1, 2], expected: 4 },
-  { label: "single element", input: [1], expected: 1 },
-  { label: "negative numbers", input: [-1, -1, -2], expected: -2 },
-  { label: "zero pairs", input: [0, 0, 1], expected: 1 },
-  { label: "single negative", input: [-1], expected: -1 },
-  { label: "many pairs", input: [7, 7, 7, 7, 99, 3, 3, 4, 4], expected: 99 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+writeInt(solve(nums));

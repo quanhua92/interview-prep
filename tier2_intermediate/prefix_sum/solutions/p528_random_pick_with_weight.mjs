@@ -62,6 +62,8 @@
  *     # param_1 = obj.pickIndex()
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(w) {
   const prefix = new Array(w.length);
   prefix[0] = w[0];
@@ -71,24 +73,5 @@ function solve(w) {
   return prefix;
 }
 
-const tests = [
-  { label: "prefix sum for [1]", input: [[1]], expected: [1] },
-  { label: "prefix sum for [1, 3]", input: [[1, 3]], expected: [1, 4] },
-  { label: "prefix sum for [3, 14, 1, 7]", input: [[3, 14, 1, 7]], expected: [3, 17, 18, 25] },
-  { label: "single large weight", input: [[5]], expected: [5] },
-  { label: "equal weights", input: [[10, 10, 10]], expected: [10, 20, 30] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const w = readInts();
+writeInts(solve(w));

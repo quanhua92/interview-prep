@@ -33,36 +33,14 @@
  * 
  * Hint: This is essentially Fibonacci -- each step depends on the two before it.
  */
-#include "ctest.h"
+#include "io.h"
 
 int climbStairs(int n) {
     abort();
 }
 
 int main(void) {
-    struct { const char *label; int n; int expected; } tests[] = {
-        {"example 1", 2, 2},
-        {"example 2", 3, 3},
-        {"base case", 1, 1},
-        {"larger", 10, 89},
-        {"max constraint", 45, 1836311903},
-        {"n=4", 4, 5},
-        {"n=5", 5, 8},
-        {"n=6", 6, 13},
-        {"n=20", 20, 10946},
-        {"near max constraint", 44, 1134903170},
-    };
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = climbStairs(tests[i].n);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    int n = read_int();
+    write_int(climbStairs(n));
+    return 0;
 }

@@ -24,12 +24,10 @@
  *     - 1 <= nums[i] <= n
  *     - Each element in nums appears once or twice.
  *
- * Template (python3):
- *     class Solution:
- *         def findDuplicates(self, nums: List[int]) -> List[int]:
- *
  * Hint: Negate the value at index abs(num)-1 to mark seen numbers in-place.
  */
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
 
 function solve(nums) {
   const result = [];
@@ -44,26 +42,5 @@ function solve(nums) {
   return result;
 }
 
-const tests = [
-  { label: "example 1", input: [[4, 3, 2, 7, 8, 2, 3, 1]], expected: [2, 3] },
-  { label: "example 2", input: [[1, 1, 2]], expected: [1] },
-  { label: "single", input: [[1]], expected: [] },
-  { label: "all same, n=2", input: [[2, 2]], expected: [2] },
-  { label: "all duplicates, n=4", input: [[1, 2, 2, 1]], expected: [2, 1] },
-  { label: "no duplicates", input: [[1, 2]], expected: [] },
-  { label: "large, multiple duplicates", input: [[10, 2, 5, 10, 9, 1, 1, 7, 9, 6]], expected: [10, 1, 9] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+writeInts(solve(nums));

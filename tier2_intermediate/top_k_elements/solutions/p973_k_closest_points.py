@@ -4,7 +4,7 @@ https://leetcode.com/problems/k-closest-points-to-origin/
 Topics: Array, Math, Divide and Conquer, Geometry, Sorting, Heap (Priority Queue), Quickselect
 
 Given an array of points where points[i] = [xi, yi] represents a point on the X-Y plane and an integer k, return the k closest points to the origin (0, 0).
-The distance between two points on the X-Y plane is the Euclidean distance (i.e., √(x1 - x2)2 + (y1 - y2)2).
+The distance between two points on the X-Y plane is the Euclidean distance (i.e., sqrt((x1 - x2)^2 + (y1 - y2)^2)).
 You may return the answer in any order. The answer is guaranteed to be unique (except for the order that it is in).
 
 Example 1:
@@ -32,40 +32,25 @@ Template (python3):
 Hint: Use a max-heap of size k keyed by negative distance squared.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 import heapq
 
 
-class Solution(Problem):
-    name = "973. K Closest Points to Origin"
-    test_cases = [
-        TestCase(input=([[1, 3], [-2, 2]], 1), expected=[[-2, 2]], label="example 1"),
-        TestCase(
-            input=([[3, 3], [5, -1], [-2, 4]], 2),
-            expected=[[-2, 4], [3, 3]],
-            label="example 2 (sorted)",
-        ),
-        TestCase(input=([[0, 0]], 1), expected=[[0, 0]], label="origin itself"),
-        TestCase(input=([[1, 0], [0, 1], [2, 0]], 2), expected=[[0, 1], [1, 0]], label="tie on distance"),
-        TestCase(input=([[-1, -1], [2, 2], [3, 3]], 1), expected=[[-1, -1]], label="negative coords"),
-        TestCase(input=([[1, 0], [0, 1], [2, 0]], 2), expected=[[0, 1], [1, 0]], label="two tied closest"),
-        TestCase(input=([[1, 1], [1, 1], [1, 1]], 2), expected=[[1, 1], [1, 1]], label="all same point"),
-        TestCase(input=([[3, 4], [0, 0], [1, 1]], 1), expected=[[0, 0]], label="origin is closest"),
-    ]
-
-    def solve(self, points: list[list[int]], k: int) -> list[list[int]]:
-        heap: list[tuple[int, list[int]]] = []
-        for p in points:
-            dist = -(p[0] * p[0] + p[1] * p[1])
-            heapq.heappush(heap, (dist, p))
-            if len(heap) > k:
-                heapq.heappop(heap)
-        result = sorted([p for _, p in heap])
-        return result
+def solve(points: list[list[int]], k: int) -> list[list[int]]:
+    heap: list[tuple[int, list[int]]] = []
+    for p in points:
+        dist = -(p[0] * p[0] + p[1] * p[1])
+        heapq.heappush(heap, (dist, p))
+        if len(heap) > k:
+            heapq.heappop(heap)
+    result = sorted([p for _, p in heap])
+    return result
 
 
 if __name__ == "__main__":
-    Solution().run()
+    flat = read_ints()
+    k = read_int()
+    points = [flat[i : i + 2] for i in range(0, len(flat), 2)]
+    result = solve(points, k)
+    for p in result:
+        write_ints(p)

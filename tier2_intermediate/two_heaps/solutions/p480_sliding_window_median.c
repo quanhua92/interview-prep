@@ -29,9 +29,9 @@
  *     - -231 <= nums[i] <= 231 - 1
  *
  * Hints:
- *     - The simplest of solutions comes from the basic idea of finding the median given a set of numbers. We know that by definition, a median is the center element (or an average of the two center elements). Given an unsorted list of numbers, how do we find the median element? If you know the answer to this question, can we extend this idea to every sliding window that we come across in the array?
- *     - Is there a better way to do what we are doing in the above hint? Don't you think there is duplication of calculation being done there? Is there some sort of optimization that we can do to achieve the same result? This approach is merely a modification of the basic approach except that it simply reduces duplication of calculations once done.
- *     - The third line of thought is also based on this same idea but achieving the result in a different way. We obviously need the window to be sorted for us to be able to find the median. Is there a data-structure out there that we can use (in one or more quantities) to obtain the median element extremely fast, say O(1) time while having the ability to perform the other operations fairly efficiently as well?
+ *     - The simplest of solutions comes from the basic idea of finding the median given a set of numbers.
+ *     - Is there a better way to do what we are doing in the above hint?
+ *     - Use a max-heap for the small half and a min-heap for the large half with lazy deletion.
  *
  * Template (python3):
  *     class Solution:
@@ -41,6 +41,7 @@
  */
 
 
+#include "io.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -145,14 +146,21 @@ static double get_median(int k)
     return (double)(small[0].val + large[0].val) / 2.0;
 }
 
-double *solve(int *nums, int n, int k, int *ret_size)
+int main(void)
 {
+    int n;
+    int *nums = read_ints(&n);
+    int k;
+    {
+        int ktmp;
+        int *kp = read_ints(&ktmp);
+        k = kp[0];
+        free(kp);
+    }
+
     sn = ln = small_sz = large_sz = 0;
     memset(delayed, 0, sizeof(delayed));
     memset(in_small_flag, 0, sizeof(in_small_flag));
-
-    double *res = malloc((n - k + 1) * sizeof(double));
-    *ret_size = 0;
 
     for (int i = 0; i < n; i++) {
         prune_small();
@@ -183,62 +191,10 @@ double *solve(int *nums, int n, int k, int *ret_size)
         if (i >= k - 1) {
             prune_small();
             prune_large();
-            res[(*ret_size)++] = get_median(k);
+            printf("%.6f\n", get_median(k));
         }
     }
-    return res;
-}
 
-static int feq(double a, double b) { return fabs(a - b) < 1e-5; }
-
-int main(void)
-{
-    struct {
-        const char *label;
-        int input[10];
-        int n;
-        int k;
-        double expected[10];
-        int en;
-    } tests[] = {
-        {"example 1", {1, 3, -1, -3, 5, 3, 6, 7}, 8, 3, {1.0, -1.0, -1.0, 3.0, 5.0, 6.0}, 6},
-        {"window size 1", {1, 2}, 2, 1, {1.0, 2.0}, 2},
-        {"example 2", {1, 2, 3, 4, 2, 3, 1, 4, 2}, 9, 3, {2.0, 3.0, 3.0, 3.0, 2.0, 3.0, 2.0}, 7},
-        {"large int boundary", {2147483647, -2147483648}, 2, 2, {-0.5}, 1},
-        {"all same values", {1, 1, 1, 1}, 4, 2, {1.0, 1.0, 1.0}, 3},
-        {"window equals array", {5, 5, 5, 5, 5}, 5, 5, {5.0}, 1},
-        {"all negative ascending", {-5, -4, -3, -2, -1}, 5, 3, {-4.0, -3.0, -2.0}, 3},
-        {"descending order", {10, 9, 8, 7, 6}, 5, 3, {9.0, 8.0, 7.0}, 3},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  480. Sliding Window Median\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int ret_size = 0;
-        double *got = solve(tests[i].input, tests[i].n, tests[i].k, &ret_size);
-        int ok = ret_size == tests[i].en;
-        if (ok) {
-            for (int j = 0; j < ret_size; j++) {
-                if (!feq(got[j], tests[i].expected[j])) { ok = 0; break; }
-            }
-        }
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: [");
-            for (int j = 0; j < tests[i].en; j++) { if (j) printf(","); printf("%.1f", tests[i].expected[j]); }
-            printf("]\n    Got:      [");
-            if (got) for (int j = 0; j < ret_size; j++) { if (j) printf(","); printf("%.1f", got[j]); }
-            printf("]\n");
-        }
-        free(got);
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    free(nums);
+    return 0;
 }

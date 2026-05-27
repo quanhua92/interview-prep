@@ -46,8 +46,8 @@
  * Hint: Compare mid element with the rightmost to decide which half contains the minimum.
  */
 
-
-#include <cstdio>
+#include "io.h"
+#include <stdlib.h>
 #include <vector>
 
 int findMin(const std::vector<int> &nums)
@@ -65,33 +65,10 @@ int findMin(const std::vector<int> &nums)
 
 int main(void)
 {
-    struct Tc { const char *label; std::vector<int> nums; int expected; bool pass; };
-    std::vector<Tc> tests = {
-        {"example 1", {3,4,5,1,2}, 1, false},
-        {"example 2", {4,5,6,7,0,1,2}, 0, false},
-        {"single element", {1}, 1, false},
-        {"not rotated", {11,13,15,17}, 11, false},
-        {"two elements rotated", {2,1}, 1, false},
-        {"two elements not rotated", {1,2}, 1, false},
-        {"negative numbers", {-3,-2,-1,-5,-4}, -5, false},
-        {"rotated by 1", {2,3,4,5,1}, 1, false},
-        {"rotated by n-1", {5,1,2,3,4}, 1, false},
-        {"three elements rotated", {3,1,2}, 1, false},
-    };
-
-    int passed = 0;
-    for (auto &tc : tests) {
-        int got = findMin(tc.nums);
-        tc.pass = (got == tc.expected);
-        if (tc.pass) passed++;
-    }
-
-    printf("\n============================================================\n");
-    printf("  153. Find Minimum in Rotated Sorted Array\n");
-    printf("============================================================\n");
-    for (int i = 0; i < (int)tests.size(); i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, (int)tests.size());
-    printf("============================================================\n");
-    return passed == (int)tests.size() ? 0 : 1;
+    int n;
+    int *nums_arr = read_ints(&n);
+    std::vector<int> nums(nums_arr, nums_arr + n);
+    free(nums_arr);
+    write_int(findMin(nums));
+    return 0;
 }

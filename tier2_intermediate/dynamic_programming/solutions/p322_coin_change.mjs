@@ -32,6 +32,8 @@
  * Hint: Use bottom-up DP where dp[i] is the minimum coins needed for amount i.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(coins, amount) {
   const INF = amount + 1;
   const dp = new Array(amount + 1).fill(INF);
@@ -46,29 +48,6 @@ function solve(coins, amount) {
   return dp[amount] !== INF ? dp[amount] : -1;
 }
 
-const tests = [
-  { label: "example 1", input: [[1, 2, 5], 11], expected: 3 },
-  { label: "example 2", input: [[2], 3], expected: -1 },
-  { label: "zero amount", input: [[1], 0], expected: 0 },
-  { label: "smallest amount", input: [[1], 1], expected: 1 },
-  { label: "suboptimal greedy", input: [[1, 3, 4], 6], expected: 2 },
-  { label: "coin larger than amount", input: [[2], 1], expected: -1 },
-  { label: "single coin exact match", input: [[7], 7], expected: 1 },
-  { label: "large amount", input: [[1, 2, 5], 100], expected: 20 },
-  { label: "multiple denominations", input: [[2, 5, 10, 1], 27], expected: 4 },
-  { label: "large coin value", input: [[1, 2147483647], 2], expected: 2 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const coins = readInts();
+const amount = readInt();
+writeInt(solve(coins, amount));

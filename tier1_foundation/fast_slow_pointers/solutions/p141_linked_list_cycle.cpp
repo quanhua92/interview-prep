@@ -43,42 +43,31 @@
  * Hint: Use Floyd's cycle-finding algorithm with fast and slow pointers.
  */
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include "io.h"
+#include <algorithm>
 #include <vector>
+
+static int read_int(void)
+{
+    std::string line = read_line();
+    return std::stoi(line);
+}
 
 struct ListNode {
     int val;
     ListNode *next;
-    ListNode(int x) : val(x), next(nullptr) {}
 };
 
-static ListNode *build_list(const std::vector<int> &vals)
-{
-    if (vals.empty()) return nullptr;
-    std::vector<ListNode *> nodes;
-    nodes.reserve(vals.size());
-    for (int v : vals) nodes.push_back(new ListNode(v));
-    for (size_t i = 0; i + 1 < nodes.size(); i++) nodes[i]->next = nodes[i + 1];
-    return nodes[0];
-}
-
-static void create_cycle(ListNode *head, int n, int pos)
-{
-    if (!head || pos < 0 || pos >= n) return;
-    ListNode *tail = head;
-    while (tail->next) tail = tail->next;
-    ListNode *target = head;
-    for (int i = 0; i < pos; i++) target = target->next;
-    tail->next = target;
-}
-
-static bool hasCycle(ListNode *head, int n, int pos)
+int hasCycle(ListNode *head, int n, int pos)
 {
     if (!head) return false;
-    create_cycle(head, n, pos);
+    if (pos >= 0 && pos < n) {
+        ListNode *tail = head;
+        while (tail->next) tail = tail->next;
+        ListNode *target = head;
+        for (int i = 0; i < pos; i++) target = target->next;
+        tail->next = target;
+    }
     ListNode *slow = head, *fast = head;
     while (fast && fast->next) {
         slow = slow->next;
@@ -88,49 +77,16 @@ static bool hasCycle(ListNode *head, int n, int pos)
     return false;
 }
 
-struct CycleTestCase {
-    const char *label;
-    std::vector<int> vals;
-    int pos;
-    bool expected;
-};
-
-int main()
+int main(void)
 {
-    CycleTestCase tests[] = {
-        {"example 1",            {3, 2, 0, -4},       1,  true},
-        {"example 2",            {1, 2},               0,  true},
-        {"example 3",            {1},                 -1,  false},
-        {"empty list",           {},                  -1,  false},
-        {"two nodes no cycle",   {1, 2},              -1,  false},
-        {"self-loop at tail",    {1, 2, 3},            2,  true},
-        {"long list no cycle",   {1, 2, 3, 4, 5},    -1,  false},
-        {"cycle back to head",   {1, 2, 3},            0,  true},
-    };
-    int num_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  141. Linked List Cycle\n");
-    printf("============================================================\n");
-
-    int passed = 0;
-    for (int i = 0; i < num_tests; i++) {
-        CycleTestCase &tc = tests[i];
-        ListNode *head = build_list(tc.vals);
-        bool got = hasCycle(head, (int)tc.vals.size(), tc.pos);
-        if (got == tc.expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tc.label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tc.label);
-            printf("    Expected: %s\n    Got:      %s\n",
-                   tc.expected ? "true" : "false",
-                   got ? "true" : "false");
-        }
-        delete head;
-    }
-
-    printf("\n  %d/%d passed\n", passed, num_tests);
-    printf("============================================================\n\n");
-    return passed == num_tests ? 0 : 1;
+    std::vector<int> vals = read_ints();
+    int pos = read_int();
+    int n = (int)vals.size();
+    std::vector<ListNode> nodes;
+    for (int v : vals) nodes.push_back({v, nullptr});
+    for (int i = 0; i + 1 < n; i++) nodes[i].next = &nodes[i + 1];
+    ListNode *head = n > 0 ? &nodes[0] : nullptr;
+    int result = hasCycle(head, n, pos);
+    write_bool(result);
+    return 0;
 }

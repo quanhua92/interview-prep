@@ -47,9 +47,10 @@
  * Hint: Use a max-heap for the lower half and a min-heap for the upper half.
  */
 
-
+use wasm_libs::*;
 use std::collections::BinaryHeap;
 use std::cmp::Reverse;
+use std::io::{self, Write};
 
 struct MedianFinder {
     small: BinaryHeap<i32>,
@@ -76,48 +77,13 @@ impl MedianFinder {
     }
 }
 
-fn solve(stream: &[i32]) -> Vec<f64> {
-    let mut mf = MedianFinder::new();
-    let mut res = Vec::with_capacity(stream.len());
-    for &num in stream {
-        mf.add_num(num);
-        res.push(mf.find_median());
-    }
-    res
-}
-
-fn feq(a: f64, b: f64) -> bool { (a - b).abs() < 1e-9 }
-
 fn main() {
-    struct Case<'a> { label: &'a str, input: &'a [i32], expected: &'a [f64] }
-    let tests: &[Case] = &[
-        Case { label: "stream median", input: &[5, 15, 1, 3], expected: &[5.0, 10.0, 5.0, 4.0] },
-        Case { label: "two elements", input: &[1, 2], expected: &[1.0, 1.5] },
-        Case { label: "single element", input: &[42], expected: &[42.0] },
-        Case { label: "all same", input: &[3, 3, 3, 3], expected: &[3.0, 3.0, 3.0, 3.0] },
-        Case { label: "negative numbers", input: &[-5, -3, -1, 0], expected: &[-5.0, -4.0, -3.0, -2.0] },
-        Case { label: "alternating high low", input: &[100, 0, 100, 0, 100, 0], expected: &[100.0, 50.0, 100.0, 50.0, 100.0, 50.0] },
-        Case { label: "descending order", input: &[10, 9, 8, 7, 6, 5], expected: &[10.0, 9.5, 9.0, 8.5, 8.0, 7.5] },
-        Case { label: "extreme values", input: &[-100000, 100000], expected: &[-100000.0, 0.0] },
-    ];
-
-    println!("\n============================================================");
-    println!("  295. Find Median from Data Stream");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = solve(tc.input);
-        let ok = got.len() == tc.expected.len() && got.iter().zip(tc.expected.iter()).all(|(a, b)| feq(*a, *b));
-        if ok {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {:?}", tc.expected);
-            println!("    Got:      {:?}", got);
-        }
+    let stream = read_ints();
+    let mut mf = MedianFinder::new();
+    let mut out = io::stdout().lock();
+    for &num in &stream {
+        mf.add_num(num);
+        writeln!(out, "{:.6}", mf.find_median()).unwrap();
     }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    std::process::exit(0);
 }

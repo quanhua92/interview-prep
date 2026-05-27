@@ -33,44 +33,27 @@
  *             '''
  */
 
-function solve(n) {
-  let seed = 12345;
-  function rand7() {
-    seed = (seed * 16807 + 0) % 2147483647;
-    return (seed % 7) + 1;
-  }
+import { readInt, writeBool } from '../../wasm_libs/js/io.mjs';
 
-  const results = [];
-  for (let i = 0; i < n; i++) {
-    while (true) {
-      const row = rand7();
-      const col = rand7();
-      const idx = (row - 1) * 7 + col;
-      if (idx <= 40) {
-        results.push((idx - 1) % 10 + 1);
-        break;
-      }
-    }
-  }
-  return results.every((v) => v >= 1 && v <= 10);
+let seed = 12345;
+function rand7() {
+  seed = (seed * 16807 + 0) % 2147483647;
+  return (seed % 7) + 1;
 }
 
-const tests = [
-  { label: "generates 5 values in range [1, 10]", input: 5, expected: true },
-  { label: "single value", input: 1, expected: true },
-  { label: "100 values", input: 100, expected: true },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
+function rand10() {
+  while (true) {
+    const row = rand7();
+    const col = rand7();
+    const idx = (row - 1) * 7 + col;
+    if (idx <= 40) return (idx - 1) % 10 + 1;
   }
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+
+const n = readInt();
+let ok = true;
+for (let i = 0; i < n; i++) {
+  const v = rand10();
+  if (v < 1 || v > 10) { ok = false; break; }
+}
+writeBool(ok);

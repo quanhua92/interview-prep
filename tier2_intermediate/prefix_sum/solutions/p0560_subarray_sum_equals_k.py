@@ -34,38 +34,27 @@ Template (python3):
 Hint: Use a hash map with prefix sums to count subarrays summing to k.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
 from collections import defaultdict
 
+from src.wasm_libs.py.io import *
 
-class Solution(Problem):
-    name = "560. Subarray Sum Equals K"
-    test_cases = [
-        TestCase(input=([1, 1, 1], 2), expected=2, label="example 1"),
-        TestCase(input=([1, 2, 3], 3), expected=2, label="example 2"),
-        TestCase(input=([], 0), expected=0, label="empty array"),
-        TestCase(input=([1], 1), expected=1, label="single element equals k"),
-        TestCase(input=([1], 2), expected=0, label="single element not k"),
-        TestCase(input=([1, -1, 0], 0), expected=3, label="negatives with zero sum"),
-        TestCase(input=([0, 0, 0], 0), expected=6, label="all zeros"),
-    ]
 
-    def solve(self, nums: list[int], k: int) -> int:
-        count = 0
-        curr_sum = 0
-        prefix_freq: dict[int, int] = defaultdict(int)
-        prefix_freq[0] = 1
+def solve(nums: list[int], k: int) -> int:
+    count = 0
+    curr_sum = 0
+    prefix_freq: dict[int, int] = defaultdict(int)
+    prefix_freq[0] = 1
 
-        for num in nums:
-            curr_sum += num
-            count += prefix_freq.get(curr_sum - k, 0)
-            prefix_freq[curr_sum] += 1
+    for num in nums:
+        curr_sum += num
+        count += prefix_freq.get(curr_sum - k, 0)
+        prefix_freq[curr_sum] += 1
 
-        return count
+    return count
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    k = read_int()
+    result = solve(nums, k)
+    write_int(result)

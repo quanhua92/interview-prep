@@ -21,6 +21,8 @@
  *         def largestPalindrome(self, n: int) -> int:
  */
 
+import { readInts, writeInt } from '../../wasm_libs/js/io.mjs';
+
 function solve(n) {
   if (n === 1) return 9;
   const upper = 10 ** n - 1;
@@ -40,24 +42,5 @@ function solve(n) {
   return 0;
 }
 
-const tests = [
-  { label: "example 1", input: 2, expected: 987 },
-  { label: "example 2", input: 1, expected: 9 },
-  { label: "3 digits", input: 3, expected: 123 },
-  { label: "4 digits", input: 4, expected: 597 },
-  { label: "8 digits (max n)", input: 8, expected: 475 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const vals = readInts();
+writeInt(solve(vals[0]));

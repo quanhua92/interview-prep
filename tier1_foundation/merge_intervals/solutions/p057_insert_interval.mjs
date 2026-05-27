@@ -17,25 +17,10 @@
  *     Output: [[1,2],[3,10],[12,16]]
  *     Explanation: Because the new interval [4,8] overlaps with [3,5],[6,7],[8,10].
  *
- * Constraints:
- *     - 0 <= intervals.length <= 104
- *     - intervals[i].length == 2
- *     - 0 <= starti <= endi <= 105
- *     - intervals is sorted by starti in ascending order.
- *     - newInterval.length == 2
- *     - 0 <= start <= end <= 105
- *
- * Hints:
- *     - Intervals Array is sorted. Can you use Binary Search to find the correct position to insert the new Interval.?
- *     - Can you try merging the overlapping intervals while inserting the new interval?
- *     - This can be done by comparing the end of the last interval with the start of the new interval and vice versa.
- *
- * Template (python3):
- *     class Solution:
- *         def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
- *
  * Hint: Add non-overlapping before, merge overlapping, add non-overlapping after.
  */
+
+import { readInts, readInt, writeInts } from '../../wasm_libs/js/io.mjs';
 
 function solve(intervals, newInterval) {
   const result = [];
@@ -58,28 +43,13 @@ function solve(intervals, newInterval) {
   return result;
 }
 
-const tests = [
-  { label: "example 1", input: [[[1, 3], [6, 9]], [2, 5]], expected: [[1, 5], [6, 9]] },
-  { label: "example 2", input: [[[1, 2], [3, 5], [6, 7], [8, 10], [12, 16]], [4, 8]], expected: [[1, 2], [3, 10], [12, 16]] },
-  { label: "empty intervals", input: [[], [5, 7]], expected: [[5, 7]] },
-  { label: "contained", input: [[[1, 5]], [2, 3]], expected: [[1, 5]] },
-  { label: "insert before all", input: [[[3, 5], [6, 9]], [1, 2]], expected: [[1, 2], [3, 5], [6, 9]] },
-  { label: "insert after all", input: [[[1, 2], [3, 5]], [6, 9]], expected: [[1, 2], [3, 5], [6, 9]] },
-  { label: "merge with first interval", input: [[[1, 3], [6, 9]], [0, 2]], expected: [[0, 3], [6, 9]] },
-  { label: "merge with last interval", input: [[[1, 3], [6, 9]], [8, 10]], expected: [[1, 3], [6, 10]] },
-  { label: "bridge gap between intervals", input: [[[1, 2], [4, 5]], [2, 4]], expected: [[1, 5]] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const n = readInt();
+const intervals = [];
+for (let i = 0; i < n; i++) {
+  intervals.push(readInts());
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const newInterval = readInts();
+const result = solve(intervals, newInterval);
+for (const row of result) {
+  writeInts(row);
+}

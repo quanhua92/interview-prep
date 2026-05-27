@@ -28,6 +28,8 @@
  *         def findAllConcatenatedWordsInADict(self, words: List[str]) -> List[str]:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
+
 class TrieNode {
   constructor() {
     this.children = {};
@@ -74,29 +76,13 @@ function solve(words) {
   return result.sort();
 }
 
-const tests = [
-  {
-    label: "example 1",
-    input: [["cat", "cats", "catsdogcats", "dog", "dogcatsdog", "hippopotamuses", "rat", "ratcatdogcat"]],
-    expected: ["catsdogcats", "dogcatsdog", "ratcatdogcat"],
-  },
-  { label: "example 2", input: [["cat", "dog", "catdog"]], expected: ["catdog"] },
-  { label: "word from duplicate parts", input: [["cat", "catcat"]], expected: ["catcat"] },
-  { label: "no concatenated words", input: [["a", "b", "c"]], expected: [] },
-  { label: "deep concatenation chain", input: [["a", "aa", "aaaa"]], expected: ["aa", "aaaa"] },
-  { label: "self-similar concatenation", input: [["ab", "abab"]], expected: ["abab"] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const nWords = readInt();
+const words = [];
+for (let i = 0; i < nWords; i++) {
+  words.push(readLine());
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const result = solve(words);
+writeInt(result.length);
+for (const w of result) {
+  writeString(w);
+}

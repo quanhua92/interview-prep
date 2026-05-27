@@ -2,7 +2,7 @@
  * P398: Random Pick Index [PREMIUM] (Medium)
  * https://leetcode.com/problems/random-pick-index/
  * Topics: Hash Table, Math, Reservoir Sampling, Randomized
- * 
+ *
  * Given an integer array nums with possible duplicates, randomly output the index of a given target number. You can assume that the given target number must exist in the array.
  * Implement the Solution class:
  * Example 1:
@@ -12,92 +12,44 @@
  *     [[[1, 2, 3, 3, 3]], [3], [1], [3]]
  *     Output
  *     [null, 4, 0, 2]
- * 
+ *
  *     Explanation
  *     Solution solution = new Solution([1, 2, 3, 3, 3]);
  *     solution.pick(3); // It should return either index 2, 3, or 4 randomly. Each index should have equal probability of returning.
  *     solution.pick(1); // It should return 0. Since in the array only nums[0] is equal to 1.
  *     solution.pick(3); // It should return either index 2, 3, or 4 randomly. Each index should have equal probability of returning.
- * 
+ *
  * Constraints:
  *     - 1 <= nums.length <= 2 * 104
  *     - -231 <= nums[i] <= 231 - 1
  *     - target is an integer from nums.
  *     - At most 104 calls will be made to pick.
- *
- * Template (python3):
- *     class Solution:
- *
- *         def __init__(self, nums: List[int]):
- *
- *
- *         def pick(self, target: int) -> int:
- *
- *
- *
- *     # Your Solution object will be instantiated and called as such:
- *     # obj = Solution(nums)
- *     # param_1 = obj.pick(target)
  */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
-#include <algorithm>
-#include <vector>
-#include <unordered_map>
+
+#include "io.h"
 #include <cstdlib>
+#include <unordered_map>
+#include <vector>
 
 class Solution {
     std::unordered_map<int, std::vector<int>> idx;
 public:
     Solution(std::vector<int>& nums) {
-        abort();
+        for (int i = 0; i < (int)nums.size(); i++)
+            idx[nums[i]].push_back(i);
     }
     int pick(int target) {
-        abort();
-        return -1;
+        auto& indices = idx[target];
+        return indices[rand() % indices.size()];
     }
 };
 
 int main(void)
 {
-    struct {
-        const char *label;
-        std::vector<int> input;
-        int target;
-        std::vector<int> valid;
-    } tests[] = {
-        {"returns valid index for target 3", {1, 2, 3, 3, 3}, 3, {2, 3, 4}},
-        {"single occurrence",                {1, 2, 3, 3, 3}, 1, {0}},
-        {"single element array",             {5},              5, {0}},
-        {"non-contiguous duplicates",        {1, 2, 1, 2, 1}, 1, {0, 2, 4}},
-        {"negative numbers with duplicates", {-1, -2, -1, -3, -1}, -1, {0, 2, 4}},
-        {"all same elements",                {1, 1, 1, 1, 1}, 1, {0, 1, 2, 3, 4}},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
+    std::vector<int> nums = read_ints();
+    int target = read_int();
 
-    printf("\n============================================================\n");
-    printf("  398. Random Pick Index\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        Solution sol(tests[i].input);
-        int got = sol.pick(tests[i].target);
-        bool ok = false;
-        for (int v : tests[i].valid) {
-            if (got == v) { ok = true; break; }
-        }
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected one of: "); print_arr(tests[i].valid); printf("\n");
-            printf("    Got:              %d\n", got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    Solution sol(nums);
+    write_int(sol.pick(target));
+    return 0;
 }

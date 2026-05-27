@@ -29,12 +29,8 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+#include "io.h"
 #include <queue>
-#include <climits>
 
 static std::vector<std::vector<int>> updateMatrix(const std::vector<std::vector<int>> &mat)
 {
@@ -66,40 +62,16 @@ static std::vector<std::vector<int>> updateMatrix(const std::vector<std::vector<
     return dist;
 }
 
-typedef struct {
-    const char *label;
-    std::vector<std::vector<int>> input;
-    std::vector<std::vector<int>> expected;
-} MatDistTC;
-
 int main(void)
 {
-    MatDistTC tests[] = {
-        {"example 1", {{0,0,0},{0,1,0},{0,0,0}}, {{0,0,0},{0,1,0},{0,0,0}}},
-        {"example 2", {{0,0,0},{0,1,0},{1,1,1}}, {{0,0,0},{0,1,0},{1,2,1}}},
-        {"single zero", {{0}}, {{0}}},
-        {"single column", {{1},{0},{1}}, {{1},{0},{1}}},
-        {"single row", {{0,1,1,1}}, {{0,1,2,3}}},
-        {"cross of ones around center zero", {{1,1,1},{1,0,1},{1,1,1}}, {{2,1,2},{1,0,1},{2,1,2}}},
-        {"corner zeros", {{1,1,0},{1,1,1},{0,1,1}}, {{2,1,0},{1,2,1},{0,1,2}}},
-    };
-
-    int n_tests = (int)(sizeof(tests) / sizeof(tests[0]));
-    printf("\n============================================================\n");
-    printf("  542. 01 Matrix\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int t = 0; t < n_tests; t++) {
-        MatDistTC &tc = tests[t];
-        std::vector<std::vector<int>> got = updateMatrix(tc.input);
-        if (got == tc.expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", t + 1, tc.label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", t + 1, tc.label);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    std::vector<int> header = read_ints();
+    int cols = header[0];
+    int rows = cols;
+    std::vector<std::vector<int>> mat;
+    for (int i = 0; i < rows; i++)
+        mat.push_back(read_ints());
+    auto result = updateMatrix(mat);
+    for (const auto &row : result)
+        write_ints(row);
+    return 0;
 }

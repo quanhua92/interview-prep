@@ -43,48 +43,23 @@ Template (python3):
 Hint: Use Floyd's cycle-finding algorithm with fast and slow pointers.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase, ListNode
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "141. Linked List Cycle"
-    test_cases = [
-        TestCase(
-            input=(ListNode.from_list([3, 2, 0, -4]), 1),
-            expected=True,
-            label="example 1",
-        ),
-        TestCase(
-            input=(ListNode.from_list([1, 2]), 0), expected=True, label="example 2"
-        ),
-        TestCase(
-            input=(ListNode.from_list([1]), -1), expected=False, label="example 3"
-        ),
-        TestCase(
-            input=(None, -1), expected=False, label="empty list"
-        ),
-        TestCase(
-            input=(ListNode.from_list([1, 2]), -1), expected=False, label="two nodes no cycle"
-        ),
-        TestCase(
-            input=(ListNode.from_list([1, 2, 3]), 2), expected=True, label="self-loop at tail"
-        ),
-        TestCase(
-            input=(ListNode.from_list([1, 2, 3, 4, 5]), -1), expected=False, label="long list no cycle"
-        ),
-        TestCase(
-            input=(ListNode.from_list([1, 2, 3]), 0), expected=True, label="cycle back to head"
-        ),
-    ]
+class ListNode:
+    __slots__ = ("val", "next")
 
-    def solve(self, head: ListNode | None, pos: int) -> bool:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, head: ListNode | None, pos: int) -> bool"
-        )
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+
+def solve(vals: list[int], pos: int) -> bool:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    vals = read_ints()
+    pos = read_int()
+    result = solve(vals, pos)
+    write_bool(result)

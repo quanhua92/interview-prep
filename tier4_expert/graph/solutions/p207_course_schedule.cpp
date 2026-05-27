@@ -38,9 +38,11 @@
  */
 
 
-#include "cpptest.h"
+#include "io.h"
+#include <vector>
 
-static bool canFinish(int numCourses, const std::vector<std::vector<int>>& prerequisites) {
+bool canFinish(int numCourses, const std::vector<std::vector<int>>& prerequisites)
+{
     std::vector<std::vector<int>> adj(numCourses);
     std::vector<int> inDegree(numCourses, 0);
     for (const auto& p : prerequisites) {
@@ -63,36 +65,17 @@ static bool canFinish(int numCourses, const std::vector<std::vector<int>>& prere
     return count == numCourses;
 }
 
-struct TC {
-    const char *label;
-    int numCourses;
-    std::vector<std::vector<int>> prereqs;
-    bool expected;
-};
+int main(void)
+{
+    auto header = read_ints();
+    int numCourses = header[0];
+    int pairCount = header[1];
 
-int main(void) {
-    (void)print_arr;
-    TC tests[] = {
-        {"example 1", 2, {{1,0}}, true},
-        {"example 2", 2, {{1,0},{0,1}}, false},
-        {"no prerequisites", 1, {}, true},
-        {"3-node cycle", 3, {{0,1},{1,2},{2,0}}, false},
-        {"linear chain disconnected node", 5, {{0,1},{1,2},{2,3}}, true},
-        {"two deps on one course", 3, {{1,0},{2,0}}, true},
-        {"self-contained cycle", 4, {{0,1},{1,2},{2,3},{3,1}}, false},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        bool got = canFinish(tests[i].numCourses, tests[i].prereqs);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
+    std::vector<std::vector<int>> prerequisites;
+    for (int i = 0; i < pairCount; i++) {
+        prerequisites.push_back(read_ints());
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+
+    write_bool(canFinish(numCourses, prerequisites));
+    return 0;
 }

@@ -26,74 +26,42 @@ Template (python3):
         def trapRainWater(self, heightMap: List[List[int]]) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
+import heapq
 
 
-class Solution(Problem):
-    name = "407. Trapping Rain Water II"
-    test_cases = [
-        TestCase(
-            input=[[1, 4, 3, 1, 3, 2], [3, 2, 1, 3, 2, 4], [2, 3, 3, 2, 3, 1]],
-            expected=4,
-            label="example 1",
-        ),
-        TestCase(
-            input=[
-                [3, 3, 3, 3, 3],
-                [3, 2, 2, 2, 3],
-                [3, 2, 1, 2, 3],
-                [3, 2, 2, 2, 3],
-                [3, 3, 3, 3, 3],
-            ],
-            expected=10,
-            label="example 2",
-        ),
-        TestCase(input=[[1]], expected=0, label="1x1 no trap"),
-        TestCase(
-            input=[[5, 5, 5], [5, 1, 5], [5, 5, 5]],
-            expected=4,
-            label="3x3 basin",
-        ),
-        TestCase(
-            input=[[5, 5, 5, 5], [5, 5, 5, 5]],
-            expected=0,
-            label="2x4 no interior",
-        ),
-    ]
-
-    def solve(self, heightMap: list[list[int]]) -> int:
-        import heapq
-
-        if not heightMap or not heightMap[0]:
-            return 0
-        m, n = len(heightMap), len(heightMap[0])
-        if m < 3 or n < 3:
-            return 0
-        visited = [[False] * n for _ in range(m)]
-        heap: list[tuple[int, int, int]] = []
-        for r in range(m):
-            for c in (0, n - 1):
-                heapq.heappush(heap, (heightMap[r][c], r, c))
-                visited[r][c] = True
-        for c in range(1, n - 1):
-            for r in (0, m - 1):
-                heapq.heappush(heap, (heightMap[r][c], r, c))
-                visited[r][c] = True
-        water = 0
-        dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-        while heap:
-            h, r, c = heapq.heappop(heap)
-            for dr, dc in dirs:
-                nr, nc = r + dr, c + dc
-                if 0 <= nr < m and 0 <= nc < n and not visited[nr][nc]:
-                    visited[nr][nc] = True
-                    water += max(0, h - heightMap[nr][nc])
-                    heapq.heappush(heap, (max(h, heightMap[nr][nc]), nr, nc))
-        return water
+def solve(heightMap: list[list[int]]) -> int:
+    if not heightMap or not heightMap[0]:
+        return 0
+    m, n = len(heightMap), len(heightMap[0])
+    if m < 3 or n < 3:
+        return 0
+    visited = [[False] * n for _ in range(m)]
+    heap: list[tuple[int, int, int]] = []
+    for r in range(m):
+        for c in (0, n - 1):
+            heapq.heappush(heap, (heightMap[r][c], r, c))
+            visited[r][c] = True
+    for c in range(1, n - 1):
+        for r in (0, m - 1):
+            heapq.heappush(heap, (heightMap[r][c], r, c))
+            visited[r][c] = True
+    water = 0
+    dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    while heap:
+        h, r, c = heapq.heappop(heap)
+        for dr, dc in dirs:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < m and 0 <= nc < n and not visited[nr][nc]:
+                visited[nr][nc] = True
+                water += max(0, h - heightMap[nr][nc])
+                heapq.heappush(heap, (max(h, heightMap[nr][nc]), nr, nc))
+    return water
 
 
 if __name__ == "__main__":
-    Solution().run()
+    dims = read_ints()
+    m, n = dims[0], dims[1]
+    heightMap = [read_ints() for _ in range(m)]
+    result = solve(heightMap)
+    write_int(result)

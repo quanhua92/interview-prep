@@ -30,11 +30,11 @@
  *         def findRotateSteps(self, ring: str, key: str) -> int:
  */
 
+use wasm_libs::*;
 
-use rstest;
-
-fn find_rotate_steps(ring: &str, key: &str) -> i32 {
-    let rb = ring.as_bytes();
+impl Solution {
+    fn find_rotate_steps(ring: &str, key: &str) -> i32 {
+        let rb = ring.as_bytes();
     let kb = key.as_bytes();
     let n = rb.len();
     let klen = kb.len();
@@ -57,27 +57,13 @@ fn find_rotate_steps(ring: &str, key: &str) -> i32 {
         dp = new_dp;
     }
     dp[0]
+    }
 }
 
+struct Solution;
+
 fn main() {
-    struct TC<'a> { label: &'a str, ring: &'a str, key: &'a str, expected: i32 }
-    let tests: &[TC] = &[
-        TC { label: "example 1", ring: "godding", key: "gd", expected: 4 },
-        TC { label: "example 2", ring: "godding", key: "godding", expected: 13 },
-        TC { label: "single char ring and key", ring: "a", key: "a", expected: 1 },
-        TC { label: "reverse order key", ring: "abc", key: "cba", expected: 6 },
-        TC { label: "repeated chars", ring: "aaaaa", key: "aaa", expected: 3 },
-    ];
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = find_rotate_steps(tc.ring, tc.key);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL (expected {}, got {})", i + 1, tc.label, tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let ring = read_line();
+    let key = read_line();
+    write_int(find_rotate_steps(&ring, &key));
 }

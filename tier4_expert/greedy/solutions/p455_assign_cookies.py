@@ -32,34 +32,22 @@ Template (python3):
 Hint: Sort both arrays and use two pointers to greedily assign the smallest sufficient cookie.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "455. Assign Cookies"
-    test_cases = [
-        TestCase(input=([1, 2, 3], [1, 1]), expected=1, label="example 1"),
-        TestCase(input=([1, 2], [1, 2, 3]), expected=2, label="example 2"),
-        TestCase(input=([], [1, 2, 3]), expected=0, label="no children"),
-        TestCase(input=([1, 2], []), expected=0, label="no cookies"),
-        TestCase(input=([10, 11], [1, 2, 3]), expected=0, label="all cookies too small"),
-        TestCase(input=([1, 2, 3], [3, 3, 3]), expected=3, label="all satisfied"),
-        TestCase(input=([5], [5]), expected=1, label="exact match"),
-    ]
-
-    def solve(self, g: list[int], s: list[int]) -> int:
-        g.sort()
-        s.sort()
-        child = cookie = 0
-        while child < len(g) and cookie < len(s):
-            if s[cookie] >= g[child]:
-                child += 1
-            cookie += 1
-        return child
+def solve(g: list[int], s: list[int]) -> int:
+    g.sort()
+    s.sort()
+    child = cookie = 0
+    while child < len(g) and cookie < len(s):
+        if s[cookie] >= g[child]:
+            child += 1
+        cookie += 1
+    return child
 
 
 if __name__ == "__main__":
-    Solution().run()
+    g = read_ints()
+    s = read_ints()
+    result = solve(g, s)
+    write_int(result)

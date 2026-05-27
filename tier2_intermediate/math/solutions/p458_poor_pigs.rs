@@ -29,7 +29,7 @@
  *
  * Constraints:
  *     - 1 <= buckets <= 1000
- *     - 1 <= minutesToDie <= minutesToTest <= 100
+ *     - 1 <= minutesToDie <= minutesToTest <= 100
  *
  * Hint: What if you only have one shot? Eg. 4 buckets, 15 mins to die, and 15 mins to test.
  * Hint: How many states can we generate with x pigs and T tests?
@@ -40,8 +40,7 @@
  *         def poorPigs(self, buckets: int, minutesToDie: int, minutesToTest: int) -> int:
  */
 
-
-use rstest;
+use wasm_libs::*;
 
 fn poor_pigs(buckets: i32, minutes_to_die: i32, minutes_to_test: i32) -> i32 {
     let tests = minutes_to_test / minutes_to_die;
@@ -57,25 +56,7 @@ fn poor_pigs(buckets: i32, minutes_to_die: i32, minutes_to_test: i32) -> i32 {
 }
 
 fn main() {
-    struct TC { label: &'static str, buckets: i32, mtd: i32, mtt: i32, expected: i32 }
-    let tests: &[TC] = &[
-        TC { label: "example 1", buckets: 4, mtd: 15, mtt: 15, expected: 2 },
-        TC { label: "example 2", buckets: 4, mtd: 15, mtt: 30, expected: 2 },
-        TC { label: "single bucket", buckets: 1, mtd: 100, mtt: 100, expected: 0 },
-        TC { label: "single test round", buckets: 125, mtd: 1, mtt: 1, expected: 7 },
-        TC { label: "large buckets", buckets: 1000, mtd: 15, mtt: 60, expected: 5 },
-        TC { label: "medium buckets", buckets: 8, mtd: 15, mtt: 30, expected: 2 },
-    ];
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = poor_pigs(tc.buckets, tc.mtd, tc.mtt);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL (expected {}, got {})", i + 1, tc.label, tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let vals = read_ints();
+    write_int(poor_pigs(vals[0], vals[1], vals[2]));
+    std::process::exit(0);
 }

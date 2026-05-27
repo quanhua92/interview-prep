@@ -37,9 +37,7 @@
  */
 
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include "io.h"
 #include <string>
 #include <unordered_map>
 
@@ -68,34 +66,9 @@ static std::string solve(const std::string &longUrl) {
     return codec.decode(tiny);
 }
 
-int main(void) {
-    int passed = 0, total = 4;
-    printf("\n============================================================\n");
-    printf("  535. Encode and Decode TinyURL\n");
-    printf("============================================================\n");
-
-    {
-        std::string got = solve("https://leetcode.com/problems/design-tinyurl");
-        if (got == "https://leetcode.com/problems/design-tinyurl") { passed++; printf("  Test 1 (example 1): PASS\n"); }
-        else { printf("  Test 1 (example 1): FAIL\n  Expected: https://leetcode.com/problems/design-tinyurl, Got: %s\n", got.c_str()); }
-    }
-    {
-        std::string got = solve("https://example.com/path/to/resource?query=1&param=2#section");
-        if (got == "https://example.com/path/to/resource?query=1&param=2#section") { passed++; printf("  Test 2 (URL with query and fragment): PASS\n"); }
-        else { printf("  Test 2 (URL with query and fragment): FAIL\n  Expected: https://example.com/path/to/resource?query=1&param=2#section, Got: %s\n", got.c_str()); }
-    }
-    {
-        std::string got = solve("http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u");
-        if (got == "http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u") { passed++; printf("  Test 3 (URL with many path segments): PASS\n"); }
-        else { printf("  Test 3 (URL with many path segments): FAIL\n  Expected: http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u, Got: %s\n", got.c_str()); }
-    }
-    {
-        std::string got = solve("https://site.com");
-        if (got == "https://site.com") { passed++; printf("  Test 4 (minimal URL): PASS\n"); }
-        else { printf("  Test 4 (minimal URL): FAIL\n  Expected: https://site.com, Got: %s\n", got.c_str()); }
-    }
-
-    printf("\n  %d/%d passed\n", passed, total);
-    printf("============================================================\n\n");
-    return passed == total ? 0 : 1;
+int main(void)
+{
+    std::string url = read_line();
+    write_string(solve(url));
+    return 0;
 }

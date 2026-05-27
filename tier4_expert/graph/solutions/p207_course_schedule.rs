@@ -37,74 +37,52 @@
  * Hint: Build a graph and use topological sort (Kahn's algorithm) to detect cycles.
  */
 
-
 use std::collections::VecDeque;
+use wasm_libs::*;
 
-fn can_finish(num_courses: usize, prerequisites: &[(i32, i32)]) -> bool {
-    let mut adj: Vec<Vec<usize>> = vec![vec![]; num_courses];
-    let mut in_degree: Vec<i32> = vec![0; num_courses];
-    for &(course, prereq) in prerequisites {
-        let c = course as usize;
-        let p = prereq as usize;
-        adj[p].push(c);
-        in_degree[c] += 1;
-    }
-    let mut queue: VecDeque<usize> = VecDeque::new();
-    for i in 0..num_courses {
-        if in_degree[i] == 0 {
-            queue.push_back(i);
+impl Solution {
+    fn can_finish(num_courses: usize, prerequisites: &[(i32, i32)]) -> bool {
+        let mut adj: Vec<Vec<usize>> = vec![vec![]; num_courses];
+        let mut in_degree: Vec<i32> = vec![0; num_courses];
+        for &(course, prereq) in prerequisites {
+            let c = course as usize;
+            let p = prereq as usize;
+            adj[p].push(c);
+            in_degree[c] += 1;
         }
-    }
-    let mut count = 0;
-    while let Some(node) = queue.pop_front() {
-        count += 1;
-        for &nb in &adj[node] {
-            in_degree[nb] -= 1;
-            if in_degree[nb] == 0 {
-                queue.push_back(nb);
+        let mut queue: VecDeque<usize> = VecDeque::new();
+        for i in 0..num_courses {
+            if in_degree[i] == 0 {
+                queue.push_back(i);
             }
         }
+        let mut count = 0;
+        while let Some(node) = queue.pop_front() {
+            count += 1;
+            for &nb in &adj[node] {
+                in_degree[nb] -= 1;
+                if in_degree[nb] == 0 {
+                    queue.push_back(nb);
+                }
+            }
+        }
+        count == num_courses
     }
-    count == num_courses
 }
 
-struct TC {
-    label: &'static str,
-    num_courses: usize,
-    prereqs: &'static [(i32, i32)],
-    expected: bool,
-}
+struct Solution;
 
 fn main() {
-    let tests: &[TC] = &[
-        TC { label: "example 1", num_courses: 2, prereqs: &[(1,0)], expected: true },
-        TC { label: "example 2", num_courses: 2, prereqs: &[(1,0),(0,1)], expected: false },
-        TC { label: "no prerequisites", num_courses: 1, prereqs: &[], expected: true },
-        TC { label: "3-node cycle", num_courses: 3, prereqs: &[(0,1),(1,2),(2,0)], expected: false },
-        TC { label: "linear chain disconnected node", num_courses: 5, prereqs: &[(0,1),(1,2),(2,3)], expected: true },
-        TC { label: "two deps on one course", num_courses: 3, prereqs: &[(1,0),(2,0)], expected: true },
-        TC { label: "self-contained cycle", num_courses: 4, prereqs: &[(0,1),(1,2),(2,3),(3,1)], expected: false },
-    ];
+    let header = read_ints();
+    let num_courses = header[0] as usize;
+    let pair_count = header[1] as usize;
 
-    println!("\n============================================================");
-    println!("  207. Course Schedule");
-    println!("============================================================");
-
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = can_finish(tc.num_courses, tc.prereqs);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}", tc.expected);
-            println!("    Got:      {}", got);
-        }
+    let mut prerequisites: Vec<(i32, i32)> = Vec::new();
+    for _ in 0..pair_count {
+        let pair = read_ints();
+        prerequisites.push((pair[0], pair[1]));
     }
 
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    write_bool(Solution::can_finish(num_courses, &prerequisites));
+    std::process::exit(0);
 }

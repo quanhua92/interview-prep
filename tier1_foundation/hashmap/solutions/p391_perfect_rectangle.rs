@@ -31,13 +31,11 @@
  *         def isRectangleCover(self, rectangles: List[List[int]]) -> bool:
  */
 
-
-use std::collections::HashSet;
-use std::process::exit;
+use wasm_libs::*;
 
 fn is_rectangle_cover(rectangles: &Vec<Vec<i32>>) -> bool
 {
-    let mut corners: HashSet<(i64, i64)> = HashSet::new();
+    let mut corners: std::collections::HashSet<(i64, i64)> = std::collections::HashSet::new();
     let mut total_area: i64 = 0;
     let mut min_x = 200000_i64;
     let mut min_y = 200000_i64;
@@ -66,7 +64,7 @@ fn is_rectangle_cover(rectangles: &Vec<Vec<i32>>) -> bool
     if corners.len() != 4 {
         return false;
     }
-    let expected: HashSet<(i64, i64)> = [
+    let expected: std::collections::HashSet<(i64, i64)> = [
         (min_x, min_y), (min_x, max_y), (max_x, min_y), (max_x, max_y)
     ].iter().cloned().collect();
     if corners != expected {
@@ -76,40 +74,13 @@ fn is_rectangle_cover(rectangles: &Vec<Vec<i32>>) -> bool
     total_area == (max_x - min_x) * (max_y - min_y)
 }
 
-struct RectTC {
-    label: &'static str,
-    rects: Vec<Vec<i32>>,
-    expected: bool,
-}
-
-fn main()
-{
-    let tests: Vec<RectTC> = vec![
-        RectTC { label: "example 1", rects: vec![vec![1,1,3,3],vec![3,1,4,2],vec![3,2,4,4],vec![1,3,2,4],vec![2,3,3,4]], expected: true },
-        RectTC { label: "example 2", rects: vec![vec![1,1,2,3],vec![1,3,2,4],vec![3,1,4,2],vec![3,2,4,4]], expected: false },
-        RectTC { label: "example 3", rects: vec![vec![1,1,3,3],vec![3,1,4,2],vec![1,3,2,4],vec![2,2,4,4]], expected: false },
-        RectTC { label: "single rectangle", rects: vec![vec![0,0,1,1]], expected: true },
-        RectTC { label: "two rects side by side", rects: vec![vec![0,0,1,2],vec![1,0,2,2]], expected: true },
-        RectTC { label: "overlapping rectangles", rects: vec![vec![0,0,2,2],vec![1,1,3,3]], expected: false },
-    ];
-
-    println!("\n============================================================");
-    println!("  391. Perfect Rectangle");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = is_rectangle_cover(&tc.rects);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}", tc.expected);
-            println!("    Got:      {}", got);
-        }
+fn main() {
+    let header = read_ints();
+    let n = header[0] as usize;
+    let mut rectangles: Vec<Vec<i32>> = Vec::new();
+    for _ in 0..n {
+        rectangles.push(read_ints());
     }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    if passed == tests.len() { exit(0); } else { exit(1); }
+    write_bool(is_rectangle_cover(&rectangles));
+    std::process::exit(0);
 }

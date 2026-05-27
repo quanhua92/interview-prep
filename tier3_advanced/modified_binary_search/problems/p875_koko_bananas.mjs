@@ -31,46 +31,13 @@
  * 
  * Hint: Binary search on the eating speed, computing total hours for each candidate.
  */
-function solve(piles, h)
-  let left = 1;
-  let right = Math.max(...piles);
-  while (left < right)
-    const mid = left + Math.floor((right - left) / 2);
-    let hours = 0;
-    for (const p of piles)
-      hours += Math.ceil(p / mid);
-    }
-    if (hours <= h)
-      right = mid;
-    } else
-      left = mid + 1;
-    }
-  }
-  return left; {
-    throw new Error("NotImplementedError");
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
+
+function solve(piles, h) {
+  throw new Error("NotImplementedError");
 }
 
-const tests = [
-  { label: "example 1", input: [[3, 6, 7, 11], 8], expected: 4 },
-  { label: "example 2", input: [[30, 11, 23, 4, 20], 5], expected: 30 },
-  { label: "example 3", input: [[30, 11, 23, 4, 20], 6], expected: 23 },
-  { label: "single pile single hour", input: [[1], 1], expected: 1 },
-  { label: "single pile many hours", input: [[312884470], 970709593], expected: 1 },
-  { label: "all ones h equals length", input: [[1, 1, 1, 1], 4], expected: 1 },
-  { label: "large values tight deadline", input: [[1000000000, 1000000000], 3], expected: 1000000000 },
-  { label: "uniform piles extra hours", input: [[5, 5, 5, 5, 5], 10], expected: 3 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const piles = readInts();
+const h = readInt();
+writeInt(solve(piles, h));

@@ -30,8 +30,9 @@
  * Hint: Freq map + max_freq tracker, window valid when len - max_freq <= k. Left only moves right.
  */
 
+use wasm_libs::*;
 
-fn character_replacement(s: &str, k: i32) -> usize {
+fn solve(s: &str, k: i32) -> usize {
     let bytes = s.as_bytes();
     let mut freq = [0i32; 26];
     let mut max_freq = 0i32;
@@ -55,28 +56,9 @@ fn character_replacement(s: &str, k: i32) -> usize {
 }
 
 fn main() {
-    struct Test { label: &'static str, input: &'static str, k: i32, expected: usize }
-    let tests: &[Test] = &[
-        Test { label: "example 1", input: "ABAB", k: 2, expected: 4 },
-        Test { label: "example 2", input: "AABABBA", k: 1, expected: 4 },
-        Test { label: "no changes needed", input: "AAAA", k: 0, expected: 4 },
-        Test { label: "all unique", input: "ABCDE", k: 1, expected: 2 },
-        Test { label: "single char, k=0", input: "A", k: 0, expected: 1 },
-        Test { label: "single char, k > len", input: "A", k: 5, expected: 1 },
-        Test { label: "no changes, partial run", input: "AAAB", k: 0, expected: 3 },
-        Test { label: "change middle B to A", input: "ABAA", k: 2, expected: 4 },
-    ];
-    let mut passed = 0;
-    for (i, t) in tests.iter().enumerate() {
-        let got = character_replacement(t.input, t.k);
-        if got == t.expected {
-            println!("  Test {} ({}): PASS", i + 1, t.label);
-            passed += 1;
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, t.label);
-            println!("    Expected: {}\n    Got: {}", t.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let s = read_line();
+    let k = read_int();
+    let result = solve(&s, k);
+    write_int(result as i32);
+    std::process::exit(0);
 }

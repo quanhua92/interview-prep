@@ -48,85 +48,26 @@
  *     # param_1 = obj.pick()
  */
 
-
-#include <stdio.h>
+#include "io.h"
 #include <stdlib.h>
-
-int *solve_prefix_sums(int **rects, int rectsSize, int *rectsColSize, int *ret_size)
-{
-    (void)rectsColSize;
-    int *result = (int *)malloc(rectsSize * sizeof(int));
-    int total = 0;
-    for (int i = 0; i < rectsSize; i++) {
-        int area = (rects[i][2] - rects[i][0] + 1) * (rects[i][3] - rects[i][1] + 1);
-        total += area;
-        result[i] = total;
-    }
-    *ret_size = rectsSize;
-    return result;
-}
-
-static int arr_eq(const int *a, int an, const int *b, int bn)
-{
-    if (an != bn) return 0;
-    for (int i = 0; i < an; i++)
-        if (a[i] != b[i]) return 0;
-    return 1;
-}
-
-static void print_arr(const int *a, int n)
-{
-    printf("[");
-    for (int i = 0; i < n; i++) {
-        if (i) printf(",");
-        printf("%d", a[i]);
-    }
-    printf("]");
-}
 
 int main(void)
 {
-    struct {
-        const char *label;
-        int rects[10][4];
-        int n;
-        int expected[10];
-        int expected_n;
-        int pass;
-    } tests[] = {
-        { "area sum for two rectangles", {{-2,-2,1,1},{2,2,4,6}}, 2, {16,31}, 2, 0 },
-        { "area for single 3x3 rectangle", {{0,0,2,2}}, 1, {9}, 1, 0 },
-        { "single point rectangle", {{0,0,0,0}}, 1, {1}, 1, 0 },
-        { "negative and positive rects same size", {{-5,-5,-3,-3},{1,1,3,3}}, 2, {9,18}, 2, 0 },
-        { "different sized rects", {{1,1,2,2},{3,3,5,5}}, 2, {4,13}, 2, 0 },
-    };
-    int tn = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    for (int i = 0; i < tn; i++) {
-        int *env_ptrs[10];
-        int colSizes[10];
-        for (int j = 0; j < tests[i].n; j++) {
-            env_ptrs[j] = tests[i].rects[j];
-            colSizes[j] = 4;
-        }
-        int ret_size = 0;
-        int *got = solve_prefix_sums(env_ptrs, tests[i].n, colSizes, &ret_size);
-        tests[i].pass = arr_eq(got, ret_size, tests[i].expected, tests[i].expected_n);
-        if (!tests[i].pass) {
-            printf("    Expected: "); print_arr(tests[i].expected, tests[i].expected_n);
-            printf("\n    Got:      "); print_arr(got, ret_size); printf("\n");
-        }
-        if (tests[i].pass) passed++;
-        free(got);
+    int total;
+    int *flat = read_ints(&total);
+    int cols = flat[0];
+    int *result = (int *)malloc(cols * sizeof(int));
+    int prefix_total = 0;
+    for (int i = 0; i < cols; i++) {
+        int x1 = flat[1 + i * 4];
+        int y1 = flat[1 + i * 4 + 1];
+        int x2 = flat[1 + i * 4 + 2];
+        int y2 = flat[1 + i * 4 + 3];
+        prefix_total += (x2 - x1 + 1) * (y2 - y1 + 1);
+        result[i] = prefix_total;
     }
-
-    printf("\n============================================================\n");
-    printf("  497. Random Point in Non-overlapping Rectangles\n");
-    printf("============================================================\n");
-    for (int i = 0; i < tn; i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, tn);
-    printf("============================================================\n");
-    return passed == tn ? 0 : 1;
+    write_ints(result, cols);
+    free(flat);
+    free(result);
+    return 0;
 }

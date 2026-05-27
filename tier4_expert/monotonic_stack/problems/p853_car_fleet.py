@@ -13,17 +13,14 @@ Return the number of car fleets that will arrive at the destination.
 Example 1:
     Input: target = 12, position = [10,8,0,5,3], speed = [2,4,1,1,3]
     Output: 3
-    Explanation:
 
 Example 2:
     Input: target = 10, position = [3], speed = [3]
     Output: 1
-    Explanation:
 
 Example 3:
     Input: target = 100, position = [0,2,4], speed = [4,2,1]
     Output: 1
-    Explanation:
 
 Constraints:
     - n == position.length == speed.length
@@ -40,30 +37,16 @@ Template (python3):
 Hint: Sort by position desc, calculate time to target. A car forms a new fleet only if it arrives before the current fleet.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "853. Car Fleet"
-    test_cases = [
-        TestCase(
-            input=(12, [10, 8, 0, 5, 3], [2, 4, 1, 1, 3]), expected=3, label="example 1"
-        ),
-        TestCase(input=(10, [3], [3]), expected=1, label="example 2"),
-        TestCase(input=(100, [0, 2, 4], [4, 2, 1]), expected=1, label="all merge"),
-        TestCase(input=(10, [8, 0], [2, 1]), expected=2, label="two cars no merge"),
-        TestCase(input=(10, [0, 3], [3, 2]), expected=1, label="two cars merge"),
-        TestCase(input=(10, [1, 2, 3], [1, 1, 1]), expected=3, label="all same speed"),
-    ]
-
-    def solve(self, target: int, position: list[int], speed: list[int]) -> int:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, target: int, position: list[int], speed: list[int]) -> int"
-        )
+def solve(target: int, position: list[int], speed: list[int]) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    target = read_int()
+    position = read_ints()
+    speed = read_ints()
+    result = solve(target, position, speed)
+    write_int(result)

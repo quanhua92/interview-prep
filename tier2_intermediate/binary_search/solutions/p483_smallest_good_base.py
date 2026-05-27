@@ -29,53 +29,37 @@ Template (python3):
         def smallestGoodBase(self, n: str) -> str:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "483. Smallest Good Base"
-    test_cases = [
-        TestCase(input="13", expected="3", label="example 1"),
-        TestCase(input="4681", expected="8", label="example 2"),
-        TestCase(
-            input="1000000000000000000",
-            expected="999999999999999999",
-            label="example 3",
-        ),
-        TestCase(input="3", expected="2", label="smallest n equals 11 base 2"),
-        TestCase(input="7", expected="2", label="111 base 2"),
-        TestCase(input="31", expected="2", label="11111 base 2"),
-    ]
+def solve(n: str) -> str:
+    num = int(n)
 
-    def solve(self, n: str) -> str:
-        num = int(n)
+    def calc(k: int, m: int) -> int:
+        total = 0
+        for _ in range(m):
+            total = total * k + 1
+            if total > num:
+                return total
+        return total
 
-        def calc(k: int, m: int) -> int:
-            total = 0
-            for _ in range(m):
-                total = total * k + 1
-                if total > num:
-                    return total
-            return total
-
-        max_m = num.bit_length()
-        result = str(num - 1)
-        for m in range(max_m, 1, -1):
-            lo, hi = 2, int(num ** (1.0 / (m - 1))) + 2
-            while lo <= hi:
-                mid = (lo + hi) // 2
-                s = calc(mid, m)
-                if s == num:
-                    return str(mid)
-                if s < num:
-                    lo = mid + 1
-                else:
-                    hi = mid - 1
-        return result
+    max_m = num.bit_length()
+    result = str(num - 1)
+    for m in range(max_m, 1, -1):
+        lo, hi = 2, int(num ** (1.0 / (m - 1))) + 2
+        while lo <= hi:
+            mid = (lo + hi) // 2
+            s = calc(mid, m)
+            if s == num:
+                return str(mid)
+            if s < num:
+                lo = mid + 1
+            else:
+                hi = mid - 1
+    return result
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_line()
+    result = solve(n)
+    write_string(result)

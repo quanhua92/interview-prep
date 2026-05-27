@@ -46,8 +46,7 @@
  *     # obj.reset()
  */
 
-
-#include <stdio.h>
+#include "io.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -60,12 +59,14 @@ static long long map_get(MapEntry *map, int n, long long key, long long default_
     return default_val;
 }
 
-static void map_set(MapEntry *map, int n, long long key, long long val)
+static void map_set(MapEntry *map, int *n, long long key, long long val)
 {
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < *n; i++) {
         if (map[i].key == key) { map[i].val = val; return; }
     }
-    if (n > 0) { map[n - 1].key = key; map[n - 1].val = val; }
+    map[*n].key = key;
+    map[*n].val = val;
+    (*n)++;
 }
 
 static int solve(int m, int n, int num_flips)
@@ -81,10 +82,8 @@ static int solve(int m, int n, int num_flips)
         total--;
         long long idx = map_get(mapping, map_n, r, r);
         long long last_val = map_get(mapping, map_n, total, total);
-        map_set(mapping, map_n + 1, r, last_val);
-        mapping[map_n].key = total;
-        mapping[map_n].val = last_val;
-        map_n++;
+        map_set(mapping, &map_n, r, last_val);
+        map_set(mapping, &map_n, total, last_val);
         results[result_n++] = idx;
     }
 
@@ -100,26 +99,9 @@ static int solve(int m, int n, int num_flips)
 
 int main(void)
 {
-    struct { const char *label; int m; int n; int num_flips; int expected; int pass; } tests[] = {
-        { "single cell one flip", 1, 1, 1, 1, 0 },
-        { "flip all cells in 2x2", 2, 2, 4, 4, 0 },
-        { "column matrix flip all", 3, 1, 3, 3, 0 },
-    };
-    int tn = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    for (int i = 0; i < tn; i++) {
-        int got = solve(tests[i].m, tests[i].n, tests[i].num_flips);
-        tests[i].pass = (got == tests[i].expected);
-        if (tests[i].pass) passed++;
-    }
-
-    printf("\n============================================================\n");
-    printf("  519. Random Flip Matrix\n");
-    printf("============================================================\n");
-    for (int i = 0; i < tn; i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, tn);
-    printf("============================================================\n");
-    return passed == tn ? 0 : 1;
+    int m = read_int();
+    int n = read_int();
+    int num_flips = read_int();
+    write_int(solve(m, n, num_flips));
+    return 0;
 }

@@ -28,7 +28,7 @@
  */
 
 
-#include "cpptest.h"
+#include "io.h"
 #include <algorithm>
 
 static std::vector<int> findDiagonalOrder(const std::vector<std::vector<int>> &mat)
@@ -54,42 +54,15 @@ static std::vector<int> findDiagonalOrder(const std::vector<std::vector<int>> &m
     return result;
 }
 
-typedef struct {
-    const char *label;
-    std::vector<std::vector<int>> input;
-    std::vector<int> expected;
-} DiagTC;
-
 int main(void)
 {
-    DiagTC tests[] = {
-        {"example 1", {{1,2,3},{4,5,6},{7,8,9}}, {1,2,4,7,5,3,6,8,9}},
-        {"example 2", {{1,2},{3,4},{5,6}}, {1,2,3,5,4,6}},
-        {"single element", {{1}}, {1}},
-        {"single row", {{1,2,3,4}}, {1,2,3,4}},
-        {"single column", {{1},{2},{3},{4}}, {1,2,3,4}},
-        {"2x4 rectangular", {{1,2,3,4},{5,6,7,8}}, {1,2,5,6,3,4,7,8}},
-        {"negative values 2x2", {{-1,-2},{3,4}}, {-1,-2,3,4}},
-    };
-
-    int n_tests = (int)(sizeof(tests) / sizeof(tests[0]));
-    printf("\n============================================================\n");
-    printf("  498. Diagonal Traverse\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int t = 0; t < n_tests; t++) {
-        DiagTC &tc = tests[t];
-        std::vector<int> got = findDiagonalOrder(tc.input);
-        if (got == tc.expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", t + 1, tc.label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", t + 1, tc.label);
-            printf("    Expected: "); print_arr(tc.expected); printf("\n");
-            printf("    Got:      "); print_arr(got); printf("\n");
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    std::vector<int> header = read_ints();
+    int cols = header[0];
+    int rows = cols;
+    std::vector<std::vector<int>> mat;
+    for (int i = 0; i < rows; i++)
+        mat.push_back(read_ints());
+    auto result = findDiagonalOrder(mat);
+    write_ints(result);
+    return 0;
 }

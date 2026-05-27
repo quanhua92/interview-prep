@@ -30,11 +30,11 @@
  *         def findPaths(self, m: int, n: int, maxMove: int, startRow: int, startColumn: int) -> int:
  */
 
+use wasm_libs::*;
 
-use rstest;
-
-fn find_paths(m: i32, n: i32, max_move: i32, start_row: i32, start_column: i32) -> i32 {
-    let m = m as usize;
+impl Solution {
+    fn find_paths(m: i32, n: i32, max_move: i32, start_row: i32, start_column: i32) -> i32 {
+        let m = m as usize;
     let n = n as usize;
     let mm = max_move as usize;
     let mod_val = 1_000_000_007i64;
@@ -63,27 +63,16 @@ fn find_paths(m: i32, n: i32, max_move: i32, start_row: i32, start_column: i32) 
         std::mem::swap(&mut dp, &mut nxt);
     }
     result as i32
+    }
 }
 
+struct Solution;
+
 fn main() {
-    struct TC { label: &'static str, m: i32, n: i32, mm: i32, sr: i32, sc: i32, expected: i32 }
-    let tests: &[TC] = &[
-        TC { label: "example 1", m: 2, n: 2, mm: 2, sr: 0, sc: 0, expected: 6 },
-        TC { label: "example 2", m: 1, n: 3, mm: 3, sr: 0, sc: 1, expected: 12 },
-        TC { label: "1x1 grid single move", m: 1, n: 1, mm: 1, sr: 0, sc: 0, expected: 4 },
-        TC { label: "corner 1 move", m: 2, n: 2, mm: 1, sr: 0, sc: 0, expected: 2 },
-        TC { label: "zero moves", m: 3, n: 3, mm: 0, sr: 1, sc: 1, expected: 0 },
-    ];
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = find_paths(tc.m, tc.n, tc.mm, tc.sr, tc.sc);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL (expected {}, got {})", i + 1, tc.label, tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let m = read_int();
+    let n = read_int();
+    let mm = read_int();
+    let sr = read_int();
+    let sc = read_int();
+    write_int(find_paths(m, n, mm, sr, sc));
 }

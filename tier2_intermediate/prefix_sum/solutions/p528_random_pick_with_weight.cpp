@@ -62,14 +62,13 @@
  *     # param_1 = obj.pickIndex()
  */
 
-#include "cpptest.h"
+#include "io.h"
 #include <vector>
 
 using namespace std;
 
-vector<int> random_pick_with_weight(const vector<int>& w, int target)
+vector<int> random_pick_with_weight(const vector<int>& w)
 {
-    (void)target;
     vector<int> prefix(w.size());
     prefix[0] = w[0];
     for (size_t i = 1; i < w.size(); i++) {
@@ -78,15 +77,9 @@ vector<int> random_pick_with_weight(const vector<int>& w, int target)
     return prefix;
 }
 
-int main()
+int main(void)
 {
-    TestCase tests[] = {
-        {"prefix sum for [1]", {1}, 0, {1}},
-        {"prefix sum for [1, 3]", {1, 3}, 0, {1, 4}},
-        {"prefix sum for [3, 14, 1, 7]", {3, 14, 1, 7}, 0, {3, 17, 18, 25}},
-        {"single large weight", {5}, 0, {5}},
-        {"equal weights", {10, 10, 10}, 0, {10, 20, 30}},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("528. Random Pick with Weight", random_pick_with_weight, tests, n);
+    vector<int> w = read_ints();
+    write_ints(random_pick_with_weight(w));
+    return 0;
 }

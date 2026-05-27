@@ -32,44 +32,20 @@ Template (python3):
         def findPoisonedDuration(self, timeSeries: List[int], duration: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "495. Teemo Attacking"
-    test_cases = [
-        TestCase(input=([1, 4], 2), expected=4, label="example 1"),
-        TestCase(input=([1, 2], 2), expected=3, label="example 2"),
-        TestCase(input=([1], 2), expected=2, label="single attack"),
-        TestCase(input=([1, 2, 3, 4, 5], 1), expected=5, label="consecutive attacks, duration 1"),
-        TestCase(input=([1, 3, 5, 7, 9], 2), expected=10, label="non-overlapping attacks"),
-        TestCase(input=([1, 1, 1, 1], 5), expected=5, label="duplicate timestamps"),
-    ]
-
-    def solve(self, timeSeries: list[int], duration: int) -> int:
-        if not timeSeries:
-            return 0
-        total = 0
-        left = 0
-        for right in range(len(timeSeries)):
-            if right == len(timeSeries) - 1 or timeSeries[right + 1] >= timeSeries[right] + duration:
-                total += timeSeries[right] + duration - timeSeries[left]
-                left = right + 1
-            elif timeSeries[right + 1] > timeSeries[left]:
-                pass
-        return total
-
-    def solve_alternative(self, timeSeries: list[int], duration: int) -> int:
-        if not timeSeries:
-            return 0
-        total = 0
-        for i in range(len(timeSeries) - 1):
-            total += min(duration, timeSeries[i + 1] - timeSeries[i])
-        return total + duration
+def solve(time_series: list[int], duration: int) -> int:
+    if not time_series:
+        return 0
+    total = 0
+    for i in range(len(time_series) - 1):
+        total += min(duration, time_series[i + 1] - time_series[i])
+    return total + duration
 
 
 if __name__ == "__main__":
-    Solution().run()
+    time_series = read_ints()
+    duration = read_int()
+    result = solve(time_series, duration)
+    write_int(result)

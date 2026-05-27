@@ -32,6 +32,7 @@
  *         def findPoisonedDuration(self, timeSeries: List[int], duration: int) -> int:
  */
 
+use wasm_libs::*;
 
 fn find_poisoned_duration(time_series: &[i32], duration: i32) -> i32 {
     if time_series.is_empty() {
@@ -46,26 +47,8 @@ fn find_poisoned_duration(time_series: &[i32], duration: i32) -> i32 {
 }
 
 fn main() {
-    struct Test { label: &'static str, input: &'static [i32], duration: i32, expected: i32 }
-    let tests: &[Test] = &[
-        Test { label: "example 1", input: &[1, 4], duration: 2, expected: 4 },
-        Test { label: "example 2", input: &[1, 2], duration: 2, expected: 3 },
-        Test { label: "single attack", input: &[1], duration: 2, expected: 2 },
-        Test { label: "consecutive attacks, duration 1", input: &[1, 2, 3, 4, 5], duration: 1, expected: 5 },
-        Test { label: "non-overlapping attacks", input: &[1, 3, 5, 7, 9], duration: 2, expected: 10 },
-        Test { label: "duplicate timestamps", input: &[1, 1, 1, 1], duration: 5, expected: 5 },
-    ];
-    let mut passed = 0;
-    for (i, t) in tests.iter().enumerate() {
-        let got = find_poisoned_duration(t.input, t.duration);
-        if got == t.expected {
-            println!("  Test {} ({}): PASS", i + 1, t.label);
-            passed += 1;
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, t.label);
-            println!("    Expected: {}\n    Got: {}", t.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let time_series = read_ints();
+    let duration = read_int();
+    write_int(find_poisoned_duration(&time_series, duration));
+    std::process::exit(0);
 }

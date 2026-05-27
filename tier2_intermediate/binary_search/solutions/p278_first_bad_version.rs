@@ -12,8 +12,8 @@
  *     Output: 4
  *     Explanation:
  *     call isBadVersion(3) -> false
- *     call isBadVersion(5) -> true
- *     call isBadVersion(4) -> true
+ *     call isBadVersion(5) -> true
+ *     call isBadVersion(4) -> true
  *     Then 4 is the first bad version.
  *
  * Example 2:
@@ -33,6 +33,7 @@
  * Hint: Binary search for the leftmost version where is_bad is True.
  */
 
+use wasm_libs::*;
 
 fn first_bad_version(n: i64, bad: i64) -> i64 {
     let mut left: i64 = 1;
@@ -49,30 +50,8 @@ fn first_bad_version(n: i64, bad: i64) -> i64 {
 }
 
 fn main() {
-    let tests: Vec<(&str, i64, i64, i64)> = vec![
-        ("example 1", 5, 4, 4),
-        ("single version, bad", 1, 1, 1),
-        ("last version is bad", 3, 3, 3),
-        ("middle version is bad", 10, 7, 7),
-        ("first version is bad", 2, 1, 1),
-        ("large n, last is bad", 100, 100, 100),
-        ("large n, first is bad", 100000, 1, 1),
-        ("small n last bad", 2, 2, 2),
-        ("large n near end", 1000000, 999999, 999999),
-        ("max int overflow safe", 2147483647, 1, 1),
-    ];
-
-    let mut passed = 0;
-    println!("\n============================================================");
-    println!("  278. First Bad Version");
-    println!("============================================================");
-    for (i, (label, n, bad, expected)) in tests.iter().enumerate() {
-        let got = first_bad_version(*n, *bad);
-        let ok = got == *expected;
-        if ok { passed += 1; }
-        println!("  Test {} ({}): {}", i + 1, label, if ok { "PASS" } else { "FAIL" });
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let n: i64 = read_int() as i64;
+    let bad: i64 = read_int() as i64;
+    write_int(first_bad_version(n, bad) as i32);
+    std::process::exit(0);
 }

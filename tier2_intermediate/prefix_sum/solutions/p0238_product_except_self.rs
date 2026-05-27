@@ -34,10 +34,9 @@
  * Hint: Build left and right product arrays, then combine.
  */
 
-use rstest::TestCase;
-use rstest::run_tests;
+use wasm_libs::*;
 
-fn product_except_self(nums: &[i32], _target: i32) -> Vec<i32> {
+fn product_except_self(nums: &[i32]) -> Vec<i32> {
     let n = nums.len();
     let mut output = vec![1i64; n];
 
@@ -57,14 +56,7 @@ fn product_except_self(nums: &[i32], _target: i32) -> Vec<i32> {
 }
 
 fn main() {
-    let tests: &[TestCase] = &[
-        TestCase { label: "example 1", input_arr: &[1, 2, 3, 4], target: 0, expected: &[24, 12, 8, 6] },
-        TestCase { label: "example 2", input_arr: &[-1, 1, 0, -3, 3], target: 0, expected: &[0, 0, 9, 0, 0] },
-        TestCase { label: "two elements", input_arr: &[1, 2], target: 0, expected: &[2, 1] },
-        TestCase { label: "all ones", input_arr: &[1, 1, 1], target: 0, expected: &[1, 1, 1] },
-        TestCase { label: "all negatives", input_arr: &[-1, -1, -1], target: 0, expected: &[1, 1, 1] },
-        TestCase { label: "two elements negative", input_arr: &[1, -1], target: 0, expected: &[-1, 1] },
-        TestCase { label: "all zeros", input_arr: &[0, 0, 0, 0], target: 0, expected: &[0, 0, 0, 0] },
-    ];
-    std::process::exit(run_tests!("238. Product of Array Except Self", product_except_self, tests));
+    let nums = read_ints();
+    write_ints(&product_except_self(&nums));
+    std::process::exit(0);
 }

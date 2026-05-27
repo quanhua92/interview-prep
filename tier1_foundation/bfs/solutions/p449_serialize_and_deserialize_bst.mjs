@@ -13,39 +13,9 @@
  * Example 2:
  *     Input: root = []
  *     Output: []
- *
- * Constraints:
- *     - The number of nodes in the tree is in the range [0, 104].
- *     - 0 <= Node.val <= 104
- *     - The input tree is guaranteed to be a binary search tree.
- *
- * Template (python3):
- *     # Definition for a binary tree node.
- *     # class TreeNode:
- *     #     def __init__(self, x):
- *     #         self.val = x
- *     #         self.left = None
- *     #         self.right = None
- *
- *     class Codec:
- *
- *         def serialize(self, root: Optional[TreeNode]) -> str:
- *             '''Encodes a tree to a single string.
- *             '''
- *
- *
- *         def deserialize(self, data: str) -> Optional[TreeNode]:
- *             '''Decodes your encoded data to tree.
- *             '''
- *
- *     # Your Codec object will be instantiated and called as such:
- *     # Your Codec object will be instantiated and called as such:
- *     # ser = Codec()
- *     # deser = Codec()
- *     # tree = ser.serialize(root)
- *     # ans = deser.deserialize(tree)
- *     # return ans
  */
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
 
 function buildTree(arr) {
   if (arr.length === 0) return null;
@@ -68,10 +38,8 @@ function buildTree(arr) {
   return root;
 }
 
-function solve(input) {
-  const vals = input.vals;
+function solve(vals) {
   if (!vals || vals.length === 0) return [];
-
   const root = buildTree(vals);
   const serialized = [];
   const queue = [root];
@@ -93,26 +61,10 @@ function solve(input) {
   return serialized;
 }
 
-// --- tests ---
-const tests = [
-  { label: "example 1", input: { vals: [2, 1, 3] }, expected: [2, 1, 3] },
-  { label: "empty tree", input: { vals: [] }, expected: [] },
-  { label: "single node", input: { vals: [1] }, expected: [1] },
-  { label: "bst with left subtree", input: { vals: [3, 1, 4, null, 2] }, expected: [3, 1, 4, null, 2] },
-  { label: "balanced bst 3 levels", input: { vals: [5, 3, 8, 1, 4, 7, 9] }, expected: [5, 3, 8, 1, 4, 7, 9] },
-  { label: "complete bst", input: { vals: [4, 2, 5, 1, 3] }, expected: [4, 2, 5, 1, 3] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const n = readInt();
+if (n === 0) { process.exit(0); }
+const tokens = readLine().split(' ');
+const vals = tokens.map(t => t === 'null' ? null : parseInt(t, 10));
+const result = solve(vals);
+const parts = result.map(v => v === null ? 'null' : String(v));
+writeString(parts.join(' '));

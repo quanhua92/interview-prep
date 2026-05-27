@@ -25,10 +25,7 @@
  *         def nextGreaterElements(self, nums: List[int]) -> List[int]:
  */
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include "io.h"
 #include <vector>
 
 std::vector<int> nextGreaterElements(const std::vector<int> &nums)
@@ -47,45 +44,9 @@ std::vector<int> nextGreaterElements(const std::vector<int> &nums)
     return result;
 }
 
-static void print_arr(const std::vector<int> &a)
-{
-    printf("[");
-    for (size_t i = 0; i < a.size(); i++) {
-        if (i) printf(",");
-        printf("%d", a[i]);
-    }
-    printf("]");
-}
-
 int main(void)
 {
-    struct TC { const char *label; std::vector<int> input; std::vector<int> expected; };
-    TC tests[] = {
-        {"example 1", {1, 2, 1}, {2, -1, 2}},
-        {"example 2", {1, 2, 3, 4, 3}, {2, 3, 4, -1, 4}},
-        {"single element", {5}, {-1}},
-        {"all same", {2, 2, 2}, {-1, -1, -1}},
-        {"strictly decreasing wraps", {5, 4, 3, 2}, {-1, 5, 5, 5}},
-        {"with negatives", {-3, -2, -1}, {-2, -1, -1}},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  503. Next Greater Element II\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        auto got = nextGreaterElements(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: "); print_arr(tests[i].expected); printf("\n");
-            printf("    Got:      "); print_arr(got); printf("\n");
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    std::vector<int> nums = read_ints();
+    write_ints(nextGreaterElements(nums));
+    return 0;
 }

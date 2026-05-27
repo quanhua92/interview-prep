@@ -28,16 +28,15 @@
  * Hint: Sort start and end times separately, then use two pointers to count concurrent meetings.
  */
 
+use wasm_libs::*;
 
-use rstest::TestCase;
-
-fn min_meeting_rooms(intervals: &[i32]) -> i32 {
-    let n = intervals.len() / 2;
+fn solve(intervals: &Vec<[i32; 2]>) -> i32 {
+    let n = intervals.len();
     if n == 0 {
         return 0;
     }
-    let mut starts: Vec<i32> = intervals.iter().step_by(2).copied().collect();
-    let mut ends: Vec<i32> = intervals.iter().skip(1).step_by(2).copied().collect();
+    let mut starts: Vec<i32> = intervals.iter().map(|iv| iv[0]).collect();
+    let mut ends: Vec<i32> = intervals.iter().map(|iv| iv[1]).collect();
     starts.sort();
     ends.sort();
     let mut rooms = 0;
@@ -53,29 +52,13 @@ fn min_meeting_rooms(intervals: &[i32]) -> i32 {
 }
 
 fn main() {
-    let tests: &[TestCase] = &[
-        TestCase { label: "example 1", input_arr: &[0, 30, 5, 10, 15, 20], target: 0, expected: &[2] },
-        TestCase { label: "example 2", input_arr: &[7, 10, 2, 4], target: 0, expected: &[1] },
-        TestCase { label: "no meetings", input_arr: &[], target: 0, expected: &[0] },
-        TestCase { label: "single meeting", input_arr: &[0, 1], target: 0, expected: &[1] },
-        TestCase { label: "all meetings overlap", input_arr: &[0, 10, 1, 9, 2, 8, 3, 7], target: 0, expected: &[4] },
-        TestCase { label: "meetings end and start at same time", input_arr: &[0, 5, 5, 10, 5, 10], target: 0, expected: &[2] },
-        TestCase { label: "all same start time", input_arr: &[0, 30, 0, 30, 0, 30], target: 0, expected: &[3] },
-        TestCase { label: "no overlap sequential", input_arr: &[0, 1, 1, 2, 2, 3], target: 0, expected: &[1] },
-    ];
-    let total = tests.len();
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = min_meeting_rooms(tc.input_arr);
-        if got == tc.expected[0] {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}", tc.expected[0]);
-            println!("    Got:      {}", got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, total);
-    std::process::exit(if passed == total { 0 } else { 1 });
+    let n = read_int();
+    let intervals: Vec<[i32; 2]> = (0..n)
+        .map(|_| {
+            let row = read_ints();
+            [row[0], row[1]]
+        })
+        .collect();
+    write_int(solve(&intervals));
+    std::process::exit(0);
 }

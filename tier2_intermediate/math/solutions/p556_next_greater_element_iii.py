@@ -21,38 +21,26 @@ Template (python3):
         def nextGreaterElement(self, n: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "556. Next Greater Element III"
-    test_cases = [
-        TestCase(input=12, expected=21, label="example 1"),
-        TestCase(input=21, expected=-1, label="example 2"),
-        TestCase(input=1, expected=-1, label="single digit"),
-        TestCase(input=11, expected=-1, label="all same digits"),
-        TestCase(input=230241, expected=230412, label="classic example"),
-        TestCase(input=2147483647, expected=-1, label="max 32-bit int"),
-    ]
-
-    def solve(self, n: int) -> int:
-        digits = list(str(n))
-        i = len(digits) - 2
-        while i >= 0 and digits[i] >= digits[i + 1]:
-            i -= 1
-        if i < 0:
-            return -1
-        j = len(digits) - 1
-        while digits[j] <= digits[i]:
-            j -= 1
-        digits[i], digits[j] = digits[j], digits[i]
-        digits[i + 1 :] = reversed(digits[i + 1 :])
-        result = int("".join(digits))
-        return result if result <= 2**31 - 1 else -1
+def solve(n: int) -> int:
+    digits = list(str(n))
+    i = len(digits) - 2
+    while i >= 0 and digits[i] >= digits[i + 1]:
+        i -= 1
+    if i < 0:
+        return -1
+    j = len(digits) - 1
+    while digits[j] <= digits[i]:
+        j -= 1
+    digits[i], digits[j] = digits[j], digits[i]
+    digits[i + 1 :] = reversed(digits[i + 1 :])
+    result = int("".join(digits))
+    return result if result <= 2**31 - 1 else -1
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    result = solve(n)
+    write_int(result)

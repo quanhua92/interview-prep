@@ -35,6 +35,8 @@
  * Hint: Use a hash map to track the last index of each character.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(s) {
   const charIndex = new Map();
   let left = 0;
@@ -50,28 +52,5 @@ function solve(s) {
   return maxLen;
 }
 
-const tests = [
-  { label: "example 1", input: ["abcabcbb"], expected: 3 },
-  { label: "example 2", input: ["bbbbb"], expected: 1 },
-  { label: "example 3", input: ["pwwkew"], expected: 3 },
-  { label: "empty string", input: [""], expected: 0 },
-  { label: "single character", input: ["a"], expected: 1 },
-  { label: "single space", input: [" "], expected: 1 },
-  { label: "two unique chars", input: ["au"], expected: 2 },
-  { label: "reset from duplicate after unique prefix", input: ["dvdf"], expected: 3 },
-  { label: "char seen before current window", input: ["tmmzuxt"], expected: 5 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const s = readLine();
+writeInt(solve(s));

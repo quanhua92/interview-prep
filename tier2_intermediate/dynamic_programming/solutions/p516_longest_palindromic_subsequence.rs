@@ -24,11 +24,11 @@
  *         def longestPalindromeSubseq(self, s: str) -> int:
  */
 
+use wasm_libs::*;
 
-use rstest;
-
-fn longest_palindrome_subseq(s: &str) -> i32 {
-    let b = s.as_bytes();
+impl Solution {
+    fn longest_palindrome_subseq(s: &str) -> i32 {
+        let b = s.as_bytes();
     let n = b.len();
     if n == 0 { return 0; }
     let mut dp = vec![vec![0i32; n]; n];
@@ -44,28 +44,12 @@ fn longest_palindrome_subseq(s: &str) -> i32 {
         }
     }
     dp[0][n - 1]
+    }
 }
 
+struct Solution;
+
 fn main() {
-    struct TC<'a> { label: &'a str, s: &'a str, expected: i32 }
-    let tests: &[TC] = &[
-        TC { label: "example 1", s: "bbbab", expected: 4 },
-        TC { label: "example 2", s: "cbbd", expected: 2 },
-        TC { label: "single char", s: "a", expected: 1 },
-        TC { label: "two same chars", s: "aa", expected: 2 },
-        TC { label: "all distinct", s: "abcdef", expected: 1 },
-        TC { label: "full palindrome", s: "aabbaa", expected: 6 },
-    ];
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = longest_palindrome_subseq(tc.s);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL (expected {}, got {})", i + 1, tc.label, tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let s = read_line();
+    write_int(longest_palindrome_subseq(&s));
 }

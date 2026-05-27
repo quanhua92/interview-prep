@@ -37,42 +37,31 @@ Template (python3):
 Hint: Build a graph and use topological sort (Kahn's algorithm) to detect cycles.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
 from collections import deque
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "207. Course Schedule"
-    test_cases = [
-        TestCase(input=(2, [[1, 0]]), expected=True, label="example 1"),
-        TestCase(input=(2, [[1, 0], [0, 1]]), expected=False, label="example 2"),
-        TestCase(input=(1, []), expected=True, label="no prerequisites"),
-        TestCase(input=(3, [[0, 1], [1, 2], [2, 0]]), expected=False, label="3-node cycle"),
-        TestCase(input=(5, [[0, 1], [1, 2], [2, 3]]), expected=True, label="linear chain disconnected node"),
-        TestCase(input=(3, [[1, 0], [2, 0]]), expected=True, label="two deps on one course"),
-        TestCase(input=(4, [[0, 1], [1, 2], [2, 3], [3, 1]]), expected=False, label="self-contained cycle"),
-    ]
-
-    def solve(self, num_courses: int, prerequisites: list[list[int]]) -> bool:
-        graph: dict[int, list[int]] = {i: [] for i in range(num_courses)}
-        in_degree = [0] * num_courses
-        for course, prereq in prerequisites:
-            graph[prereq].append(course)
-            in_degree[course] += 1
-        queue = deque(i for i in range(num_courses) if in_degree[i] == 0)
-        count = 0
-        while queue:
-            node = queue.popleft()
-            count += 1
-            for neighbor in graph[node]:
-                in_degree[neighbor] -= 1
-                if in_degree[neighbor] == 0:
-                    queue.append(neighbor)
-        return count == num_courses
+def solve(num_courses: int, prerequisites: list[list[int]]) -> bool:
+    graph: dict[int, list[int]] = {i: [] for i in range(num_courses)}
+    in_degree = [0] * num_courses
+    for course, prereq in prerequisites:
+        graph[prereq].append(course)
+        in_degree[course] += 1
+    queue = deque(i for i in range(num_courses) if in_degree[i] == 0)
+    count = 0
+    while queue:
+        node = queue.popleft()
+        count += 1
+        for neighbor in graph[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    return count == num_courses
 
 
 if __name__ == "__main__":
-    Solution().run()
+    header = read_ints()
+    num_courses, pair_count = header[0], header[1]
+    prerequisites = [read_ints() for _ in range(pair_count)]
+    result = solve(num_courses, prerequisites)
+    write_bool(result)

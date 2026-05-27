@@ -24,11 +24,9 @@
  *     - 1 <= words.length <= 20
  *     - 1 <= words[i].length <= 100
  *     - words[i] consists of English letters (both lowercase and uppercase).
- *
- * Template (python3):
- *     class Solution:
- *         def findWords(self, words: List[str]) -> List[str]:
  */
+
+import { readInt, readLine, writeString } from '../../wasm_libs/js/io.mjs';
 
 function solve(words) {
   const rows = [
@@ -46,25 +44,12 @@ function solve(words) {
   return result;
 }
 
-const tests = [
-  { label: "example 1", input: [["Hello", "Alaska", "Dad", "Peace"]], expected: ["Alaska", "Dad"] },
-  { label: "example 2", input: [["omk"]], expected: [] },
-  { label: "example 3", input: [["adsdf", "sfd"]], expected: ["adsdf", "sfd"] },
-  { label: "single letter words", input: [["a", "b", "c"]], expected: ["a", "b", "c"] },
-  { label: "mixed row words", input: [["qz", "asdf", "qzxc"]], expected: ["asdf"] },
-  { label: "entire top row word", input: [["typewriter"]], expected: ["typewriter"] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const n = readInt();
+const words = [];
+for (let i = 0; i < n; i++) {
+  words.push(readLine());
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const result = solve(words);
+for (const w of result) {
+  writeString(w);
+}

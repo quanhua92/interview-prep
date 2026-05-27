@@ -27,16 +27,17 @@
  *         def findBottomLeftValue(self, root: Optional[TreeNode]) -> int:
  */
 
-
-#include "ctest.h"
+#include "io.h"
+#include <stdlib.h>
+#include <string.h>
 #include <limits.h>
+
+#define NULL_VAL INT_MIN
 
 typedef struct TreeNode {
     int val;
     struct TreeNode *left, *right;
 } TreeNode;
-
-#define NULL_VAL INT_MIN
 
 static TreeNode *make_node(int val) {
     TreeNode *n = (TreeNode *)malloc(sizeof(TreeNode));
@@ -55,17 +56,11 @@ static TreeNode *build_tree(const int *vals, int n) {
     while (front < back && i < n) {
         TreeNode *node = queue[front++];
         if (i < n) {
-            if (vals[i] != NULL_VAL) {
-                node->left = make_node(vals[i]);
-                queue[back++] = node->left;
-            }
+            if (vals[i] != NULL_VAL) { node->left = make_node(vals[i]); queue[back++] = node->left; }
             i++;
         }
         if (i < n) {
-            if (vals[i] != NULL_VAL) {
-                node->right = make_node(vals[i]);
-                queue[back++] = node->right;
-            }
+            if (vals[i] != NULL_VAL) { node->right = make_node(vals[i]); queue[back++] = node->right; }
             i++;
         }
     }
@@ -79,7 +74,7 @@ static void free_tree(TreeNode *root) {
     free(root);
 }
 
-static int findBottomLeftValue(TreeNode *root) {
+int solve(TreeNode *root) {
     TreeNode *queue[10000];
     int front = 0, back = 0;
     queue[back++] = root;
@@ -96,38 +91,22 @@ static int findBottomLeftValue(TreeNode *root) {
     return result;
 }
 
-typedef struct {
-    const char *label;
-    int vals[20];
-    int n;
-    int expected;
-} TC;
-
-int main(void) {
-    (void)th_print_arr;
-    (void)th_arr_eq;
-    TC tests[] = {
-        {"example 1", {2, 1, 3}, 3, 1},
-        {"example 2", {1, 2, 3, 4, NULL_VAL, 5, 6, NULL_VAL, NULL_VAL, 7}, 10, 7},
-        {"single node", {1}, 1, 1},
-        {"left child only", {1, 2}, 2, 2},
-        {"right child only", {1, NULL_VAL, 2}, 3, 2},
-        {"left skewed deep", {1, 2, NULL_VAL, 3, NULL_VAL, 4}, 6, 4},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        TreeNode *root = build_tree(tests[i].vals, tests[i].n);
-        int got = findBottomLeftValue(root);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-        free_tree(root);
+int main(void)
+{
+    int n = read_int();
+    char *line = read_line();
+    int *vals = (int *)malloc(sizeof(int) * n);
+    char *tok = strtok(line, " ");
+    for (int i = 0; i < n; i++) {
+        if (strcmp(tok, "null") == 0) vals[i] = NULL_VAL;
+        else vals[i] = atoi(tok);
+        tok = strtok(NULL, " ");
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+    free(line);
+    TreeNode *root = build_tree(vals, n);
+    int result = solve(root);
+    write_int(result);
+    free(vals);
+    free_tree(root);
+    return 0;
 }

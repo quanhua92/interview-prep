@@ -7,7 +7,6 @@ Design a simplified version of Twitter where users can post tweets, follow/unfol
 Implement the Twitter class:
 Example 1:
     Input
-Example 1:
     ["Twitter", "postTweet", "getNewsFeed", "follow", "postTweet", "getNewsFeed", "unfollow", "getNewsFeed"]
     [[], [1, 5], [1], [1, 2], [2, 6], [1], [1, 2], [1]]
     Output
@@ -32,22 +31,15 @@ Constraints:
 
 Template (python3):
     class Twitter:
-
         def __init__(self):
-
 
         def postTweet(self, userId: int, tweetId: int) -> None:
 
-
         def getNewsFeed(self, userId: int) -> List[int]:
-
 
         def follow(self, followerId: int, followeeId: int) -> None:
 
-
         def unfollow(self, followerId: int, followeeId: int) -> None:
-
-
 
     # Your Twitter object will be instantiated and called as such:
     # obj = Twitter()
@@ -57,51 +49,13 @@ Template (python3):
     # obj.unfollow(followerId,followeeId)
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Twitter:
-
-    def __init__(self):
-        raise NotImplementedError(
-            "TODO: Implement __init__(self)"
-        )
-
-    def postTweet(self, userId: int, tweetId: int) -> None:
-        raise NotImplementedError(
-            "TODO: Implement postTweet(self, userId: int, tweetId: int) -> None"
-        )
-
-    def getNewsFeed(self, userId: int) -> list[int]:
-        raise NotImplementedError(
-            "TODO: Implement getNewsFeed(self, userId: int) -> list[int]"
-        )
-
-    def follow(self, followerId: int, followeeId: int) -> None:
-        raise NotImplementedError(
-            "TODO: Implement follow(self, followerId: int, followeeId: int) -> None"
-        )
-
-    def unfollow(self, followerId: int, followeeId: int) -> None:
-        raise NotImplementedError(
-            "TODO: Implement unfollow(self, followerId: int, followeeId: int) -> None"
-        )
-
-
-class Solution(Problem):
-    name = "355. Design Twitter"
-    test_cases = [
-        TestCase(input=(), expected=None, label="example 1"),
-    ]
-
-    def solve(self) -> None:
-        raise NotImplementedError(
-            "TODO: Implement solve(self) -> None"
-        )
+def solve(num_ops: int) -> None:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    num_ops = read_int()
+    solve(num_ops)

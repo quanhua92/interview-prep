@@ -24,26 +24,14 @@ Template (python3):
         def longestPalindromeSubseq(self, s: str) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "516. Longest Palindromic Subsequence"
-    test_cases = [
-        TestCase(input="bbbab", expected=4, label="example 1"),
-        TestCase(input="cbbd", expected=2, label="example 2"),
-        TestCase(input="a", expected=1, label="single char"),
-        TestCase(input="aa", expected=2, label="two same chars"),
-        TestCase(input="abcdef", expected=1, label="all distinct"),
-        TestCase(input="aabbaa", expected=6, label="full palindrome"),
-    ]
-
-    def solve(self, s: str) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, s) -> int")
+def solve(s: str) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    s = read_line()
+    result = solve(s)
+    write_int(result)

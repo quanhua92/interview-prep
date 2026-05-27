@@ -28,7 +28,7 @@
  */
 
 
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 
 static int *findDiagonalOrder(const int *flat, int rows, int cols, int *ret_size)
@@ -58,63 +58,26 @@ static int *findDiagonalOrder(const int *flat, int rows, int cols, int *ret_size
     return result;
 }
 
-typedef struct {
-    const char *label;
-    const int *input;
-    int rows, cols;
-    const int *expected;
-    int expected_n;
-} DiagTC;
-
 int main(void)
 {
-    int in1[] = {1,2,3, 4,5,6, 7,8,9};
-    int ex1[] = {1,2,4,7,5,3,6,8,9};
-    int in2[] = {1,2, 3,4, 5,6};
-    int ex2[] = {1,2,3,5,4,6};
-    int in3[] = {1};
-    int ex3[] = {1};
-    int in4[] = {1,2,3,4};
-    int ex4[] = {1,2,3,4};
-    int in5[] = {1, 2, 3, 4};
-    int ex5[] = {1,2,3,4};
-    int in6[] = {1,2,3,4, 5,6,7,8};
-    int ex6[] = {1,2,5,6,3,4,7,8};
-    int in7[] = {-1,-2, 3,4};
-    int ex7[] = {-1,-2,3,4};
-
-    DiagTC tests[] = {
-        {"example 1", in1, 3, 3, ex1, 9},
-        {"example 2", in2, 3, 2, ex2, 6},
-        {"single element", in3, 1, 1, ex3, 1},
-        {"single row", in4, 1, 4, ex4, 4},
-        {"single column", in5, 4, 1, ex5, 4},
-        {"2x4 rectangular", in6, 2, 4, ex6, 8},
-        {"negative values 2x2", in7, 2, 2, ex7, 4},
-    };
-
-    int n_tests = (int)(sizeof(tests) / sizeof(tests[0]));
-    printf("\n============================================================\n");
-    printf("  498. Diagonal Traverse\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int t = 0; t < n_tests; t++) {
-        DiagTC *tc = &tests[t];
-        int ret_size = 0;
-        int *got = findDiagonalOrder(tc->input, tc->rows, tc->cols, &ret_size);
-        int ok = th_arr_eq(got, ret_size, tc->expected, tc->expected_n);
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", t + 1, tc->label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", t + 1, tc->label);
-            printf("    Expected: "); th_print_arr(tc->expected, tc->expected_n);
-            printf("\n    Got:      "); th_print_arr(got, ret_size);
-            printf("\n");
-        }
-        free(got);
+    int n;
+    int *size_line = read_ints(&n);
+    int cols = size_line[0];
+    free(size_line);
+    int rows = cols;
+    int total = rows * cols;
+    int *flat = malloc(total * sizeof(int));
+    for (int i = 0; i < rows; i++) {
+        int count;
+        int *row = read_ints(&count);
+        for (int j = 0; j < cols; j++)
+            flat[i * cols + j] = row[j];
+        free(row);
     }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    int ret_size = 0;
+    int *result = findDiagonalOrder(flat, rows, cols, &ret_size);
+    write_ints(result, ret_size);
+    free(flat);
+    free(result);
+    return 0;
 }

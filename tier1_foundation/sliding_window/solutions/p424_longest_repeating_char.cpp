@@ -30,12 +30,9 @@
  * Hint: Freq map + max_freq tracker, window valid when len - max_freq <= k. Left only moves right.
  */
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <string>
+#include "io.h"
 #include <algorithm>
+#include <string>
 
 static int characterReplacement(const std::string &s, int k)
 {
@@ -54,30 +51,11 @@ static int characterReplacement(const std::string &s, int k)
     return max_len;
 }
 
-int main()
+int main(void)
 {
-    struct { const char *label; const char *input; int k; int expected; } tests[] = {
-        {"example 1",              "ABAB",    2, 4},
-        {"example 2",              "AABABBA", 1, 4},
-        {"no changes needed",      "AAAA",    0, 4},
-        {"all unique",             "ABCDE",   1, 2},
-        {"single char, k=0",       "A",       0, 1},
-        {"single char, k > len",   "A",       5, 1},
-        {"no changes, partial run","AAAB",    0, 3},
-        {"change middle B to A",   "ABAA",    2, 4},
-    };
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = characterReplacement(tests[i].input, tests[i].k);
-        if (got == tests[i].expected) {
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-            passed++;
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    std::string s = read_line();
+    std::vector<int> k_line = read_ints();
+    int k = k_line[0];
+    write_int(characterReplacement(s, k));
+    return 0;
 }

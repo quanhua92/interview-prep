@@ -21,25 +21,14 @@ Template (python3):
         def largestPalindrome(self, n: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "479. Largest Palindrome Product"
-    test_cases = [
-        TestCase(input=2, expected=987, label="example 1"),
-        TestCase(input=1, expected=9, label="example 2"),
-        TestCase(input=3, expected=123, label="3 digits"),
-        TestCase(input=4, expected=597, label="4 digits"),
-        TestCase(input=8, expected=475, label="8 digits (max n)"),
-    ]
-
-    def solve(self, n: int) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, n) -> int")
+def solve(n: int) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    result = solve(n)
+    write_int(result)

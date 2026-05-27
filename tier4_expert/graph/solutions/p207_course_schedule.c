@@ -37,10 +37,11 @@
  * Hint: Build a graph and use topological sort (Kahn's algorithm) to detect cycles.
  */
 
+#include "io.h"
+#include <stdlib.h>
 
-#include "ctest.h"
-
-static int canFinish(int numCourses, int prerequisites[][2], int prereqSize) {
+int canFinish(int numCourses, int (*prereqs)[2], int prereqSize)
+{
     int *adjCount = calloc(numCourses, sizeof(int));
     int *inDegree = calloc(numCourses, sizeof(int));
     int *queue = malloc(numCourses * sizeof(int));
@@ -49,13 +50,13 @@ static int canFinish(int numCourses, int prerequisites[][2], int prereqSize) {
     int front = 0, back = 0, count = 0;
 
     for (int i = 0; i < prereqSize; i++) {
-        inDegree[prerequisites[i][0]]++;
+        inDegree[prereqs[i][0]]++;
     }
     int edgeIdx = 0;
     for (int i = 0; i < numCourses; i++) head[i] = -1;
     for (int i = 0; i < prereqSize; i++) {
-        int course = prerequisites[i][0];
-        int prereq = prerequisites[i][1];
+        int course = prereqs[i][0];
+        int prereq = prereqs[i][1];
         edges[edgeIdx] = course;
         adjCount[edgeIdx] = head[prereq];
         head[prereq] = edgeIdx;
@@ -80,38 +81,27 @@ static int canFinish(int numCourses, int prerequisites[][2], int prereqSize) {
     return count == numCourses;
 }
 
-typedef struct {
-    const char *label;
-    int numCourses;
-    int prereqs[10000][2];
-    int prereqSize;
-    int expected;
-} TC;
+int main(void)
+{
+    int n;
+    int *header = read_ints(&n);
+    int numCourses = header[0];
+    int pairCount = header[1];
+    free(header);
 
-int main(void) {
-    (void)th_print_arr;
-    (void)th_arr_eq;
-    TC tests[] = {
-        {"example 1", 2, {{1,0}}, 1, 1},
-        {"example 2", 2, {{1,0},{0,1}}, 2, 0},
-        {"no prerequisites", 1, {{0}}, 0, 1},
-        {"3-node cycle", 3, {{0,1},{1,2},{2,0}}, 3, 0},
-        {"linear chain disconnected node", 5, {{0,1},{1,2},{2,3}}, 3, 1},
-        {"two deps on one course", 3, {{1,0},{2,0}}, 2, 1},
-        {"self-contained cycle", 4, {{0,1},{1,2},{2,3},{3,1}}, 4, 0},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        int got = canFinish(tests[i].numCourses, tests[i].prereqs, tests[i].prereqSize);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
+    int (*prereqs)[2] = NULL;
+    if (pairCount > 0) {
+        prereqs = malloc(pairCount * sizeof(int[2]));
+        for (int i = 0; i < pairCount; i++) {
+            int k;
+            int *pair = read_ints(&k);
+            prereqs[i][0] = pair[0];
+            prereqs[i][1] = pair[1];
+            free(pair);
         }
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+
+    write_bool(canFinish(numCourses, prereqs, pairCount));
+    free(prereqs);
+    return 0;
 }

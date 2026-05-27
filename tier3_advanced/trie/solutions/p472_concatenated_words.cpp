@@ -4,7 +4,7 @@
  * Topics: Array, String, Dynamic Programming, Depth-First Search, Trie, Sorting
  *
  * Given an array of strings words (without duplicates), return all the concatenated words in the given list of words.
- * A concatenated word is defined as a string that is comprised entirely of at least two shorter words (not necessarily distinct) in the given array.
+ * A concatenated word is defined as a string that is comprised entirely of at least two shorter words (not necessarily distinct) in the given array.
  * Example 1:
  *     Input: words = ["cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"]
  *     Output: ["catsdogcats","dogcatsdog","ratcatdogcat"]
@@ -28,8 +28,7 @@
  *         def findAllConcatenatedWordsInADict(self, words: List[str]) -> List[str]:
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -87,56 +86,20 @@ public:
     }
 };
 
-int main() {
-    (void)print_arr;
-
-    struct TC {
-        const char *label;
-        std::vector<std::string> words;
-        std::vector<std::string> expected;
-    };
-
-    TC tests[] = {
-        {"example 1",
-         {"cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"},
-         {"catsdogcats","dogcatsdog","ratcatdogcat"}},
-        {"example 2",
-         {"cat","dog","catdog"},
-         {"catdog"}},
-        {"word from duplicate parts",
-         {"cat","catcat"},
-         {"catcat"}},
-        {"no concatenated words",
-         {"a","b","c"},
-         {}},
-        {"deep concatenation chain",
-         {"a","aa","aaaa"},
-         {"aa","aaaa"}},
-        {"self-similar concatenation",
-         {"ab","abab"},
-         {"abab"}},
-    };
-
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    printf("\n============================================================\n");
-    printf("  472. Concatenated Words\n");
-    printf("============================================================\n");
-
-    for (int t = 0; t < n; t++) {
-        ConcatenatedWords solver;
-        auto got = solver.findAllConcatenatedWordsInADict(tests[t].words);
-        bool ok = (got == tests[t].expected);
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", t + 1, tests[t].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", t + 1, tests[t].label);
-        }
+int main(void) {
+    int nw = read_int();
+    std::vector<std::string> words(nw);
+    for (int i = 0; i < nw; i++) {
+        words[i] = read_line();
     }
 
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-    return passed == n ? 0 : 1;
+    ConcatenatedWords solver;
+    auto result = solver.findAllConcatenatedWordsInADict(words);
+
+    write_int((int)result.size());
+    for (auto &w : result) {
+        write_string(w.c_str());
+    }
+
+    return 0;
 }

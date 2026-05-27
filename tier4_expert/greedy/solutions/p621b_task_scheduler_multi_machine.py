@@ -63,139 +63,46 @@ to each machine, respecting that machine's per-task cooldown. When no machine
 can run any remaining task, jump directly to the next cooldown expiry.
 """
 
-import sys
 from collections import Counter
 
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "621b. Task Scheduler with Multiple Machines"
-    test_cases = [
-        # ── Backwards compatibility: m=1 matches LeetCode 621 ──
-        TestCase(
-            input=(["A", "A", "A", "B", "B", "B"], 2, 1),
-            expected=8,
-            label="LC621 ex1 m=1",
-        ),
-        TestCase(
-            input=(["A", "C", "A", "B", "D", "B"], 1, 1),
-            expected=6,
-            label="LC621 ex2 m=1",
-        ),
-        TestCase(
-            input=(["A", "A", "A", "B", "B", "B"], 3, 1),
-            expected=10,
-            label="LC621 ex3 m=1",
-        ),
-        TestCase(
-            input=(["A", "A", "A", "B", "B", "B", "C", "C", "D"], 2, 1),
-            expected=9,
-            label="fill idle slots m=1",
-        ),
-        TestCase(
-            input=(["A", "A"], 2, 1),
-            expected=4,
-            label="single task type m=1",
-        ),
-        # ── m > 1: per-machine cooldown parallel speedup ──
-        TestCase(
-            input=(["A", "A", "A", "B", "B", "B"], 2, 2),
-            expected=4,
-            label="basic parallelism m=2",
-        ),
-        TestCase(
-            input=(["A", "C", "A", "B", "D", "B"], 1, 2),
-            expected=3,
-            label="unique tasks m=2",
-        ),
-        TestCase(
-            input=(["A", "A", "A", "B", "B", "B"], 3, 2),
-            expected=5,
-            label="large cooldown m=2",
-        ),
-        TestCase(
-            input=(["A", "A", "A", "B", "B", "B"], 2, 10),
-            expected=1,
-            label="very many machines m=10",
-        ),
-        # ── Edge cases ──
-        TestCase(
-            input=(["A"], 5, 1),
-            expected=1,
-            label="single task n=5 m=1",
-        ),
-        TestCase(
-            input=(["A"], 5, 3),
-            expected=1,
-            label="single task n=5 m=3",
-        ),
-        TestCase(
-            input=(["A", "B", "C"], 0, 5),
-            expected=1,
-            label="more machines than tasks n=0",
-        ),
-        TestCase(
-            input=(["A", "A", "A", "A"], 0, 2),
-            expected=2,
-            label="n=0 same task m=2 (per-machine cooldown)",
-        ),
-        TestCase(
-            input=(["A", "B", "C", "D"], 1, 3),
-            expected=2,
-            label="m=3 n=1 four unique tasks",
-        ),
-        TestCase(
-            input=(["A", "A", "A", "A"], 1, 2),
-            expected=3,
-            label="all same task m=2",
-        ),
-        TestCase(
-            input=(["A", "A", "A", "A", "A", "A"], 1, 3),
-            expected=3,
-            label="all same task m=3",
-        ),
-        TestCase(
-            input=(["A", "B", "C", "D", "E"], 0, 2),
-            expected=3,
-            label="unique tasks no cooldown m=2",
-        ),
-    ]
+def solve(tasks: list[str], n: int, m: int) -> int:
+    freq = Counter(tasks)
+    cooldown = [dict() for _ in range(m)]
 
-    def solve(self, tasks: list[str], n: int, m: int) -> int:
-        freq = Counter(tasks)
-        # cooldown[machine][task] = earliest time that machine can run task again
-        cooldown = [dict() for _ in range(m)]
+    time = 0
+    remaining = len(tasks)
 
-        time = 0
-        remaining = len(tasks)
+    while remaining > 0:
+        assigned = False
+        for i in range(m):
+            best_task, best_count = None, 0
+            for task, count in freq.items():
+                if count > best_count and cooldown[i].get(task, 0) <= time:
+                    best_task, best_count = task, count
+            if best_task:
+                freq[best_task] -= 1
+                cooldown[i][best_task] = time + n + 1
+                remaining -= 1
+                assigned = True
 
-        while remaining > 0:
-            assigned = False
-            for i in range(m):
-                # Pick highest-frequency task not in this machine's cooldown
-                best_task, best_count = None, 0
-                for task, count in freq.items():
-                    if count > best_count and cooldown[i].get(task, 0) <= time:
-                        best_task, best_count = task, count
-                if best_task:
-                    freq[best_task] -= 1
-                    cooldown[i][best_task] = time + n + 1
-                    remaining -= 1
-                    assigned = True
+        if assigned:
+            time += 1
+        else:
+            next_time = min(
+                t for mc in cooldown for t in mc.values() if t > time
+            )
+            time = next_time
 
-            if assigned:
-                time += 1
-            else:
-                # Jump to next cooldown expiry across all machines
-                next_time = min(
-                    t for mc in cooldown for t in mc.values() if t > time
-                )
-                time = next_time
-
-        return time
+    return time
 
 
 if __name__ == "__main__":
-    Solution().run()
+    task_line = read_line()
+    tasks = task_line.split() if task_line else []
+    n = read_int()
+    m = read_int()
+    result = solve(tasks, n, m)
+    write_int(result)

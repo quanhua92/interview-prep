@@ -29,7 +29,7 @@
  * Hint: Use a frequency counter and a min-heap of size k.
  */
 
-
+use wasm_libs::*;
 use std::collections::HashMap;
 
 fn top_k_frequent(nums: &[i32], k: i32) -> Vec<i32> {
@@ -44,35 +44,9 @@ fn top_k_frequent(nums: &[i32], k: i32) -> Vec<i32> {
 }
 
 fn main() {
-    struct Case { label: &'static str, input: &'static [i32], k: i32, expected: &'static [i32] }
-    let tests: &[Case] = &[
-        Case { label: "example 1", input: &[1, 1, 1, 2, 2, 3], k: 2, expected: &[1, 2] },
-        Case { label: "example 2", input: &[1], k: 1, expected: &[1] },
-        Case { label: "distinct frequencies", input: &[7, 7, 7, 7, 1, 2, 2, 2], k: 2, expected: &[7, 2] },
-        Case { label: "all freq 1", input: &[1, 2, 3, 4, 5, 6], k: 3, expected: &[6, 5, 4] },
-        Case { label: "all same element", input: &[1, 1, 1, 1], k: 1, expected: &[1] },
-        Case { label: "clear frequency ranking", input: &[1, 1, 2, 2, 2, 3, 3, 3, 3], k: 2, expected: &[3, 2] },
-        Case { label: "negative numbers", input: &[-1, -1, -1, 2, 2], k: 1, expected: &[-1] },
-        Case { label: "zero values", input: &[0, 0, 0, 0, 1, 1, 2], k: 2, expected: &[0, 1] },
-    ];
-
-    println!("\n============================================================");
-    println!("  347. Top K Frequent Elements");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = top_k_frequent(tc.input, tc.k);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {:?}", tc.expected);
-            println!("    Got:      {:?}", got);
-        }
-    }
-
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let nums = read_ints();
+    let k = read_int();
+    let result = top_k_frequent(&nums, k);
+    write_ints(&result);
+    std::process::exit(0);
 }

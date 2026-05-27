@@ -26,14 +26,10 @@
  *     - At most 104 calls will be made to pick.
  */
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
-#include <algorithm>
-#include <vector>
-#include <unordered_map>
+#include "io.h"
 #include <cstdlib>
+#include <unordered_map>
+#include <vector>
 
 class Solution {
     std::unordered_map<int, std::vector<int>> idx;
@@ -50,42 +46,10 @@ public:
 
 int main(void)
 {
-    struct {
-        const char *label;
-        std::vector<int> input;
-        int target;
-        std::vector<int> valid;
-    } tests[] = {
-        {"returns valid indices for target 3", {1, 2, 3, 3, 3}, 3, {2, 3, 4}},
-        {"single occurrence",                  {1, 2, 3, 3, 3}, 1, {0}},
-        {"single element array",               {5},              5, {0}},
-        {"non-contiguous duplicates",          {1, 2, 1, 2, 1}, 1, {0, 2, 4}},
-        {"negative numbers with duplicates",   {-1, -2, -1, -3, -1}, -1, {0, 2, 4}},
-        {"all same elements",                  {1, 1, 1, 1, 1}, 1, {0, 1, 2, 3, 4}},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
+    std::vector<int> nums = read_ints();
+    int target = read_int();
 
-    printf("\n============================================================\n");
-    printf("  398. Random Pick Index\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        Solution sol(tests[i].input);
-        srand(time(nullptr));
-        int got = sol.pick(tests[i].target);
-        bool ok = false;
-        for (int v : tests[i].valid)
-            if (got == v) { ok = true; break; }
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected one of: "); print_arr(tests[i].valid); printf("\n");
-            printf("    Got:              %d\n", got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    Solution sol(nums);
+    write_int(sol.pick(target));
+    return 0;
 }

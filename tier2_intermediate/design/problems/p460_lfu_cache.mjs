@@ -2,12 +2,12 @@
  * P460: LFU Cache [PREMIUM] (Hard)
  * https://leetcode.com/problems/lfu-cache/
  * Topics: Hash Table, Linked List, Design, Doubly-Linked List
- * 
+ *
  * Design and implement a data structure for a Least Frequently Used (LFU) cache.
  * Implement the LFUCache class:
  * To determine the least frequently used key, a use counter is maintained for each key in the cache. The key with the smallest use counter is the least frequently used key.
  * When a key is first inserted into the cache, its use counter is set to 1 (due to the put operation). The use counter for a key in the cache is incremented either a get or put operation is called on it.
- * The functions get and put must each run in O(1) average time complexity.
+ * The functions get and put must each run in O(1) average time complexity.
  * Example 1:
  *     Input
  * Example 1:
@@ -15,7 +15,7 @@
  *     [[2], [1, 1], [2, 2], [1], [3, 3], [2], [3], [4, 4], [1], [3], [4]]
  *     Output
  *     [null, null, null, 1, null, -1, 3, null, -1, 3, 4]
- * 
+ *
  *     Explanation
  *     // cnt(x) = the use counter for key x
  *     // cache=[] will show the last used order for tiebreakers (leftmost element is  most recent)
@@ -36,48 +36,58 @@
  *     // cache=[3,4], cnt(4)=1, cnt(3)=3
  *     lfu.get(4);      // return 4
  *     // cache=[4,3], cnt(4)=2, cnt(3)=3
- * 
+ *
  * Constraints:
- *     - 1 <= capacity <= 104
+ *     - 1 <= capacity <= 104
  *     - 0 <= key <= 105
  *     - 0 <= value <= 109
- *     - At most 2 * 105 calls will be made to get and put.
- * 
+ *     - At most 2 * 105 calls will be made to get and put.
+ *
  * Template (python3):
  *     class LFUCache:
- * 
+ *
  *         def __init__(self, capacity: int):
- * 
- * 
+ *
+ *
  *         def get(self, key: int) -> int:
- * 
- * 
+ *
+ *
  *         def put(self, key: int, value: int) -> None:
- * 
- * 
- * 
+ *
+ *
+ *
  *     # Your LFUCache object will be instantiated and called as such:
  *     # obj = LFUCache(capacity)
  *     # param_1 = obj.get(key)
  *     # obj.put(key,value)
  */
-function solve()
-  // Premium problem - implement solution here {
-    throw new Error("NotImplementedError");
-}
 
-const tests = [];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
+import { readLine, readInt, writeInt, writeString } from '../../wasm_libs/js/io.mjs';
+
+class LFUCache {
+  constructor(capacity) {
+    throw new Error("NotImplementedError");
+  }
+
+  get(key) {
+    throw new Error("NotImplementedError");
+  }
+
+  put(key, value) {
+    throw new Error("NotImplementedError");
   }
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+
+const capacity = readInt();
+const numOps = readInt();
+const cache = new LFUCache(capacity);
+
+for (let i = 0; i < numOps; i++) {
+  const parts = readLine().split(/\s+/);
+  if (parts[0] === 'get') {
+    writeInt(cache.get(parseInt(parts[1], 10)));
+  } else {
+    cache.put(parseInt(parts[1], 10), parseInt(parts[2], 10));
+    writeString('null');
+  }
+}

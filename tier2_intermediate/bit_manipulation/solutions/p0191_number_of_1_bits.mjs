@@ -33,6 +33,8 @@
  * Hint: Use Brian Kernighan's algorithm: n &= (n - 1) clears the lowest set bit.
  */
 
+import { readInt, writeInt } from '../../../wasm_libs/js/io.mjs';
+
 function solve(n) {
   let count = 0;
   while (n) {
@@ -42,26 +44,5 @@ function solve(n) {
   return count;
 }
 
-const tests = [
-  { label: "example 1", input: 0b00000000000000000000000000001011, expected: 3 },
-  { label: "power of two", input: 0b00000000000000000000000010000000, expected: 1 },
-  { label: "leetcode example 3", input: 2147483645, expected: 30 },
-  { label: "zero", input: 0, expected: 0 },
-  { label: "single bit", input: 1, expected: 1 },
-  { label: "alternating bits", input: 0x55555555, expected: 16 },
-  { label: "max value all bits set", input: (1 << 31) - 1, expected: 31 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const n = readInt();
+writeInt(solve(n));

@@ -22,12 +22,10 @@
  *     - -10 <= nums[i] <= 10
  *     - All the integers of nums are unique.
  *
- * Template (python3):
- *     class Solution:
- *         def permute(self, nums: List[int]) -> List[List[int]]:
- *
  * Hint: Use backtracking with swapping to generate all permutations in-place.
  */
+
+import { readInts, writeInts } from '../../../wasm_libs/js/io.mjs';
 
 function solve(nums) {
   let perms = [[]];
@@ -49,34 +47,8 @@ function solve(nums) {
   return perms;
 }
 
-const tests = [
-  { label: "example 1", input: [[1, 2, 3]], expected: [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]] },
-  { label: "example 2", input: [[0, 1]], expected: [[0, 1], [1, 0]] },
-  { label: "single element", input: [[1]], expected: [[1]] },
-  { label: "negative and zero mix", input: [[-1, 0, 1]], expected: [[-1, 0, 1], [-1, 1, 0], [0, -1, 1], [0, 1, -1], [1, -1, 0], [1, 0, -1]] },
-  { label: "two negative elements", input: [[-3, -1]], expected: [[-3, -1], [-1, -3]] },
-  {
-    label: "four elements", input: [[1, 2, 3, 4]],
-    expected: [
-      [1, 2, 3, 4], [1, 2, 4, 3], [1, 3, 2, 4], [1, 3, 4, 2], [1, 4, 2, 3], [1, 4, 3, 2],
-      [2, 1, 3, 4], [2, 1, 4, 3], [2, 3, 1, 4], [2, 3, 4, 1], [2, 4, 1, 3], [2, 4, 3, 1],
-      [3, 1, 2, 4], [3, 1, 4, 2], [3, 2, 1, 4], [3, 2, 4, 1], [3, 4, 1, 2], [3, 4, 2, 1],
-      [4, 1, 2, 3], [4, 1, 3, 2], [4, 2, 1, 3], [4, 2, 3, 1], [4, 3, 1, 2], [4, 3, 2, 1],
-    ],
-  },
-  { label: "single negative element", input: [[-5]], expected: [[-5]] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const nums = readInts();
+const result = solve(nums);
+for (const row of result) {
+  writeInts(row);
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);

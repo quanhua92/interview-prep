@@ -24,7 +24,7 @@
  * Constraints:
  *     - n == candyType.length
  *     - 2 <= n <= 104
- *     - n is even.
+ *     - n is even.
  *     - -105 <= candyType[i] <= 105
  *
  * Hint: To maximize the number of kinds of candies, we should try to distribute candies such that Alice will gain all kinds.
@@ -37,7 +37,7 @@
  *         def distributeCandies(self, candyType: List[int]) -> int:
  */
 
-
+use wasm_libs::*;
 use std::collections::HashSet;
 
 fn distribute_candies(candy_type: &[i32]) -> i32 {
@@ -46,49 +46,7 @@ fn distribute_candies(candy_type: &[i32]) -> i32 {
 }
 
 fn main() {
-    let mut passed = 0;
-    let total = 7;
-    println!("\n============================================================");
-    println!("  575. Distribute Candies");
-    println!("============================================================");
-
-    {
-        let got = distribute_candies(&[1, 1, 2, 2, 3, 3]);
-        if got == 3 { passed += 1; println!("  Test 1 (example 1): PASS"); }
-        else { println!("  Test 1 (example 1): FAIL\n  Expected: 3, Got: {}", got); }
-    }
-    {
-        let got = distribute_candies(&[1, 1, 2, 3]);
-        if got == 2 { passed += 1; println!("  Test 2 (example 2): PASS"); }
-        else { println!("  Test 2 (example 2): FAIL\n  Expected: 2, Got: {}", got); }
-    }
-    {
-        let got = distribute_candies(&[6, 6, 6, 6]);
-        if got == 1 { passed += 1; println!("  Test 3 (example 3): PASS"); }
-        else { println!("  Test 3 (example 3): FAIL\n  Expected: 1, Got: {}", got); }
-    }
-    {
-        let got = distribute_candies(&[1, 2, 3, 4]);
-        if got == 2 { passed += 1; println!("  Test 4 (all unique types): PASS"); }
-        else { println!("  Test 4 (all unique types): FAIL\n  Expected: 2, Got: {}", got); }
-    }
-    {
-        let got = distribute_candies(&[-1, -1, 2, 2]);
-        if got == 2 { passed += 1; println!("  Test 5 (negative candy types): PASS"); }
-        else { println!("  Test 5 (negative candy types): FAIL\n  Expected: 2, Got: {}", got); }
-    }
-    {
-        let got = distribute_candies(&[100000, -100000, 0, 50000]);
-        if got == 2 { passed += 1; println!("  Test 6 (boundary values): PASS"); }
-        else { println!("  Test 6 (boundary values): FAIL\n  Expected: 2, Got: {}", got); }
-    }
-    {
-        let got = distribute_candies(&[1, 2, 1, 2, 1, 2, 3, 4]);
-        if got == 4 { passed += 1; println!("  Test 7 (eight candies mixed): PASS"); }
-        else { println!("  Test 7 (eight candies mixed): FAIL\n  Expected: 4, Got: {}", got); }
-    }
-
-    println!("\n  {}/{} passed", passed, total);
-    println!("============================================================\n");
-    std::process::exit(if passed == total { 0 } else { 1 });
+    let candy_type = read_ints();
+    write_int(distribute_candies(&candy_type));
+    std::process::exit(0);
 }

@@ -22,27 +22,14 @@ Template (python3):
         def detectCapitalUse(self, word: str) -> bool:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "520. Detect Capital"
-    test_cases = [
-        TestCase(input="USA", expected=True, label="example 1"),
-        TestCase(input="FlaG", expected=False, label="example 2"),
-        TestCase(input="a", expected=True, label="single lowercase"),
-        TestCase(input="Z", expected=True, label="single uppercase"),
-        TestCase(input="leetcode", expected=True, label="all lowercase"),
-        TestCase(input="Google", expected=True, label="title case"),
-        TestCase(input="mL", expected=False, label="lowercase then uppercase"),
-    ]
-
-    def solve(self, word: str) -> bool:
-        return word.isupper() or word.islower() or word[1:].islower()
+def solve(word: str) -> bool:
+    return word.isupper() or word.islower() or word[1:].islower()
 
 
 if __name__ == "__main__":
-    Solution().run()
+    word = read_line()
+    result = solve(word)
+    write_bool(result)

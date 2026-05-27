@@ -35,29 +35,16 @@ Template (python3):
         def optimalDivision(self, nums: List[int]) -> str:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "553. Optimal Division"
-    test_cases = [
-        TestCase(
-            input=[1000, 100, 10, 2], expected="1000/(100/10/2)", label="example 1"
-        ),
-        TestCase(input=[2, 3, 4], expected="2/(3/4)", label="example 2"),
-        TestCase(input=[2, 3], expected="2/3", label="two elements no parens"),
-        TestCase(input=[2], expected="2", label="single element"),
-        TestCase(input=[10, 2, 5], expected="10/(2/5)", label="three elements"),
-    ]
-
-    def solve(self, nums: list[int]) -> str:
-        if len(nums) <= 2:
-            return "/".join(map(str, nums))
-        return f"{nums[0]}/({'/'.join(map(str, nums[1:]))})"
+def solve(nums: list[int]) -> str:
+    if len(nums) <= 2:
+        return "/".join(map(str, nums))
+    return f"{nums[0]}/({'/'.join(map(str, nums[1:]))})"
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    result = solve(nums)
+    write_string(result)

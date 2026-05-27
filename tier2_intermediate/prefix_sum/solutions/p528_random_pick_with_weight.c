@@ -62,12 +62,11 @@
  *     # param_1 = obj.pickIndex()
  */
 
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 
-int *random_pick_with_weight(int *w, int wSize, int target, int *retSize)
+int *random_pick_with_weight(int *w, int wSize, int *retSize)
 {
-    (void)target;
     int *prefix = (int *)malloc(wSize * sizeof(int));
     prefix[0] = w[0];
     for (int i = 1; i < wSize; i++) {
@@ -79,13 +78,12 @@ int *random_pick_with_weight(int *w, int wSize, int target, int *retSize)
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"prefix sum for [1]", {1}, 1, 0, {1}, 1},
-        {"prefix sum for [1, 3]", {1, 3}, 2, 0, {1, 4}, 2},
-        {"prefix sum for [3, 14, 1, 7]", {3, 14, 1, 7}, 4, 0, {3, 17, 18, 25}, 4},
-        {"single large weight", {5}, 1, 0, {5}, 1},
-        {"equal weights", {10, 10, 10}, 3, 0, {10, 20, 30}, 3},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("528. Random Pick with Weight", random_pick_with_weight, tests, n);
+    int n;
+    int *w = read_ints(&n);
+    int retSize;
+    int *result = random_pick_with_weight(w, n, &retSize);
+    write_ints(result, retSize);
+    free(w);
+    free(result);
+    return 0;
 }

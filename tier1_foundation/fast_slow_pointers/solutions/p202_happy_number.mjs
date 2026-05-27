@@ -30,6 +30,8 @@
  * Hint: Use fast and slow pointers on the sequence of sum-of-squared-digits.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function getNext(num) {
   let total = 0;
   while (num > 0) {
@@ -40,7 +42,7 @@ function getNext(num) {
   return total;
 }
 
-function isHappy(n) {
+function solve(n) {
   let slow = n;
   let fast = getNext(n);
   while (fast !== 1 && slow !== fast) {
@@ -50,31 +52,5 @@ function isHappy(n) {
   return fast === 1;
 }
 
-function solve(input) {
-  return isHappy(input);
-}
-
-// --- tests ---
-const tests = [
-  { label: "example 1", input: 19, expected: true },
-  { label: "example 2", input: 2, expected: false },
-  { label: "already happy", input: 1, expected: true },
-  { label: "small happy number", input: 7, expected: true },
-  { label: "enters 4-16 cycle", input: 4, expected: false },
-  { label: "power of 10", input: 100, expected: true },
-  { label: "large unhappy number", input: 999999999, expected: false },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const n = readInt();
+writeBool(solve(n));

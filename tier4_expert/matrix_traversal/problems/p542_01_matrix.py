@@ -28,51 +28,29 @@ Template (python3):
         def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "542. 01 Matrix"
-    test_cases = [
-        TestCase(
-            input=[[0, 0, 0], [0, 1, 0], [0, 0, 0]],
-            expected=[[0, 0, 0], [0, 1, 0], [0, 0, 0]],
-            label="example 1",
-        ),
-        TestCase(
-            input=[[0, 0, 0], [0, 1, 0], [1, 1, 1]],
-            expected=[[0, 0, 0], [0, 1, 0], [1, 2, 1]],
-            label="example 2",
-        ),
-        TestCase(input=[[0]], expected=[[0]], label="single zero"),
-        TestCase(
-            input=[[1], [0], [1]],
-            expected=[[1], [0], [1]],
-            label="single column",
-        ),
-        TestCase(
-            input=[[0, 1, 1, 1]],
-            expected=[[0, 1, 2, 3]],
-            label="single row",
-        ),
-        TestCase(
-            input=[[1, 1, 1], [1, 0, 1], [1, 1, 1]],
-            expected=[[2, 1, 2], [1, 0, 1], [2, 1, 2]],
-            label="cross of ones around center zero",
-        ),
-        TestCase(
-            input=[[1, 1, 0], [1, 1, 1], [0, 1, 1]],
-            expected=[[2, 1, 0], [1, 2, 1], [0, 1, 2]],
-            label="corner zeros",
-        ),
-    ]
+def solve(mat: list[list[int]]) -> list[list[int]]:
+    raise NotImplementedError
 
-    def solve(self, mat: list[list[int]]) -> list[list[int]]:
-        raise NotImplementedError("TODO: Implement solve(self, mat) -> list[list[int]]")
+
+def read_int_matrix():
+    import sys
+
+    read_int()
+    remaining = sys.stdin.read().strip().split("\n")
+    if not remaining or not remaining[0].strip():
+        return []
+    return [list(map(int, line.split())) for line in remaining]
+
+
+def write_matrix(mat: list[list[int]]):
+    for row in mat:
+        write_ints(row)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    mat = read_int_matrix()
+    result = solve(mat)
+    write_matrix(result)

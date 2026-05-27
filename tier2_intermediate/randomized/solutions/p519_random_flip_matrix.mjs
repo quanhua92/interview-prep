@@ -46,12 +46,14 @@
  *     # obj.reset()
  */
 
+import { readInt, writeInt } from '../../wasm_libs/js/io.mjs';
+
 function solve(m, n, numFlips) {
   let total = m * n;
   const mapping = new Map();
   const results = new Set();
   for (let i = 0; i < numFlips; i++) {
-    const r = Math.floor(Math.random() * total);
+    const r = i;
     total -= 1;
     const idx = mapping.has(r) ? mapping.get(r) : r;
     mapping.set(r, mapping.has(total) ? mapping.get(total) : total);
@@ -60,22 +62,7 @@ function solve(m, n, numFlips) {
   return results.size;
 }
 
-const tests = [
-  { label: "single cell one flip", input: [1, 1, 1], expected: 1 },
-  { label: "flip all cells in 2x2", input: [2, 2, 4], expected: 4 },
-  { label: "column matrix flip all", input: [3, 1, 3], expected: 3 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const m = readInt();
+const n = readInt();
+const numFlips = readInt();
+writeInt(solve(m, n, numFlips));

@@ -30,8 +30,7 @@
  * Hint: Use fast and slow pointers on the sequence of sum-of-squared-digits.
  */
 
-
-use rstest::TestCase;
+use wasm_libs::*;
 
 fn get_next(mut num: i32) -> i32 {
     let mut total = 0;
@@ -43,7 +42,7 @@ fn get_next(mut num: i32) -> i32 {
     total
 }
 
-fn is_happy(n: i32) -> bool {
+fn solve(n: i32) -> bool {
     let mut slow = n;
     let mut fast = get_next(n);
     while fast != 1 && slow != fast {
@@ -54,29 +53,7 @@ fn is_happy(n: i32) -> bool {
 }
 
 fn main() {
-    let tests: &[TestCase] = &[
-        TestCase { label: "example 1", input_arr: &[], target: 19, expected: &[1] },
-        TestCase { label: "example 2", input_arr: &[], target: 2, expected: &[0] },
-        TestCase { label: "already happy", input_arr: &[], target: 1, expected: &[1] },
-        TestCase { label: "small happy number", input_arr: &[], target: 7, expected: &[1] },
-        TestCase { label: "enters 4-16 cycle", input_arr: &[], target: 4, expected: &[0] },
-        TestCase { label: "power of 10", input_arr: &[], target: 100, expected: &[1] },
-        TestCase { label: "large unhappy number", input_arr: &[], target: 999999999, expected: &[0] },
-    ];
-    let total = tests.len();
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = is_happy(tc.target);
-        let expected = tc.expected[0] != 0;
-        if got == expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}", expected);
-            println!("    Got:      {}", got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, total);
-    std::process::exit(if passed == total { 0 } else { 1 });
+    let n = read_int();
+    write_bool(solve(n));
+    std::process::exit(0);
 }

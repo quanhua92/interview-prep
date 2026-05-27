@@ -33,36 +33,17 @@
  * 
  * Hint: This is essentially Fibonacci -- each step depends on the two before it.
  */
-use rstest;
+use wasm_libs::*;
 
-fn climb_stairs(n: i32) -> i32 {
-    todo!()
+impl Solution {
+    fn climb_stairs(n: i32) -> i32 {
+        todo!()
+    }
 }
 
+struct Solution;
+
 fn main() {
-    struct TC { label: &'static str, n: i32, expected: i32 }
-    let tests: &[TC] = &[
-        TC { label: "example 1", n: 2, expected: 2 },
-        TC { label: "example 2", n: 3, expected: 3 },
-        TC { label: "base case", n: 1, expected: 1 },
-        TC { label: "larger", n: 10, expected: 89 },
-        TC { label: "max constraint", n: 45, expected: 1836311903 },
-        TC { label: "n=4", n: 4, expected: 5 },
-        TC { label: "n=5", n: 5, expected: 8 },
-        TC { label: "n=6", n: 6, expected: 13 },
-        TC { label: "n=20", n: 20, expected: 10946 },
-        TC { label: "near max constraint", n: 44, expected: 1134903170 },
-    ];
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = climb_stairs(tc.n);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL (expected {}, got {})", i + 1, tc.label, tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let n = read_int();
+    write_int(climb_stairs(n));
 }

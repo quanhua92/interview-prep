@@ -28,7 +28,7 @@
  *         def findMaxLength(self, nums: List[int]) -> int:
  */
 
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 
 typedef struct Entry {
@@ -86,9 +86,8 @@ static void hm_clear(void)
     }
 }
 
-int *find_max_length(int *nums, int numsSize, int target, int *retSize)
+int find_max_length(int *nums, int numsSize)
 {
-    (void)target;
     hm_init();
     hm_set(0, -1);
     int max_len = 0;
@@ -105,22 +104,14 @@ int *find_max_length(int *nums, int numsSize, int target, int *retSize)
         }
     }
     hm_clear();
-    int *r = (int *)malloc(sizeof(int));
-    r[0] = max_len;
-    *retSize = 1;
-    return r;
+    return max_len;
 }
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {0, 1}, 2, 0, {2}, 1},
-        {"example 2", {0, 1, 0}, 3, 0, {2}, 1},
-        {"example 3", {0, 1, 1, 1, 1, 1, 0, 0, 0}, 9, 0, {6}, 1},
-        {"single element", {1}, 1, 0, {0}, 1},
-        {"balanced halves", {0, 0, 0, 0, 1, 1, 1, 1}, 8, 0, {8}, 1},
-        {"middle balanced", {0, 0, 1, 0, 0, 0, 1, 1}, 8, 0, {6}, 1},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("525. Contiguous Array", find_max_length, tests, n);
+    int n;
+    int *nums = read_ints(&n);
+    write_int(find_max_length(nums, n));
+    free(nums);
+    return 0;
 }

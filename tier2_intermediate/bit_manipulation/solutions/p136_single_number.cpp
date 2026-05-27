@@ -33,7 +33,7 @@
  * Hint: XOR all numbers — pairs cancel out, leaving the single number.
  */
 
-#include "cpptest.h"
+#include "io.h"
 
 static int singleNumber(const std::vector<int>& nums) {
     int result = 0;
@@ -44,38 +44,7 @@ static int singleNumber(const std::vector<int>& nums) {
 }
 
 int main() {
-    (void)print_arr;
-
-    struct { const char *label; std::vector<int> input; int expected; } tests[] = {
-        {"example 1", {2, 2, 1}, 1},
-        {"example 2", {4, 1, 2, 1, 2}, 4},
-        {"single element", {1}, 1},
-        {"negative numbers", {-1, -1, -2}, -2},
-        {"zero pairs", {0, 0, 1}, 1},
-        {"single negative", {-1}, -1},
-        {"many pairs", {7, 7, 7, 7, 99, 3, 3, 4, 4}, 99},
-    };
-
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    printf("\n============================================================\n");
-    printf("  136. Single Number\n");
-    printf("============================================================\n");
-
-    for (int i = 0; i < n; i++) {
-        int got = singleNumber(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-
-    return passed == n ? 0 : 1;
+    std::vector<int> nums = read_ints();
+    write_int(singleNumber(nums));
+    return 0;
 }

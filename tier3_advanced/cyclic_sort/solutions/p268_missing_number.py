@@ -39,43 +39,25 @@ Template (python3):
 Hint: Use the sum formula n*(n+1)//2 minus the actual sum to find the missing number.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "268. Missing Number"
-    test_cases = [
-        TestCase(input=[3, 0, 1], expected=2, label="example 1"),
-        TestCase(input=[0, 1], expected=2, label="example 2"),
-        TestCase(input=[9, 6, 4, 2, 3, 5, 7, 0, 1], expected=8, label="example 3"),
-        TestCase(input=[1], expected=0, label="missing 0, n=1"),
-        TestCase(input=[0], expected=1, label="missing n, n=1"),
-        TestCase(input=[0, 1, 2, 3], expected=4, label="missing last, sorted"),
-        TestCase(input=[1, 2, 3, 4, 5], expected=0, label="missing 0, n=5"),
-    ]
-
-    def solve(self, nums: list[int]) -> int:
-        i = 0
-        n = len(nums)
-        while i < n:
-            correct = nums[i]
-            if correct < n and nums[i] != nums[correct]:
-                nums[i], nums[correct] = nums[correct], nums[i]
-            else:
-                i += 1
-        for i in range(n):
-            if nums[i] != i:
-                return i
-        return n
-
-    def solve_alternative(self, nums: list[int]) -> int:
-        n = len(nums)
-        expected = n * (n + 1) // 2
-        return expected - sum(nums)
+def solve(nums: list[int]) -> int:
+    i = 0
+    n = len(nums)
+    while i < n:
+        correct = nums[i]
+        if correct < n and nums[i] != nums[correct]:
+            nums[i], nums[correct] = nums[correct], nums[i]
+        else:
+            i += 1
+    for i in range(n):
+        if nums[i] != i:
+            return i
+    return n
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    result = solve(nums)
+    write_int(result)

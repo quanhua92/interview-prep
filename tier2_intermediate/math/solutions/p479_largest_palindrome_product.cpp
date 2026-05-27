@@ -22,7 +22,7 @@
  */
 
 
-#include "cpptest.h"
+#include "io.h"
 
 int largestPalindrome(int n) {
     if (n == 1) return 9;
@@ -46,24 +46,7 @@ int largestPalindrome(int n) {
 }
 
 int main() {
-    struct { const char *label; int n; int expected; } tests[] = {
-        {"example 1", 2, 987},
-        {"example 2", 1, 9},
-        {"3 digits", 3, 123},
-        {"4 digits", 4, 597},
-        {"8 digits (max n)", 8, 475},
-    };
-    int tn = sizeof(tests) / sizeof(tests[0]);
-    int passed = 0;
-    for (int i = 0; i < tn; i++) {
-        int got = largestPalindrome(tests[i].n);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, tn);
-    return passed == tn ? 0 : 1;
+    std::vector<int> vals = read_ints();
+    write_int(largestPalindrome(vals[0]));
+    return 0;
 }

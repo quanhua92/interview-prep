@@ -15,16 +15,6 @@ Example 1:
     Output
     [null,null,null,null,-3,null,0,-2]
 
-    Explanation
-    MinStack minStack = new MinStack();
-    minStack.push(-2);
-    minStack.push(0);
-    minStack.push(-3);
-    minStack.getMin(); // return -3
-    minStack.pop();
-    minStack.top();    // return 0
-    minStack.getMin(); // return -2
-
 Constraints:
     - -231 <= val <= 231 - 1
     - Methods pop, top and getMin operations will always be called on non-empty stacks.
@@ -62,106 +52,28 @@ Template (python3):
 Hint: The solve method receives a list of operations and returns a list of outputs.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "155. Min Stack"
-    test_cases = [
-        TestCase(
-            input=(
-                ["MinStack", "push", "push", "push", "getMin", "pop", "top", "getMin"],
-                [[], [5], [-2], [3], [], [], [], []],
-            ),
-            expected=[None, None, None, None, -2, None, -2, -2],
-            label="example 1",
-        ),
-        TestCase(
-            input=(
-                [
-                    "MinStack",
-                    "push",
-                    "push",
-                    "getMin",
-                    "getMin",
-                    "push",
-                    "getMin",
-                    "top",
-                    "getMin",
-                    "pop",
-                    "getMin",
-                ],
-                [[], [0], [1], [], [], [-3], [], [], [], [], []],
-            ),
-            expected=[None, None, None, 0, 0, None, -3, -3, -3, None, 0],
-            label="negative values",
-        ),
-        TestCase(
-            input=(
-                ["MinStack", "push", "getMin", "top", "pop", "push", "getMin"],
-                [[], [42], [], [], [], [7], []],
-            ),
-            expected=[None, None, 42, 42, None, None, 7],
-            label="single push then replace",
-        ),
-        TestCase(
-            input=(
-                [
-                    "MinStack",
-                    "push",
-                    "push",
-                    "push",
-                    "push",
-                    "pop",
-                    "getMin",
-                    "pop",
-                    "getMin",
-                    "pop",
-                    "getMin",
-                ],
-                [[], [2], [1], [3], [1], [], [], [], [], [], []],
-            ),
-            expected=[None, None, None, None, None, None, 1, None, 1, None, 2],
-            label="duplicate min values",
-        ),
-        TestCase(
-            input=(
-                ["MinStack", "push", "push", "getMin", "pop", "getMin"],
-                [[], [-2147483648], [2147483647], [], [], []],
-            ),
-            expected=[None, None, None, -2147483648, None, -2147483648],
-            label="INT boundary values",
-        ),
-    ]
-
-    def solve(self, ops: list[str], values: list[list[int]]) -> list[int | None]:
-        class MinStack:
-            def __init__(self):
-                self._stack: list[int] = []
-                self._min_stack: list[int] = []
-
-            def push(self, val: int) -> None:
-                self._stack.append(val)
-                min_val = val if not self._min_stack else min(val, self._min_stack[-1])
-                self._min_stack.append(min_val)
-
-            def pop(self) -> None:
-                self._stack.pop()
-                self._min_stack.pop()
-
-            def top(self) -> int:
-                return self._stack[-1]
-
-            def get_min(self) -> int:
-                return self._min_stack[-1]
-
-        raise NotImplementedError("TODO: Implement solve(self, ops, values) -> list")
-        # Hint: instantiate MinStack, iterate ops, collect return values for
-        # getMin, top operations. Return the collected list.
+def solve(ops: list[str], values: list[list[int]]) -> list[int | None]:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    ops: list[str] = []
+    values: list[list[int]] = []
+    for _ in range(n):
+        op = read_line()
+        ops.append(op)
+        count = read_int()
+        if count > 0:
+            values.append(read_ints())
+        else:
+            values.append([])
+    results = solve(ops, values)
+    for r in results:
+        if r is None:
+            write_string("null")
+        else:
+            write_int(r)

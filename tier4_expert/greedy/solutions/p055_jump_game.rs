@@ -39,30 +39,7 @@ fn can_jump(nums: &[i32]) -> bool {
 }
 
 fn main() {
-    println!("\n============================================================");
-    println!("  55. Jump Game");
-    println!("============================================================");
-    let tests: &[(&str, &[i32], bool)] = &[
-        ("example 1", &[2,3,1,1,4], true),
-        ("example 2", &[3,2,1,0,4], false),
-        ("single element", &[0], true),
-        ("all ones", &[1,1,1,1,1], true),
-        ("big jump from start", &[5,0,0,0,0], true),
-        ("stuck at start", &[0,1], false),
-        ("two elements reachable", &[2,0], true),
-    ];
-    let mut passed = 0;
-    for (i, (label, nums, expected)) in tests.iter().enumerate() {
-        let got = can_jump(nums);
-        if got == *expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, label);
-            println!("    Expected: {}, Got: {}", expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let nums = wasm_libs::read_ints();
+    let result = can_jump(&nums);
+    wasm_libs::write_bool(result);
 }

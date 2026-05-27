@@ -24,48 +24,28 @@
  *         def countSegments(self, s: str) -> int:
  */
 
+use wasm_libs::*;
 
-fn count_segments(s: &str) -> i32 {
-    let mut count = 0;
-    let mut in_segment = false;
-    for c in s.chars() {
-        if c != ' ' && !in_segment {
-            count += 1;
-            in_segment = true;
-        } else if c == ' ' {
-            in_segment = false;
+impl Solution {
+    fn count_segments(s: &str) -> i32 {
+        let mut count = 0;
+        let mut in_segment = false;
+        for c in s.chars() {
+            if c != ' ' && !in_segment {
+                count += 1;
+                in_segment = true;
+            } else if c == ' ' {
+                in_segment = false;
+            }
         }
+        count
     }
-    count
 }
 
+struct Solution;
+
 fn main() {
-    struct Test<'a> {
-        s: &'a str,
-        expected: i32,
-        label: &'a str,
-    }
-    let tests: &[Test] = &[
-        Test { s: "Hello, my name is John", expected: 5, label: "example 1" },
-        Test { s: "Hello", expected: 1, label: "example 2" },
-        Test { s: "", expected: 0, label: "empty string" },
-        Test { s: "   ", expected: 0, label: "only spaces" },
-        Test { s: "    foo    bar   ", expected: 2, label: "leading/trailing/multiple spaces" },
-        Test { s: "a b c d e", expected: 5, label: "single char segments" },
-    ];
-    let total = tests.len();
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = count_segments(tc.s);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}", tc.expected);
-            println!("    Got:      {}", got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, total);
-    std::process::exit(if passed == total { 0 } else { 1 });
+    let s = read_line();
+    write_int(Solution::count_segments(&s));
+    std::process::exit(0);
 }

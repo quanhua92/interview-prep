@@ -28,70 +28,48 @@ Template (python3):
         def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
 """
 
-import sys
+from collections import deque
 
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "542. 01 Matrix"
-    test_cases = [
-        TestCase(
-            input=[[0, 0, 0], [0, 1, 0], [0, 0, 0]],
-            expected=[[0, 0, 0], [0, 1, 0], [0, 0, 0]],
-            label="example 1",
-        ),
-        TestCase(
-            input=[[0, 0, 0], [0, 1, 0], [1, 1, 1]],
-            expected=[[0, 0, 0], [0, 1, 0], [1, 2, 1]],
-            label="example 2",
-        ),
-        TestCase(input=[[0]], expected=[[0]], label="single zero"),
-        TestCase(
-            input=[[1], [0], [1]],
-            expected=[[1], [0], [1]],
-            label="single column",
-        ),
-        TestCase(
-            input=[[0, 1, 1, 1]],
-            expected=[[0, 1, 2, 3]],
-            label="single row",
-        ),
-        TestCase(
-            input=[[1, 1, 1], [1, 0, 1], [1, 1, 1]],
-            expected=[[2, 1, 2], [1, 0, 1], [2, 1, 2]],
-            label="cross of ones around center zero",
-        ),
-        TestCase(
-            input=[[1, 1, 0], [1, 1, 1], [0, 1, 1]],
-            expected=[[2, 1, 0], [1, 2, 1], [0, 1, 2]],
-            label="corner zeros",
-        ),
-    ]
+def solve(mat: list[list[int]]) -> list[list[int]]:
+    m, n = len(mat), len(mat[0])
+    dist = [[0] * n for _ in range(m)]
+    queue: deque[tuple[int, int]] = deque()
+    for r in range(m):
+        for c in range(n):
+            if mat[r][c] == 0:
+                queue.append((r, c))
+            else:
+                dist[r][c] = -1
+    dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    while queue:
+        r, c = queue.popleft()
+        for dr, dc in dirs:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < m and 0 <= nc < n and dist[nr][nc] == -1:
+                dist[nr][nc] = dist[r][c] + 1
+                queue.append((nr, nc))
+    return dist
 
-    def solve(self, mat: list[list[int]]) -> list[list[int]]:
-        from collections import deque
 
-        m, n = len(mat), len(mat[0])
-        dist = [[0] * n for _ in range(m)]
-        queue: deque[tuple[int, int]] = deque()
-        for r in range(m):
-            for c in range(n):
-                if mat[r][c] == 0:
-                    queue.append((r, c))
-                else:
-                    dist[r][c] = -1
-        dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-        while queue:
-            r, c = queue.popleft()
-            for dr, dc in dirs:
-                nr, nc = r + dr, c + dc
-                if 0 <= nr < m and 0 <= nc < n and dist[nr][nc] == -1:
-                    dist[nr][nc] = dist[r][c] + 1
-                    queue.append((nr, nc))
-        return dist
+def read_int_matrix():
+    import sys
+
+    read_int()
+    remaining = sys.stdin.read().strip().split("\n")
+    if not remaining or not remaining[0].strip():
+        return []
+    return [list(map(int, line.split())) for line in remaining]
+
+
+def write_matrix(mat: list[list[int]]):
+    for row in mat:
+        write_ints(row)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    mat = read_int_matrix()
+    result = solve(mat)
+    write_matrix(result)

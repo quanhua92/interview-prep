@@ -12,8 +12,8 @@ Example 1:
     Output: 4
     Explanation:
     call isBadVersion(3) -> false
-    call isBadVersion(5) -> true
-    call isBadVersion(4) -> true
+    call isBadVersion(5) -> true
+    call isBadVersion(4) -> true
     Then 4 is the first bad version.
 
 Example 2:
@@ -33,32 +33,15 @@ Template (python3):
 Hint: Binary search for the leftmost version where is_bad is True.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "278. First Bad Version"
-    test_cases = [
-        TestCase(input=(5, 4), expected=4, label="example 1"),
-        TestCase(input=(1, 1), expected=1, label="single version, bad"),
-        TestCase(input=(3, 3), expected=3, label="last version is bad"),
-        TestCase(input=(10, 7), expected=7, label="middle version is bad"),
-        TestCase(input=(2, 1), expected=1, label="first version is bad"),
-        TestCase(input=(100, 100), expected=100, label="large n, last is bad"),
-        TestCase(input=(100000, 1), expected=1, label="large n, first is bad"),
-        TestCase(input=(2, 2), expected=2, label="small n last bad"),
-        TestCase(input=(1000000, 999999), expected=999999, label="large n near end"),
-        TestCase(input=(2147483647, 1), expected=1, label="max int overflow safe"),
-    ]
-
-    def solve(self, n: int, bad: int) -> int:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, n: int, bad: int) -> int"
-        )
+def solve(n: int, bad: int) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    bad = read_int()
+    result = solve(n, bad)
+    write_int(result)

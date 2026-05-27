@@ -29,8 +29,7 @@
  *         def checkRecord(self, n: int) -> int:
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 
 int checkRecord(int n) {
     int mod = 1000000007;
@@ -59,26 +58,8 @@ int checkRecord(int n) {
     return (int)result;
 }
 
-int main() {
-    struct { const char *label; int n; int expected; } tests[] = {
-        {"example 1", 2, 8},
-        {"example 2", 1, 3},
-        {"example 3", 10101, 183236316},
-        {"n=3", 3, 19},
-        {"n=4", 4, 43},
-        {"n=10", 10, 3536},
-    };
-    int tn = sizeof(tests) / sizeof(tests[0]);
-    int passed = 0;
-    for (int i = 0; i < tn; i++) {
-        int got = checkRecord(tests[i].n);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, tn);
-    return passed == tn ? 0 : 1;
+int main(void) {
+    int n = read_int();
+    write_int(checkRecord(n));
+    return 0;
 }

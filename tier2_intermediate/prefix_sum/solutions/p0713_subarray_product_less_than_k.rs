@@ -31,12 +31,11 @@
  * Hint: Use a sliding window where you shrink from the left when product >= k.
  */
 
-use rstest::TestCase;
-use rstest::run_tests;
+use wasm_libs::*;
 
-fn num_subarray_product_less_than_k(nums: &[i32], k: i32) -> Vec<i32> {
+fn num_subarray_product_less_than_k(nums: &[i32], k: i32) -> i32 {
     if k <= 1 {
-        return vec![0];
+        return 0;
     }
     let mut count = 0;
     let mut product: f64 = 1.0;
@@ -49,18 +48,12 @@ fn num_subarray_product_less_than_k(nums: &[i32], k: i32) -> Vec<i32> {
         }
         count += (right - left + 1) as i32;
     }
-    vec![count]
+    count
 }
 
 fn main() {
-    let tests: &[TestCase] = &[
-        TestCase { label: "example 1", input_arr: &[10, 5, 2, 6], target: 100, expected: &[8] },
-        TestCase { label: "zero k", input_arr: &[1, 2, 3], target: 0, expected: &[0] },
-        TestCase { label: "all ones", input_arr: &[1, 1, 1], target: 2, expected: &[6] },
-        TestCase { label: "k equals 0", input_arr: &[1, 2, 3], target: 0, expected: &[0] },
-        TestCase { label: "k equals 1", input_arr: &[1, 2, 3], target: 1, expected: &[0] },
-        TestCase { label: "all large numbers", input_arr: &[1000, 1000, 1000], target: 1000000, expected: &[3] },
-        TestCase { label: "small k many singles", input_arr: &[10, 5, 2, 6], target: 8, expected: &[3] },
-    ];
-    std::process::exit(run_tests!("713. Subarray Product Less Than K", num_subarray_product_less_than_k, tests));
+    let nums = read_ints();
+    let k = read_int();
+    write_int(num_subarray_product_less_than_k(&nums, k));
+    std::process::exit(0);
 }

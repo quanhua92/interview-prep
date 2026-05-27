@@ -32,11 +32,8 @@
  * Hint: Use bottom-up DP where dp[i] is the minimum coins needed for amount i.
  */
 
-
-#include "cpptest.h"
-#include <vector>
+#include "io.h"
 #include <algorithm>
-#include <climits>
 
 int coinChange(std::vector<int> coins, int amount) {
     int INF = amount + 1;
@@ -52,31 +49,9 @@ int coinChange(std::vector<int> coins, int amount) {
     return dp[amount] < INF ? dp[amount] : -1;
 }
 
-int main() {
-    struct TC { const char *label; std::vector<int> coins; int amount; int expected; };
-    std::vector<TC> tests = {
-        {"example 1", {1,2,5}, 11, 3},
-        {"example 2", {2}, 3, -1},
-        {"zero amount", {1}, 0, 0},
-        {"smallest amount", {1}, 1, 1},
-        {"suboptimal greedy", {1,3,4}, 6, 2},
-        {"coin larger than amount", {2}, 1, -1},
-        {"single coin exact match", {7}, 7, 1},
-        {"large amount", {1,2,5}, 100, 20},
-        {"multiple denominations", {2,5,10,1}, 27, 4},
-        {"large coin value", {1,2147483647}, 2, 2},
-    };
-    int total = (int)tests.size();
-    int passed = 0;
-    for (int i = 0; i < total; i++) {
-        int got = coinChange(tests[i].coins, tests[i].amount);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, total);
-    return passed == total ? 0 : 1;
+int main(void) {
+    std::vector<int> coins = read_ints();
+    int amount = read_int();
+    write_int(coinChange(coins, amount));
+    return 0;
 }

@@ -20,7 +20,7 @@ Example 1:
     solution.randPoint(); // return [0.36572, 0.17248]
 
 Constraints:
-    - 0 < radius <= 108
+    - 0 < radius <= 108
     - -107 <= x_center, y_center <= 107
     - At most 3 * 104 calls will be made to randPoint.
 
@@ -39,45 +39,19 @@ Template (python3):
     # param_1 = obj.randPoint()
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "478. Generate Random Point in a Circle"
-    test_cases = [
-        TestCase(
-            input={"radius": 1.0, "x_center": 0.0, "y_center": 0.0, "count": 1000},
-            expected="in_circle",
-            label="points within unit circle",
-        ),
-        TestCase(
-            input={"radius": 0.5, "x_center": 1.0, "y_center": 2.0, "count": 1000},
-            expected="in_circle",
-            label="points within offset circle",
-        ),
-        TestCase(
-            input={"radius": 0.01, "x_center": 0.0, "y_center": 0.0, "count": 100},
-            expected="in_circle",
-            label="tiny circle",
-        ),
-        TestCase(
-            input={"radius": 5.0, "x_center": -100.0, "y_center": 200.0, "count": 500},
-            expected="in_circle",
-            label="large offset center",
-        ),
-        TestCase(
-            input={"radius": 1.0, "x_center": 0.0, "y_center": 0.0, "count": 1},
-            expected="in_circle",
-            label="single point",
-        ),
-    ]
-
-    def solve(self, radius: float, x_center: float, y_center: float, count: int) -> list[list[float]]:
-        raise NotImplementedError("TODO: Implement solve(self, radius, x_center, y_center, count) -> list[list[float]]")
+def solve(radius: float, x_center: float, y_center: float, count: int) -> list[list[float]]:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    params = read_line().split()
+    radius = float(params[0])
+    x_center = float(params[1])
+    y_center = float(params[2])
+    count = read_int()
+    points = solve(radius, x_center, y_center, count)
+    for p in points:
+        print(f"{p[0]} {p[1]}")

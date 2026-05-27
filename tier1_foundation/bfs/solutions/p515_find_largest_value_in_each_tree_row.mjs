@@ -11,21 +11,9 @@
  * Example 2:
  *     Input: root = [1,2,3]
  *     Output: [1,3]
- *
- * Constraints:
- *     - The number of nodes in the tree will be in the range [0, 104].
- *     - -231 <= Node.val <= 231 - 1
- *
- * Template (python3):
- *     # Definition for a binary tree node.
- *     # class TreeNode:
- *     #     def __init__(self, val=0, left=None, right=None):
- *     #         self.val = val
- *     #         self.left = left
- *     #         self.right = right
- *     class Solution:
- *         def largestValues(self, root: Optional[TreeNode]) -> List[int]:
  */
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
 
 function buildTree(arr) {
   if (arr.length === 0) return null;
@@ -48,7 +36,8 @@ function buildTree(arr) {
   return root;
 }
 
-function largestValues(root) {
+function solve(vals) {
+  const root = buildTree(vals);
   if (!root) return [];
   const result = [];
   const queue = [root];
@@ -66,30 +55,9 @@ function largestValues(root) {
   return result;
 }
 
-function solve(input) {
-  return largestValues(input);
-}
-
-// --- tests ---
-const tests = [
-  { label: "example 1", input: buildTree([1, 3, 2, 5, 3, null, 9]), expected: [1, 3, 9] },
-  { label: "example 2", input: buildTree([1, 2, 3]), expected: [1, 3] },
-  { label: "empty tree", input: buildTree([]), expected: [] },
-  { label: "negative values", input: buildTree([-1, -2, -3, -4]), expected: [-1, -2, -4] },
-  { label: "left chain", input: buildTree([1, 2, null, 3]), expected: [1, 2, 3] },
-  { label: "single node", input: buildTree([5]), expected: [5] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const n = readInt();
+if (n === 0) { process.exit(0); }
+const tokens = readLine().split(' ');
+const vals = tokens.map(t => t === 'null' ? null : parseInt(t, 10));
+const result = solve(vals);
+writeInts(result);

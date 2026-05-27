@@ -34,6 +34,8 @@
  * Hint: Determine which half is sorted, then check if target lies in that half.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
+
 function solve(nums, target) {
   let left = 0, right = nums.length - 1;
   while (left <= right) {
@@ -56,31 +58,6 @@ function solve(nums, target) {
   return -1;
 }
 
-const tests = [
-  { label: "example 1", input: [[4, 5, 6, 7, 0, 1, 2], 0], expected: 4 },
-  { label: "example 2", input: [[4, 5, 6, 7, 0, 1, 2], 3], expected: -1 },
-  { label: "single element", input: [[1], 0], expected: -1 },
-  { label: "single element found", input: [[1], 1], expected: 0 },
-  { label: "two elements rotated at pivot", input: [[1, 3], 3], expected: 1 },
-  { label: "two elements no rotation", input: [[1, 3], 1], expected: 0 },
-  { label: "target at first index", input: [[5, 1, 3], 5], expected: 0 },
-  { label: "target at last index", input: [[5, 1, 3], 3], expected: 2 },
-  { label: "large rotated target at start", input: [[6, 7, 0, 1, 2, 3, 4, 5], 6], expected: 0 },
-  { label: "large rotated target at end", input: [[6, 7, 0, 1, 2, 3, 4, 5], 5], expected: 7 },
-  { label: "no rotation sorted", input: [[1, 2, 3, 4, 5], 3], expected: 2 },
-  { label: "negative values target at start", input: [[-10, -5, 0, 1, 2, 3, -9], -10], expected: 0 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+const target = readInt();
+writeInt(solve(nums, target));

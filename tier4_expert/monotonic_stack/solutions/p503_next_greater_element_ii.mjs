@@ -8,9 +8,6 @@
  * Example 1:
  *     Input: nums = [1,2,1]
  *     Output: [2,-1,2]
- *     Explanation: The first 1's next greater number is 2;
- *     The number 2 can't find next greater number.
- *     The second 1's next greater number needs to search circularly, which is also 2.
  *
  * Example 2:
  *     Input: nums = [1,2,3,4,3]
@@ -19,11 +16,9 @@
  * Constraints:
  *     - 1 <= nums.length <= 104
  *     - -109 <= nums[i] <= 109
- *
- * Template (python3):
- *     class Solution:
- *         def nextGreaterElements(self, nums: List[int]) -> List[int]:
  */
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
 
 function solve(nums) {
   const n = nums.length;
@@ -39,26 +34,5 @@ function solve(nums) {
   return result;
 }
 
-const tests = [
-  { input: [1, 2, 1], expected: [2, -1, 2], label: "example 1" },
-  { input: [1, 2, 3, 4, 3], expected: [2, 3, 4, -1, 4], label: "example 2" },
-  { input: [5], expected: [-1], label: "single element" },
-  { input: [2, 2, 2], expected: [-1, -1, -1], label: "all same" },
-  { input: [5, 4, 3, 2], expected: [-1, 5, 5, 5], label: "strictly decreasing wraps" },
-  { input: [-3, -2, -1], expected: [-2, -1, -1], label: "with negatives" },
-];
-
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+writeInts(solve(nums));

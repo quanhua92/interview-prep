@@ -32,6 +32,8 @@
  *         def checkSubarraySum(self, nums: List[int], k: int) -> bool:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(nums, k) {
   const modIndex = new Map();
   modIndex.set(0, -1);
@@ -48,25 +50,6 @@ function solve(nums, k) {
   return false;
 }
 
-const tests = [
-  { label: "example 1", input: [[23, 2, 4, 6, 7], 6], expected: true },
-  { label: "example 2", input: [[23, 2, 6, 4, 7], 6], expected: true },
-  { label: "example 3", input: [[23, 2, 6, 4, 7], 13], expected: false },
-  { label: "two zeros sum to 0", input: [[5, 0, 0], 3], expected: true },
-  { label: "no valid subarray", input: [[1, 2], 4], expected: false },
-  { label: "two zeros always valid", input: [[0, 0], 1], expected: true },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+const k = readInt();
+writeBool(solve(nums, k));

@@ -2,73 +2,39 @@
  * P572: Subtree of Another Tree [PREMIUM] (Easy)
  * https://leetcode.com/problems/subtree-of-another-tree/
  * Topics: Tree, Depth-First Search, String Matching, Binary Tree, Hash Function
- *
- * Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same structure and node values of subRoot and false otherwise.
- * A subtree of a binary tree tree is a tree that consists of a node in tree and all of this node's descendants. The tree tree could also be considered as a subtree of itself.
- * Example 1:
- *     Input: root = [3,4,5,1,2], subRoot = [4,1,2]
- *     Output: true
- *
- * Example 2:
- *     Input: root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]
- *     Output: false
- *
- * Constraints:
- *     - The number of nodes in the root tree is in the range [1, 2000].
- *     - The number of nodes in the subRoot tree is in the range [1, 1000].
- *     - -104 <= root.val <= 104
- *     - -104 <= subRoot.val <= 104
- *
- * Hint: Which approach is better here- recursive or iterative?
- * Hint: If recursive approach is better, can you write recursive function with its parameters?
- * Hint: Two trees <b>s</b> and <b>t</b> are said to be identical if their root values are same and their left and right subtrees are identical. Can you write this in form of recursive formulae?
- * Hint: Recursive formulae can be:
- * isIdentical(s,t)= s.val==t.val AND isIdentical(s.left,t.left) AND isIdentical(s.right,t.right)
- *
- * Template (python3):
- *     # Definition for a binary tree node.
- *     # class TreeNode:
- *     #     def __init__(self, val=0, left=None, right=None):
- *     #         self.val = val
- *     #         self.left = left
- *     #         self.right = right
- *     class Solution:
- *         def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
  */
 
-
-#[allow(unused_imports)]
-use rstest;
-use std::cell::RefCell;
-use std::rc::Rc;
+use wasm_libs::*;
+use std::collections::VecDeque;
 
 #[derive(Clone)]
 struct TreeNode {
     val: i32,
-    left: Option<Rc<RefCell<TreeNode>>>,
-    right: Option<Rc<RefCell<TreeNode>>>,
+    left: Option<Box<TreeNode>>,
+    right: Option<Box<TreeNode>>,
 }
 
-fn from_list(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
-    if vals.is_empty() || vals[0] == 100_001 { return None; }
-    let root = Rc::new(RefCell::new(TreeNode { val: vals[0], left: None, right: None }));
-    let mut queue = std::collections::VecDeque::new();
+fn from_list(vals: &[i32]) -> Option<Box<TreeNode>> {
+    let nl = 2147483647i32;
+    if vals.is_empty() || vals[0] == nl { return None; }
+    let root = Box::new(TreeNode { val: vals[0], left: None, right: None });
+    let mut queue = VecDeque::new();
     queue.push_back(root.clone());
     let mut vi = 1;
     while !queue.is_empty() && vi < vals.len() {
-        let node = queue.pop_front().unwrap();
+        let mut node = queue.pop_front().unwrap();
         if vi < vals.len() {
-            if vals[vi] != 100_001 {
-                let child = Rc::new(RefCell::new(TreeNode { val: vals[vi], left: None, right: None }));
-                node.borrow_mut().left = Some(child.clone());
+            if vals[vi] != nl {
+                let child = Box::new(TreeNode { val: vals[vi], left: None, right: None });
+                node.left = Some(child.clone());
                 queue.push_back(child);
             }
             vi += 1;
         }
         if vi < vals.len() {
-            if vals[vi] != 100_001 {
-                let child = Rc::new(RefCell::new(TreeNode { val: vals[vi], left: None, right: None }));
-                node.borrow_mut().right = Some(child.clone());
+            if vals[vi] != nl {
+                let child = Box::new(TreeNode { val: vals[vi], left: None, right: None });
+                node.right = Some(child.clone());
                 queue.push_back(child);
             }
             vi += 1;
@@ -77,58 +43,34 @@ fn from_list(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
     Some(root)
 }
 
-fn is_same(a: &Option<Rc<RefCell<TreeNode>>>, b: &Option<Rc<RefCell<TreeNode>>>) -> bool {
+fn is_same(a: &Option<Box<TreeNode>>, b: &Option<Box<TreeNode>>) -> bool {
     match (a, b) {
         (None, None) => true,
         (None, _) | (_, None) => false,
         (Some(an), Some(bn)) => {
-            an.borrow().val == bn.borrow().val
-                && is_same(&an.borrow().left, &bn.borrow().left)
-                && is_same(&an.borrow().right, &bn.borrow().right)
+            an.val == bn.val && is_same(&an.left, &bn.left) && is_same(&an.right, &bn.right)
         }
     }
 }
 
-fn is_subtree(root: &Option<Rc<RefCell<TreeNode>>>, sub_root: &Option<Rc<RefCell<TreeNode>>>) -> bool {
+fn is_subtree(root: &Option<Box<TreeNode>>, sub_root: &Option<Box<TreeNode>>) -> bool {
     if sub_root.is_none() { return true; }
     if root.is_none() { return false; }
     if is_same(root, sub_root) { return true; }
     let r = root.as_ref().unwrap();
-    is_subtree(&r.borrow().left, sub_root) || is_subtree(&r.borrow().right, sub_root)
+    is_subtree(&r.left, sub_root) || is_subtree(&r.right, sub_root)
 }
 
 fn main() {
-    println!("\n============================================================");
-    println!("  572. Subtree of Another Tree");
-    println!("============================================================");
-
-    struct TestCase { label: &'static str, root: &'static [i32], sub: &'static [i32], expected: bool }
-    let tests: &[TestCase] = &[
-        TestCase { label: "example 1", root: &[3,4,5,1,2], sub: &[4,1,2], expected: true },
-        TestCase { label: "example 2", root: &[3,4,5,1,2,100001,100001,100001,100001,0], sub: &[4,1,2], expected: false },
-        TestCase { label: "identical trees", root: &[1,2,3], sub: &[1,2,3], expected: true },
-        TestCase { label: "single node match", root: &[1], sub: &[1], expected: true },
-        TestCase { label: "right-skewed subtree", root: &[1,100001,2,100001,3], sub: &[2,100001,3], expected: true },
-        TestCase { label: "no matching value", root: &[1,2], sub: &[3], expected: false },
-    ];
-
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let root = from_list(tc.root);
-        let sub = from_list(tc.sub);
-        let got = is_subtree(&root, &sub);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}", tc.expected);
-            println!("    Got:      {}", got);
-        }
-    }
-
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let root_line = read_line();
+    let sub_line = read_line();
+    let nl = 2147483647i32;
+    let parse = |line: &str| -> Vec<i32> {
+        line.split_whitespace()
+            .map(|t| if t == "null" { nl } else { t.parse().unwrap() })
+            .collect()
+    };
+    let root = from_list(&parse(&root_line));
+    let sub = from_list(&parse(&sub_line));
+    write_bool(is_subtree(&root, &sub));
 }

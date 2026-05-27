@@ -31,10 +31,7 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+#include "io.h"
 #include <algorithm>
 #include <set>
 #include <string>
@@ -43,8 +40,6 @@ using namespace std;
 using ll = long long;
 
 static ll pow10(int n) { ll r = 1; for (int i = 0; i < n; i++) r *= 10; return r; }
-
-ll to_ll(const string &s) { return stoll(s); }
 
 string make_pal(ll prefix, int total_len) {
     string p = to_string(prefix);
@@ -76,30 +71,7 @@ string nearestPalindromic(string n) {
 }
 
 int main() {
-    printf("\n============================================================\n");
-    printf("  564. Find the Closest Palindrome\n");
-    printf("============================================================\n");
-    struct T { const char *label; string input; string expected; };
-    vector<T> tests = {
-        {"example 1", "123", "121"},
-        {"example 2", "1", "0"},
-        {"edge at 10", "10", "9"},
-        {"two same digits", "99", "101"},
-        {"power of 10", "100", "99"},
-        {"four digit", "1283", "1331"},
-    };
-    int passed = 0;
-    for (int i = 0; i < (int)tests.size(); i++) {
-        string got = nearestPalindromic(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %s, Got: %s\n", tests[i].expected.c_str(), got.c_str());
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, (int)tests.size());
-    printf("============================================================\n\n");
-    return passed == (int)tests.size() ? 0 : 1;
+    std::string n = read_line();
+    write_string(nearestPalindromic(n));
+    return 0;
 }

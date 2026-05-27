@@ -31,14 +31,14 @@
  * Hint: Use a sliding window where you shrink from the left when product >= k.
  */
 
-#include "cpptest.h"
+#include "io.h"
 #include <vector>
 
 using namespace std;
 
-vector<int> num_subarray_product_less_than_k(const vector<int>& nums, int k)
+int num_subarray_product_less_than_k(const vector<int>& nums, int k)
 {
-    if (k <= 1) return {0};
+    if (k <= 1) return 0;
     int count = 0;
     double product = 1.0;
     int left = 0;
@@ -50,20 +50,14 @@ vector<int> num_subarray_product_less_than_k(const vector<int>& nums, int k)
         }
         count += right - left + 1;
     }
-    return {count};
+    return count;
 }
 
-int main()
+int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {10, 5, 2, 6}, 100, {8}},
-        {"zero k", {1, 2, 3}, 0, {0}},
-        {"all ones", {1, 1, 1}, 2, {6}},
-        {"k equals 0", {1, 2, 3}, 0, {0}},
-        {"k equals 1", {1, 2, 3}, 1, {0}},
-        {"all large numbers", {1000, 1000, 1000}, 1000000, {3}},
-        {"small k many singles", {10, 5, 2, 6}, 8, {3}},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("713. Subarray Product Less Than K", num_subarray_product_less_than_k, tests, n);
+    vector<int> nums = read_ints();
+    vector<int> target_line = read_ints();
+    int k = target_line[0];
+    write_int(num_subarray_product_less_than_k(nums, k));
+    return 0;
 }

@@ -2,7 +2,7 @@
  * P500: Keyboard Row [PREMIUM] (Easy)
  * https://leetcode.com/problems/keyboard-row/
  * Topics: Array, Hash Table, String
- * 
+ *
  * Given an array of strings words, return the words that can be typed using letters of the alphabet on only one row of American keyboard like the image below.
  * Note that the strings are case-insensitive, both lowercased and uppercased of the same letter are treated as if they are at the same row.
  * In the American keyboard:
@@ -11,103 +11,66 @@
  *     Output: ["Alaska","Dad"]
  *     Explanation:
  *     Both "a" and "A" are in the 2nd row of the American keyboard due to case insensitivity.
- * 
+ *
  * Example 2:
  *     Input: words = ["omk"]
  *     Output: []
- * 
+ *
  * Example 3:
  *     Input: words = ["adsdf","sfd"]
  *     Output: ["adsdf","sfd"]
- * 
+ *
  * Constraints:
  *     - 1 <= words.length <= 20
  *     - 1 <= words[i].length <= 100
  *     - words[i] consists of English letters (both lowercase and uppercase).
- * 
+ *
  * Template (python3):
  *     class Solution:
  *         def findWords(self, words: List[str]) -> List[str]:
  */
-#include "ctest.h"
+
+
+#include "io.h"
 #include <ctype.h>
+#include <string.h>
 
 static int get_row(char c)
 {
-    abort();
-}
-
-int findWords(const char *words[], int n, const char *result[])
-{
-    abort();
-}
-
-void __attribute__((unused)) _use_harness_fns(void)
-{
-    abort();
+    c = (char)tolower((unsigned char)c);
+    const char *rows[] = {
+        "qwertyuiop",
+        "asdfghjkl",
+        "zxcvbnm",
+    };
+    for (int r = 0; r < 3; r++) {
+        if (strchr(rows[r], c)) return r;
+    }
+    return -1;
 }
 
 int main(void)
 {
-    {
-        const char *words[] = {"Hello", "Alaska", "Dad", "Peace"};
-        const char *expected[] = {"Alaska", "Dad"};
-        const char *result[4];
-        int got_n = findWords(words, 4, result);
-        int exp_n = 2;
-        int pass = got_n == exp_n;
-        if (pass) {
-            for (int i = 0; i < exp_n; i++) {
-                if (strcmp(result[i], expected[i]) != 0) { pass = 0; break; }
+    int cnt;
+    int *header = read_ints(&cnt);
+    int n = header[0];
+    free(header);
+
+    for (int i = 0; i < n; i++) {
+        char *word = read_line();
+        if (word[0] == '\0') continue;
+        int row = get_row(word[0]);
+        int valid = 1;
+        for (int j = 1; word[j]; j++) {
+            if (get_row(word[j]) != row) {
+                valid = 0;
+                break;
             }
         }
-        printf("  Test 1 (example 1): %s\n", pass ? "PASS" : "FAIL");
-    }
-    {
-        const char *words[] = {"omk"};
-        const char *result[1];
-        int got_n = findWords(words, 1, result);
-        printf("  Test 2 (example 2): %s\n", got_n == 0 ? "PASS" : "FAIL");
-    }
-    {
-        const char *words[] = {"adsdf", "sfd"};
-        const char *expected[] = {"adsdf", "sfd"};
-        const char *result[2];
-        int got_n = findWords(words, 2, result);
-        int pass = got_n == 2;
-        if (pass) {
-            for (int i = 0; i < 2; i++) {
-                if (strcmp(result[i], expected[i]) != 0) { pass = 0; break; }
-            }
+        if (valid) {
+            write_string(word);
         }
-        printf("  Test 3 (example 3): %s\n", pass ? "PASS" : "FAIL");
-    }
-    {
-        const char *words[] = {"a", "b", "c"};
-        const char *expected[] = {"a", "b", "c"};
-        const char *result[3];
-        int got_n = findWords(words, 3, result);
-        int pass = got_n == 3;
-        if (pass) {
-            for (int i = 0; i < 3; i++) {
-                if (strcmp(result[i], expected[i]) != 0) { pass = 0; break; }
-            }
-        }
-        printf("  Test 4 (single letter words): %s\n", pass ? "PASS" : "FAIL");
-    }
-    {
-        const char *words[] = {"qz", "asdf", "qzxc"};
-        const char *result[3];
-        int got_n = findWords(words, 3, result);
-        int pass = got_n == 1 && strcmp(result[0], "asdf") == 0;
-        printf("  Test 5 (mixed row words): %s\n", pass ? "PASS" : "FAIL");
-    }
-    {
-        const char *words[] = {"typewriter"};
-        const char *result[1];
-        int got_n = findWords(words, 1, result);
-        int pass = got_n == 1 && strcmp(result[0], "typewriter") == 0;
-        printf("  Test 6 (entire top row word): %s\n", pass ? "PASS" : "FAIL");
+        free(word);
     }
     return 0;
 }

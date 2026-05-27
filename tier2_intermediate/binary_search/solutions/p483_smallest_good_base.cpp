@@ -29,7 +29,7 @@
  *         def smallestGoodBase(self, n: str) -> str:
  */
 
-
+#include "io.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -47,7 +47,7 @@ static long long calc(long long k, int m, long long num)
     return total;
 }
 
-std::string smallestGoodBase(std::string n)
+std::string smallestGoodBase(const std::string &n)
 {
     long long num = std::stoll(n);
     std::string result = std::to_string(num - 1);
@@ -69,29 +69,9 @@ std::string smallestGoodBase(std::string n)
 
 int main(void)
 {
-    struct Tc { const char *label; std::string input; std::string expected; bool pass; };
-    std::vector<Tc> tests = {
-        {"example 1", "13", "3", false},
-        {"example 2", "4681", "8", false},
-        {"example 3", "1000000000000000000", "999999999999999999", false},
-        {"smallest n equals 11 base 2", "3", "2", false},
-        {"111 base 2", "7", "2", false},
-        {"11111 base 2", "31", "2", false},
-    };
-
-    int passed = 0;
-    for (auto &tc : tests) {
-        std::string got = smallestGoodBase(tc.input);
-        tc.pass = (got == tc.expected);
-        if (tc.pass) passed++;
-    }
-
-    printf("\n============================================================\n");
-    printf("  483. Smallest Good Base\n");
-    printf("============================================================\n");
-    for (int i = 0; i < (int)tests.size(); i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, (int)tests.size());
-    printf("============================================================\n");
-    return passed == (int)tests.size() ? 0 : 1;
+    char *n = read_line();
+    std::string result = smallestGoodBase(n);
+    write_string(result.c_str());
+    free(n);
+    return 0;
 }

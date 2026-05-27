@@ -7,7 +7,7 @@
  * Implement the LFUCache class:
  * To determine the least frequently used key, a use counter is maintained for each key in the cache. The key with the smallest use counter is the least frequently used key.
  * When a key is first inserted into the cache, its use counter is set to 1 (due to the put operation). The use counter for a key in the cache is incremented either a get or put operation is called on it.
- * The functions get and put must each run in O(1) average time complexity.
+ * The functions get and put must each run in O(1) average time complexity.
  * Example 1:
  *     Input
  * Example 1:
@@ -38,10 +38,10 @@
  *     // cache=[4,3], cnt(4)=2, cnt(3)=3
  *
  * Constraints:
- *     - 1 <= capacity <= 104
+ *     - 1 <= capacity <= 104
  *     - 0 <= key <= 105
  *     - 0 <= value <= 109
- *     - At most 2 * 105 calls will be made to get and put.
+ *     - At most 2 * 105 calls will be made to get and put.
  *
  * Template (python3):
  *     class LFUCache:
@@ -62,8 +62,9 @@
  *     # obj.put(key,value)
  */
 
-
-#include "ctest.h"
+#include "io.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define MAXKEYS 100005
@@ -151,42 +152,27 @@ static void lfu_put(int key, int value) {
     lfu_size++;
 }
 
+static int read_int_from_line(void) {
+    char *line = read_line();
+    return atoi(line);
+}
+
 int main(void) {
-    (void)th_print_arr;
-    (void)th_arr_eq;
+    int capacity = read_int_from_line();
+    int num_ops = read_int_from_line();
+    lfu_init(capacity);
 
-    printf("\n============================================================\n");
-    printf("  460. LFU Cache\n");
-    printf("============================================================\n");
-
-    lfu_init(2);
-    lfu_put(1, 1);
-    lfu_put(2, 2);
-    int r1 = lfu_get(1);
-    lfu_put(3, 3);
-    int r2 = lfu_get(2);
-    int r3 = lfu_get(3);
-    lfu_put(4, 4);
-    int r4 = lfu_get(1);
-    int r5 = lfu_get(3);
-    int r6 = lfu_get(4);
-
-    int ok1 = r1 == 1;
-    int ok2 = r2 == -1;
-    int ok3 = r3 == 3;
-    int ok4 = r4 == -1;
-    int ok5 = r5 == 3;
-    int ok6 = r6 == 4;
-
-    printf("  Test 1 (get key=1 after puts): %s\n", ok1 ? "PASS" : "FAIL");
-    printf("  Test 2 (get evicted key=2): %s\n", ok2 ? "PASS" : "FAIL");
-    printf("  Test 3 (get key=3): %s\n", ok3 ? "PASS" : "FAIL");
-    printf("  Test 4 (get evicted key=1): %s\n", ok4 ? "PASS" : "FAIL");
-    printf("  Test 5 (get key=3): %s\n", ok5 ? "PASS" : "FAIL");
-    printf("  Test 6 (get key=4): %s\n", ok6 ? "PASS" : "FAIL");
-
-    int passed = ok1 + ok2 + ok3 + ok4 + ok5 + ok6;
-    printf("\n  %d/6 passed\n", passed);
-    printf("============================================================\n\n");
-    return passed == 6 ? 0 : 1;
+    for (int i = 0; i < num_ops; i++) {
+        char *line = read_line();
+        int key, value;
+        if (line[0] == 'g') {
+            sscanf(line + 4, "%d", &key);
+            printf("%d\n", lfu_get(key));
+        } else {
+            sscanf(line + 4, "%d %d", &key, &value);
+            lfu_put(key, value);
+            printf("null\n");
+        }
+    }
+    return 0;
 }

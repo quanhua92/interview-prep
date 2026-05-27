@@ -21,26 +21,14 @@ Template (python3):
         def nextGreaterElement(self, n: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "556. Next Greater Element III"
-    test_cases = [
-        TestCase(input=12, expected=21, label="example 1"),
-        TestCase(input=21, expected=-1, label="example 2"),
-        TestCase(input=1, expected=-1, label="single digit"),
-        TestCase(input=11, expected=-1, label="all same digits"),
-        TestCase(input=230241, expected=230412, label="classic example"),
-        TestCase(input=2147483647, expected=-1, label="max 32-bit int"),
-    ]
-
-    def solve(self, n: int) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, n) -> int")
+def solve(n: int) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    result = solve(n)
+    write_int(result)

@@ -35,29 +35,13 @@
  *         def optimalDivision(self, nums: List[int]) -> str:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(nums) {
-  if (nums.length <= 2) return nums.join("/");
-  return `${nums[0]}/(${nums.slice(1).join("/")})`;
+  if (nums.length === 1) return String(nums[0]);
+  if (nums.length === 2) return nums[0] + "/" + nums[1];
+  return nums[0] + "/(" + nums.slice(1).join("/") + ")";
 }
 
-const tests = [
-  { label: "example 1", input: [1000, 100, 10, 2], expected: "1000/(100/10/2)" },
-  { label: "example 2", input: [2, 3, 4], expected: "2/(3/4)" },
-  { label: "two elements no parens", input: [2, 3], expected: "2/3" },
-  { label: "single element", input: [2], expected: "2" },
-  { label: "three elements", input: [10, 2, 5], expected: "10/(2/5)" },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+writeString(solve(nums));

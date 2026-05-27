@@ -32,37 +32,25 @@ Template (python3):
 Hint: Binary search on the eating speed, computing total hours for each candidate.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
 import math
 
+from src.wasm_libs.py.io import *
 
-class Solution(Problem):
-    name = "875. Koko Eating Bananas"
-    test_cases = [
-        TestCase(input=([3, 6, 7, 11], 8), expected=4, label="example 1"),
-        TestCase(input=([30, 11, 23, 4, 20], 5), expected=30, label="example 2"),
-        TestCase(input=([30, 11, 23, 4, 20], 6), expected=23, label="example 3"),
-        TestCase(input=([1], 1), expected=1, label="single pile single hour"),
-        TestCase(input=([312884470], 970709593), expected=1, label="single pile many hours"),
-        TestCase(input=([1, 1, 1, 1], 4), expected=1, label="all ones h equals length"),
-        TestCase(input=([1000000000, 1000000000], 3), expected=1000000000, label="large values tight deadline"),
-        TestCase(input=([5, 5, 5, 5, 5], 10), expected=3, label="uniform piles extra hours"),
-    ]
 
-    def solve(self, piles: list[int], h: int) -> int:
-        left, right = 1, max(piles)
-        while left < right:
-            mid = left + (right - left) // 2
-            hours = sum(math.ceil(p / mid) for p in piles)
-            if hours <= h:
-                right = mid
-            else:
-                left = mid + 1
-        return left
+def solve(piles: list[int], h: int) -> int:
+    left, right = 1, max(piles)
+    while left < right:
+        mid = left + (right - left) // 2
+        hours = sum(math.ceil(p / mid) for p in piles)
+        if hours <= h:
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
 
 if __name__ == "__main__":
-    Solution().run()
+    piles = read_ints()
+    h = read_int()
+    result = solve(piles, h)
+    write_int(result)

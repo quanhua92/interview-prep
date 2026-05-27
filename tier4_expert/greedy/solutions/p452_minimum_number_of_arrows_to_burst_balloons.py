@@ -37,44 +37,28 @@ Template (python3):
 
 import sys
 
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "452. Minimum Number of Arrows to Burst Balloons"
-    test_cases = [
-        TestCase(
-            input=[[10, 16], [2, 8], [1, 6], [7, 12]], expected=2, label="example 1"
-        ),
-        TestCase(input=[[1, 2], [3, 4], [5, 6], [7, 8]], expected=4, label="example 2"),
-        TestCase(input=[[1, 2], [2, 3], [3, 4], [4, 5]], expected=2, label="example 3"),
-        TestCase(input=[[1, 2]], expected=1, label="single balloon"),
-        TestCase(
-            input=[[1, 10], [2, 9], [3, 8]], expected=1, label="all overlapping"
-        ),
-        TestCase(
-            input=[[1, 5], [2, 3]], expected=1, label="nested intervals"
-        ),
-        TestCase(
-            input=[[-2147483646, -2147483645], [2147483646, 2147483647]],
-            expected=2,
-            label="far apart balloons",
-        ),
-    ]
-
-    def solve(self, points: list[list[int]]) -> int:
-        if not points:
-            return 0
-        points.sort(key=lambda x: x[1])
-        arrows = 1
-        end = points[0][1]
-        for start, finish in points[1:]:
-            if start > end:
-                arrows += 1
-                end = finish
-        return arrows
+def solve(points: list[list[int]]) -> int:
+    if not points:
+        return 0
+    points.sort(key=lambda x: x[1])
+    arrows = 1
+    end = points[0][1]
+    for start, finish in points[1:]:
+        if start > end:
+            arrows += 1
+            end = finish
+    return arrows
 
 
 if __name__ == "__main__":
-    Solution().run()
+    _ = read_int()  # cols (not needed for logic)
+    points = []
+    for line in sys.stdin:
+        line = line.strip()
+        if line:
+            points.append([int(x) for x in line.split()])
+    result = solve(points)
+    write_int(result)

@@ -33,6 +33,8 @@
  * Hint: Binary search for the leftmost version where is_bad is True.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
+
 function solve(n, bad) {
   const isBad = (v) => v >= bad;
 
@@ -49,29 +51,6 @@ function solve(n, bad) {
   return left;
 }
 
-const tests = [
-  { label: "example 1", input: [5, 4], expected: 4 },
-  { label: "single version, bad", input: [1, 1], expected: 1 },
-  { label: "last version is bad", input: [3, 3], expected: 3 },
-  { label: "middle version is bad", input: [10, 7], expected: 7 },
-  { label: "first version is bad", input: [2, 1], expected: 1 },
-  { label: "large n, last is bad", input: [100, 100], expected: 100 },
-  { label: "large n, first is bad", input: [100000, 1], expected: 1 },
-  { label: "small n last bad", input: [2, 2], expected: 2 },
-  { label: "large n near end", input: [1000000, 999999], expected: 999999 },
-  { label: "max int overflow safe", input: [2147483647, 1], expected: 1 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const n = readInt();
+const bad = readInt();
+writeInt(solve(n, bad));

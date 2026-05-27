@@ -38,60 +38,19 @@
  */
 
 
-#include <cstdio>
-#include <cstdlib>
-#include <vector>
-#include <unordered_set>
+#include "io.h"
 #include <algorithm>
+#include <unordered_set>
+#include <vector>
 
 static int distributeCandies(const std::vector<int> &candyType) {
     std::unordered_set<int> types(candyType.begin(), candyType.end());
     return std::min((int)types.size(), (int)candyType.size() / 2);
 }
 
-int main(void) {
-    int passed = 0, total = 7;
-    printf("\n============================================================\n");
-    printf("  575. Distribute Candies\n");
-    printf("============================================================\n");
-
-    {
-        int got = distributeCandies({1, 1, 2, 2, 3, 3});
-        if (got == 3) { passed++; printf("  Test 1 (example 1): PASS\n"); }
-        else { printf("  Test 1 (example 1): FAIL\n  Expected: 3, Got: %d\n", got); }
-    }
-    {
-        int got = distributeCandies({1, 1, 2, 3});
-        if (got == 2) { passed++; printf("  Test 2 (example 2): PASS\n"); }
-        else { printf("  Test 2 (example 2): FAIL\n  Expected: 2, Got: %d\n", got); }
-    }
-    {
-        int got = distributeCandies({6, 6, 6, 6});
-        if (got == 1) { passed++; printf("  Test 3 (example 3): PASS\n"); }
-        else { printf("  Test 3 (example 3): FAIL\n  Expected: 1, Got: %d\n", got); }
-    }
-    {
-        int got = distributeCandies({1, 2, 3, 4});
-        if (got == 2) { passed++; printf("  Test 4 (all unique types): PASS\n"); }
-        else { printf("  Test 4 (all unique types): FAIL\n  Expected: 2, Got: %d\n", got); }
-    }
-    {
-        int got = distributeCandies({-1, -1, 2, 2});
-        if (got == 2) { passed++; printf("  Test 5 (negative candy types): PASS\n"); }
-        else { printf("  Test 5 (negative candy types): FAIL\n  Expected: 2, Got: %d\n", got); }
-    }
-    {
-        int got = distributeCandies({100000, -100000, 0, 50000});
-        if (got == 2) { passed++; printf("  Test 6 (boundary values): PASS\n"); }
-        else { printf("  Test 6 (boundary values): FAIL\n  Expected: 2, Got: %d\n", got); }
-    }
-    {
-        int got = distributeCandies({1, 2, 1, 2, 1, 2, 3, 4});
-        if (got == 4) { passed++; printf("  Test 7 (eight candies mixed): PASS\n"); }
-        else { printf("  Test 7 (eight candies mixed): FAIL\n  Expected: 4, Got: %d\n", got); }
-    }
-
-    printf("\n  %d/%d passed\n", passed, total);
-    printf("============================================================\n\n");
-    return passed == total ? 0 : 1;
+int main(void)
+{
+    std::vector<int> candyType = read_ints();
+    write_int(distributeCandies(candyType));
+    return 0;
 }

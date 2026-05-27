@@ -31,6 +31,8 @@
  * Hint: Use a sliding window with frequency counters to compare against pattern.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(s, p) {
   if (p.length > s.length) return [];
 
@@ -73,26 +75,6 @@ function solve(s, p) {
   return result;
 }
 
-const tests = [
-  { label: "example 1", input: ["cbaebabacd", "abc"], expected: [0, 6] },
-  { label: "example 2", input: ["abab", "ab"], expected: [0, 1, 2] },
-  { label: "no anagrams", input: ["af", "bf"], expected: [] },
-  { label: "exact match single", input: ["abc", "abc"], expected: [0] },
-  { label: "all same chars", input: ["aaaaaaaaaa", "aa"], expected: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
-  { label: "overlapping anagrams", input: ["abacbabc", "abc"], expected: [1, 2, 3, 5] },
-  { label: "pattern longer than string", input: ["a", "aa"], expected: [] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const s = readLine();
+const p = readLine();
+writeInts(solve(s, p));

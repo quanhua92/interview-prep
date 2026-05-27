@@ -33,30 +33,14 @@ Template (python3):
 Hint: Use a stack to handle nested k[encoded] patterns.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "394. Decode String"
-    test_cases = [
-        TestCase(input="3[a]2[bc]", expected="aaabcbc", label="example 1"),
-        TestCase(input="3[a2[c]]", expected="accaccacc", label="nested"),
-        TestCase(
-            input="2[abc]3[cd]ef", expected="abcabccdcdcdef", label="multiple segments"
-        ),
-        TestCase(input="abc", expected="abc", label="no encoding"),
-        TestCase(input="10[a]", expected="aaaaaaaaaa", label="multi-digit multiplier"),
-        TestCase(input="2[2[2[a]]]", expected="aaaaaaaa", label="deep nesting"),
-        TestCase(input="3[a]b", expected="aaab", label="encoded then plain"),
-        TestCase(input="a2[b]c", expected="abbc", label="plain-enc-plain"),
-    ]
-
-    def solve(self, s: str) -> str:
-        raise NotImplementedError("TODO: Implement solve(self, s: str) -> str")
+def solve(s: str) -> str:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    s = read_line()
+    result = solve(s)
+    write_string(result)

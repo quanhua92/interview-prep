@@ -28,12 +28,10 @@
  *     - ai != bi
  *     - 1 <= ai, bi <= n
  *
- * Template (python3):
- *     class Solution:
- *         def findJudge(self, n: int, trust: List[List[int]]) -> int:
- *
  * Hint: Trust score array: for each [a,b], scores[a]-=1 and scores[b]+=1. Judge has score n-1.
  */
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
 
 function solve(n, trust) {
   const scores = new Array(n + 1).fill(0);
@@ -47,26 +45,11 @@ function solve(n, trust) {
   return -1;
 }
 
-const tests = [
-  { label: "example 1", input: [2, [[1, 2]]], expected: 2 },
-  { label: "example 2", input: [3, [[1, 3], [2, 3]]], expected: 3 },
-  { label: "no judge", input: [3, [[1, 3], [2, 3], [3, 1]]], expected: -1 },
-  { label: "single person", input: [1, []], expected: 1 },
-  { label: "judge candidate trusts someone", input: [4, [[1, 3], [2, 3], [4, 3], [3, 4]]], expected: -1 },
-  { label: "no trust relationships n>1", input: [3, []], expected: -1 },
-  { label: "mutual trust no judge", input: [2, [[1, 2], [2, 1]]], expected: -1 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const header = readInts();
+const n = header[0];
+const trustCount = header[1];
+const trust = [];
+for (let i = 0; i < trustCount; i++) {
+  trust.push(readInts());
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+writeInt(solve(n, trust));

@@ -62,10 +62,9 @@
  *     # param_1 = obj.pickIndex()
  */
 
-use rstest::TestCase;
-use rstest::run_tests;
+use wasm_libs::*;
 
-fn random_pick_with_weight(w: &[i32], _target: i32) -> Vec<i32> {
+fn random_pick_with_weight(w: &[i32]) -> Vec<i32> {
     let mut prefix = Vec::with_capacity(w.len());
     prefix.push(w[0]);
     for i in 1..w.len() {
@@ -75,12 +74,7 @@ fn random_pick_with_weight(w: &[i32], _target: i32) -> Vec<i32> {
 }
 
 fn main() {
-    let tests: &[TestCase] = &[
-        TestCase { label: "prefix sum for [1]", input_arr: &[1], target: 0, expected: &[1] },
-        TestCase { label: "prefix sum for [1, 3]", input_arr: &[1, 3], target: 0, expected: &[1, 4] },
-        TestCase { label: "prefix sum for [3, 14, 1, 7]", input_arr: &[3, 14, 1, 7], target: 0, expected: &[3, 17, 18, 25] },
-        TestCase { label: "single large weight", input_arr: &[5], target: 0, expected: &[5] },
-        TestCase { label: "equal weights", input_arr: &[10, 10, 10], target: 0, expected: &[10, 20, 30] },
-    ];
-    std::process::exit(run_tests!("528. Random Pick with Weight", random_pick_with_weight, tests));
+    let w = read_ints();
+    write_ints(&random_pick_with_weight(&w));
+    std::process::exit(0);
 }

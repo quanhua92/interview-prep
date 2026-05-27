@@ -31,49 +31,35 @@ Template (python3):
 Hint: Binary search the answer in [max(nums), sum(nums)] and check feasibility greedily.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "410. Split Array Largest Sum"
-    test_cases = [
-        TestCase(input=([7, 2, 5, 10, 8], 2), expected=18, label="example 1"),
-        TestCase(input=([1, 2, 3, 4, 5], 2), expected=9, label="example 2"),
-        TestCase(input=([1, 4, 4], 3), expected=4, label="example 3"),
-        TestCase(input=([1, 2, 3, 4, 5], 5), expected=5, label="k equals length"),
-        TestCase(input=([5], 1), expected=5, label="single element"),
-        TestCase(input=([0, 0, 0, 0], 2), expected=0, label="all zeros"),
-        TestCase(input=([1, 1, 1, 1, 1, 1, 1, 1], 4), expected=2, label="uniform values"),
-        TestCase(input=([1000000, 1000000, 1000000], 2), expected=2000000, label="large values"),
-    ]
+def solve(nums: list[int], k: int) -> int:
+    left, right = max(nums), sum(nums)
 
-    def solve(self, nums: list[int], k: int) -> int:
-        left, right = max(nums), sum(nums)
+    def feasible(max_sum: int) -> bool:
+        count = 1
+        current = 0
+        for n in nums:
+            current += n
+            if current > max_sum:
+                count += 1
+                current = n
+                if count > k:
+                    return False
+        return True
 
-        def feasible(max_sum: int) -> bool:
-            """Check if we can split nums into <= k subarrays with max sum <= max_sum."""
-            count = 1
-            current = 0
-            for n in nums:
-                current += n
-                if current > max_sum:
-                    count += 1
-                    current = n
-                    if count > k:
-                        return False
-            return True
-
-        while left < right:
-            mid = left + (right - left) // 2
-            if feasible(mid):
-                right = mid
-            else:
-                left = mid + 1
-        return left
+    while left < right:
+        mid = left + (right - left) // 2
+        if feasible(mid):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    k = read_int()
+    result = solve(nums, k)
+    write_int(result)

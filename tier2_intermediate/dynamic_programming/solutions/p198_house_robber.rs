@@ -29,10 +29,10 @@
  * Hint: Use two variables (prev, curr) -- for each house decide to rob or skip.
  */
 
+use wasm_libs::*;
 
-use rstest;
-
-fn rob(nums: &[i32]) -> i32 {
+impl Solution {
+    fn rob(nums: &[i32]) -> i32 {
     let (mut prev, mut curr) = (0, 0);
     for &x in nums {
         let t = curr;
@@ -40,33 +40,12 @@ fn rob(nums: &[i32]) -> i32 {
         prev = t;
     }
     curr
+    }
 }
 
+struct Solution;
+
 fn main() {
-    struct TC<'a> { label: &'a str, nums: &'static [i32], expected: i32 }
-    static MAX_VALS: [i32; 100] = [400; 100];
-    let tests: &[TC] = &[
-        TC { label: "example 1", nums: &[1,2,3,1], expected: 4 },
-        TC { label: "example 2", nums: &[2,7,9,3,1], expected: 12 },
-        TC { label: "single house", nums: &[1], expected: 1 },
-        TC { label: "no houses", nums: &[], expected: 0 },
-        TC { label: "alternate houses equal", nums: &[2,1,1,2], expected: 4 },
-        TC { label: "all zeros", nums: &[0,0,0], expected: 0 },
-        TC { label: "two houses", nums: &[1,2], expected: 2 },
-        TC { label: "alternating high low", nums: &[10,1,10,1,10], expected: 30 },
-        TC { label: "three peaks", nums: &[100,1,1,100,1,1,100], expected: 300 },
-        TC { label: "max values large array", nums: &MAX_VALS, expected: 20000 },
-    ];
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = rob(tc.nums);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL (expected {}, got {})", i + 1, tc.label, tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let nums = read_ints();
+    write_int(rob(&nums));
 }

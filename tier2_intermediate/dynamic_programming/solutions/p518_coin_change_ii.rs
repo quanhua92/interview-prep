@@ -36,11 +36,11 @@
  *         def change(self, amount: int, coins: List[int]) -> int:
  */
 
+use wasm_libs::*;
 
-use rstest;
-
-fn change(amount: i32, coins: &[i32]) -> i32 {
-    let amt = amount as usize;
+impl Solution {
+    fn change(amount: i32, coins: &[i32]) -> i32 {
+        let amt = amount as usize;
     let mut dp = vec![0i32; amt + 1];
     dp[0] = 1;
     for &c in coins {
@@ -49,28 +49,13 @@ fn change(amount: i32, coins: &[i32]) -> i32 {
         }
     }
     dp[amt]
+    }
 }
 
+struct Solution;
+
 fn main() {
-    struct TC<'a> { label: &'a str, amount: i32, coins: &'static [i32], expected: i32 }
-    let tests: &[TC] = &[
-        TC { label: "example 1", amount: 5, coins: &[1,2,5], expected: 4 },
-        TC { label: "example 2", amount: 3, coins: &[2], expected: 0 },
-        TC { label: "example 3", amount: 10, coins: &[10], expected: 1 },
-        TC { label: "zero amount", amount: 0, coins: &[1,2,5], expected: 1 },
-        TC { label: "single coin exact amount", amount: 1, coins: &[1], expected: 1 },
-        TC { label: "large amount", amount: 500, coins: &[1,2,5], expected: 12701 },
-    ];
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = change(tc.amount, tc.coins);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL (expected {}, got {})", i + 1, tc.label, tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let amount = read_int();
+    let coins = read_ints();
+    write_int(change(amount, &coins));
 }

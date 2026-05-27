@@ -35,10 +35,9 @@
  */
 
 use std::collections::HashMap;
-use rstest::TestCase;
-use rstest::run_tests;
+use wasm_libs::*;
 
-fn subarray_sum(nums: &[i32], k: i32) -> Vec<i32> {
+fn subarray_sum(nums: &[i32], k: i32) -> i32 {
     let mut freq: HashMap<i64, i32> = HashMap::new();
     freq.insert(0, 1);
     let mut count = 0;
@@ -48,18 +47,12 @@ fn subarray_sum(nums: &[i32], k: i32) -> Vec<i32> {
         count += freq.get(&(curr - k as i64)).unwrap_or(&0);
         *freq.entry(curr).or_insert(0) += 1;
     }
-    vec![count]
+    count
 }
 
 fn main() {
-    let tests: &[TestCase] = &[
-        TestCase { label: "example 1", input_arr: &[1, 1, 1], target: 2, expected: &[2] },
-        TestCase { label: "example 2", input_arr: &[1, 2, 3], target: 3, expected: &[2] },
-        TestCase { label: "empty array", input_arr: &[], target: 0, expected: &[0] },
-        TestCase { label: "single element equals k", input_arr: &[1], target: 1, expected: &[1] },
-        TestCase { label: "single element not k", input_arr: &[1], target: 2, expected: &[0] },
-        TestCase { label: "negatives with zero sum", input_arr: &[1, -1, 0], target: 0, expected: &[3] },
-        TestCase { label: "all zeros", input_arr: &[0, 0, 0], target: 0, expected: &[6] },
-    ];
-    std::process::exit(run_tests!("560. Subarray Sum Equals K", subarray_sum, tests));
+    let nums = read_ints();
+    let k = read_int();
+    write_int(subarray_sum(&nums, k));
+    std::process::exit(0);
 }

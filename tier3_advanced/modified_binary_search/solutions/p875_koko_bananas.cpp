@@ -33,17 +33,9 @@
  */
 
 
-#include <cstdio>
-#include <vector>
-#include <string>
+#include "io.h"
 #include <algorithm>
-
-struct TestCase {
-    std::string label;
-    std::vector<int> piles;
-    long long h;
-    int expected;
-};
+#include <vector>
 
 static long long hours_needed(const std::vector<int> &piles, int k)
 {
@@ -69,33 +61,9 @@ int minEatingSpeed(const std::vector<int> &piles, long long h)
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {3,6,7,11}, 8, 4},
-        {"example 2", {30,11,23,4,20}, 5, 30},
-        {"example 3", {30,11,23,4,20}, 6, 23},
-        {"single pile single hour", {1}, 1, 1},
-        {"single pile many hours", {312884470}, 970709593, 1},
-        {"all ones h equals length", {1,1,1,1}, 4, 1},
-        {"large values tight deadline", {1000000000,1000000000}, 3, 1000000000},
-        {"uniform piles extra hours", {5,5,5,5,5}, 10, 3},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  875. Koko Eating Bananas\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = minEatingSpeed(tests[i].piles, tests[i].h);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label.c_str());
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label.c_str());
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-    return passed == n ? 0 : 1;
+    std::vector<int> piles = read_ints();
+    std::vector<int> h_line = read_ints();
+    long long h = h_line[0];
+    write_int(minEatingSpeed(piles, h));
+    return 0;
 }

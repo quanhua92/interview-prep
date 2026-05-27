@@ -26,10 +26,8 @@
  * Hint: Use a monotonic increasing stack with a sentinel to compute max rectangle area.
  */
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include "io.h"
+#include <algorithm>
 #include <vector>
 
 int largestRectangleArea(const std::vector<int> &heights)
@@ -52,32 +50,7 @@ int largestRectangleArea(const std::vector<int> &heights)
 
 int main(void)
 {
-    struct TC { const char *label; std::vector<int> input; int expected; };
-    TC tests[] = {
-        {"example 1", {2, 1, 5, 6, 2, 3}, 10},
-        {"example 2", {2, 4}, 4},
-        {"single element", {5}, 5},
-        {"all same heights", {3, 3, 3}, 9},
-        {"contains zero height", {2, 0, 2}, 2},
-        {"strictly increasing", {1, 2, 3, 4, 5}, 9},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  84. Largest Rectangle in Histogram\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int got = largestRectangleArea(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d, Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    std::vector<int> heights = read_ints();
+    write_int(largestRectangleArea(heights));
+    return 0;
 }

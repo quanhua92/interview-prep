@@ -35,10 +35,10 @@
  * Hint: BFS from (0,0) with 8 directions, return distance to (n-1,n-1) or -1.
  */
 
-
+use wasm_libs::*;
 use std::collections::VecDeque;
 
-fn shortest_path_binary_matrix(grid: &mut Vec<Vec<i32>>) -> i32 {
+fn solve(grid: &mut Vec<Vec<i32>>) -> i32 {
     let n = grid.len();
     if grid[0][0] == 1 || grid[n - 1][n - 1] == 1 { return -1; }
     if n == 1 { return 1; }
@@ -65,28 +65,11 @@ fn shortest_path_binary_matrix(grid: &mut Vec<Vec<i32>>) -> i32 {
 }
 
 fn main() {
-    let tests: Vec<(&str, Vec<Vec<i32>>, i32)> = vec![
-        ("example 1", vec![vec![0,1],vec![1,0]], 2),
-        ("example 2", vec![vec![0,0,0],vec![1,1,0],vec![1,1,0]], 4),
-        ("blocked", vec![vec![1,0],vec![0,1]], -1),
-        ("single cell", vec![vec![0]], 1),
-        ("3x3 all open (diagonal)", vec![vec![0,0,0],vec![0,0,0],vec![0,0,0]], 3),
-        ("2x2 all open (diagonal)", vec![vec![0,0],vec![0,0]], 2),
-        ("3x3 only corners open", vec![vec![0,1,1],vec![1,1,1],vec![1,1,0]], -1),
-    ];
-    let mut passed = 0;
-    for (i, (label, grid, expected)) in tests.iter().enumerate() {
-        let mut g = grid.clone();
-        let got = shortest_path_binary_matrix(&mut g);
-        if got == *expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, label);
-            println!("    Expected: {}", expected);
-            println!("    Got:      {}", got);
-        }
+    let n = read_int();
+    let mut grid = Vec::new();
+    for _ in 0..n {
+        grid.push(read_ints());
     }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    write_int(solve(&mut grid));
+    std::process::exit(0);
 }

@@ -30,42 +30,30 @@ Template (python3):
         def nearestPalindromic(self, n: str) -> str:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "564. Find the Closest Palindrome"
-    test_cases = [
-        TestCase(input="123", expected="121", label="example 1"),
-        TestCase(input="1", expected="0", label="example 2"),
-        TestCase(input="10", expected="9", label="edge at 10"),
-        TestCase(input="99", expected="101", label="two same digits"),
-        TestCase(input="100", expected="99", label="power of 10"),
-        TestCase(input="1283", expected="1331", label="four digit"),
-    ]
-
-    def solve(self, n: str) -> str:
-        num = int(n)
-        if num <= 10:
-            return str(num - 1)
-        candidates: set[int] = set()
-        length = len(n)
-        prefix = int(n[: (length + 1) // 2])
-        for p in (prefix - 1, prefix, prefix + 1):
-            p_str = str(p)
-            if length % 2 == 0:
-                candidate = int(p_str + p_str[::-1])
-            else:
-                candidate = int(p_str + p_str[:-1][::-1])
-            candidates.add(candidate)
-        candidates.add(10 ** (length - 1) - 1)
-        candidates.add(10**length + 1)
-        candidates.discard(num)
-        return str(min(candidates, key=lambda x: (abs(x - num), x)))
+def solve(n: str) -> str:
+    num = int(n)
+    if num <= 10:
+        return str(num - 1)
+    candidates: set[int] = set()
+    length = len(n)
+    prefix = int(n[: (length + 1) // 2])
+    for p in (prefix - 1, prefix, prefix + 1):
+        p_str = str(p)
+        if length % 2 == 0:
+            candidate = int(p_str + p_str[::-1])
+        else:
+            candidate = int(p_str + p_str[:-1][::-1])
+        candidates.add(candidate)
+    candidates.add(10 ** (length - 1) - 1)
+    candidates.add(10**length + 1)
+    candidates.discard(num)
+    return str(min(candidates, key=lambda x: (abs(x - num), x)))
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_line()
+    result = solve(n)
+    write_string(result)

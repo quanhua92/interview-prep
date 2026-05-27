@@ -26,8 +26,8 @@
  *     - At most 104 calls will be made to pick.
  */
 
+use wasm_libs::*;
 use std::collections::HashMap;
-use rand::Rng;
 
 struct Solution {
     idx: HashMap<i32, Vec<i32>>,
@@ -49,33 +49,13 @@ impl Solution {
     }
 }
 
-fn main() {
-    let tests: &[(&str, &[i32], i32, &[i32])] = &[
-        ("returns valid indices for target 3", &[1, 2, 3, 3, 3], 3, &[2, 3, 4]),
-        ("single occurrence", &[1, 2, 3, 3, 3], 1, &[0]),
-        ("single element array", &[5], 5, &[0]),
-        ("non-contiguous duplicates", &[1, 2, 1, 2, 1], 1, &[0, 2, 4]),
-        ("negative numbers with duplicates", &[-1, -2, -1, -3, -1], -1, &[0, 2, 4]),
-        ("all same elements", &[1, 1, 1, 1, 1], 1, &[0, 1, 2, 3, 4]),
-    ];
+fn solve(nums: Vec<i32>, target: i32) -> i32 {
+    Solution::new(nums).pick(target)
+}
 
-    println!("\n============================================================");
-    println!("  398. Random Pick Index");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, (label, input, target, valid)) in tests.iter().enumerate() {
-        let sol = Solution::new(input.to_vec());
-        let got = sol.pick(*target);
-        let ok = valid.contains(&got);
-        if ok {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, label);
-            println!("    Expected one of: {:?}\n    Got:              {}", valid, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+fn main() {
+    let nums = read_ints();
+    let target = read_int();
+    write_int(solve(nums, target));
+    std::process::exit(0);
 }

@@ -27,26 +27,14 @@ Template (python3):
         def canCross(self, stones: List[int]) -> bool:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "403. Frog Jump"
-    test_cases = [
-        TestCase(input=[0, 1, 3, 5, 6, 8, 12, 17], expected=True, label="example 1"),
-        TestCase(input=[0, 1, 2, 3, 4, 8, 9, 11], expected=False, label="example 2"),
-        TestCase(input=[0, 1], expected=True, label="minimum 2 stones"),
-        TestCase(input=[0, 2], expected=False, label="gap too large for first jump"),
-        TestCase(input=[0, 1, 3, 6, 10, 15, 21], expected=True, label="increasing jumps 1,2,3,4,5,6"),
-        TestCase(input=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expected=True, label="consecutive stones"),
-    ]
-
-    def solve(self, stones: list[int]) -> bool:
-        raise NotImplementedError("TODO: Implement solve(self, stones) -> bool")
+def solve(stones: list[int]) -> bool:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    stones = read_ints()
+    result = solve(stones)
+    write_bool(result)

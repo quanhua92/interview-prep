@@ -30,23 +30,9 @@
  * 
  * Hint: Binary search the answer in [max(nums), sum(nums)] and check feasibility greedily.
  */
-#include <cstdio>
+
+#include "io.h"
 #include <vector>
-#include <string>
-#include <numeric>
-#include <algorithm>
-
-struct TestCase {
-    std::string label;
-    std::vector<int> nums;
-    int k;
-    long long expected;
-};
-
-static bool feasible(const std::vector<int> &nums, long long max_sum, int k)
-{
-    abort();
-}
 
 long long splitArray(const std::vector<int> &nums, int k)
 {
@@ -55,33 +41,9 @@ long long splitArray(const std::vector<int> &nums, int k)
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {7,2,5,10,8}, 2, 18},
-        {"example 2", {1,2,3,4,5}, 2, 9},
-        {"example 3", {1,4,4}, 3, 4},
-        {"k equals length", {1,2,3,4,5}, 5, 5},
-        {"single element", {5}, 1, 5},
-        {"all zeros", {0,0,0,0}, 2, 0},
-        {"uniform values", {1,1,1,1,1,1,1,1}, 4, 2},
-        {"large values", {1000000,1000000,1000000}, 2, 2000000},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  410. Split Array Largest Sum\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        long long got = splitArray(tests[i].nums, tests[i].k);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label.c_str());
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label.c_str());
-            printf("    Expected: %lld\n    Got:      %lld\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-    return passed == n ? 0 : 1;
+    std::vector<int> nums = read_ints();
+    std::vector<int> k_line = read_ints();
+    int k = k_line[0];
+    write_int((int)splitArray(nums, k));
+    return 0;
 }

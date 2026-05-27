@@ -3,7 +3,7 @@ P463: Island Perimeter [PREMIUM] (Easy)
 https://leetcode.com/problems/island-perimeter/
 Topics: Array, Depth-First Search, Breadth-First Search, Matrix
 
-You are given row x col grid representing a map where grid[i][j] = 1 represents land and grid[i][j] = 0 represents water.
+You are given row x col grid representing a map where grid[i][j] = 1 represents land and grid[i][j] = 0 represents water.
 Grid cells are connected horizontally/vertically (not diagonally). The grid is completely surrounded by water, and there is exactly one island (i.e., one or more connected land cells).
 The island doesn't have "lakes", meaning the water inside isn't connected to the water around the island. One cell is a square with side length 1. The grid is rectangular, width and height don't exceed 100. Determine the perimeter of the island.
 Example 1:
@@ -31,47 +31,21 @@ Template (python3):
         def islandPerimeter(self, grid: List[List[int]]) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "463. Island Perimeter"
-    test_cases = [
-        TestCase(
-            input=[[0, 1, 0, 0], [1, 1, 1, 0], [0, 1, 0, 0], [1, 1, 0, 0]],
-            expected=16,
-            label="example 1",
-        ),
-        TestCase(input=[[1]], expected=4, label="example 2"),
-        TestCase(input=[[1, 0]], expected=4, label="example 3"),
-        TestCase(
-            input=[[1, 1, 1]],
-            expected=8,
-            label="horizontal line of 3",
-        ),
-        TestCase(
-            input=[[1], [1], [1]],
-            expected=8,
-            label="vertical line of 3",
-        ),
-        TestCase(
-            input=[[1, 1], [1, 1]],
-            expected=8,
-            label="2x2 block",
-        ),
-        TestCase(
-            input=[[1, 1, 1], [1, 1, 1]],
-            expected=10,
-            label="3x2 block",
-        ),
-    ]
+def solve(grid: list[list[int]]) -> int:
+    raise NotImplementedError
 
-    def solve(self, grid: list[list[int]]) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, grid) -> int")
 
 
 if __name__ == "__main__":
-    Solution().run()
+    _cols = read_int()
+    grid = []
+    while True:
+        row = read_ints()
+        if not row:
+            break
+        grid.append(row)
+    result = solve(grid)
+    write_int(result)

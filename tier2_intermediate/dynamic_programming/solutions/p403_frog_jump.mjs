@@ -27,13 +27,14 @@
  *         def canCross(self, stones: List[int]) -> bool:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(stones) {
   const stoneSet = new Set(stones);
   const memo = new Map();
-
   function canReach(pos, k) {
     if (pos === stones[stones.length - 1]) return true;
-    const key = `${pos},${k}`;
+    const key = pos + "," + k;
     if (memo.has(key)) return memo.get(key);
     for (const step of [k - 1, k, k + 1]) {
       if (step > 0 && stoneSet.has(pos + step)) {
@@ -46,29 +47,8 @@ function solve(stones) {
     memo.set(key, false);
     return false;
   }
-
   return canReach(0, 0);
 }
 
-const tests = [
-  { label: "example 1", input: [0, 1, 3, 5, 6, 8, 12, 17], expected: true },
-  { label: "example 2", input: [0, 1, 2, 3, 4, 8, 9, 11], expected: false },
-  { label: "minimum 2 stones", input: [0, 1], expected: true },
-  { label: "gap too large for first jump", input: [0, 2], expected: false },
-  { label: "increasing jumps 1,2,3,4,5,6", input: [0, 1, 3, 6, 10, 15, 21], expected: true },
-  { label: "consecutive stones", input: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expected: true },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const stones = readInts();
+writeBool(solve(stones));

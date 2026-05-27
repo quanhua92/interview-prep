@@ -24,20 +24,14 @@
  *     - 1 <= nums[i] <= n
  *     - Each element in nums appears once or twice.
  *
- * Template (python3):
- *     class Solution:
- *         def findDuplicates(self, nums: List[int]) -> List[int]:
- *
  * Hint: Negate the value at index abs(num)-1 to mark seen numbers in-place.
  */
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <vector>
+#include "io.h"
 #include <cmath>
+#include <vector>
 
-static std::vector<int> findDuplicates(std::vector<int> &nums) {
+std::vector<int> findDuplicates(std::vector<int> &nums) {
     std::vector<int> result;
     for (int num : nums) {
         int idx = std::abs(num) - 1;
@@ -50,63 +44,10 @@ static std::vector<int> findDuplicates(std::vector<int> &nums) {
     return result;
 }
 
-int main(void) {
-    int passed = 0, total = 7;
-    printf("\n============================================================\n");
-    printf("  442. Find All Duplicates in an Array\n");
-    printf("============================================================\n");
-
-    {
-        std::vector<int> nums = {4, 3, 2, 7, 8, 2, 3, 1};
-        auto got = findDuplicates(nums);
-        std::vector<int> expected = {2, 3};
-        if (got == expected) { passed++; printf("  Test 1 (example 1): PASS\n"); }
-        else { printf("  Test 1 (example 1): FAIL\n"); }
-    }
-    {
-        std::vector<int> nums = {1, 1, 2};
-        auto got = findDuplicates(nums);
-        std::vector<int> expected = {1};
-        if (got == expected) { passed++; printf("  Test 2 (example 2): PASS\n"); }
-        else { printf("  Test 2 (example 2): FAIL\n"); }
-    }
-    {
-        std::vector<int> nums = {1};
-        auto got = findDuplicates(nums);
-        std::vector<int> expected = {};
-        if (got == expected) { passed++; printf("  Test 3 (single): PASS\n"); }
-        else { printf("  Test 3 (single): FAIL\n"); }
-    }
-    {
-        std::vector<int> nums = {2, 2};
-        auto got = findDuplicates(nums);
-        std::vector<int> expected = {2};
-        if (got == expected) { passed++; printf("  Test 4 (all same, n=2): PASS\n"); }
-        else { printf("  Test 4 (all same, n=2): FAIL\n"); }
-    }
-    {
-        std::vector<int> nums = {1, 2, 2, 1};
-        auto got = findDuplicates(nums);
-        std::vector<int> expected = {2, 1};
-        if (got == expected) { passed++; printf("  Test 5 (all duplicates, n=4): PASS\n"); }
-        else { printf("  Test 5 (all duplicates, n=4): FAIL\n"); }
-    }
-    {
-        std::vector<int> nums = {1, 2};
-        auto got = findDuplicates(nums);
-        std::vector<int> expected = {};
-        if (got == expected) { passed++; printf("  Test 6 (no duplicates): PASS\n"); }
-        else { printf("  Test 6 (no duplicates): FAIL\n"); }
-    }
-    {
-        std::vector<int> nums = {10, 2, 5, 10, 9, 1, 1, 7, 9, 6};
-        auto got = findDuplicates(nums);
-        std::vector<int> expected = {10, 1, 9};
-        if (got == expected) { passed++; printf("  Test 7 (large, multiple duplicates): PASS\n"); }
-        else { printf("  Test 7 (large, multiple duplicates): FAIL\n"); }
-    }
-
-    printf("\n  %d/%d passed\n", passed, total);
-    printf("============================================================\n\n");
-    return passed == total ? 0 : 1;
+int main(void)
+{
+    std::vector<int> nums = read_ints();
+    std::vector<int> result = findDuplicates(nums);
+    write_ints(result.data(), (int)result.size());
+    return 0;
 }

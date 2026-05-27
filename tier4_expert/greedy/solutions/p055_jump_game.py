@@ -27,32 +27,19 @@ Template (python3):
 Hint: Track the farthest reachable index; if you pass it, the end is unreachable.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "55. Jump Game"
-    test_cases = [
-        TestCase(input=[2, 3, 1, 1, 4], expected=True, label="example 1"),
-        TestCase(input=[3, 2, 1, 0, 4], expected=False, label="example 2"),
-        TestCase(input=[0], expected=True, label="single element"),
-        TestCase(input=[1, 1, 1, 1, 1], expected=True, label="all ones"),
-        TestCase(input=[5, 0, 0, 0, 0], expected=True, label="big jump from start"),
-        TestCase(input=[0, 1], expected=False, label="stuck at start"),
-        TestCase(input=[2, 0], expected=True, label="two elements reachable"),
-    ]
-
-    def solve(self, nums: list[int]) -> bool:
-        max_reach = 0
-        for i, jump in enumerate(nums):
-            if i > max_reach:
-                return False
-            max_reach = max(max_reach, i + jump)
-        return True
+def solve(nums: list[int]) -> bool:
+    max_reach = 0
+    for i, jump in enumerate(nums):
+        if i > max_reach:
+            return False
+        max_reach = max(max_reach, i + jump)
+    return True
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    result = solve(nums)
+    write_bool(result)

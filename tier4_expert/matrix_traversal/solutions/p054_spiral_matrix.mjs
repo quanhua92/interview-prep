@@ -19,18 +19,20 @@
  *     - 1 <= m, n <= 10
  *     - -100 <= matrix[i][j] <= 100
  *
- * Hints:
- *     - Well for some problems, the best way really is to come up with some algorithms for simulation. Basically, you need to simulate what the problem asks us to do.
- *     - We go boundary by boundary and move inwards. That is the essential operation. First row, last column, last row, first column, and then we move inwards by 1 and repeat. That's all. That is all the simulation that we need.
- *     - Think about when you want to switch the progress on one of the indexes. If you progress on i out of [i, j], you'll shift in the same column. Similarly, by changing values for j, you'd be shifting in the same row.
- * Also, keep track of the end of a boundary so that you can move inwards and then keep repeating. It's always best to simulate edge cases like a single column or a single row to see if anything breaks or not.
- *
- * Template (python3):
- *     class Solution:
- *         def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
- *
  * Hint: Use four boundary pointers (top, bottom, left, right) and shrink them as you traverse.
  */
+
+import { readInts, writeInts } from '../../../wasm_libs/js/io.mjs';
+
+function readIntMatrix() {
+  const header = readInts();
+  const cols = header[0];
+  const matrix = [];
+  for (let i = 0; i < cols; i++) {
+    matrix.push(readInts());
+  }
+  return matrix;
+}
 
 function solve(matrix) {
   if (!matrix || !matrix[0]) return [];
@@ -54,27 +56,6 @@ function solve(matrix) {
   return result;
 }
 
-const tests = [
-  { input: [[1,2,3],[4,5,6],[7,8,9]], expected: [1,2,3,6,9,8,7,4,5], label: "example 1" },
-  { input: [[1,2,3,4],[5,6,7,8],[9,10,11,12]], expected: [1,2,3,4,8,12,11,10,9,5,6,7], label: "example 2" },
-  { input: [[7]], expected: [7], label: "single element" },
-  { input: [[1,2,3,4]], expected: [1,2,3,4], label: "single row" },
-  { input: [[1],[2],[3],[4]], expected: [1,2,3,4], label: "single column" },
-  { input: [[1,2],[3,4]], expected: [1,2,4,3], label: "2x2 matrix" },
-  { input: [[1,2,3,4,5],[6,7,8,9,10]], expected: [1,2,3,4,5,10,9,8,7,6], label: "2 rows many columns" },
-];
-
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const matrix = readIntMatrix();
+const result = solve(matrix);
+writeInts(result);

@@ -31,16 +31,12 @@
  * Hint: Use a sliding window where you shrink from the left when product >= k.
  */
 
-#include "ctest.h"
-#include <stdlib.h>
+#include "io.h"
 
-int *num_subarray_product_less_than_k(int *nums, int numsSize, int k, int *retSize)
+int num_subarray_product_less_than_k(int *nums, int numsSize, int k)
 {
     if (k <= 1) {
-        int *result = (int *)malloc(sizeof(int));
-        result[0] = 0;
-        *retSize = 1;
-        return result;
+        return 0;
     }
     int count = 0;
     double product = 1.0;
@@ -53,23 +49,18 @@ int *num_subarray_product_less_than_k(int *nums, int numsSize, int k, int *retSi
         }
         count += right - left + 1;
     }
-    int *result = (int *)malloc(sizeof(int));
-    result[0] = count;
-    *retSize = 1;
-    return result;
+    return count;
 }
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {10, 5, 2, 6}, 4, 100, {8}, 1},
-        {"zero k", {1, 2, 3}, 3, 0, {0}, 1},
-        {"all ones", {1, 1, 1}, 3, 2, {6}, 1},
-        {"k equals 0", {1, 2, 3}, 3, 0, {0}, 1},
-        {"k equals 1", {1, 2, 3}, 3, 1, {0}, 1},
-        {"all large numbers", {1000, 1000, 1000}, 3, 1000000, {3}, 1},
-        {"small k many singles", {10, 5, 2, 6}, 4, 8, {3}, 1},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("713. Subarray Product Less Than K", num_subarray_product_less_than_k, tests, n);
+    int n;
+    int *nums = read_ints(&n);
+    int kl;
+    int *target_line = read_ints(&kl);
+    int k = target_line[0];
+    free(target_line);
+    write_int(num_subarray_product_less_than_k(nums, n, k));
+    free(nums);
+    return 0;
 }

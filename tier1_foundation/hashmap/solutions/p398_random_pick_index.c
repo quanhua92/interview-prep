@@ -26,10 +26,10 @@
  *     - At most 104 calls will be made to pick.
  */
 
+#include "io.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 #define MAX_UNIQUE 20005
 
@@ -86,49 +86,16 @@ static void solution_free(Solution *sol) {
 
 int main(void)
 {
-    struct {
-        const char *label;
-        int input[10];
-        int n;
-        int target;
-        int valid[10];
-        int valid_n;
-    } tests[] = {
-        {"returns valid indices for target 3", {1, 2, 3, 3, 3}, 5, 3, {2, 3, 4}, 3},
-        {"single occurrence",                  {1, 2, 3, 3, 3}, 5, 1, {0}, 1},
-        {"single element array",               {5},              1, 5, {0}, 1},
-        {"non-contiguous duplicates",          {1, 2, 1, 2, 1}, 5, 1, {0, 2, 4}, 3},
-        {"negative numbers with duplicates",   {-1, -2, -1, -3, -1}, 5, -1, {0, 2, 4}, 3},
-        {"all same elements",                  {1, 1, 1, 1, 1}, 5, 1, {0, 1, 2, 3, 4}, 5},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
+    int n;
+    int *nums = read_ints(&n);
+    int target = read_int();
 
-    srand(time(NULL));
-    printf("\n============================================================\n");
-    printf("  398. Random Pick Index\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        Solution sol;
-        solution_init(&sol, tests[i].input, tests[i].n);
-        int got = solution_pick(&sol, tests[i].target);
-        int ok = 0;
-        for (int j = 0; j < tests[i].valid_n; j++) {
-            if (got == tests[i].valid[j]) { ok = 1; break; }
-        }
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected one of: ");
-            for (int j = 0; j < tests[i].valid_n; j++)
-                printf("%d ", tests[i].valid[j]);
-            printf("\n    Got:              %d\n", got);
-        }
-        solution_free(&sol);
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    Solution sol;
+    solution_init(&sol, nums, n);
+    int result = solution_pick(&sol, target);
+    write_int(result);
+
+    solution_free(&sol);
+    free(nums);
+    return 0;
 }

@@ -56,120 +56,48 @@ Template (python3):
         def construct(self, grid: List[List[int]]) -> 'Node':
 """
 
-import sys
+from collections import deque
 
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
-
-
-class Node:
-    def __init__(self, val: bool, is_leaf: bool, tl=None, tr=None, bl=None, br=None):
-        self.val = val
-        self.isLeaf = is_leaf
-        self.topLeft = tl
-        self.topRight = tr
-        self.bottomLeft = bl
-        self.bottomRight = br
-
-    def __eq__(self, other):
-        if not isinstance(other, Node):
-            return False
-        return (
-            self.val == other.val
-            and self.isLeaf == other.isLeaf
-            and self.topLeft == other.topLeft
-            and self.topRight == other.topRight
-            and self.bottomLeft == other.bottomLeft
-            and self.bottomRight == other.bottomRight
-        )
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "427. Construct Quad Tree"
-    test_cases = [
-        TestCase(
-            input=[[0, 1], [1, 0]],
-            expected=[[0, 1], [1, 0], [1, 1], [1, 1], [1, 0]],
-            label="example 2",
-        ),
-        TestCase(
-            input=[
-                [1, 1, 1, 1, 0, 0, 0, 0],
-                [1, 1, 1, 1, 0, 0, 0, 0],
-                [1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 0, 0, 0, 0],
-                [1, 1, 1, 1, 0, 0, 0, 0],
-                [1, 1, 1, 1, 0, 0, 0, 0],
-                [1, 1, 1, 1, 0, 0, 0, 0],
-            ],
-            expected=[
-                [0, 1],
-                [1, 1],
-                [0, 1],
-                [1, 1],
-                [1, 0],
-                [1, 0],
-                [1, 0],
-                [1, 1],
-                [1, 1],
-            ],
-            label="example 3",
-        ),
-        TestCase(input=[[0]], expected=[[1, 0]], label="1x1 all zeros"),
-        TestCase(input=[[1]], expected=[[1, 1]], label="1x1 all ones"),
-        TestCase(
-            input=[[1, 1], [1, 1]],
-            expected=[[1, 1]],
-            label="2x2 all same (ones)",
-        ),
-        TestCase(
-            input=[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-            expected=[[1, 0]],
-            label="4x4 all zeros",
-        ),
-    ]
+def solve(grid: list[list[int]]) -> list:
+    def all_same(x, y, size):
+        val = grid[x][y]
+        for i in range(x, x + size):
+            for j in range(y, y + size):
+                if grid[i][j] != val:
+                    return False
+        return True
 
-    def solve(self, grid: list[list[int]]) -> list:
-        from collections import deque
+    def build(x, y, size):
+        if all_same(x, y, size):
+            return [1, int(grid[x][y])]
+        half = size // 2
+        tl = build(x, y, half)
+        tr = build(x, y + half, half)
+        bl = build(x + half, y, half)
+        br = build(x + half, y + half, half)
+        return [0, 1, tl, tr, bl, br]
 
-        def all_same(x, y, size):
-            val = grid[x][y]
-            for i in range(x, x + size):
-                for j in range(y, y + size):
-                    if grid[i][j] != val:
-                        return False
-            return True
-
-        # LeetCode format: [isLeaf, val] where isLeaf=1 means leaf, val is the stored value
-        def build(x, y, size):
-            if all_same(x, y, size):
-                return [1, int(grid[x][y])]
-            half = size // 2
-            tl = build(x, y, half)
-            tr = build(x, y + half, half)
-            bl = build(x + half, y, half)
-            br = build(x + half, y + half, half)
-            return [0, 1, tl, tr, bl, br]
-
-        tree = build(0, 0, len(grid))
-        # Level-order flatten with None for missing children
-        result = []
-        queue = deque([tree])
-        while queue:
-            node = queue.popleft()
-            if node is None:
-                result.append(None)
-                continue
-            result.append([node[0], node[1]])
-            if node[0] == 0:  # not leaf, always append 4 children slots
-                for child in node[2:]:
-                    queue.append(child)
-        # Remove trailing None values
-        while result and result[-1] is None:
-            result.pop()
-        return result
+    tree = build(0, 0, len(grid))
+    result = []
+    queue = deque([tree])
+    while queue:
+        node = queue.popleft()
+        if node is None:
+            print("null")
+            continue
+        print(f"{node[0]} {node[1]}")
+        if node[0] == 0:
+            for child in node[2:]:
+                queue.append(child)
+    return result
 
 
 if __name__ == "__main__":
-    Solution().run()
+    cols = read_int()
+    grid = []
+    for _ in range(cols):
+        grid.append(read_ints())
+    solve(grid)

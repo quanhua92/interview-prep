@@ -27,59 +27,53 @@ Template (python3):
         def findBottomLeftValue(self, root: Optional[TreeNode]) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase, TreeNode
+from src.wasm_libs.py.io import *
+from collections import deque
 
 
-class Solution(Problem):
-    name = "513. Find Bottom Left Tree Value"
-    test_cases = [
-        TestCase(input=TreeNode.from_list([2, 1, 3]), expected=1, label="example 1"),
-        TestCase(
-            input=TreeNode.from_list([1, 2, 3, 4, None, 5, 6, None, None, 7]),
-            expected=7,
-            label="example 2",
-        ),
-        TestCase(
-            input=TreeNode.from_list([1]),
-            expected=1,
-            label="single node",
-        ),
-        TestCase(
-            input=TreeNode.from_list([1, 2]),
-            expected=2,
-            label="left child only",
-        ),
-        TestCase(
-            input=TreeNode.from_list([1, None, 2]),
-            expected=2,
-            label="right child only",
-        ),
-        TestCase(
-            input=TreeNode.from_list([1, 2, None, 3, None, 4]),
-            expected=4,
-            label="left skewed deep",
-        ),
-    ]
+def build_tree(vals: list[int]) -> list | None:
+    if not vals or vals[0] is None:
+        return None
+    root = {"val": vals[0], "left": None, "right": None}
+    queue = deque([root])
+    i = 1
+    while queue and i < len(vals):
+        node = queue.popleft()
+        if i < len(vals) and vals[i] is not None:
+            node["left"] = {"val": vals[i], "left": None, "right": None}
+            queue.append(node["left"])
+        i += 1
+        if i < len(vals) and vals[i] is not None:
+            node["right"] = {"val": vals[i], "left": None, "right": None}
+            queue.append(node["right"])
+        i += 1
+    return root
 
-    def solve(self, root: TreeNode) -> int:
-        from collections import deque
 
-        queue = deque([root])
-        result = 0
-        while queue:
-            level_size = len(queue)
-            result = queue[0].val
-            for _ in range(level_size):
-                node = queue.popleft()
-                if node.left:
-                    queue.append(node.left)
-                if node.right:
-                    queue.append(node.right)
-        return result
+def solve(vals: list[int]) -> int:
+    root = build_tree(vals)
+    queue = deque([root])
+    result = 0
+    while queue:
+        level_size = len(queue)
+        result = queue[0]["val"]
+        for _ in range(level_size):
+            node = queue.popleft()
+            if node["left"]:
+                queue.append(node["left"])
+            if node["right"]:
+                queue.append(node["right"])
+    return result
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    tokens = read_line().split()
+    vals = []
+    for t in tokens:
+        if t == "null":
+            vals.append(None)
+        else:
+            vals.append(int(t))
+    result = solve(vals)
+    write_int(result)

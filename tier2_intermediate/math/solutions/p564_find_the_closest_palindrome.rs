@@ -30,7 +30,7 @@
  *         def nearestPalindromic(self, n: str) -> str:
  */
 
-
+use wasm_libs::*;
 use std::collections::BTreeSet;
 
 fn make_palindrome(prefix: i64, total_len: usize) -> i64 {
@@ -64,29 +64,7 @@ fn nearest_palindromic(n: &str) -> String {
 }
 
 fn main() {
-    println!("\n============================================================");
-    println!("  564. Find the Closest Palindrome");
-    println!("============================================================");
-    let tests: &[(&str, &str, &str)] = &[
-        ("example 1", "123", "121"),
-        ("example 2", "1", "0"),
-        ("edge at 10", "10", "9"),
-        ("two same digits", "99", "101"),
-        ("power of 10", "100", "99"),
-        ("four digit", "1283", "1331"),
-    ];
-    let mut passed = 0;
-    for (i, (label, input, expected)) in tests.iter().enumerate() {
-        let got = nearest_palindromic(input);
-        if got == *expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, label);
-            println!("    Expected: {}, Got: {}", expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let n = read_line();
+    write_string(&nearest_palindromic(&n));
+    std::process::exit(0);
 }

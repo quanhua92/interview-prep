@@ -27,9 +27,9 @@
  *         def licenseKeyFormatting(self, s: str, k: int) -> str:
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 #include <cctype>
+#include <string>
 
 std::string licenseKeyFormatting(const std::string &s, int k)
 {
@@ -50,33 +50,11 @@ std::string licenseKeyFormatting(const std::string &s, int k)
     return result;
 }
 
-void __attribute__((unused)) _use_harness_fns(void)
+int main(void)
 {
-    (void)print_arr;
-}
-
-int main()
-{
-    struct { const char *s; int k; const char *expected; const char *label; } tests[] = {
-        {"5F3Z-2e-9-w", 4, "5F3Z-2E9W", "example 1"},
-        {"2-5g-3-J", 2, "2-5G-3J", "example 2"},
-        {"a", 1, "A", "single char no dash"},
-        {"---", 3, "", "only dashes"},
-        {"2-4A0r7-4k", 4, "24A0-R74K", "even groups no short first"},
-        {"aa-aa-aa-aa-aa-aa", 1, "A-A-A-A-A-A-A-A-A-A-A-A", "k=1"},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        std::string got = licenseKeyFormatting(tests[i].s, tests[i].k);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %s\n    Got:      %s\n", tests[i].expected, got.c_str());
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    std::string s = read_line();
+    std::vector<int> k_arr = read_ints();
+    int k = k_arr[0];
+    write_string(licenseKeyFormatting(s, k));
+    return 0;
 }

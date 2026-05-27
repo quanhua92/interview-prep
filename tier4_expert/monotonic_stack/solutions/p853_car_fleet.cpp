@@ -13,17 +13,14 @@
  * Example 1:
  *     Input: target = 12, position = [10,8,0,5,3], speed = [2,4,1,1,3]
  *     Output: 3
- *     Explanation:
  *
  * Example 2:
  *     Input: target = 10, position = [3], speed = [3]
  *     Output: 1
- *     Explanation:
  *
  * Example 3:
  *     Input: target = 100, position = [0,2,4], speed = [4,2,1]
  *     Output: 1
- *     Explanation:
  *
  * Constraints:
  *     - n == position.length == speed.length
@@ -40,14 +37,11 @@
  * Hint: Sort by position desc, calculate time to target. A car forms a new fleet only if it arrives before the current fleet.
  */
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <vector>
+#include "io.h"
 #include <algorithm>
+#include <vector>
 
-int carFleet(int target, std::vector<int> &position, std::vector<int> &speed)
+int carFleet(int target, std::vector<int> position, std::vector<int> speed)
 {
     int n = (int)position.size();
     if (n == 0) return 0;
@@ -69,32 +63,9 @@ int carFleet(int target, std::vector<int> &position, std::vector<int> &speed)
 
 int main(void)
 {
-    struct TC { const char *label; int target; std::vector<int> pos; std::vector<int> spd; int expected; };
-    TC tests[] = {
-        {"example 1", 12, {10, 8, 0, 5, 3}, {2, 4, 1, 1, 3}, 3},
-        {"example 2", 10, {3}, {3}, 1},
-        {"all merge", 100, {0, 2, 4}, {4, 2, 1}, 1},
-        {"two cars no merge", 10, {8, 0}, {2, 1}, 2},
-        {"two cars merge", 10, {0, 3}, {3, 2}, 1},
-        {"all same speed", 10, {1, 2, 3}, {1, 1, 1}, 3},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  853. Car Fleet\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int got = carFleet(tests[i].target, tests[i].pos, tests[i].spd);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d, Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    int target = read_int();
+    std::vector<int> position = read_ints();
+    std::vector<int> speed = read_ints();
+    write_int(carFleet(target, position, speed));
+    return 0;
 }

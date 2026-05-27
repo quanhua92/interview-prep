@@ -55,10 +55,7 @@ Template (python3):
 Hint: Build a Trie from the word list, then search with DFS handling '.' wildcards by trying all children.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
 class TrieNode:
@@ -96,47 +93,18 @@ class WordDictionary:
         return self._dfs(node.children[ch], word, index + 1)
 
 
-class Solution(Problem):
-    name = "211. Design Add and Search Words Data Structure"
-    test_cases = [
-        TestCase(
-            input=(["bad", "dad", "mad"], ["pad", "bad", ".ad", "b.."]),
-            expected=[False, True, True, True],
-            label="example 1",
-        ),
-        TestCase(
-            input=(["a", "ab"], ["a", ".a", "ab"]),
-            expected=[True, False, True],
-            label="example 2",
-        ),
-        TestCase(
-            input=(["abc"], ["...", ".."]),
-            expected=[True, False],
-            label="all dots pattern",
-        ),
-        TestCase(
-            input=(["a", "b"], ["."]),
-            expected=[True],
-            label="single char dot matches multiple",
-        ),
-        TestCase(
-            input=(["abc", "xbc"], [".bc"]),
-            expected=[True],
-            label="dot at beginning",
-        ),
-        TestCase(
-            input=(["abc"], ["a.c", "a.."]),
-            expected=[True, True],
-            label="dot in middle and at end",
-        ),
-    ]
-
-    def solve(self, words: list[str], search_words: list[str]) -> list[bool]:
-        wd = WordDictionary()
-        for w in words:
-            wd.add_word(w)
-        return [wd.search(sw) for sw in search_words]
+def solve(words: list[str], search_words: list[str]) -> list[bool]:
+    wd = WordDictionary()
+    for w in words:
+        wd.add_word(w)
+    return [wd.search(sw) for sw in search_words]
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n_words = read_int()
+    words = [read_line() for _ in range(n_words)]
+    n_searches = read_int()
+    search_words = [read_line() for _ in range(n_searches)]
+    results = solve(words, search_words)
+    for r in results:
+        write_bool(r)

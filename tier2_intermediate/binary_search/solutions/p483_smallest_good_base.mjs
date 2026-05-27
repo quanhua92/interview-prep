@@ -29,6 +29,8 @@
  *         def smallestGoodBase(self, n: str) -> str:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
+
 function solve(n) {
   const num = BigInt(n);
 
@@ -61,25 +63,5 @@ function solve(n) {
   return result;
 }
 
-const tests = [
-  { label: "example 1", input: "13", expected: "3" },
-  { label: "example 2", input: "4681", expected: "8" },
-  { label: "example 3", input: "1000000000000000000", expected: "999999999999999999" },
-  { label: "smallest n equals 11 base 2", input: "3", expected: "2" },
-  { label: "111 base 2", input: "7", expected: "2" },
-  { label: "11111 base 2", input: "31", expected: "2" },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const n = readLine();
+writeString(solve(n));

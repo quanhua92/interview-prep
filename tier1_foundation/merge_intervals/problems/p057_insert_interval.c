@@ -2,21 +2,21 @@
  * P57: Insert Interval (Medium)
  * https://leetcode.com/problems/insert-interval/
  * Topics: Array
- * 
+ *
  * You are given an array of non-overlapping intervals intervals where intervals[i] = [starti, endi] represent the start and the end of the ith interval and intervals is sorted in ascending order by starti. You are also given an interval newInterval = [start, end] that represents the start and end of another interval.
  * Insert newInterval into intervals such that intervals is still sorted in ascending order by starti and intervals still does not have any overlapping intervals (merge overlapping intervals if necessary).
  * Return intervals after the insertion.
  * Note that you don't need to modify intervals in-place. You can make a new array and return it.
- * 
+ *
  * Example 1:
  *     Input: intervals = [[1,3],[6,9]], newInterval = [2,5]
  *     Output: [[1,5],[6,9]]
- * 
+ *
  * Example 2:
  *     Input: intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]
  *     Output: [[1,2],[3,10],[12,16]]
  *     Explanation: Because the new interval [4,8] overlaps with [3,5],[6,7],[8,10].
- * 
+ *
  * Constraints:
  *     - 0 <= intervals.length <= 104
  *     - intervals[i].length == 2
@@ -24,54 +24,41 @@
  *     - intervals is sorted by starti in ascending order.
  *     - newInterval.length == 2
  *     - 0 <= start <= end <= 105
- * 
+ *
  * Hints:
  *     - Intervals Array is sorted. Can you use Binary Search to find the correct position to insert the new Interval.?
  *     - Can you try merging the overlapping intervals while inserting the new interval?
  *     - This can be done by comparing the end of the last interval with the start of the new interval and vice versa.
- * 
+ *
  * Template (python3):
  *     class Solution:
  *         def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
- * 
+ *
  * Hint: Add non-overlapping before, merge overlapping, add non-overlapping after.
  */
-#include "ctest.h"
 
-int* solve(int* arr, int arr_n, int num_intervals, int* ret_size) {
+#include "io.h"
+#include <stdlib.h>
+
+void solve(int num_intervals, int intervals[][2], int new_interval[2])
+{
     abort();
 }
 
-int main(void) {
-    TestCase tests[] = {
-        {"example 1",
-         {1,3,6,9,2,5}, 6, 2,
-         {1,5,6,9}, 4},
-        {"example 2",
-         {1,2,3,5,6,7,8,10,12,16,4,8}, 12, 5,
-         {1,2,3,10,12,16}, 6},
-        {"empty intervals",
-         {5,7}, 2, 0,
-         {5,7}, 2},
-        {"contained",
-         {1,5,2,3}, 4, 1,
-         {1,5}, 2},
-        {"insert before all",
-         {3,5,6,9,1,2}, 6, 2,
-         {1,2,3,5,6,9}, 6},
-        {"insert after all",
-         {1,2,3,5,6,9}, 6, 2,
-         {1,2,3,5,6,9}, 6},
-        {"merge with first interval",
-         {1,3,6,9,0,2}, 6, 2,
-         {0,3,6,9}, 4},
-        {"merge with last interval",
-         {1,3,6,9,8,10}, 6, 2,
-         {1,3,6,10}, 4},
-        {"bridge gap between intervals",
-         {1,2,4,5,2,4}, 6, 2,
-         {1,5}, 2},
-    };
-
-    RUN_TESTS("57. Insert Interval", solve, tests, 9);
+int main(void)
+{
+    int n = read_int();
+    int (*intervals)[2] = malloc(n * sizeof(*intervals));
+    for (int i = 0; i < n; i++) {
+        int *row = read_ints(NULL);
+        intervals[i][0] = row[0];
+        intervals[i][1] = row[1];
+        free(row);
+    }
+    int *ni = read_ints(NULL);
+    int new_interval[2] = {ni[0], ni[1]};
+    free(ni);
+    solve(n, intervals, new_interval);
+    free(intervals);
+    return 0;
 }

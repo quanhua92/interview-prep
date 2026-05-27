@@ -31,11 +31,11 @@
  *         def findSubstringInWraproundString(self, s: str) -> int:
  */
 
+use wasm_libs::*;
 
-use rstest;
-
-fn find_substring_in_wrapround_string(s: &str) -> i32 {
-    let bytes = s.as_bytes();
+impl Solution {
+    fn find_substring_in_wrapround_string(s: &str) -> i32 {
+        let bytes = s.as_bytes();
     let mut max_len = [0i32; 26];
     let mut curr = 0i32;
     for i in 0..bytes.len() {
@@ -48,28 +48,12 @@ fn find_substring_in_wrapround_string(s: &str) -> i32 {
         if curr > max_len[idx] { max_len[idx] = curr; }
     }
     max_len.iter().sum()
+    }
 }
 
+struct Solution;
+
 fn main() {
-    struct TC<'a> { label: &'a str, s: &'a str, expected: i32 }
-    let tests: &[TC] = &[
-        TC { label: "example 1", s: "a", expected: 1 },
-        TC { label: "example 2", s: "cac", expected: 2 },
-        TC { label: "example 3", s: "zab", expected: 6 },
-        TC { label: "all same chars only a in wraparound", s: "aaaaa", expected: 1 },
-        TC { label: "wraparound chain length 8", s: "zabcdefg", expected: 36 },
-        TC { label: "full alphabet", s: "abcdefghijklmnopqrstuvwxyz", expected: 351 },
-    ];
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = find_substring_in_wrapround_string(tc.s);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL (expected {}, got {})", i + 1, tc.label, tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let s = read_line();
+    write_int(find_substring_in_wrapround_string(&s));
 }

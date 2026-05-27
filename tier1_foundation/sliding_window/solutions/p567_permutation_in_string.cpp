@@ -30,12 +30,9 @@
  *         def checkInclusion(self, s1: str, s2: str) -> bool:
  */
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <string>
+#include "io.h"
 #include <array>
+#include <string>
 
 static bool checkInclusion(const std::string &s1, const std::string &s2)
 {
@@ -57,28 +54,10 @@ static bool checkInclusion(const std::string &s1, const std::string &s2)
     return false;
 }
 
-int main()
+int main(void)
 {
-    struct { const char *label; const char *s1; const char *s2; bool expected; } tests[] = {
-        {"example 1",             "ab", "eidbaooo",       true},
-        {"example 2",             "ab", "eidboaoo",       false},
-        {"single char match",     "a",  "a",              true},
-        {"permutation at end",    "adc","dcda",           true},
-        {"no match large string", "abc","ccccbbbbaaaa",   false},
-        {"s1 longer than s2",     "ab", "a",              false},
-    };
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        bool got = checkInclusion(tests[i].s1, tests[i].s2);
-        if (got == tests[i].expected) {
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-            passed++;
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %s\n    Got: %s\n", tests[i].expected ? "true" : "false", got ? "true" : "false");
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    std::string s1 = read_line();
+    std::string s2 = read_line();
+    write_bool(checkInclusion(s1, s2));
+    return 0;
 }

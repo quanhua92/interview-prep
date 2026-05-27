@@ -12,8 +12,8 @@
  *     Output: 4
  *     Explanation:
  *     call isBadVersion(3) -> false
- *     call isBadVersion(5) -> true
- *     call isBadVersion(4) -> true
+ *     call isBadVersion(5) -> true
+ *     call isBadVersion(4) -> true
  *     Then 4 is the first bad version.
  *
  * Example 2:
@@ -33,13 +33,11 @@
  * Hint: Binary search for the leftmost version where is_bad is True.
  */
 
-
-#include <cstdio>
-#include <vector>
+#include "io.h"
 
 static int g_bad;
 
-int firstBadVersion(long long n, int bad)
+static int firstBadVersion(long long n, int bad)
 {
     g_bad = bad;
     long long left = 1, right = n;
@@ -55,33 +53,8 @@ int firstBadVersion(long long n, int bad)
 
 int main(void)
 {
-    struct Tc { const char *label; long long n; int bad; int expected; bool pass; };
-    std::vector<Tc> tests = {
-        {"example 1", 5, 4, 4, false},
-        {"single version, bad", 1, 1, 1, false},
-        {"last version is bad", 3, 3, 3, false},
-        {"middle version is bad", 10, 7, 7, false},
-        {"first version is bad", 2, 1, 1, false},
-        {"large n, last is bad", 100, 100, 100, false},
-        {"large n, first is bad", 100000, 1, 1, false},
-        {"small n last bad", 2, 2, 2, false},
-        {"large n near end", 1000000, 999999, 999999, false},
-        {"max int overflow safe", 2147483647LL, 1, 1, false},
-    };
-
-    int passed = 0;
-    for (auto &tc : tests) {
-        int got = firstBadVersion(tc.n, tc.bad);
-        tc.pass = (got == tc.expected);
-        if (tc.pass) passed++;
-    }
-
-    printf("\n============================================================\n");
-    printf("  278. First Bad Version\n");
-    printf("============================================================\n");
-    for (int i = 0; i < (int)tests.size(); i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, (int)tests.size());
-    printf("============================================================\n");
-    return passed == (int)tests.size() ? 0 : 1;
+    long long n = read_long();
+    int bad = read_int();
+    write_int(firstBadVersion(n, bad));
+    return 0;
 }

@@ -27,49 +27,32 @@ Template (python3):
 Hint: Implement merge sort — divide array in half, sort recursively, merge.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "912. Sort an Array"
-    test_cases = [
-        TestCase(input=[5, 2, 3, 1], expected=[1, 2, 3, 5], label="example 1"),
-        TestCase(
-            input=[5, 1, 1, 2, 0, 0], expected=[0, 0, 1, 1, 2, 5], label="duplicates"
-        ),
-        TestCase(input=[1], expected=[1], label="single element"),
-        TestCase(input=[], expected=[], label="empty array"),
-        TestCase(input=[1, 2, 3, 4, 5], expected=[1, 2, 3, 4, 5], label="already sorted"),
-        TestCase(input=[5, 4, 3, 2, 1], expected=[1, 2, 3, 4, 5], label="reverse sorted"),
-        TestCase(input=[7, 7, 7, 7], expected=[7, 7, 7, 7], label="all same elements"),
-        TestCase(input=[-5, -3, -8, -1], expected=[-8, -5, -3, -1], label="negative numbers"),
-    ]
+def solve(nums: list[int]) -> list[int]:
+    if len(nums) <= 1:
+        return nums[:]
 
-    def solve(self, nums: list[int]) -> list[int]:
-        if len(nums) <= 1:
-            return nums[:]
+    mid = len(nums) // 2
+    left = solve(nums[:mid])
+    right = solve(nums[mid:])
 
-        mid = len(nums) // 2
-        left = self.solve(nums[:mid])
-        right = self.solve(nums[mid:])
-
-        # Merge
-        result: list[int] = []
-        i = j = 0
-        while i < len(left) and j < len(right):
-            if left[i] <= right[j]:
-                result.append(left[i])
-                i += 1
-            else:
-                result.append(right[j])
-                j += 1
-        result.extend(left[i:])
-        result.extend(right[j:])
-        return result
+    result: list[int] = []
+    i = j = 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    result = solve(nums)
+    write_ints(result)

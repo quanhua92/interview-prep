@@ -30,12 +30,10 @@
  *     - <a href="https://www.cs.princeton.edu/~wayne/kleinberg-tardos/pdf/03Graphs.pdf" target="_blank">Topological Sort via DFS</a> - A great tutorial explaining the basic concepts of Topological Sort.
  *     - Topological sort could also be done via <a href="http://en.wikipedia.org/wiki/Topological_sorting#Algorithms" target="_blank">BFS</a>.
  *
- * Template (python3):
- *     class Solution:
- *         def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
- *
  * Hint: Build a graph and use topological sort (Kahn's algorithm) to detect cycles.
  */
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
 
 function solve(numCourses, prerequisites) {
   const graph = {};
@@ -61,26 +59,11 @@ function solve(numCourses, prerequisites) {
   return count === numCourses;
 }
 
-const tests = [
-  { label: "example 1", input: [2, [[1, 0]]], expected: true },
-  { label: "example 2", input: [2, [[1, 0], [0, 1]]], expected: false },
-  { label: "no prerequisites", input: [1, []], expected: true },
-  { label: "3-node cycle", input: [3, [[0, 1], [1, 2], [2, 0]]], expected: false },
-  { label: "linear chain disconnected node", input: [5, [[0, 1], [1, 2], [2, 3]]], expected: true },
-  { label: "two deps on one course", input: [3, [[1, 0], [2, 0]]], expected: true },
-  { label: "self-contained cycle", input: [4, [[0, 1], [1, 2], [2, 3], [3, 1]]], expected: false },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const header = readInts();
+const numCourses = header[0];
+const pairCount = header[1];
+const prerequisites = [];
+for (let i = 0; i < pairCount; i++) {
+  prerequisites.push(readInts());
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+writeBool(solve(numCourses, prerequisites));

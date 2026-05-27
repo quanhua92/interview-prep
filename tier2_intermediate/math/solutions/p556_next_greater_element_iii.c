@@ -22,10 +22,7 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "ctest.h"
-#pragma GCC diagnostic pop
+#include "io.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -47,30 +44,9 @@ int nextGreaterElement(int n) {
 }
 
 int main(void) {
-    printf("\n============================================================\n");
-    printf("  556. Next Greater Element III\n");
-    printf("============================================================\n");
-    struct { const char *label; int input; int expected; } tests[] = {
-        {"example 1", 12, 21},
-        {"example 2", 21, -1},
-        {"single digit", 1, -1},
-        {"all same digits", 11, -1},
-        {"classic example", 230241, 230412},
-        {"max 32-bit int", 2147483647, -1},
-    };
-    int tc = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < tc; i++) {
-        int got = nextGreaterElement(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d, Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, tc);
-    printf("============================================================\n\n");
-    return passed == tc ? 0 : 1;
+    int n;
+    int *vals = read_ints(&n);
+    write_int(nextGreaterElement(vals[0]));
+    free(vals);
+    return 0;
 }

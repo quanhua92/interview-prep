@@ -31,6 +31,8 @@
  *         def findSubstringInWraproundString(self, s: str) -> int:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(s) {
   const maxLen = new Array(26).fill(0);
   let curr = 0;
@@ -46,25 +48,5 @@ function solve(s) {
   return maxLen.reduce((a, b) => a + b, 0);
 }
 
-const tests = [
-  { label: "example 1", input: "a", expected: 1 },
-  { label: "example 2", input: "cac", expected: 2 },
-  { label: "example 3", input: "zab", expected: 6 },
-  { label: "all same chars only a in wraparound", input: "aaaaa", expected: 1 },
-  { label: "wraparound chain length 8", input: "zabcdefg", expected: 36 },
-  { label: "full alphabet", input: "abcdefghijklmnopqrstuvwxyz", expected: 351 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const s = readLine();
+writeInt(solve(s));

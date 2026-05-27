@@ -9,50 +9,26 @@ You must solve the problem without using any built-in functions in O(nlog(n)) ti
 Example 1:
     Input: nums = [5,2,3,1]
     Output: [1,2,3,5]
-    Explanation: After sorting the array, the positions of some numbers are not changed (for example, 2 and 3), while the positions of other numbers are changed (for example, 1 and 5).
 
 Example 2:
     Input: nums = [5,1,1,2,0,0]
     Output: [0,0,1,1,2,5]
-    Explanation: Note that the values of nums are not necessarily unique.
 
 Constraints:
     - 1 <= nums.length <= 5 * 104
     - -5 * 104 <= nums[i] <= 5 * 104
 
-Template (python3):
-    class Solution:
-        def sortArray(self, nums: List[int]) -> List[int]:
-
 Hint: Implement merge sort — divide array in half, sort recursively, merge.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "912. Sort an Array"
-    test_cases = [
-        TestCase(input=[5, 2, 3, 1], expected=[1, 2, 3, 5], label="example 1"),
-        TestCase(
-            input=[5, 1, 1, 2, 0, 0], expected=[0, 0, 1, 1, 2, 5], label="duplicates"
-        ),
-        TestCase(input=[1], expected=[1], label="single element"),
-        TestCase(input=[], expected=[], label="empty array"),
-        TestCase(input=[1, 2, 3, 4, 5], expected=[1, 2, 3, 4, 5], label="already sorted"),
-        TestCase(input=[5, 4, 3, 2, 1], expected=[1, 2, 3, 4, 5], label="reverse sorted"),
-        TestCase(input=[7, 7, 7, 7], expected=[7, 7, 7, 7], label="all same elements"),
-        TestCase(input=[-5, -3, -8, -1], expected=[-8, -5, -3, -1], label="negative numbers"),
-    ]
-
-    def solve(self, nums: list[int]) -> list[int]:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, nums: list[int]) -> list[int]"
-        )
+def solve(nums: list[int]) -> list[int]:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    result = solve(nums)
+    write_ints(result)

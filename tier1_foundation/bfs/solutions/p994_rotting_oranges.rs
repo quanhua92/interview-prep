@@ -34,26 +34,21 @@
  * Hint: Use BFS starting from all rotten oranges simultaneously.
  */
 
-
+use wasm_libs::*;
 use std::collections::VecDeque;
 
-fn oranges_rotting(grid: &mut Vec<Vec<i32>>) -> i32 {
+fn solve(grid: &mut Vec<Vec<i32>>) -> i32 {
     let rows = grid.len();
     let cols = grid[0].len();
     let mut queue: VecDeque<(usize, usize)> = VecDeque::new();
     let mut fresh = 0i32;
     for r in 0..rows {
         for c in 0..cols {
-            if grid[r][c] == 2 {
-                queue.push_back((r, c));
-            } else if grid[r][c] == 1 {
-                fresh += 1;
-            }
+            if grid[r][c] == 2 { queue.push_back((r, c)); }
+            else if grid[r][c] == 1 { fresh += 1; }
         }
     }
-    if fresh == 0 {
-        return 0;
-    }
+    if fresh == 0 { return 0; }
     let dirs: [(i32, i32); 4] = [(0, 1), (0, -1), (1, 0), (-1, 0)];
     let mut minutes = 0i32;
     while !queue.is_empty() {
@@ -73,36 +68,14 @@ fn oranges_rotting(grid: &mut Vec<Vec<i32>>) -> i32 {
                 }
             }
         }
-        if !queue.is_empty() {
-            minutes += 1;
-        }
+        if !queue.is_empty() { minutes += 1; }
     }
     if fresh == 0 { minutes } else { -1 }
 }
 
 fn main() {
-    let tests: Vec<(&str, Vec<Vec<i32>>, i32)> = vec![
-        ("example 1", vec![vec![2,1,1], vec![1,1,0], vec![0,1,1]], 4),
-        ("example 2", vec![vec![2,1,1], vec![0,1,1], vec![1,0,1]], -1),
-        ("no fresh", vec![vec![0,2]], 0),
-        ("single fresh no rotten", vec![vec![1]], -1),
-        ("single rotten", vec![vec![2]], 0),
-        ("all fresh no rotten", vec![vec![1,1,1], vec![1,1,1], vec![1,1,1]], -1),
-        ("multiple rotten sources", vec![vec![2,2], vec![1,1], vec![0,1]], 2),
-    ];
-    let mut passed = 0;
-    for (i, (label, grid, expected)) in tests.iter().enumerate() {
-        let mut g = grid.clone();
-        let got = oranges_rotting(&mut g);
-        if got == *expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, label);
-            println!("    Expected: {}", expected);
-            println!("    Got:      {}", got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let n = read_int();
+    let mut grid: Vec<Vec<i32>> = (0..n).map(|_| read_ints()).collect();
+    write_int(solve(&mut grid));
+    std::process::exit(0);
 }

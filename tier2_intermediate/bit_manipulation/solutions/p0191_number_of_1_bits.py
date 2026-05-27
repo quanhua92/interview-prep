@@ -33,37 +33,18 @@ Template (python3):
 Hint: Use Brian Kernighan's algorithm: n &= (n - 1) clears the lowest set bit.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "191. Number of 1 Bits"
-    test_cases = [
-        TestCase(
-            input=0b00000000000000000000000000001011, expected=3, label="example 1"
-        ),
-        TestCase(
-            input=0b00000000000000000000000010000000, expected=1, label="power of two"
-        ),
-        TestCase(
-            input=2147483645, expected=30, label="leetcode example 3"
-        ),
-        TestCase(input=0, expected=0, label="zero"),
-        TestCase(input=1, expected=1, label="single bit"),
-        TestCase(input=0x55555555, expected=16, label="alternating bits"),
-        TestCase(input=(1 << 31) - 1, expected=31, label="max value all bits set"),
-    ]
-
-    def solve(self, n: int) -> int:
-        count = 0
-        while n:
-            n &= n - 1
-            count += 1
-        return count
+def solve(n: int) -> int:
+    count = 0
+    while n:
+        n &= n - 1
+        count += 1
+    return count
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    result = solve(n)
+    write_int(result)

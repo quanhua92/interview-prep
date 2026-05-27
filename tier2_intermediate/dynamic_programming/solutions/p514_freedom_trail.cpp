@@ -30,8 +30,7 @@
  *         def findRotateSteps(self, ring: str, key: str) -> int:
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 #include <vector>
 #include <cstring>
 #include <climits>
@@ -63,26 +62,9 @@ int findRotateSteps(const std::string &ring, const std::string &key) {
     return dp[0];
 }
 
-int main() {
-    struct TC { const char *label; std::string ring; std::string key; int expected; };
-    std::vector<TC> tests = {
-        {"example 1", "godding", "gd", 4},
-        {"example 2", "godding", "godding", 13},
-        {"single char ring and key", "a", "a", 1},
-        {"reverse order key", "abc", "cba", 6},
-        {"repeated chars", "aaaaa", "aaa", 3},
-    };
-    int total = (int)tests.size();
-    int passed = 0;
-    for (int i = 0; i < total; i++) {
-        int got = findRotateSteps(tests[i].ring, tests[i].key);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, total);
-    return passed == total ? 0 : 1;
+int main(void) {
+    std::string ring = read_line();
+    std::string key = read_line();
+    write_int(findRotateSteps(ring, key));
+    return 0;
 }

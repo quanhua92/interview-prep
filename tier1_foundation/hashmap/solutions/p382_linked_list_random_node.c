@@ -49,8 +49,7 @@
  */
 
 
-#include "ctest.h"
-#include <stdio.h>
+#include "io.h"
 #include <stdlib.h>
 
 typedef struct ListNode {
@@ -88,36 +87,13 @@ static int solve(ListNode *head) {
     return slow->val;
 }
 
-int main(void) {
-    static TestCase tests[] = {
-        {"middle of odd-length list", {1, 2, 3}, 3, 0, {2}, 1},
-        {"middle of even-length list", {1, 2, 3, 4}, 4, 0, {3}, 1},
-        {"single node", {4}, 1, 0, {4}, 1},
-        {"two nodes", {1, 2}, 2, 0, {2}, 1},
-        {"three nodes", {5, 6, 7}, 3, 0, {6}, 1},
-        {"five nodes", {1, 2, 3, 4, 5}, 5, 0, {3}, 1},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  382. Linked List Random Node\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        ListNode *head = build_list(tests[i].input_arr, tests[i].input_arr_n);
-        int got = solve(head);
-        free_list(head);
-        int got_arr[1] = {got};
-        if (th_arr_eq(got_arr, 1, tests[i].expected, tests[i].expected_n)) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: "); th_print_arr(tests[i].expected, tests[i].expected_n);
-            printf("\n    Got:      [%d]\n", got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-    return passed == n ? 0 : 1;
+int main(void)
+{
+    int n;
+    int *arr = read_ints(&n);
+    ListNode *head = build_list(arr, n);
+    write_int(solve(head));
+    free_list(head);
+    free(arr);
+    return 0;
 }

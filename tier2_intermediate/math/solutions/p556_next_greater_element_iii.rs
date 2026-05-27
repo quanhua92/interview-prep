@@ -21,6 +21,7 @@
  *         def nextGreaterElement(self, n: int) -> int:
  */
 
+use wasm_libs::*;
 
 fn next_greater_element(n: i32) -> i32 {
     let mut digits: Vec<char> = n.to_string().chars().collect();
@@ -40,29 +41,7 @@ fn next_greater_element(n: i32) -> i32 {
 }
 
 fn main() {
-    println!("\n============================================================");
-    println!("  556. Next Greater Element III");
-    println!("============================================================");
-    let tests: &[(&str, i32, i32)] = &[
-        ("example 1", 12, 21),
-        ("example 2", 21, -1),
-        ("single digit", 1, -1),
-        ("all same digits", 11, -1),
-        ("classic example", 230241, 230412),
-        ("max 32-bit int", 2147483647, -1),
-    ];
-    let mut passed = 0;
-    for (i, (label, input, expected)) in tests.iter().enumerate() {
-        let got = next_greater_element(*input);
-        if got == *expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, label);
-            println!("    Expected: {}, Got: {}", expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let vals = read_ints();
+    write_int(next_greater_element(vals[0]));
+    std::process::exit(0);
 }

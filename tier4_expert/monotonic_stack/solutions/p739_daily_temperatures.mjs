@@ -21,15 +21,10 @@
  *     - 1 <= temperatures.length <= 105
  *     - 30 <= temperatures[i] <= 100
  *
- * Hints:
- *     - If the temperature is say, 70 today, then in the future a warmer temperature must be either 71, 72, 73, ..., 99, or 100.  We could remember when all of them occur next.
- *
- * Template (python3):
- *     class Solution:
- *         def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
- *
  * Hint: Use a monotonic decreasing stack to track indices of warmer days.
  */
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
 
 function solve(temperatures) {
   const n = temperatures.length;
@@ -45,27 +40,5 @@ function solve(temperatures) {
   return answer;
 }
 
-const tests = [
-  { input: [73, 74, 75, 71, 69, 72, 76, 73], expected: [1, 1, 4, 2, 1, 1, 0, 0], label: "example 1" },
-  { input: [30, 40, 50, 60], expected: [1, 1, 1, 0], label: "example 2" },
-  { input: [30, 60, 90], expected: [1, 1, 0], label: "example 3" },
-  { input: [50], expected: [0], label: "single element" },
-  { input: [50, 50, 50], expected: [0, 0, 0], label: "all same temps" },
-  { input: [90, 80, 70, 60], expected: [0, 0, 0, 0], label: "strictly decreasing" },
-  { input: [50, 50, 50, 60], expected: [3, 2, 1, 0], label: "all same then warmer" },
-];
-
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const temperatures = readInts();
+writeInts(solve(temperatures));

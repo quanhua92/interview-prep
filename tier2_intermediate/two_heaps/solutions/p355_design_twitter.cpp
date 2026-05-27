@@ -7,7 +7,6 @@
  * Implement the Twitter class:
  * Example 1:
  *     Input
- * Example 1:
  *     ["Twitter", "postTweet", "getNewsFeed", "follow", "postTweet", "getNewsFeed", "unfollow", "getNewsFeed"]
  *     [[], [1, 5], [1], [1, 2], [2, 6], [1], [1, 2], [1]]
  *     Output
@@ -32,7 +31,6 @@
  *
  * Template (python3):
  *     class Twitter:
- *
  *         def __init__(self):
  *
  *
@@ -48,7 +46,6 @@
  *         def unfollow(self, followerId: int, followeeId: int) -> None:
  *
  *
- *
  *     # Your Twitter object will be instantiated and called as such:
  *     # obj = Twitter()
  *     # obj.postTweet(userId,tweetId)
@@ -58,13 +55,11 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+#include "io.h"
 #include <queue>
 #include <vector>
 #include <unordered_set>
+#include <string>
 
 class Twitter {
     struct Tweet { int tweet_id; int time; int next; };
@@ -111,28 +106,26 @@ int main(void)
 {
     Twitter tw;
 
-    printf("\n============================================================\n");
-    printf("  355. Design Twitter\n");
-    printf("============================================================\n");
+    int num_ops = read_int();
+    for (int i = 0; i < num_ops; i++) {
+        std::string op = read_line();
+        int arg_count = read_int();
+        std::vector<int> args(arg_count);
+        for (int j = 0; j < arg_count; j++) {
+            args[j] = read_int();
+        }
 
-    tw.postTweet(1, 5);
-    auto feed = tw.getNewsFeed(1);
-    int ok1 = feed.size() == 1 && feed[0] == 5;
-    printf("  Test 1 (post + feed): %s\n", ok1 ? "PASS" : "FAIL");
+        if (op == "postTweet") {
+            tw.postTweet(args[0], args[1]);
+        } else if (op == "getNewsFeed") {
+            std::vector<int> feed = tw.getNewsFeed(args[0]);
+            write_ints(feed);
+        } else if (op == "follow") {
+            tw.follow(args[0], args[1]);
+        } else if (op == "unfollow") {
+            tw.unfollow(args[0], args[1]);
+        }
+    }
 
-    tw.follow(1, 2);
-    tw.postTweet(2, 6);
-    feed = tw.getNewsFeed(1);
-    int ok2 = feed.size() == 2 && feed[0] == 6 && feed[1] == 5;
-    printf("  Test 2 (follow + merge feed): %s\n", ok2 ? "PASS" : "FAIL");
-
-    tw.unfollow(1, 2);
-    feed = tw.getNewsFeed(1);
-    int ok3 = feed.size() == 1 && feed[0] == 5;
-    printf("  Test 3 (unfollow): %s\n", ok3 ? "PASS" : "FAIL");
-
-    int passed = (ok1 && ok2 && ok3) ? 3 : 0;
-    printf("\n  %d/3 passed\n", passed);
-    printf("============================================================\n\n");
-    return passed == 3 ? 0 : 1;
+    return 0;
 }

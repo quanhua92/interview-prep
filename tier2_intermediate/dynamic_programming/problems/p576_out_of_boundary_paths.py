@@ -30,29 +30,18 @@ Template (python3):
         def findPaths(self, m: int, n: int, maxMove: int, startRow: int, startColumn: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "576. Out of Boundary Paths"
-    test_cases = [
-        TestCase(input=(2, 2, 2, 0, 0), expected=6, label="example 1"),
-        TestCase(input=(1, 3, 3, 0, 1), expected=12, label="example 2"),
-        TestCase(input=(1, 1, 1, 0, 0), expected=4, label="1x1 grid single move"),
-        TestCase(input=(2, 2, 1, 0, 0), expected=2, label="corner 1 move"),
-        TestCase(input=(3, 3, 0, 1, 1), expected=0, label="zero moves"),
-    ]
-
-    def solve(
-        self, m: int, n: int, maxMove: int, startRow: int, startColumn: int
-    ) -> int:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, m, n, maxMove, startRow, startColumn) -> int"
-        )
+def solve(m: int, n: int, max_move: int, start_row: int, start_column: int) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    m = read_int()
+    n = read_int()
+    mm = read_int()
+    sr = read_int()
+    sc = read_int()
+    result = solve(m, n, mm, sr, sc)
+    write_int(result)

@@ -52,6 +52,8 @@
  * Hint: Build a Trie class with insert, search, and starts_with methods.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
+
 class TrieNode {
   constructor() {
     this.children = {};
@@ -110,44 +112,18 @@ function solve(operations) {
   return results;
 }
 
-const tests = [
-  {
-    label: "full sequence",
-    input: [[["insert", "apple"], ["search", "apple"], ["search", "app"], ["starts_with", "app"], ["insert", "app"], ["search", "app"]]],
-    expected: [null, true, false, true, null, true],
-  },
-  {
-    label: "single character",
-    input: [[["insert", "a"], ["search", "a"], ["search", "b"], ["starts_with", "a"], ["starts_with", "b"]]],
-    expected: [null, true, false, true, false],
-  },
-  {
-    label: "search non-existent word/prefix",
-    input: [[["insert", "hello"], ["search", "world"], ["starts_with", "world"], ["search", "hel"], ["starts_with", "hel"]]],
-    expected: [null, false, false, false, true],
-  },
-  {
-    label: "overlapping prefixes",
-    input: [[["insert", "a"], ["insert", "ab"], ["insert", "abc"], ["search", "a"], ["search", "ab"], ["search", "abc"], ["search", "abcd"], ["starts_with", "ab"], ["starts_with", "abcd"]]],
-    expected: [null, null, null, true, true, true, false, true, false],
-  },
-  {
-    label: "duplicate insert",
-    input: [[["insert", "test"], ["insert", "test"], ["search", "test"], ["starts_with", "te"]]],
-    expected: [null, null, true, true],
-  },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
+const numOps = readInt();
+const operations = [];
+for (let i = 0; i < numOps; i++) {
+  const op = readLine();
+  const val = readLine();
+  operations.push([op, val]);
+}
+const results = solve(operations);
+for (const r of results) {
+  if (r === null) {
+    writeString("null");
   } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
+    writeBool(r);
   }
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);

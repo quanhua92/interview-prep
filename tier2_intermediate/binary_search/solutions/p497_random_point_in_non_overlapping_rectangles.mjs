@@ -48,6 +48,8 @@
  *     # param_1 = obj.pick()
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
+
 function solve(rects) {
   const prefix = [];
   let total = 0;
@@ -59,24 +61,10 @@ function solve(rects) {
   return prefix;
 }
 
-const tests = [
-  { label: "area sum for two rectangles", input: [[-2, -2, 1, 1], [2, 2, 4, 6]], expected: [16, 31] },
-  { label: "area for single 3x3 rectangle", input: [[0, 0, 2, 2]], expected: [9] },
-  { label: "single point rectangle", input: [[0, 0, 0, 0]], expected: [1] },
-  { label: "negative and positive rects same size", input: [[-5, -5, -3, -3], [1, 1, 3, 3]], expected: [9, 18] },
-  { label: "different sized rects", input: [[1, 1, 2, 2], [3, 3, 5, 5]], expected: [4, 13] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const cols = readInt();
+const rects = [];
+for (let i = 0; i < cols; i++) {
+  rects.push(readInts());
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const result = solve(rects);
+writeInts(result);

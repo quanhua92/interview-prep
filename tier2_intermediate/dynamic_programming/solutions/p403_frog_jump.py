@@ -4,7 +4,7 @@ https://leetcode.com/problems/frog-jump/
 Topics: Array, Dynamic Programming
 
 A frog is crossing a river. The river is divided into some number of units, and at each unit, there may or may not exist a stone. The frog can jump on a stone, but it must not jump into the water.
-Given a list of stones positions (in units) in sorted ascending order, determine if the frog can cross the river by landing on the last stone. Initially, the frog is on the first stone and assumes the first jump must be 1 unit.
+Given a list of stones positions (in units) in sorted ascending order, determine if the frog can cross the river by landing on the last stone. Initially, the frog is on the first stone and assumes the first jump must be 1 unit.
 If the frog's last jump was k units, its next jump must be either k - 1, k, or k + 1 units. The frog can only jump in the forward direction.
 Example 1:
     Input: stones = [0,1,3,5,6,8,12,17]
@@ -20,49 +20,37 @@ Constraints:
     - 2 <= stones.length <= 2000
     - 0 <= stones[i] <= 231 - 1
     - stones[0] == 0
-    - stones is sorted in a strictly increasing order.
+    - stones is sorted in a strictly increasing order.
 
 Template (python3):
     class Solution:
         def canCross(self, stones: List[int]) -> bool:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "403. Frog Jump"
-    test_cases = [
-        TestCase(input=[0, 1, 3, 5, 6, 8, 12, 17], expected=True, label="example 1"),
-        TestCase(input=[0, 1, 2, 3, 4, 8, 9, 11], expected=False, label="example 2"),
-        TestCase(input=[0, 1], expected=True, label="minimum 2 stones"),
-        TestCase(input=[0, 2], expected=False, label="gap too large for first jump"),
-        TestCase(input=[0, 1, 3, 6, 10, 15, 21], expected=True, label="increasing jumps 1,2,3,4,5,6"),
-        TestCase(input=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expected=True, label="consecutive stones"),
-    ]
+def solve(stones: list[int]) -> bool:
+    stone_set = set(stones)
+    memo: dict[tuple[int, int], bool] = {}
 
-    def solve(self, stones: list[int]) -> bool:
-        stone_set = set(stones)
-        memo: dict[tuple[int, int], bool] = {}
+    def can_reach(pos: int, k: int) -> bool:
+        if pos == stones[-1]:
+            return True
+        if (pos, k) in memo:
+            return memo[(pos, k)]
+        for step in (k - 1, k, k + 1):
+            if step > 0 and pos + step in stone_set:
+                if can_reach(pos + step, step):
+                    memo[(pos, k)] = True
+                    return True
+        memo[(pos, k)] = False
+        return False
 
-        def can_reach(pos: int, k: int) -> bool:
-            if pos == stones[-1]:
-                return True
-            if (pos, k) in memo:
-                return memo[(pos, k)]
-            for step in (k - 1, k, k + 1):
-                if step > 0 and pos + step in stone_set:
-                    if can_reach(pos + step, step):
-                        memo[(pos, k)] = True
-                        return True
-            memo[(pos, k)] = False
-            return False
-
-        return can_reach(0, 0)
+    return can_reach(0, 0)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    stones = read_ints()
+    result = solve(stones)
+    write_bool(result)

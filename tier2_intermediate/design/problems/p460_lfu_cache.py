@@ -7,7 +7,7 @@ Design and implement a data structure for a Least Frequently Used (LFU) cache.
 Implement the LFUCache class:
 To determine the least frequently used key, a use counter is maintained for each key in the cache. The key with the smallest use counter is the least frequently used key.
 When a key is first inserted into the cache, its use counter is set to 1 (due to the put operation). The use counter for a key in the cache is incremented either a get or put operation is called on it.
-The functions get and put must each run in O(1) average time complexity.
+The functions get and put must each run in O(1) average time complexity.
 Example 1:
     Input
 Example 1:
@@ -38,10 +38,10 @@ Example 1:
     // cache=[4,3], cnt(4)=2, cnt(3)=3
 
 Constraints:
-    - 1 <= capacity <= 104
+    - 1 <= capacity <= 104
     - 0 <= key <= 105
     - 0 <= value <= 109
-    - At most 2 * 105 calls will be made to get and put.
+    - At most 2 * 105 calls will be made to get and put.
 
 Template (python3):
     class LFUCache:
@@ -62,14 +62,10 @@ Template (python3):
     # obj.put(key,value)
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
 class LFUCache:
-
     def __init__(self, capacity: int):
         raise NotImplementedError(
             "TODO: Implement __init__(self, capacity: int)"
@@ -86,17 +82,15 @@ class LFUCache:
         )
 
 
-class Solution(Problem):
-    name = "460. LFU Cache"
-    test_cases = [
-        TestCase(input=(), expected=None, label="example 1"),
-    ]
-
-    def solve(self) -> None:
-        raise NotImplementedError(
-            "TODO: Implement solve(self) -> None"
-        )
-
-
 if __name__ == "__main__":
-    Solution().run()
+    capacity = read_int()
+    num_ops = read_int()
+    cache = LFUCache(capacity)
+    for _ in range(num_ops):
+        parts = read_line().split()
+        op = parts[0]
+        if op == "get":
+            write_string(str(cache.get(int(parts[1]))))
+        elif op == "put":
+            cache.put(int(parts[1]), int(parts[2]))
+            write_string("null")

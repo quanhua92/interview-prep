@@ -34,21 +34,17 @@
  * Hint: Use BFS starting from all rotten oranges simultaneously.
  */
 
+#include "io.h"
+#include <stdlib.h>
 
-#include "ctest.h"
-
-static int orangesRotting(int grid[10][10], int rows, int cols) {
+int solve(int **grid, int rows, int cols) {
     int queue[200];
     int front = 0, back = 0;
     int fresh = 0;
     for (int r = 0; r < rows; r++) {
         for (int c = 0; c < cols; c++) {
-            if (grid[r][c] == 2) {
-                queue[back++] = r;
-                queue[back++] = c;
-            } else if (grid[r][c] == 1) {
-                fresh++;
-            }
+            if (grid[r][c] == 2) { queue[back++] = r; queue[back++] = c; }
+            else if (grid[r][c] == 1) fresh++;
         }
     }
     if (fresh == 0) return 0;
@@ -58,16 +54,13 @@ static int orangesRotting(int grid[10][10], int rows, int cols) {
     while (front < back) {
         int level_items = (back - front) / 2;
         for (int i = 0; i < level_items; i++) {
-            int r = queue[front++];
-            int c = queue[front++];
+            int r = queue[front++]; int c = queue[front++];
             for (int d = 0; d < 4; d++) {
-                int nr = r + dr[d];
-                int nc = c + dc[d];
+                int nr = r + dr[d]; int nc = c + dc[d];
                 if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == 1) {
                     grid[nr][nc] = 2;
                     fresh--;
-                    queue[back++] = nr;
-                    queue[back++] = nc;
+                    queue[back++] = nr; queue[back++] = nc;
                 }
             }
         }
@@ -76,39 +69,20 @@ static int orangesRotting(int grid[10][10], int rows, int cols) {
     return fresh == 0 ? minutes : -1;
 }
 
-typedef struct {
-    const char *label;
-    int grid[10][10];
-    int rows, cols;
-    int expected;
-} TC;
-
-int main(void) {
-    (void)th_print_arr;
-    (void)th_arr_eq;
-    TC tests[] = {
-        {"example 1", {{2,1,1},{1,1,0},{0,1,1}}, 3, 3, 4},
-        {"example 2", {{2,1,1},{0,1,1},{1,0,1}}, 3, 3, -1},
-        {"no fresh", {{0,2}}, 1, 2, 0},
-        {"single fresh no rotten", {{1}}, 1, 1, -1},
-        {"single rotten", {{2}}, 1, 1, 0},
-        {"all fresh no rotten", {{1,1,1},{1,1,1},{1,1,1}}, 3, 3, -1},
-        {"multiple rotten sources", {{2,2},{1,1},{0,1}}, 3, 2, 2},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        int grid[10][10];
-        memcpy(grid, tests[i].grid, sizeof(grid));
-        int got = orangesRotting(grid, tests[i].rows, tests[i].cols);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
+int main(void)
+{
+    int n;
+    int *size_line = read_ints(&n);
+    int rows = size_line[0];
+    free(size_line);
+    int **grid = (int **)malloc(sizeof(int *) * rows);
+    for (int i = 0; i < rows; i++) {
+        int row_n;
+        grid[i] = read_ints(&row_n);
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+    int result = solve(grid, rows, rows);
+    write_int(result);
+    for (int i = 0; i < rows; i++) free(grid[i]);
+    free(grid);
+    return 0;
 }

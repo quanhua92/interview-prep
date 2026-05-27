@@ -36,9 +36,11 @@
  */
 
 
-#include "cpptest.h"
+#include "io.h"
+#include <vector>
 
-static int findJudge(int n, const std::vector<std::vector<int>>& trust) {
+int findJudge(int n, const std::vector<std::vector<int>>& trust)
+{
     std::vector<int> scores(n + 1, 0);
     for (const auto& t : trust) {
         scores[t[0]] -= 1;
@@ -50,36 +52,17 @@ static int findJudge(int n, const std::vector<std::vector<int>>& trust) {
     return -1;
 }
 
-struct TC {
-    const char *label;
-    int n;
-    std::vector<std::vector<int>> trust;
-    int expected;
-};
+int main(void)
+{
+    auto header = read_ints();
+    int n = header[0];
+    int trustCount = header[1];
 
-int main(void) {
-    (void)print_arr;
-    TC tests[] = {
-        {"example 1", 2, {{1,2}}, 2},
-        {"example 2", 3, {{1,3},{2,3}}, 3},
-        {"no judge", 3, {{1,3},{2,3},{3,1}}, -1},
-        {"single person", 1, {}, 1},
-        {"judge candidate trusts someone", 4, {{1,3},{2,3},{4,3},{3,4}}, -1},
-        {"no trust relationships n>1", 3, {}, -1},
-        {"mutual trust no judge", 2, {{1,2},{2,1}}, -1},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        int got = findJudge(tests[i].n, tests[i].trust);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
+    std::vector<std::vector<int>> trust;
+    for (int i = 0; i < trustCount; i++) {
+        trust.push_back(read_ints());
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+
+    write_int(findJudge(n, trust));
+    return 0;
 }

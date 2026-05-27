@@ -31,12 +31,9 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
-#include <algorithm>
+#include "io.h"
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 int numberOfBoomerangs(const std::vector<std::pair<int,int>> &points)
@@ -58,37 +55,14 @@ int numberOfBoomerangs(const std::vector<std::pair<int,int>> &points)
 
 int main(void)
 {
-    struct TC {
-        const char *label;
-        std::vector<std::pair<int,int>> points;
-        int expected;
-    };
-    TC tests[] = {
-        {"example 1", {{0,0},{1,0},{2,0}}, 2},
-        {"example 2", {{1,1},{2,2},{3,3}}, 2},
-        {"example 3", {{1,1}}, 0},
-        {"only 2 points", {{0,0},{1,0}}, 0},
-        {"square 4 points", {{0,0},{0,1},{1,0},{1,1}}, 8},
-        {"isoceles triangle", {{0,0},{1,1},{1,-1}}, 2},
-        {"isoceles different heights", {{0,0},{3,4},{3,-4}}, 2},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
+    std::vector<int> header = read_ints();
+    int n = header[0];
 
-    printf("\n============================================================\n");
-    printf("  447. Number of Boomerangs\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int got = numberOfBoomerangs(tests[i].points);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
+    std::vector<std::pair<int,int>> points;
+    for (int i = 0; i < n; i++) {
+        std::vector<int> row = read_ints();
+        points.push_back({row[0], row[1]});
     }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    write_int(numberOfBoomerangs(points));
+    return 0;
 }

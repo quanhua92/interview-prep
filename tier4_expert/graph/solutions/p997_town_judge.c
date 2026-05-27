@@ -35,10 +35,12 @@
  * Hint: Trust score array: for each [a,b], scores[a]-=1 and scores[b]+=1. Judge has score n-1.
  */
 
+#include "io.h"
+#include <stdlib.h>
+#include <string.h>
 
-#include "ctest.h"
-
-static int findJudge(int n, int trust[][2], int trustSize) {
+int findJudge(int n, int (*trust)[2], int trustSize)
+{
     int scores[1001];
     memset(scores, 0, sizeof(scores));
     for (int i = 0; i < trustSize; i++) {
@@ -51,38 +53,27 @@ static int findJudge(int n, int trust[][2], int trustSize) {
     return -1;
 }
 
-typedef struct {
-    const char *label;
-    int n;
-    int trust[10000][2];
-    int trustSize;
-    int expected;
-} TC;
+int main(void)
+{
+    int k;
+    int *header = read_ints(&k);
+    int n = header[0];
+    int trustCount = header[1];
+    free(header);
 
-int main(void) {
-    (void)th_print_arr;
-    (void)th_arr_eq;
-    TC tests[] = {
-        {"example 1", 2, {{1,2}}, 1, 2},
-        {"example 2", 3, {{1,3},{2,3}}, 2, 3},
-        {"no judge", 3, {{1,3},{2,3},{3,1}}, 3, -1},
-        {"single person", 1, {{0}}, 0, 1},
-        {"judge candidate trusts someone", 4, {{1,3},{2,3},{4,3},{3,4}}, 4, -1},
-        {"no trust relationships n>1", 3, {{0}}, 0, -1},
-        {"mutual trust no judge", 2, {{1,2},{2,1}}, 2, -1},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        int got = findJudge(tests[i].n, tests[i].trust, tests[i].trustSize);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
+    int (*trust)[2] = NULL;
+    if (trustCount > 0) {
+        trust = malloc(trustCount * sizeof(int[2]));
+        for (int i = 0; i < trustCount; i++) {
+            int m;
+            int *pair = read_ints(&m);
+            trust[i][0] = pair[0];
+            trust[i][1] = pair[1];
+            free(pair);
         }
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+
+    write_int(findJudge(n, trust, trustCount));
+    free(trust);
+    return 0;
 }

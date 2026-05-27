@@ -36,7 +36,7 @@
  *     # codec.decode(codec.encode(url))
  */
 
-
+use wasm_libs::*;
 use std::collections::HashMap;
 
 struct Codec {
@@ -75,34 +75,7 @@ fn solve(long_url: &str) -> String {
 }
 
 fn main() {
-    let mut passed = 0;
-    let total = 4;
-    println!("\n============================================================");
-    println!("  535. Encode and Decode TinyURL");
-    println!("============================================================");
-
-    {
-        let got = solve("https://leetcode.com/problems/design-tinyurl");
-        if got == "https://leetcode.com/problems/design-tinyurl" { passed += 1; println!("  Test 1 (example 1): PASS"); }
-        else { println!("  Test 1 (example 1): FAIL\n  Expected: https://leetcode.com/problems/design-tinyurl, Got: {}", got); }
-    }
-    {
-        let got = solve("https://example.com/path/to/resource?query=1&param=2#section");
-        if got == "https://example.com/path/to/resource?query=1&param=2#section" { passed += 1; println!("  Test 2 (URL with query and fragment): PASS"); }
-        else { println!("  Test 2 (URL with query and fragment): FAIL\n  Expected: https://example.com/path/to/resource?query=1&param=2#section, Got: {}", got); }
-    }
-    {
-        let got = solve("http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u");
-        if got == "http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u" { passed += 1; println!("  Test 3 (URL with many path segments): PASS"); }
-        else { println!("  Test 3 (URL with many path segments): FAIL\n  Expected: http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u, Got: {}", got); }
-    }
-    {
-        let got = solve("https://site.com");
-        if got == "https://site.com" { passed += 1; println!("  Test 4 (minimal URL): PASS"); }
-        else { println!("  Test 4 (minimal URL): FAIL\n  Expected: https://site.com, Got: {}", got); }
-    }
-
-    println!("\n  {}/{} passed", passed, total);
-    println!("============================================================\n");
-    std::process::exit(if passed == total { 0 } else { 1 });
+    let url = read_line();
+    write_string(&solve(&url));
+    std::process::exit(0);
 }

@@ -29,9 +29,8 @@
  * Hint: Use two variables (prev, curr) -- for each house decide to rob or skip.
  */
 
-
-#include "cpptest.h"
-#include <vector>
+#include "io.h"
+#include <algorithm>
 
 int rob(std::vector<int> nums) {
     int prev = 0, curr = 0;
@@ -43,31 +42,8 @@ int rob(std::vector<int> nums) {
     return curr;
 }
 
-int main() {
-    struct TC { const char *label; std::vector<int> nums; int expected; };
-    std::vector<TC> tests = {
-        {"example 1", {1,2,3,1}, 4},
-        {"example 2", {2,7,9,3,1}, 12},
-        {"single house", {1}, 1},
-        {"no houses", {}, 0},
-        {"alternate houses equal", {2,1,1,2}, 4},
-        {"all zeros", {0,0,0}, 0},
-        {"two houses", {1,2}, 2},
-        {"alternating high low", {10,1,10,1,10}, 30},
-        {"three peaks", {100,1,1,100,1,1,100}, 300},
-        {"max values large array", std::vector<int>(100, 400), 20000},
-    };
-    int total = (int)tests.size();
-    int passed = 0;
-    for (int i = 0; i < total; i++) {
-        int got = rob(tests[i].nums);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, total);
-    return passed == total ? 0 : 1;
+int main(void) {
+    std::vector<int> nums = read_ints();
+    write_int(rob(nums));
+    return 0;
 }

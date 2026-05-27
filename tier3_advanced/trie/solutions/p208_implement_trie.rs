@@ -52,9 +52,7 @@
  * Hint: Build a Trie class with insert, search, and starts_with methods.
  */
 
-
-#[allow(unused_imports)]
-use rstest;
+use wasm_libs::*;
 use std::collections::HashMap;
 
 struct TrieNode {
@@ -103,62 +101,23 @@ impl Trie {
     }
 }
 
-fn run_test(_label: &str, ops: &[(&str, &str)], expected: &[Option<bool>]) -> bool {
-    let mut trie = Trie::new();
-    for (i, (op, val)) in ops.iter().enumerate() {
-        match *op {
-            "insert" => trie.insert(val),
-            "search" => {
-                let got = trie.search(val);
-                if Some(got) != expected[i] { return false; }
-            }
-            "starts_with" => {
-                let got = trie.starts_with(val);
-                if Some(got) != expected[i] { return false; }
-            }
-            _ => {}
-        }
-    }
-    true
-}
-
 fn main() {
-    struct TC<'a> { label: &'a str, ops: &'a [(&'a str, &'a str)], expected: &'a [Option<bool>] }
+    let num_ops = read_int() as usize;
+    let mut trie = Trie::new();
 
-    let tests: &[TC] = &[
-        TC { label: "full sequence",
-             ops: &[("insert","apple"),("search","apple"),("search","app"),("starts_with","app"),("insert","app"),("search","app")],
-             expected: &[None, Some(true), Some(false), Some(true), None, Some(true)] },
-        TC { label: "single character",
-             ops: &[("insert","a"),("search","a"),("search","b"),("starts_with","a"),("starts_with","b")],
-             expected: &[None, Some(true), Some(false), Some(true), Some(false)] },
-        TC { label: "search non-existent word/prefix",
-             ops: &[("insert","hello"),("search","world"),("starts_with","world"),("search","hel"),("starts_with","hel")],
-             expected: &[None, Some(false), Some(false), Some(false), Some(true)] },
-        TC { label: "overlapping prefixes",
-             ops: &[("insert","a"),("insert","ab"),("insert","abc"),("search","a"),("search","ab"),("search","abc"),("search","abcd"),("starts_with","ab"),("starts_with","abcd")],
-             expected: &[None, None, None, Some(true), Some(true), Some(true), Some(false), Some(true), Some(false)] },
-        TC { label: "duplicate insert",
-             ops: &[("insert","test"),("insert","test"),("search","test"),("starts_with","te")],
-             expected: &[None, None, Some(true), Some(true)] },
-    ];
+    for _ in 0..num_ops {
+        let op = read_line();
+        let val = read_line();
 
-    println!("\n============================================================");
-    println!("  208. Implement Trie (Prefix Tree)");
-    println!("============================================================");
-
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        if run_test(tc.label, tc.ops, tc.expected) {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
+        if op == "insert" {
+            trie.insert(&val);
+            write_string("null");
+        } else if op == "search" {
+            write_bool(trie.search(&val));
         } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
+            write_bool(trie.starts_with(&val));
         }
     }
 
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    std::process::exit(0);
 }

@@ -32,9 +32,8 @@
  * Hint: Use bottom-up DP where dp[i] is the minimum coins needed for amount i.
  */
 
-
-#include "ctest.h"
-#include <limits.h>
+#include "io.h"
+#include <stdlib.h>
 
 int coinChange(int *coins, int coinsSize, int amount) {
     int INF = amount + 1;
@@ -54,30 +53,10 @@ int coinChange(int *coins, int coinsSize, int amount) {
 }
 
 int main(void) {
-    int passed = 0;
-    int total = 10;
-    struct TC { const char *label; int coins[12]; int csz; int amount; int expected; };
-    struct TC tests[] = {
-        {"example 1", {1,2,5}, 3, 11, 3},
-        {"example 2", {2}, 1, 3, -1},
-        {"zero amount", {1}, 1, 0, 0},
-        {"smallest amount", {1}, 1, 1, 1},
-        {"suboptimal greedy", {1,3,4}, 3, 6, 2},
-        {"coin larger than amount", {2}, 1, 1, -1},
-        {"single coin exact match", {7}, 1, 7, 1},
-        {"large amount", {1,2,5}, 3, 100, 20},
-        {"multiple denominations", {2,5,10,1}, 4, 27, 4},
-        {"large coin value", {1,2147483647}, 2, 2, 2},
-    };
-    for (int i = 0; i < total; i++) {
-        int got = coinChange(tests[i].coins, tests[i].csz, tests[i].amount);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, total);
-    return passed == total ? 0 : 1;
+    int coins_n;
+    int *coins = read_ints(&coins_n);
+    int amount = read_int();
+    write_int(coinChange(coins, coins_n, amount));
+    free(coins);
+    return 0;
 }

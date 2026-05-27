@@ -18,16 +18,10 @@
  *     Input: digits = "2"
  *     Output: ["a","b","c"]
  *
- * Constraints:
- *     - 0 <= digits.length <= 4
- *     - digits[i] is a digit in the range ['2', '9'].
- *
- * Template (python3):
- *     class Solution:
- *         def letterCombinations(self, digits: str) -> List[str]:
- *
  * Hint: Map each digit to its letters and use backtracking to build all combinations.
  */
+
+import { readLine, writeString } from '../../../wasm_libs/js/io.mjs';
 
 function solve(digits) {
   if (!digits) return [];
@@ -54,25 +48,8 @@ function solve(digits) {
   return result.sort();
 }
 
-const tests = [
-  { label: "example 1", input: ["23"], expected: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"] },
-  { label: "empty input", input: [""], expected: [] },
-  { label: "single digit", input: ["2"], expected: ["a", "b", "c"] },
-  { label: "digit with 4 letters", input: ["7"], expected: ["p", "q", "r", "s"] },
-  { label: "digit 9", input: ["9"], expected: ["w", "x", "y", "z"] },
-  { label: "two 4-letter digits", input: ["79"], expected: ["pw", "px", "py", "pz", "qw", "qx", "qy", "qz", "rw", "rx", "ry", "rz", "sw", "sx", "sy", "sz"] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const digits = readLine();
+const result = solve(digits);
+for (const s of result) {
+  writeString(s);
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);

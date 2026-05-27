@@ -30,11 +30,9 @@
  *         def find132pattern(self, nums: List[int]) -> bool:
  */
 
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "io.h"
 #include <limits.h>
+#include <stdlib.h>
 
 int find132pattern(int *nums, int n)
 {
@@ -57,55 +55,9 @@ int find132pattern(int *nums, int n)
 
 int main(void)
 {
-    int passed = 0, total = 7;
-    printf("\n============================================================\n");
-    printf("  456. 132 Pattern\n");
-    printf("============================================================\n");
-
-    {
-        int nums[] = {1, 2, 3, 4};
-        int got = find132pattern(nums, 4);
-        if (got == 0) { passed++; printf("  Test 1 (example 1): PASS\n"); }
-        else { printf("  Test 1 (example 1): FAIL\n  Expected: 0, Got: %d\n", got); }
-    }
-    {
-        int nums[] = {3, 1, 4, 2};
-        int got = find132pattern(nums, 4);
-        if (got == 1) { passed++; printf("  Test 2 (example 2): PASS\n"); }
-        else { printf("  Test 2 (example 2): FAIL\n  Expected: 1, Got: %d\n", got); }
-    }
-    {
-        int nums[] = {-1, 3, 2, 0};
-        int got = find132pattern(nums, 4);
-        if (got == 1) { passed++; printf("  Test 3 (example 3): PASS\n"); }
-        else { printf("  Test 3 (example 3): FAIL\n  Expected: 1, Got: %d\n", got); }
-    }
-    {
-        int nums[] = {1, 2};
-        int got = find132pattern(nums, 2);
-        if (got == 0) { passed++; printf("  Test 4 (two elements): PASS\n"); }
-        else { printf("  Test 4 (two elements): FAIL\n  Expected: 0, Got: %d\n", got); }
-    }
-    {
-        int nums[] = {2, 2, 2};
-        int got = find132pattern(nums, 3);
-        if (got == 0) { passed++; printf("  Test 5 (all same): PASS\n"); }
-        else { printf("  Test 5 (all same): FAIL\n  Expected: 0, Got: %d\n", got); }
-    }
-    {
-        int nums[] = {5, 4, 3, 2, 1};
-        int got = find132pattern(nums, 5);
-        if (got == 0) { passed++; printf("  Test 6 (strictly decreasing): PASS\n"); }
-        else { printf("  Test 6 (strictly decreasing): FAIL\n  Expected: 0, Got: %d\n", got); }
-    }
-    {
-        int nums[] = {1, 3, 0, 2};
-        int got = find132pattern(nums, 4);
-        if (got == 1) { passed++; printf("  Test 7 (pattern near end): PASS\n"); }
-        else { printf("  Test 7 (pattern near end): FAIL\n  Expected: 1, Got: %d\n", got); }
-    }
-
-    printf("\n  %d/%d passed\n", passed, total);
-    printf("============================================================\n\n");
-    return passed == total ? 0 : 1;
+    int n;
+    int *nums = read_ints(&n);
+    write_bool(find132pattern(nums, n));
+    free(nums);
+    return 0;
 }

@@ -18,8 +18,8 @@ Example 3:
     Output: [1,1,0]
 
 Constraints:
-    - 1 <= temperatures.length <= 105
-    - 30 <= temperatures[i] <= 100
+    - 1 <= temperatures.length <= 105
+    - 30 <= temperatures[i] <= 100
 
 Hints:
     - If the temperature is say, 70 today, then in the future a warmer temperature must be either 71, 72, 73, ..., 99, or 100.  We could remember when all of them occur next.
@@ -31,39 +31,22 @@ Template (python3):
 Hint: Use a monotonic decreasing stack to track indices of warmer days.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "739. Daily Temperatures"
-    test_cases = [
-        TestCase(
-            input=[73, 74, 75, 71, 69, 72, 76, 73],
-            expected=[1, 1, 4, 2, 1, 1, 0, 0],
-            label="example 1",
-        ),
-        TestCase(input=[30, 40, 50, 60], expected=[1, 1, 1, 0], label="example 2"),
-        TestCase(input=[30, 60, 90], expected=[1, 1, 0], label="example 3"),
-        TestCase(input=[50], expected=[0], label="single element"),
-        TestCase(input=[50, 50, 50], expected=[0, 0, 0], label="all same temps"),
-        TestCase(input=[90, 80, 70, 60], expected=[0, 0, 0, 0], label="strictly decreasing"),
-        TestCase(input=[50, 50, 50, 60], expected=[3, 2, 1, 0], label="all same then warmer"),
-    ]
-
-    def solve(self, temperatures: list[int]) -> list[int]:
-        n = len(temperatures)
-        answer = [0] * n
-        stack: list[int] = []  # indices with decreasing temperatures
-        for i in range(n):
-            while stack and temperatures[i] > temperatures[stack[-1]]:
-                j = stack.pop()
-                answer[j] = i - j
-            stack.append(i)
-        return answer
+def solve(temperatures: list[int]) -> list[int]:
+    n = len(temperatures)
+    answer = [0] * n
+    stack: list[int] = []
+    for i in range(n):
+        while stack and temperatures[i] > temperatures[stack[-1]]:
+            j = stack.pop()
+            answer[j] = i - j
+        stack.append(i)
+    return answer
 
 
 if __name__ == "__main__":
-    Solution().run()
+    temperatures = read_ints()
+    result = solve(temperatures)
+    write_ints(result)

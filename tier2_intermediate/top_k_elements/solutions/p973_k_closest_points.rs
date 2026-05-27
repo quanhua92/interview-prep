@@ -4,7 +4,7 @@
  * Topics: Array, Math, Divide and Conquer, Geometry, Sorting, Heap (Priority Queue), Quickselect
  *
  * Given an array of points where points[i] = [xi, yi] represents a point on the X-Y plane and an integer k, return the k closest points to the origin (0, 0).
- * The distance between two points on the X-Y plane is the Euclidean distance (i.e., √(x1 - x2)2 + (y1 - y2)2).
+ * The distance between two points on the X-Y plane is the Euclidean distance (i.e., sqrt((x1 - x2)^2 + (y1 - y2)^2)).
  * You may return the answer in any order. The answer is guaranteed to be unique (except for the order that it is in).
  *
  * Example 1:
@@ -32,6 +32,7 @@
  * Hint: Use a max-heap of size k keyed by negative distance squared.
  */
 
+use wasm_libs::*;
 
 fn k_closest(points: &mut Vec<Vec<i32>>, k: i32) -> Vec<Vec<i32>> {
     let k = k as usize;
@@ -50,37 +51,12 @@ fn to_pts(flat: &[i32]) -> Vec<Vec<i32>> {
 }
 
 fn main() {
-    struct Case { label: &'static str, flat: &'static [i32], k: i32, exp_flat: &'static [i32] }
-    let tests: &[Case] = &[
-        Case { label: "example 1", flat: &[1, 3, -2, 2], k: 1, exp_flat: &[-2, 2] },
-        Case { label: "example 2 (sorted)", flat: &[3, 3, 5, -1, -2, 4], k: 2, exp_flat: &[-2, 4, 3, 3] },
-        Case { label: "origin itself", flat: &[0, 0], k: 1, exp_flat: &[0, 0] },
-        Case { label: "tie on distance", flat: &[1, 0, 0, 1, 2, 0], k: 2, exp_flat: &[0, 1, 1, 0] },
-        Case { label: "negative coords", flat: &[-1, -1, 2, 2, 3, 3], k: 1, exp_flat: &[-1, -1] },
-        Case { label: "two tied closest", flat: &[1, 0, 0, 1, 2, 0], k: 2, exp_flat: &[0, 1, 1, 0] },
-        Case { label: "all same point", flat: &[1, 1, 1, 1, 1, 1], k: 2, exp_flat: &[1, 1, 1, 1] },
-        Case { label: "origin is closest", flat: &[3, 4, 0, 0, 1, 1], k: 1, exp_flat: &[0, 0] },
-    ];
-
-    println!("\n============================================================");
-    println!("  973. K Closest Points to Origin");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let mut pts = to_pts(tc.flat);
-        let got = k_closest(&mut pts, tc.k);
-        let expected = to_pts(tc.exp_flat);
-        if got == expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {:?}", expected);
-            println!("    Got:      {:?}", got);
-        }
+    let flat = read_ints();
+    let k = read_int();
+    let mut pts = to_pts(&flat);
+    let result = k_closest(&mut pts, k);
+    for p in &result {
+        write_ints(p);
     }
-
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    std::process::exit(0);
 }

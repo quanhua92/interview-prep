@@ -21,59 +21,31 @@ Template (python3):
         def findSubsequences(self, nums: List[int]) -> List[List[int]]:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "491. Non-decreasing Subsequences"
-    test_cases = [
-        TestCase(
-            input=[4, 6, 7, 7],
-            expected=[
-                [4, 6],
-                [4, 6, 7],
-                [4, 6, 7, 7],
-                [4, 7],
-                [4, 7, 7],
-                [6, 7],
-                [6, 7, 7],
-                [7, 7],
-            ],
-            label="example 1",
-        ),
-        TestCase(input=[4, 4, 3, 2, 1], expected=[[4, 4]], label="example 2"),
-        TestCase(input=[2, 2, 2], expected=[[2, 2], [2, 2, 2]], label="all same elements"),
-        TestCase(input=[5, 4, 3, 2, 1], expected=[], label="strictly decreasing"),
-        TestCase(
-            input=[1, 2, 3],
-            expected=[[1, 2], [1, 2, 3], [1, 3], [2, 3]],
-            label="strictly increasing",
-        ),
-        TestCase(input=[1], expected=[], label="single element"),
-    ]
+def solve(nums: list[int]) -> list[list[int]]:
+    result: list[list[int]] = []
 
-    def solve(self, nums: list[int]) -> list[list[int]]:
-        result: list[list[int]] = []
+    def backtrack(start: int, path: list[int]):
+        if len(path) >= 2:
+            result.append(path[:])
+        used: set[int] = set()
+        for i in range(start, len(nums)):
+            if nums[i] in used:
+                continue
+            if not path or nums[i] >= path[-1]:
+                used.add(nums[i])
+                path.append(nums[i])
+                backtrack(i + 1, path)
+                path.pop()
 
-        def backtrack(start: int, path: list[int]):
-            if len(path) >= 2:
-                result.append(path[:])
-            used: set[int] = set()
-            for i in range(start, len(nums)):
-                if nums[i] in used:
-                    continue
-                if not path or nums[i] >= path[-1]:
-                    used.add(nums[i])
-                    path.append(nums[i])
-                    backtrack(i + 1, path)
-                    path.pop()
-
-        backtrack(0, [])
-        return sorted(result)
+    backtrack(0, [])
+    return sorted(result)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    subs = solve(nums)
+    for s in subs:
+        write_ints(s)

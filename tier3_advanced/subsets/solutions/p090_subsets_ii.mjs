@@ -18,12 +18,10 @@
  *     - 1 <= nums.length <= 10
  *     - -10 <= nums[i] <= 10
  *
- * Template (python3):
- *     class Solution:
- *         def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
- *
  * Hint: Sort first, then skip duplicates at the same recursion level during backtracking.
  */
+
+import { readInts, writeInts } from '../../../wasm_libs/js/io.mjs';
 
 function solve(nums) {
   const result = [];
@@ -43,25 +41,8 @@ function solve(nums) {
   return result;
 }
 
-const tests = [
-  { label: "example 1", input: [[1, 2, 2]], expected: [[], [1], [1, 2], [1, 2, 2], [2], [2, 2]] },
-  { label: "example 2", input: [[0]], expected: [[], [0]] },
-  { label: "all duplicates", input: [[2, 2, 2]], expected: [[], [2], [2, 2], [2, 2, 2]] },
-  { label: "multiple duplicates", input: [[1, 1, 2, 2]], expected: [[], [1], [1, 1], [1, 1, 2], [1, 1, 2, 2], [1, 2], [1, 2, 2], [2], [2, 2]] },
-  { label: "negative duplicates", input: [[-1, -1, 0]], expected: [[], [-1], [-1, -1], [-1, -1, 0], [-1, 0], [0]] },
-  { label: "all same element", input: [[1, 1, 1, 1]], expected: [[], [1], [1, 1], [1, 1, 1], [1, 1, 1, 1]] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const nums = readInts();
+const result = solve(nums);
+for (const row of result) {
+  writeInts(row);
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);

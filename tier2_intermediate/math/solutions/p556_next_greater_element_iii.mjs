@@ -21,6 +21,8 @@
  *         def nextGreaterElement(self, n: int) -> int:
  */
 
+import { readInts, writeInt } from '../../wasm_libs/js/io.mjs';
+
 function solve(n) {
   const digits = String(n).split("");
   let i = digits.length - 2;
@@ -39,25 +41,5 @@ function solve(n) {
   return result <= 2 ** 31 - 1 ? result : -1;
 }
 
-const tests = [
-  { label: "example 1", input: [12], expected: 21 },
-  { label: "example 2", input: [21], expected: -1 },
-  { label: "single digit", input: [1], expected: -1 },
-  { label: "all same digits", input: [11], expected: -1 },
-  { label: "classic example", input: [230241], expected: 230412 },
-  { label: "max 32-bit int", input: [2147483647], expected: -1 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const vals = readInts();
+writeInt(solve(vals[0]));

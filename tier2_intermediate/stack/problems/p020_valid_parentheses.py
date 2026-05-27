@@ -42,30 +42,14 @@ Template (python3):
 Hint: Use a stack to match opening and closing brackets.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "20. Valid Parentheses"
-    test_cases = [
-        TestCase(input="()", expected=True, label="simple pair"),
-        TestCase(input="()[]{}", expected=True, label="mixed brackets"),
-        TestCase(input="(]", expected=False, label="mismatched"),
-        TestCase(input="([)]", expected=False, label="interleaved"),
-        TestCase(input="{[]}", expected=True, label="nested"),
-        TestCase(input="(", expected=False, label="single opening"),
-        TestCase(input=")", expected=False, label="single closing"),
-        TestCase(input="((((", expected=False, label="only openings"),
-        TestCase(input="))))", expected=False, label="only closings"),
-        TestCase(input="((({{{[[[]]]}}})))", expected=True, label="deeply nested"),
-    ]
-
-    def solve(self, s: str) -> bool:
-        raise NotImplementedError("TODO: Implement solve(self, s: str) -> bool")
+def solve(s: str) -> bool:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    s = read_line()
+    result = solve(s)
+    write_bool(result)

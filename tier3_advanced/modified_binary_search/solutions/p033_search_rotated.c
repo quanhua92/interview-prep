@@ -34,16 +34,8 @@
  * Hint: Determine which half is sorted, then check if target lies in that half.
  */
 
-
-#include <stdio.h>
-
-typedef struct {
-    const char *label;
-    int nums[8];
-    int nums_n;
-    int target;
-    int expected;
-} TestCase;
+#include "io.h"
+#include <stdlib.h>
 
 int search(int *nums, int numsSize, int target)
 {
@@ -69,37 +61,13 @@ int search(int *nums, int numsSize, int target)
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {4,5,6,7,0,1,2}, 7, 0, 4},
-        {"example 2", {4,5,6,7,0,1,2}, 7, 3, -1},
-        {"single element", {1}, 1, 0, -1},
-        {"single element found", {1}, 1, 1, 0},
-        {"two elements rotated at pivot", {1,3}, 2, 3, 1},
-        {"two elements no rotation", {1,3}, 2, 1, 0},
-        {"target at first index", {5,1,3}, 3, 5, 0},
-        {"target at last index", {5,1,3}, 3, 3, 2},
-        {"large rotated target at start", {6,7,0,1,2,3,4,5}, 8, 6, 0},
-        {"large rotated target at end", {6,7,0,1,2,3,4,5}, 8, 5, 7},
-        {"no rotation sorted", {1,2,3,4,5}, 5, 3, 2},
-        {"negative values target at start", {-10,-5,0,1,2,3,-9}, 7, -10, 0},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  33. Search in Rotated Sorted Array\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = search(tests[i].nums, tests[i].nums_n, tests[i].target);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-    return passed == n ? 0 : 1;
+    int n;
+    int *nums = read_ints(&n);
+    int k;
+    int *target_line = read_ints(&k);
+    int target = target_line[0];
+    free(target_line);
+    write_int(search(nums, n, target));
+    free(nums);
+    return 0;
 }

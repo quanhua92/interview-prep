@@ -35,10 +35,7 @@
  * Hint: Use a hash map to track the last index of each character.
  */
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include "io.h"
 #include <string>
 #include <unordered_map>
 
@@ -57,31 +54,9 @@ static int lengthOfLongestSubstring(const std::string &s)
     return max_len;
 }
 
-int main()
+int main(void)
 {
-    struct { const char *label; const char *input; int expected; } tests[] = {
-        {"example 1",                          "abcabcbb", 3},
-        {"example 2",                          "bbbbb",    1},
-        {"example 3",                          "pwwkew",   3},
-        {"empty string",                       "",         0},
-        {"single character",                   "a",        1},
-        {"single space",                       " ",        1},
-        {"two unique chars",                   "au",       2},
-        {"reset from duplicate after unique prefix", "dvdf", 3},
-        {"char seen before current window",    "tmmzuxt",  5},
-    };
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = lengthOfLongestSubstring(tests[i].input);
-        if (got == tests[i].expected) {
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-            passed++;
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    std::string s = read_line();
+    write_int(lengthOfLongestSubstring(s));
+    return 0;
 }

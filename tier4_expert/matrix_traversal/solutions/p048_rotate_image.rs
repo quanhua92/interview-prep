@@ -30,7 +30,7 @@
  */
 
 
-use std::process::exit;
+use wasm_libs::*;
 
 fn rotate(matrix: &mut [Vec<i32>])
 {
@@ -47,39 +47,25 @@ fn rotate(matrix: &mut [Vec<i32>])
     }
 }
 
-struct MatTC {
-    label: &'static str,
-    input: Vec<Vec<i32>>,
-    expected: Vec<Vec<i32>>,
+fn read_int_matrix() -> Vec<Vec<i32>> {
+    let header = read_ints();
+    let rows = header[0] as usize;
+    let mut matrix = Vec::with_capacity(rows);
+    for _ in 0..rows {
+        matrix.push(read_ints());
+    }
+    matrix
+}
+
+fn write_matrix(mat: &[Vec<i32>]) {
+    for row in mat {
+        write_ints(row);
+    }
 }
 
 fn main()
 {
-    let tests: Vec<MatTC> = vec![
-        MatTC { label: "example 1", input: vec![vec![1,2,3],vec![4,5,6],vec![7,8,9]], expected: vec![vec![7,4,1],vec![8,5,2],vec![9,6,3]] },
-        MatTC { label: "example 2", input: vec![vec![5,1,9,11],vec![2,4,8,10],vec![13,3,6,7],vec![15,14,12,16]], expected: vec![vec![15,13,2,5],vec![14,3,4,1],vec![12,6,8,9],vec![16,7,10,11]] },
-        MatTC { label: "single element", input: vec![vec![1]], expected: vec![vec![1]] },
-        MatTC { label: "2x2 matrix", input: vec![vec![1,2],vec![3,4]], expected: vec![vec![3,1],vec![4,2]] },
-        MatTC { label: "negative values", input: vec![vec![-1,-2,-3],vec![-4,-5,-6],vec![-7,-8,-9]], expected: vec![vec![-7,-4,-1],vec![-8,-5,-2],vec![-9,-6,-3]] },
-    ];
-
-    println!("\n============================================================");
-    println!("  48. Rotate Image");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let mut work = tc.input.clone();
-        rotate(&mut work);
-        let ok = work == tc.expected;
-        if ok {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    if passed == tests.len() { exit(0); } else { exit(1); }
+    let mut matrix = read_int_matrix();
+    rotate(&mut matrix);
+    write_matrix(&matrix);
 }

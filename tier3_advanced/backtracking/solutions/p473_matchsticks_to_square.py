@@ -30,48 +30,36 @@ Template (python3):
         def makesquare(self, matchsticks: List[int]) -> bool:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "473. Matchsticks to Square"
-    test_cases = [
-        TestCase(input=[1, 1, 2, 2, 2], expected=True, label="example 1"),
-        TestCase(input=[3, 3, 3, 3, 4], expected=False, label="example 2"),
-        TestCase(input=[5, 5, 5, 5], expected=True, label="four equal sticks"),
-        TestCase(input=[2, 2, 2, 2, 2, 2], expected=False, label="all twos cannot form square"),
-        TestCase(input=[1, 1, 1, 1], expected=True, label="minimal square"),
-        TestCase(input=[3, 3, 3, 3], expected=True, label="each stick one side"),
-    ]
+def solve(matchsticks: list[int]) -> bool:
+    if not matchsticks:
+        return False
+    total = sum(matchsticks)
+    if total % 4 != 0:
+        return False
+    side = total // 4
+    matchsticks.sort(reverse=True)
+    if matchsticks[0] > side:
+        return False
+    sides = [0, 0, 0, 0]
 
-    def solve(self, matchsticks: list[int]) -> bool:
-        if not matchsticks:
-            return False
-        total = sum(matchsticks)
-        if total % 4 != 0:
-            return False
-        side = total // 4
-        matchsticks.sort(reverse=True)
-        if matchsticks[0] > side:
-            return False
-        sides = [0, 0, 0, 0]
+    def backtrack(idx: int) -> bool:
+        if idx == len(matchsticks):
+            return sides[0] == sides[1] == sides[2] == side
+        for i in range(4):
+            if sides[i] + matchsticks[idx] <= side:
+                sides[i] += matchsticks[idx]
+                if backtrack(idx + 1):
+                    return True
+                sides[i] -= matchsticks[idx]
+        return False
 
-        def backtrack(idx: int) -> bool:
-            if idx == len(matchsticks):
-                return sides[0] == sides[1] == sides[2] == side
-            for i in range(4):
-                if sides[i] + matchsticks[idx] <= side:
-                    sides[i] += matchsticks[idx]
-                    if backtrack(idx + 1):
-                        return True
-                    sides[i] -= matchsticks[idx]
-            return False
-
-        return backtrack(0)
+    return backtrack(0)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    matchsticks = read_ints()
+    result = solve(matchsticks)
+    write_bool(result)

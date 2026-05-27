@@ -30,26 +30,15 @@ Template (python3):
         def checkInclusion(self, s1: str, s2: str) -> bool:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "567. Permutation in String"
-    test_cases = [
-        TestCase(input=("ab", "eidbaooo"), expected=True, label="example 1"),
-        TestCase(input=("ab", "eidboaoo"), expected=False, label="example 2"),
-        TestCase(input=("a", "a"), expected=True, label="single char match"),
-        TestCase(input=("adc", "dcda"), expected=True, label="permutation at end"),
-        TestCase(input=("abc", "ccccbbbbaaaa"), expected=False, label="no match large string"),
-        TestCase(input=("ab", "a"), expected=False, label="s1 longer than s2"),
-    ]
-
-    def solve(self, s1: str, s2: str) -> bool:
-        raise NotImplementedError("TODO: Implement solve(self, s1, s2) -> bool")
+def solve(s1: str, s2: str) -> bool:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    s1 = read_line()
+    s2 = read_line()
+    result = solve(s1, s2)
+    write_bool(result)

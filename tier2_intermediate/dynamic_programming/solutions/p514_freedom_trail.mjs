@@ -30,54 +30,32 @@
  *         def findRotateSteps(self, ring: str, key: str) -> int:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(ring, key) {
-  const charPositions = {};
-  for (let i = 0; i < ring.length; i++) {
-    const ch = ring[i];
-    if (!charPositions[ch]) charPositions[ch] = [];
-    charPositions[ch].push(i);
-  }
-
   const n = ring.length;
+  const klen = key.length;
+  const positions = Array.from({length: 26}, () => []);
+  for (let i = 0; i < n; i++) {
+    positions[ring.charCodeAt(i) - 97].push(i);
+  }
   let dp = new Array(n).fill(0);
-
-  for (let ki = key.length - 1; ki >= 0; ki--) {
+  for (let ki = klen - 1; ki >= 0; ki--) {
     const newDp = new Array(n).fill(Infinity);
+    const ch = key.charCodeAt(ki) - 97;
     for (let pos = 0; pos < n; pos++) {
-      for (const target of charPositions[key[ki]]) {
+      for (const target of positions[ch]) {
         const diff = Math.abs(pos - target);
         const steps = Math.min(diff, n - diff) + 1;
-        if (ki === key.length - 1) {
-          newDp[pos] = Math.min(newDp[pos], steps);
-        } else {
-          newDp[pos] = Math.min(newDp[pos], steps + dp[target]);
-        }
+        const val = ki === klen - 1 ? steps : steps + dp[target];
+        if (val < newDp[pos]) newDp[pos] = val;
       }
     }
     dp = newDp;
   }
-
   return dp[0];
 }
 
-const tests = [
-  { label: "example 1", input: ["godding", "gd"], expected: 4 },
-  { label: "example 2", input: ["godding", "godding"], expected: 13 },
-  { label: "single char ring and key", input: ["a", "a"], expected: 1 },
-  { label: "reverse order key", input: ["abc", "cba"], expected: 6 },
-  { label: "repeated chars", input: ["aaaaa", "aaa"], expected: 3 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const ring = readLine();
+const key = readLine();
+writeInt(solve(ring, key));

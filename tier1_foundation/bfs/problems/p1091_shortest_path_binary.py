@@ -35,43 +35,21 @@ Template (python3):
 Hint: BFS from (0,0) with 8 directions, return distance to (n-1,n-1) or -1.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "1091. Shortest Path in Binary Matrix"
-    test_cases = [
-        TestCase(input=[[0, 1], [1, 0]], expected=2, label="example 1"),
-        TestCase(
-            input=[[0, 0, 0], [1, 1, 0], [1, 1, 0]], expected=4, label="example 2"
-        ),
-        TestCase(input=[[1, 0], [0, 1]], expected=-1, label="blocked"),
-        TestCase(input=[[0]], expected=1, label="single cell"),
-        TestCase(
-            input=[[0, 0, 0], [0, 0, 0], [0, 0, 0]],
-            expected=3,
-            label="3x3 all open (diagonal)",
-        ),
-        TestCase(
-            input=[[0, 0], [0, 0]],
-            expected=2,
-            label="2x2 all open (diagonal)",
-        ),
-        TestCase(
-            input=[[0, 1, 1], [1, 1, 1], [1, 1, 0]],
-            expected=-1,
-            label="3x3 only corners open",
-        ),
-    ]
+def solve(grid: list[list[int]]) -> int:
+    raise NotImplementedError
 
-    def solve(self, grid: list[list[int]]) -> int:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, grid: list[list[int]]) -> int"
-        )
 
 
 if __name__ == "__main__":
-    Solution().run()
+    _n = read_int()
+    grid = []
+    while True:
+        row = read_ints()
+        if not row:
+            break
+        grid.append(row)
+    result = solve(grid)
+    write_int(result)

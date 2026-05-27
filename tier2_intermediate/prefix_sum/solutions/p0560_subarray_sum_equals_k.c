@@ -34,7 +34,7 @@
  * Hint: Use a hash map with prefix sums to count subarrays summing to k.
  */
 
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 
 typedef struct Entry {
@@ -93,7 +93,7 @@ static void hm_clear(void)
     }
 }
 
-int *subarray_sum(int *nums, int numsSize, int k, int *retSize)
+int subarray_sum(int *nums, int numsSize, int k)
 {
     hm_clear();
     hm_set(0, 1);
@@ -105,23 +105,18 @@ int *subarray_sum(int *nums, int numsSize, int k, int *retSize)
         hm_set(curr, hm_get(curr) + 1);
     }
     hm_clear();
-    int *result = (int *)malloc(sizeof(int));
-    result[0] = count;
-    *retSize = 1;
-    return result;
+    return count;
 }
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {1, 1, 1}, 3, 2, {2}, 1},
-        {"example 2", {1, 2, 3}, 3, 3, {2}, 1},
-        {"empty array", {}, 0, 0, {0}, 1},
-        {"single element equals k", {1}, 1, 1, {1}, 1},
-        {"single element not k", {1}, 1, 2, {0}, 1},
-        {"negatives with zero sum", {1, -1, 0}, 3, 0, {3}, 1},
-        {"all zeros", {0, 0, 0}, 3, 0, {6}, 1},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("560. Subarray Sum Equals K", subarray_sum, tests, n);
+    int n;
+    int *nums = read_ints(&n);
+    int kl;
+    int *target_line = read_ints(&kl);
+    int k = target_line[0];
+    free(target_line);
+    write_int(subarray_sum(nums, n, k));
+    free(nums);
+    return 0;
 }

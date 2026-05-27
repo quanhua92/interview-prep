@@ -25,49 +25,30 @@
  *         def nextGreaterElements(self, nums: List[int]) -> List[int]:
  */
 
+use wasm_libs::*;
 
-fn next_greater_elements(nums: &[i32]) -> Vec<i32> {
-    let n = nums.len();
-    let mut result = vec![-1i32; n];
-    let mut stack: Vec<usize> = Vec::new();
-    for i in 0..2 * n {
-        let idx = i % n;
-        while !stack.is_empty() && nums[*stack.last().unwrap()] < nums[idx] {
-            result[stack.pop().unwrap()] = nums[idx];
+impl Solution {
+    fn next_greater_elements(nums: &[i32]) -> Vec<i32> {
+        let n = nums.len();
+        let mut result = vec![-1i32; n];
+        let mut stack: Vec<usize> = Vec::new();
+        for i in 0..2 * n {
+            let idx = i % n;
+            while !stack.is_empty() && nums[*stack.last().unwrap()] < nums[idx] {
+                result[stack.pop().unwrap()] = nums[idx];
+            }
+            if i < n {
+                stack.push(idx);
+            }
         }
-        if i < n {
-            stack.push(idx);
-        }
+        result
     }
-    result
 }
 
-fn main() {
-    struct Case { label: &'static str, input: &'static [i32], expected: &'static [i32] }
-    let tests: &[Case] = &[
-        Case { label: "example 1", input: &[1, 2, 1], expected: &[2, -1, 2] },
-        Case { label: "example 2", input: &[1, 2, 3, 4, 3], expected: &[2, 3, 4, -1, 4] },
-        Case { label: "single element", input: &[5], expected: &[-1] },
-        Case { label: "all same", input: &[2, 2, 2], expected: &[-1, -1, -1] },
-        Case { label: "strictly decreasing wraps", input: &[5, 4, 3, 2], expected: &[-1, 5, 5, 5] },
-        Case { label: "with negatives", input: &[-3, -2, -1], expected: &[-2, -1, -1] },
-    ];
+struct Solution;
 
-    println!("\n============================================================");
-    println!("  503. Next Greater Element II");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = next_greater_elements(tc.input);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {:?}\n    Got:      {:?}", tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+fn main() {
+    let nums = read_ints();
+    write_ints(Solution::next_greater_elements(&nums));
+    std::process::exit(0);
 }

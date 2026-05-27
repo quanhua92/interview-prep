@@ -52,6 +52,7 @@
  */
 
 
+use wasm_libs::*;
 use std::collections::HashMap;
 
 const MT_N: usize = 624;
@@ -182,69 +183,21 @@ impl RandomizedSet {
 }
 
 fn main() {
-    let mut passed = 0;
-    let total = 4;
-    println!("\n============================================================");
-    println!("  380. Insert Delete GetRandom O(1)");
-    println!("============================================================");
+    let header = read_ints();
+    let num_ops = header[0] as usize;
 
-    {
-        let mut rs = RandomizedSet::new(42);
-        let mut results = vec![];
-        results.push(if rs.insert(1) { 1 } else { 0 });
-        results.push(if rs.remove(2) { 1 } else { 0 });
-        results.push(if rs.insert(2) { 1 } else { 0 });
-        results.push(if rs.remove(1) { 1 } else { 0 });
-        results.push(if rs.insert(2) { 1 } else { 0 });
-        results.push(rs.get_random());
-        let expected = [1, 0, 1, 1, 0, 2];
-        let ok = results.iter().zip(expected.iter()).all(|(a, b)| a == b);
-        if ok { passed += 1; println!("  Test 1 (example 1): PASS"); }
-        else { println!("  Test 1 (example 1): FAIL"); }
-    }
-    {
-        let mut rs = RandomizedSet::new(42);
-        let mut results = vec![];
-        results.push(if rs.insert(10) { 1 } else { 0 });
-        results.push(if rs.insert(20) { 1 } else { 0 });
-        results.push(if rs.insert(30) { 1 } else { 0 });
-        results.push(rs.get_random());
-        results.push(if rs.remove(20) { 1 } else { 0 });
-        results.push(rs.get_random());
-        let expected = [1, 1, 1, 30, 1, 10];
-        let ok = results.iter().zip(expected.iter()).all(|(a, b)| a == b);
-        if ok { passed += 1; println!("  Test 2 (insert multiple then remove middle): PASS"); }
-        else { println!("  Test 2 (insert multiple then remove middle): FAIL"); }
-    }
-    {
-        let mut rs = RandomizedSet::new(42);
-        let mut results = vec![];
-        results.push(if rs.insert(5) { 1 } else { 0 });
-        results.push(rs.get_random());
-        results.push(if rs.remove(5) { 1 } else { 0 });
-        results.push(if rs.insert(5) { 1 } else { 0 });
-        results.push(rs.get_random());
-        let expected = [1, 5, 1, 1, 5];
-        let ok = results.iter().zip(expected.iter()).all(|(a, b)| a == b);
-        if ok { passed += 1; println!("  Test 3 (single element cycle): PASS"); }
-        else { println!("  Test 3 (single element cycle): FAIL"); }
-    }
-    {
-        let mut rs = RandomizedSet::new(42);
-        let mut results = vec![];
-        results.push(if rs.insert(1) { 1 } else { 0 });
-        results.push(if rs.insert(2) { 1 } else { 0 });
-        results.push(if rs.remove(1) { 1 } else { 0 });
-        results.push(if rs.remove(2) { 1 } else { 0 });
-        results.push(if rs.insert(3) { 1 } else { 0 });
-        results.push(rs.get_random());
-        let expected = [1, 1, 1, 1, 1, 3];
-        let ok = results.iter().zip(expected.iter()).all(|(a, b)| a == b);
-        if ok { passed += 1; println!("  Test 4 (remove all then insert new): PASS"); }
-        else { println!("  Test 4 (remove all then insert new): FAIL"); }
-    }
+    let mut rs = RandomizedSet::new(42);
 
-    println!("\n  {}/{} passed", passed, total);
-    println!("============================================================\n");
-    std::process::exit(if passed == total { 0 } else { 1 });
+    for _ in 0..num_ops {
+        let op = read_line();
+        let args = read_ints();
+        if op == "insert" {
+            write_bool(rs.insert(args[0]));
+        } else if op == "remove" {
+            write_bool(rs.remove(args[0]));
+        } else if op == "getRandom" {
+            write_int(rs.get_random());
+        }
+    }
+    std::process::exit(0);
 }

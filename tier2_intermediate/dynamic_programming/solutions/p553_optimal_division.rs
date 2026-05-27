@@ -35,11 +35,11 @@
  *         def optimalDivision(self, nums: List[int]) -> str:
  */
 
+use wasm_libs::*;
 
-use rstest;
-
-fn optimal_division(nums: &[i32]) -> String {
-    match nums.len() {
+impl Solution {
+    fn optimal_division(nums: &[i32]) -> String {
+        match nums.len() {
         1 => nums[0].to_string(),
         2 => format!("{}/{}", nums[0], nums[1]),
         _ => {
@@ -47,27 +47,12 @@ fn optimal_division(nums: &[i32]) -> String {
             format!("{}/({})", nums[0], divisor.join("/"))
         }
     }
+    }
 }
 
+struct Solution;
+
 fn main() {
-    struct TC<'a> { label: &'a str, nums: &'static [i32], expected: &'a str }
-    let tests: &[TC] = &[
-        TC { label: "example 1", nums: &[1000,100,10,2], expected: "1000/(100/10/2)" },
-        TC { label: "example 2", nums: &[2,3,4], expected: "2/(3/4)" },
-        TC { label: "two elements no parens", nums: &[2,3], expected: "2/3" },
-        TC { label: "single element", nums: &[2], expected: "2" },
-        TC { label: "three elements", nums: &[10,2,5], expected: "10/(2/5)" },
-    ];
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = optimal_division(tc.nums);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL (expected \"{}\", got \"{}\")", i + 1, tc.label, tc.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let nums = read_ints();
+    write_string(&optimal_division(&nums));
 }

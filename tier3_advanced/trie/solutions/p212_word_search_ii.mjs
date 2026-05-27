@@ -26,14 +26,12 @@
  *
  * Hints:
  *     - You would need to optimize your backtracking to pass the larger test. Could you stop backtracking earlier?
- *     - If the current candidate does not exist in all words&#39; prefix, you could stop backtracking immediately. What kind of data structure could answer such query efficiently? Does a hash table work? Why or why not? How about a Trie? If you would like to learn how to implement a basic trie, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.
- *
- * Template (python3):
- *     class Solution:
- *         def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+ *     - If the current candidate does not exist in all words' prefix, you could stop backtracking immediately. What kind of data structure could answer such query efficiently? Does a hash table work? Why or why not? How about a Trie? If you would like to learn how to implement a basic trie, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.
  *
  * Hint: Build a Trie from the word list, then use DFS on the board to find matching words.
  */
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
 
 class TrieNode {
   constructor() {
@@ -93,33 +91,20 @@ function solve(board, words) {
   return result.sort();
 }
 
-const tests = [
-  {
-    label: "example 1",
-    input: [[["o", "a", "a", "n"], ["e", "t", "a", "e"], ["i", "h", "k", "r"], ["i", "f", "l", "v"]], ["oath", "pea", "eat", "rain"]],
-    expected: ["eat", "oath"],
-  },
-  { label: "example 2", input: [[["a", "b"], ["c", "d"]], ["abcb"]], expected: [] },
-  { label: "1x1 board single char", input: [[["a"]], ["a"]], expected: ["a"] },
-  { label: "word not on board", input: [[["a", "b"], ["c", "d"]], ["xyz"]], expected: [] },
-  { label: "same letter grid", input: [[["a", "a"], ["a", "a"]], ["aaaa"]], expected: ["aaaa"] },
-  {
-    label: "prefix is also a word",
-    input: [[["o", "a", "a", "n"], ["e", "t", "a", "e"], ["i", "h", "k", "r"], ["i", "f", "l", "v"]], ["oath", "oat"]],
-    expected: ["oat", "oath"],
-  },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const rows = readInt();
+const cols = readInt();
+const board = [];
+for (let r = 0; r < rows; r++) {
+  const line = readLine();
+  board.push(line.split(""));
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nWords = readInt();
+const words = [];
+for (let i = 0; i < nWords; i++) {
+  words.push(readLine());
+}
+const result = solve(board, words);
+writeInt(result.length);
+for (const w of result) {
+  writeString(w);
+}

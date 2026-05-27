@@ -34,16 +34,13 @@
  * Hint: Build left and right product arrays, then combine.
  */
 
-#include "cpptest.h"
+#include "io.h"
 #include <vector>
 
-using namespace std;
-
-vector<int> product_except_self(const vector<int>& nums, int target)
+std::vector<int> product_except_self(const std::vector<int>& nums)
 {
-    (void)target;
     int n = nums.size();
-    vector<int> output(n, 1);
+    std::vector<int> output(n, 1);
 
     long long left = 1;
     for (int i = 0; i < n; i++) {
@@ -60,17 +57,9 @@ vector<int> product_except_self(const vector<int>& nums, int target)
     return output;
 }
 
-int main()
+int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {1, 2, 3, 4}, 0, {24, 12, 8, 6}},
-        {"example 2", {-1, 1, 0, -3, 3}, 0, {0, 0, 9, 0, 0}},
-        {"two elements", {1, 2}, 0, {2, 1}},
-        {"all ones", {1, 1, 1}, 0, {1, 1, 1}},
-        {"all negatives", {-1, -1, -1}, 0, {1, 1, 1}},
-        {"two elements negative", {1, -1}, 0, {-1, 1}},
-        {"all zeros", {0, 0, 0, 0}, 0, {0, 0, 0, 0}},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("238. Product of Array Except Self", product_except_self, tests, n);
+    std::vector<int> nums = read_ints();
+    write_ints(product_except_self(nums));
+    return 0;
 }

@@ -35,11 +35,9 @@
  *         def optimalDivision(self, nums: List[int]) -> str:
  */
 
-
-#include "ctest.h"
+#include "io.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 char *optimalDivision(int *nums, int numsSize) {
     if (numsSize == 1) {
@@ -64,26 +62,11 @@ char *optimalDivision(int *nums, int numsSize) {
 }
 
 int main(void) {
-    int passed = 0;
-    int total = 5;
-    struct TC { const char *label; int nums[10]; int sz; const char *expected; };
-    struct TC tests[] = {
-        {"example 1", {1000,100,10,2}, 4, "1000/(100/10/2)"},
-        {"example 2", {2,3,4}, 3, "2/(3/4)"},
-        {"two elements no parens", {2,3}, 2, "2/3"},
-        {"single element", {2}, 1, "2"},
-        {"three elements", {10,2,5}, 3, "10/(2/5)"},
-    };
-    for (int i = 0; i < total; i++) {
-        char *got = optimalDivision(tests[i].nums, tests[i].sz);
-        if (strcmp(got, tests[i].expected) == 0) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected \"%s\", got \"%s\")\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-        free(got);
-    }
-    printf("\n  %d/%d passed\n", passed, total);
-    return passed == total ? 0 : 1;
+    int n;
+    int *nums = read_ints(&n);
+    char *result = optimalDivision(nums, n);
+    write_string(result);
+    free(result);
+    free(nums);
+    return 0;
 }

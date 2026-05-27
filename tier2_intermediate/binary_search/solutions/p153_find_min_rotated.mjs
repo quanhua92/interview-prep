@@ -46,6 +46,8 @@
  * Hint: Compare mid element with the rightmost to decide which half contains the minimum.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
+
 function solve(nums) {
   let left = 0;
   let right = nums.length - 1;
@@ -60,29 +62,5 @@ function solve(nums) {
   return nums[left];
 }
 
-const tests = [
-  { label: "example 1", input: [3, 4, 5, 1, 2], expected: 1 },
-  { label: "example 2", input: [4, 5, 6, 7, 0, 1, 2], expected: 0 },
-  { label: "single element", input: [1], expected: 1 },
-  { label: "not rotated", input: [11, 13, 15, 17], expected: 11 },
-  { label: "two elements rotated", input: [2, 1], expected: 1 },
-  { label: "two elements not rotated", input: [1, 2], expected: 1 },
-  { label: "negative numbers", input: [-3, -2, -1, -5, -4], expected: -5 },
-  { label: "rotated by 1", input: [2, 3, 4, 5, 1], expected: 1 },
-  { label: "rotated by n-1", input: [5, 1, 2, 3, 4], expected: 1 },
-  { label: "three elements rotated", input: [3, 1, 2], expected: 1 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+writeInt(solve(nums));

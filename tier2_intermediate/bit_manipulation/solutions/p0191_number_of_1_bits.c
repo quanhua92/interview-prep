@@ -33,7 +33,7 @@
  * Hint: Use Brian Kernighan's algorithm: n &= (n - 1) clears the lowest set bit.
  */
 
-#include "ctest.h"
+#include "io.h"
 #include <stdint.h>
 
 static int hammingWeight(uint32_t n) {
@@ -46,39 +46,7 @@ static int hammingWeight(uint32_t n) {
 }
 
 int main(void) {
-    (void)th_print_arr;
-    (void)th_arr_eq;
-
-    struct { const char *label; uint32_t input; int expected; } tests[] = {
-        {"example 1", 0b00000000000000000000000000001011u, 3},
-        {"power of two", 0b00000000000000000000000010000000u, 1},
-        {"leetcode example 3", 2147483645u, 30},
-        {"zero", 0u, 0},
-        {"single bit", 1u, 1},
-        {"alternating bits", 0x55555555u, 16},
-        {"max value all bits set", 0x7FFFFFFFu, 31},
-    };
-
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    printf("\n============================================================\n");
-    printf("  191. Number of 1 Bits\n");
-    printf("============================================================\n");
-
-    for (int i = 0; i < n; i++) {
-        int got = hammingWeight(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-
-    return passed == n ? 0 : 1;
+    int n = read_int();
+    write_int(hammingWeight((uint32_t)n));
+    return 0;
 }

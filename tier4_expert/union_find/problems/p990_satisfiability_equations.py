@@ -32,30 +32,17 @@ Template (python3):
 Hint: Union-Find with 26 variables (map char to 0-25). First pass: union all "==". Second pass: check "!=" for contradiction.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "990. Satisfiability of Equality Equations"
-    test_cases = [
-        TestCase(input=["a==b", "b!=a"], expected=False, label="example 1"),
-        TestCase(input=["b==a", "a==b"], expected=True, label="example 2"),
-        TestCase(input=["a==b", "b==c", "a==c"], expected=True, label="example 3"),
-        TestCase(input=["a!=a"], expected=False, label="contradiction"),
-        TestCase(input=["a!=b", "b!=c", "c!=a"], expected=True, label="all different no contradiction"),
-        TestCase(input=["a==b", "b==c", "c==d", "a!=d"], expected=False, label="chain equality then inequality"),
-        TestCase(input=["a==b", "c!=d"], expected=True, label="independent groups"),
-        TestCase(input=["a==a"], expected=True, label="self equality"),
-    ]
-
-    def solve(self, equations: list[str]) -> bool:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, equations: list[str]) -> bool"
-        )
+def solve(equations: list[str]) -> bool:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    equations = []
+    for _ in range(n):
+        equations.append(read_line())
+    result = solve(equations)
+    write_bool(result)

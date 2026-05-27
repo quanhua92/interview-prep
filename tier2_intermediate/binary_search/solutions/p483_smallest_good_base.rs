@@ -29,6 +29,7 @@
  *         def smallestGoodBase(self, n: str) -> str:
  */
 
+use wasm_libs::*;
 
 fn calc(k: i64, m: i32, num: i64) -> i64 {
     let mut total: i64 = 0;
@@ -62,26 +63,8 @@ fn smallest_good_base(n: &str) -> String {
 }
 
 fn main() {
-    let tests: Vec<(&str, &str, &str)> = vec![
-        ("example 1", "13", "3"),
-        ("example 2", "4681", "8"),
-        ("example 3", "1000000000000000000", "999999999999999999"),
-        ("smallest n equals 11 base 2", "3", "2"),
-        ("111 base 2", "7", "2"),
-        ("11111 base 2", "31", "2"),
-    ];
-
-    let mut passed = 0;
-    println!("\n============================================================");
-    println!("  483. Smallest Good Base");
-    println!("============================================================");
-    for (i, (label, input, expected)) in tests.iter().enumerate() {
-        let got = smallest_good_base(input);
-        let ok = got == *expected;
-        if ok { passed += 1; }
-        println!("  Test {} ({}): {}", i + 1, label, if ok { "PASS" } else { "FAIL" });
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let n = read_line();
+    let result = smallest_good_base(&n);
+    write_string(&result);
+    std::process::exit(0);
 }

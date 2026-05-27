@@ -2,7 +2,7 @@
  * P519: Random Flip Matrix [PREMIUM] (Medium)
  * https://leetcode.com/problems/random-flip-matrix/
  * Topics: Hash Table, Math, Reservoir Sampling, Randomized
- * 
+ *
  * There is an m x n binary grid matrix with all the values set 0 initially. Design an algorithm to randomly pick an index (i, j) where matrix[i][j] == 0 and flips it to 1. All the indices (i, j) where matrix[i][j] == 0 should be equally likely to be returned.
  * Optimize your algorithm to minimize the number of calls made to the built-in random function of your language and optimize the time and space complexity.
  * Implement the Solution class:
@@ -13,7 +13,7 @@
  *     [[3, 1], [], [], [], [], []]
  *     Output
  *     [null, [1, 0], [2, 0], [0, 0], null, [2, 0]]
- * 
+ *
  *     Explanation
  *     Solution solution = new Solution(3, 1);
  *     solution.flip();  // return [1, 0], [0,0], [1,0], and [2,0] should be equally likely to be returned.
@@ -21,73 +21,34 @@
  *     solution.flip();  // return [0, 0], Based on the previously returned indices, only [0,0] can be returned.
  *     solution.reset(); // All the values are reset to 0 and can be returned.
  *     solution.flip();  // return [2, 0], [0,0], [1,0], and [2,0] should be equally likely to be returned.
- * 
+ *
  * Constraints:
  *     - 1 <= m, n <= 104
  *     - There will be at least one free cell for each call to flip.
  *     - At most 1000 calls will be made to flip and reset.
- * 
+ *
  * Template (python3):
  *     class Solution:
- * 
+ *
  *         def __init__(self, m: int, n: int):
- * 
- * 
+ *
+ *
  *         def flip(self) -> List[int]:
- * 
- * 
+ *
+ *
  *         def reset(self) -> None:
- * 
- * 
- * 
+ *
+ *
+ *
  *     # Your Solution object will be instantiated and called as such:
  *     # obj = Solution(m, n)
  *     # param_1 = obj.flip()
  *     # obj.reset()
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-typedef struct { long long key; long long val; } MapEntry;
-
-static long long map_get(MapEntry *map, int n, long long key, long long default_val)
-{
-    abort();
-}
-
-static void map_set(MapEntry *map, int n, long long key, long long val)
-{
-    abort();
-}
-
-static int solve(int m, int n, int num_flips)
-{
-    abort();
-}
+#include "io.h"
 
 int main(void)
 {
-    struct { const char *label; int m; int n; int num_flips; int expected; int pass; } tests[] = {
-        { "single cell one flip", 1, 1, 1, 1, 0 },
-        { "flip all cells in 2x2", 2, 2, 4, 4, 0 },
-        { "column matrix flip all", 3, 1, 3, 3, 0 },
-    };
-    int tn = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    for (int i = 0; i < tn; i++) {
-        int got = solve(tests[i].m, tests[i].n, tests[i].num_flips);
-        tests[i].pass = (got == tests[i].expected);
-        if (tests[i].pass) passed++;
-    }
-
-    printf("\n============================================================\n");
-    printf("  519. Random Flip Matrix\n");
-    printf("============================================================\n");
-    for (int i = 0; i < tn; i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, tn);
-    printf("============================================================\n");
-    return passed == tn ? 0 : 1;
+    abort();
 }

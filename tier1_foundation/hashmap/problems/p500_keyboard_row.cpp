@@ -2,7 +2,7 @@
  * P500: Keyboard Row [PREMIUM] (Easy)
  * https://leetcode.com/problems/keyboard-row/
  * Topics: Array, Hash Table, String
- * 
+ *
  * Given an array of strings words, return the words that can be typed using letters of the alphabet on only one row of American keyboard like the image below.
  * Note that the strings are case-insensitive, both lowercased and uppercased of the same letter are treated as if they are at the same row.
  * In the American keyboard:
@@ -11,83 +11,59 @@
  *     Output: ["Alaska","Dad"]
  *     Explanation:
  *     Both "a" and "A" are in the 2nd row of the American keyboard due to case insensitivity.
- * 
+ *
  * Example 2:
  *     Input: words = ["omk"]
  *     Output: []
- * 
+ *
  * Example 3:
  *     Input: words = ["adsdf","sfd"]
  *     Output: ["adsdf","sfd"]
- * 
+ *
  * Constraints:
  *     - 1 <= words.length <= 20
  *     - 1 <= words[i].length <= 100
  *     - words[i] consists of English letters (both lowercase and uppercase).
- * 
+ *
  * Template (python3):
  *     class Solution:
  *         def findWords(self, words: List[str]) -> List[str]:
  */
-#include "cpptest.h"
+
+
+#include "io.h"
 #include <cctype>
+#include <string>
 
 static int get_row(char c)
 {
-    abort();
+    c = (char)tolower((unsigned char)c);
+    const char *rows[] = {"qwertyuiop", "asdfghjkl", "zxcvbnm"};
+    for (int r = 0; r < 3; r++) {
+        if (strchr(rows[r], c)) return r;
+    }
+    return -1;
 }
 
-std::vector<std::string> findWords(const std::vector<std::string> &words)
+int main(void)
 {
-    abort();
-}
+    std::vector<int> header = read_ints();
+    int n = header[0];
 
-void __attribute__((unused)) _use_harness_fns(void)
-{
-    abort();
-}
-
-int main()
-{
-    struct {
-        const char *input[4];
-        int input_n;
-        const char *expected[4];
-        int expected_n;
-        const char *label;
-    } tests[] = {
-        {{"Hello", "Alaska", "Dad", "Peace"}, 4, {"Alaska", "Dad"}, 2, "example 1"},
-        {{"omk"}, 1, {}, 0, "example 2"},
-        {{"adsdf", "sfd"}, 2, {"adsdf", "sfd"}, 2, "example 3"},
-        {{"a", "b", "c"}, 3, {"a", "b", "c"}, 3, "single letter words"},
-        {{"qz", "asdf", "qzxc"}, 3, {"asdf"}, 1, "mixed row words"},
-        {{"typewriter"}, 1, {"typewriter"}, 1, "entire top row word"},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    int passed = 0;
     for (int i = 0; i < n; i++) {
-        std::vector<std::string> input(tests[i].input, tests[i].input + tests[i].input_n);
-        std::vector<std::string> exp(tests[i].expected, tests[i].expected + tests[i].expected_n);
-        std::vector<std::string> got = findWords(input);
-        if (got == exp) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            passed++;
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: [");
-            for (size_t j = 0; j < exp.size(); j++) {
-                if (j) printf(",");
-                printf("\"%s\"", exp[j].c_str());
+        std::string word = read_line();
+        if (word.empty()) continue;
+        int row = get_row(word[0]);
+        bool valid = true;
+        for (size_t j = 1; j < word.size(); j++) {
+            if (get_row(word[j]) != row) {
+                valid = false;
+                break;
             }
-            printf("]\n    Got:      [");
-            for (size_t j = 0; j < got.size(); j++) {
-                if (j) printf(",");
-                printf("\"%s\"", got[j].c_str());
-            }
-            printf("]\n");
+        }
+        if (valid) {
+            write_string(word);
         }
     }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    return 0;
 }

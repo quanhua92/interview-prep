@@ -43,107 +43,33 @@
  * Hint: Use Floyd's cycle-finding algorithm with fast and slow pointers.
  */
 
+use wasm_libs::*;
 
-#[allow(dead_code)]
-struct ListNode {
-    val: i32,
-    next: *mut ListNode,
-}
-
-fn build_list(vals: &[i32]) -> *mut ListNode {
-    if vals.is_empty() {
-        return std::ptr::null_mut();
-    }
-    let mut nodes: Vec<ListNode> = vals
-        .iter()
-        .map(|&v| ListNode { val: v, next: std::ptr::null_mut() })
-        .collect();
-    for i in 0..nodes.len() - 1 {
-        nodes[i].next = &mut nodes[i + 1] as *mut ListNode;
-    }
-    let leaked: &'static mut [ListNode] = nodes.leak();
-    leaked.as_mut_ptr()
-}
-
-fn create_cycle(head: *mut ListNode, n: usize, pos: i32) {
-    if pos < 0 || (pos as usize) >= n {
-        return;
-    }
-    let mut tail = head;
-    unsafe {
-        while !(*tail).next.is_null() {
-            tail = (*tail).next;
-        }
-    }
-    let mut target = head;
-    for _ in 0..pos {
-        unsafe {
-            target = (*target).next;
-        }
-    }
-    unsafe {
-        (*tail).next = target;
-    }
-}
-
-fn has_cycle(head: *mut ListNode, n: usize, pos: i32) -> bool {
-    if head.is_null() {
+fn solve(vals: &[i32], pos: i32) -> bool {
+    let n = vals.len();
+    if n == 0 {
         return false;
     }
-    create_cycle(head, n, pos);
-    let mut slow = head;
-    let mut fast = head;
-    loop {
-        unsafe {
-            if (*fast).next.is_null() { return false; }
-            fast = (*fast).next;
-            if (*fast).next.is_null() { return false; }
-            fast = (*fast).next;
-            slow = (*slow).next;
-            if slow == fast { return true; }
-        }
+    let mut next_arr: Vec<usize> = (0..n).map(|i| i + 1).collect();
+    next_arr[n - 1] = usize::MAX;
+    if pos >= 0 && (pos as usize) < n {
+        next_arr[n - 1] = pos as usize;
     }
-}
-
-struct CycleTestCase {
-    label: &'static str,
-    vals: &'static [i32],
-    pos: i32,
-    expected: bool,
+    let mut slow: usize = 0;
+    let mut fast: usize = 0;
+    loop {
+        if next_arr[fast] == usize::MAX { return false; }
+        fast = next_arr[fast];
+        if next_arr[fast] == usize::MAX { return false; }
+        fast = next_arr[fast];
+        slow = next_arr[slow];
+        if slow == fast { return true; }
+    }
 }
 
 fn main() {
-    let tests: &[CycleTestCase] = &[
-        CycleTestCase { label: "example 1",            vals: &[3, 2, 0, -4],       pos: 1,   expected: true  },
-        CycleTestCase { label: "example 2",            vals: &[1, 2],               pos: 0,   expected: true  },
-        CycleTestCase { label: "example 3",            vals: &[1],                  pos: -1,  expected: false },
-        CycleTestCase { label: "empty list",           vals: &[],                   pos: -1,  expected: false },
-        CycleTestCase { label: "two nodes no cycle",   vals: &[1, 2],               pos: -1,  expected: false },
-        CycleTestCase { label: "self-loop at tail",    vals: &[1, 2, 3],            pos: 2,   expected: true  },
-        CycleTestCase { label: "long list no cycle",   vals: &[1, 2, 3, 4, 5],     pos: -1,  expected: false },
-        CycleTestCase { label: "cycle back to head",   vals: &[1, 2, 3],            pos: 0,   expected: true  },
-    ];
-
-    println!("\n============================================================");
-    println!("  141. Linked List Cycle");
-    println!("============================================================");
-
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let head = build_list(tc.vals);
-        let got = has_cycle(head, tc.vals.len(), tc.pos);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}", tc.expected);
-            println!("    Got:      {}", got);
-        }
-    }
-
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let vals = read_ints();
+    let pos = read_int();
+    write_bool(solve(&vals, pos));
+    std::process::exit(0);
 }

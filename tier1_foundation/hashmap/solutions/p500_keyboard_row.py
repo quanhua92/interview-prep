@@ -30,36 +30,26 @@ Template (python3):
         def findWords(self, words: List[str]) -> List[str]:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "500. Keyboard Row"
-    test_cases = [
-        TestCase(
-            input=["Hello", "Alaska", "Dad", "Peace"],
-            expected=["Alaska", "Dad"],
-            label="example 1",
-        ),
-        TestCase(input=["omk"], expected=[], label="example 2"),
-        TestCase(input=["adsdf", "sfd"], expected=["adsdf", "sfd"], label="example 3"),
-        TestCase(input=["a", "b", "c"], expected=["a", "b", "c"], label="single letter words"),
-        TestCase(input=["qz", "asdf", "qzxc"], expected=["asdf"], label="mixed row words"),
-        TestCase(input=["typewriter"], expected=["typewriter"], label="entire top row word"),
-    ]
-
-    def solve(self, words: list[str]) -> list[str]:
-        rows = [set("qwertyuiop"), set("asdfghjkl"), set("zxcvbnm")]
-        result = []
-        for w in words:
-            lower = set(w.lower())
-            if any(lower <= row for row in rows):
-                result.append(w)
-        return result
+def solve(words: list[str]) -> list[str]:
+    rows = [set("qwertyuiop"), set("asdfghjkl"), set("zxcvbnm")]
+    result = []
+    for w in words:
+        lower = set(w.lower())
+        if any(lower <= row for row in rows):
+            result.append(w)
+    return result
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    words = []
+    for _ in range(n):
+        words.append(read_line())
+    result = solve(words)
+    if result:
+        write_string(result[0])
+        for w in result[1:]:
+            write_string(w)

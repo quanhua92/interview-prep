@@ -39,45 +39,27 @@
  *     # param_1 = obj.randPoint()
  */
 
-function solve(radius, xCenter, yCenter, count) {
-  const points = [];
-  for (let i = 0; i < count; i++) {
-    while (true) {
-      const x = Math.random() * 2 - 1;
-      const y = Math.random() * 2 - 1;
-      if (x * x + y * y <= 1) {
-        points.push([xCenter + x * radius, yCenter + y * radius]);
-        break;
-      }
+import { readLine, readInt } from '../../wasm_libs/js/io.mjs';
+
+const params = readLine().split(/\s+/).map(Number);
+const radius = params[0];
+const xCenter = params[1];
+const yCenter = params[2];
+const count = readInt();
+
+const out = [];
+for (let i = 0; i < count; i++) {
+  while (true) {
+    const x = Math.random() * 2 - 1;
+    const y = Math.random() * 2 - 1;
+    if (x * x + y * y <= 1) {
+      out.push(`${xCenter + x * radius} ${yCenter + y * radius}`);
+      break;
     }
   }
-  return points;
 }
-
-const tests = [
-  { label: "points within unit circle", input: [1.0, 0.0, 0.0, 1000], expected: "in_circle" },
-  { label: "points within offset circle", input: [0.5, 1.0, 2.0, 1000], expected: "in_circle" },
-  { label: "tiny circle", input: [0.01, 0.0, 0.0, 100], expected: "in_circle" },
-  { label: "large offset center", input: [5.0, -100.0, 200.0, 500], expected: "in_circle" },
-  { label: "single point", input: [1.0, 0.0, 0.0, 1], expected: "in_circle" },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const [radius, cx, cy, count] = t.input;
-  const points = solve(radius, cx, cy, count);
-  const inCircle = points.every(
-    (p) => (p[0] - cx) ** 2 + (p[1] - cy) ** 2 <= radius * radius + 1e-9
-  );
-  const ok = inCircle && points.length === count;
-  if (ok) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    if (!inCircle) console.log("    Some points outside circle!");
-    if (points.length !== count) console.log(`    Expected ${count} points, got ${points.length}`);
-  }
+if (typeof Javy !== "undefined" && Javy.IO && Javy.IO.write) {
+  Javy.IO.write(out.join("\n") + "\n");
+} else {
+  console.log(out.join("\n"));
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);

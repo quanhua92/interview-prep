@@ -33,36 +33,27 @@ Template (python3):
             '''
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "470. Implement Rand10() Using Rand7()"
-    test_cases = [
-        TestCase(input=5, expected=True, label="generates 5 values in range [1, 10]"),
-        TestCase(input=1, expected=True, label="single value"),
-        TestCase(input=100, expected=True, label="100 values"),
-    ]
+def solve(n: int) -> bool:
+    import random
 
-    def solve(self, n: int) -> bool:
-        import random
+    def rand7():
+        return random.randint(1, 7)
 
-        def rand7():
-            return random.randint(1, 7)
-
-        results = []
-        for _ in range(n):
-            while True:
-                row, col = rand7(), rand7()
-                idx = (row - 1) * 7 + col
-                if idx <= 40:
-                    results.append((idx - 1) % 10 + 1)
-                    break
-        return all(1 <= v <= 10 for v in results)
+    results = []
+    for _ in range(n):
+        while True:
+            row, col = rand7(), rand7()
+            idx = (row - 1) * 7 + col
+            if idx <= 40:
+                results.append((idx - 1) % 10 + 1)
+                break
+    return all(1 <= v <= 10 for v in results)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    result = solve(n)
+    write_bool(result)

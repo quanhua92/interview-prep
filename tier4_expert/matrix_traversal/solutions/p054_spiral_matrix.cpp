@@ -33,7 +33,7 @@
  */
 
 
-#include "cpptest.h"
+#include "io.h"
 
 static std::vector<int> spiralOrder(const std::vector<std::vector<int>> &matrix)
 {
@@ -64,42 +64,15 @@ static std::vector<int> spiralOrder(const std::vector<std::vector<int>> &matrix)
     return result;
 }
 
-typedef struct {
-    const char *label;
-    std::vector<std::vector<int>> input;
-    std::vector<int> expected;
-} SpirTC;
-
 int main(void)
 {
-    SpirTC tests[] = {
-        {"example 1", {{1,2,3},{4,5,6},{7,8,9}}, {1,2,3,6,9,8,7,4,5}},
-        {"example 2", {{1,2,3,4},{5,6,7,8},{9,10,11,12}}, {1,2,3,4,8,12,11,10,9,5,6,7}},
-        {"single element", {{7}}, {7}},
-        {"single row", {{1,2,3,4}}, {1,2,3,4}},
-        {"single column", {{1},{2},{3},{4}}, {1,2,3,4}},
-        {"2x2 matrix", {{1,2},{3,4}}, {1,2,4,3}},
-        {"2 rows many columns", {{1,2,3,4,5},{6,7,8,9,10}}, {1,2,3,4,5,10,9,8,7,6}},
-    };
-
-    int n_tests = (int)(sizeof(tests) / sizeof(tests[0]));
-    printf("\n============================================================\n");
-    printf("  54. Spiral Matrix\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int t = 0; t < n_tests; t++) {
-        SpirTC &tc = tests[t];
-        std::vector<int> got = spiralOrder(tc.input);
-        if (got == tc.expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", t + 1, tc.label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", t + 1, tc.label);
-            printf("    Expected: "); print_arr(tc.expected); printf("\n");
-            printf("    Got:      "); print_arr(got); printf("\n");
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    std::vector<int> header = read_ints();
+    int cols = header[0];
+    int rows = cols;
+    std::vector<std::vector<int>> matrix;
+    for (int i = 0; i < rows; i++)
+        matrix.push_back(read_ints());
+    auto result = spiralOrder(matrix);
+    write_ints(result);
+    return 0;
 }

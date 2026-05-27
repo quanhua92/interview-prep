@@ -35,10 +35,8 @@
  *         def optimalDivision(self, nums: List[int]) -> str:
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 #include <vector>
-#include <string>
 
 std::string optimalDivision(std::vector<int> nums) {
     if (nums.size() == 1) return std::to_string(nums[0]);
@@ -52,26 +50,8 @@ std::string optimalDivision(std::vector<int> nums) {
     return result;
 }
 
-int main() {
-    struct TC { const char *label; std::vector<int> nums; std::string expected; };
-    std::vector<TC> tests = {
-        {"example 1", {1000,100,10,2}, "1000/(100/10/2)"},
-        {"example 2", {2,3,4}, "2/(3/4)"},
-        {"two elements no parens", {2,3}, "2/3"},
-        {"single element", {2}, "2"},
-        {"three elements", {10,2,5}, "10/(2/5)"},
-    };
-    int total = (int)tests.size();
-    int passed = 0;
-    for (int i = 0; i < total; i++) {
-        std::string got = optimalDivision(tests[i].nums);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected \"%s\", got \"%s\")\n", i + 1, tests[i].label, tests[i].expected.c_str(), got.c_str());
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, total);
-    return passed == total ? 0 : 1;
+int main(void) {
+    std::vector<int> nums = read_ints();
+    write_string(optimalDivision(nums));
+    return 0;
 }

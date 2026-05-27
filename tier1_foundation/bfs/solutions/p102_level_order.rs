@@ -37,23 +37,19 @@
  * Hint: Use a queue to process nodes level by level.
  */
 
-
-use std::cell::RefCell;
+use wasm_libs::*;
 use std::collections::VecDeque;
-use std::rc::Rc;
-
-struct TreeNode {
-    val: i32,
-    left: Option<Rc<RefCell<TreeNode>>>,
-    right: Option<Rc<RefCell<TreeNode>>>,
-}
 
 const NULL_VAL: i32 = i32::MIN;
 
-fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
-    if vals.is_empty() || vals[0] == NULL_VAL {
-        return None;
-    }
+fn parse_tree_line(line: &str) -> Vec<i32> {
+    line.split_whitespace()
+        .map(|s| if s == "null" { NULL_VAL } else { s.parse().unwrap() })
+        .collect()
+}
+
+fn build_tree(vals: &[i32]) -> Option<Rc<TreeNode>> {
+    if vals.is_empty() || vals[0] == NULL_VAL { return None; }
     let root = Rc::new(RefCell::new(TreeNode { val: vals[0], left: None, right: None }));
     let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
     queue.push_back(Rc::clone(&root));
@@ -80,60 +76,49 @@ fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
     Some(root)
 }
 
-fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
-    let mut result = Vec::new();
-    let root = match root {
-        Some(r) => r,
-        None => return result,
-    };
-    let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
-    queue.push_back(root);
-    while !queue.is_empty() {
-        let sz = queue.len();
-        let mut level = Vec::new();
-        for _ in 0..sz {
-            let node = queue.pop_front().unwrap();
-            let n = node.borrow();
-            level.push(n.val);
-            let left = n.left.clone();
-            let right = n.right.clone();
-            drop(n);
-            if let Some(l) = left {
-                queue.push_back(l);
-            }
-            if let Some(r) = right {
-                queue.push_back(r);
-            }
-        }
-        result.push(level);
-    }
-    result
+struct TreeNode {
+    val: i32,
+    left: Option<Rc<RefCell<TreeNode>>>,
+    right: Option<Rc<RefCell<TreeNode>>>,
 }
 
-fn main() {
-    let tests: Vec<(&str, Vec<i32>, Vec<Vec<i32>>)> = vec![
-        ("example 1", vec![3,9,20,NULL_VAL,NULL_VAL,15,7], vec![vec![3],vec![9,20],vec![15,7]]),
-        ("example 2", vec![1], vec![vec![1]]),
-        ("empty", vec![], vec![]),
-        ("right child only", vec![1,NULL_VAL,2], vec![vec![1],vec![2]]),
-        ("left child only", vec![1,2], vec![vec![1],vec![2]]),
-        ("full binary tree depth 2", vec![5,3,8,1,4,7,9], vec![vec![5],vec![3,8],vec![1,4,7,9]]),
-        ("negative values", vec![-1,-2,-3], vec![vec![-1],vec![-2,-3]]),
-        ("all same value", vec![1,1,1,1,1,1,1], vec![vec![1],vec![1,1],vec![1,1,1,1]]),
-    ];
-    let mut passed = 0;
-    for (i, (label, vals, expected)) in tests.iter().enumerate() {
-        let root = build_tree(vals);
-        let got = level_order(root);
-        if got == *expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, label);
-            println!("    Expected: {:?}", expected);
-            println!("    Got:      {:?}", got);
+use std::cell::RefCell;
+use std::rc::Rc;
+
+impl Solution {
+    fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
+        let mut result = Vec::new();
+        let root = match root { Some(r) => r, None => return result };
+        let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
+        queue.push_back(root);
+        while !queue.is_empty() {
+            let sz = queue.len();
+            let mut level = Vec::new();
+            for _ in 0..sz {
+                let node = queue.pop_front().unwrap();
+                let n = node.borrow();
+                level.push(n.val);
+                let left = n.left.clone();
+                let right = n.right.clone();
+                drop(n);
+                if let Some(l) = left { queue.push_back(l); }
+                if let Some(r) = right { queue.push_back(r); }
+            }
+            result.push(level);
         }
+        result
     }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+}
+
+struct Solution;
+
+fn main() {
+    let n = read_int();
+    if n == 0 { return; }
+    let line = read_line();
+    let vals = parse_tree_line(&line);
+    let root = build_tree(&vals);
+    let result = Solution::level_order(root);
+    for row in &result { write_ints(row); }
+    std::process::exit(0);
 }

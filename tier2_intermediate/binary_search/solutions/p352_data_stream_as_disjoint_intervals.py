@@ -30,7 +30,7 @@ Example 1:
 Constraints:
     - 0 <= value <= 104
     - At most 3 * 104 calls will be made to addNum and getIntervals.
-    - At most 102 calls will be made to getIntervals.
+    - At most 102 calls will be made to getIntervals.
 
 Template (python3):
     class SummaryRanges:
@@ -51,38 +51,27 @@ Template (python3):
     # param_2 = obj.getIntervals()
 """
 
-import sys
+import bisect
 
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "352. Data Stream as Disjoint Intervals"
-    test_cases = [
-        TestCase(input=[1, 3, 7, 2, 6], expected=[[1, 3], [6, 7]], label="example from problem"),
-        TestCase(input=[1, 0], expected=[[0, 1]], label="adjacent values merge"),
-        TestCase(input=[0], expected=[[0, 0]], label="single zero"),
-        TestCase(input=[100, 1, 50], expected=[[1, 1], [50, 50], [100, 100]], label="no merges sorted output"),
-        TestCase(input=[], expected=[], label="empty stream"),
-    ]
-
-    def solve(self, values: list[int]) -> list[list[int]]:
-        import bisect
-
-        intervals: list[list[int]] = []
-        for v in values:
-            lo, hi = v, v
-            pos = bisect.bisect_left(intervals, [lo, hi])
-            if pos > 0 and intervals[pos - 1][1] >= lo - 1:
-                pos -= 1
-                lo = intervals[pos][0]
-            while pos < len(intervals) and intervals[pos][0] <= hi + 1:
-                hi = max(hi, intervals[pos][1])
-                del intervals[pos]
-            intervals.insert(pos, [lo, hi])
-        return intervals
+def solve(values: list[int]) -> list[list[int]]:
+    intervals: list[list[int]] = []
+    for v in values:
+        lo, hi = v, v
+        pos = bisect.bisect_left(intervals, [lo, hi])
+        if pos > 0 and intervals[pos - 1][1] >= lo - 1:
+            pos -= 1
+            lo = intervals[pos][0]
+        while pos < len(intervals) and intervals[pos][0] <= hi + 1:
+            hi = max(hi, intervals[pos][1])
+            del intervals[pos]
+        intervals.insert(pos, [lo, hi])
+    return intervals
 
 
 if __name__ == "__main__":
-    Solution().run()
+    values = read_ints()
+    result = solve(values)
+    write_matrix(result)

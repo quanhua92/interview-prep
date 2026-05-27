@@ -30,8 +30,9 @@
  *         def checkInclusion(self, s1: str, s2: str) -> bool:
  */
 
+use wasm_libs::*;
 
-fn check_inclusion(s1: &str, s2: &str) -> bool {
+fn solve(s1: &str, s2: &str) -> bool {
     let b1 = s1.as_bytes();
     let b2 = s2.as_bytes();
     let n1 = b1.len();
@@ -59,26 +60,9 @@ fn check_inclusion(s1: &str, s2: &str) -> bool {
 }
 
 fn main() {
-    struct Test { label: &'static str, s1: &'static str, s2: &'static str, expected: bool }
-    let tests: &[Test] = &[
-        Test { label: "example 1", s1: "ab", s2: "eidbaooo", expected: true },
-        Test { label: "example 2", s1: "ab", s2: "eidboaoo", expected: false },
-        Test { label: "single char match", s1: "a", s2: "a", expected: true },
-        Test { label: "permutation at end", s1: "adc", s2: "dcda", expected: true },
-        Test { label: "no match large string", s1: "abc", s2: "ccccbbbbaaaa", expected: false },
-        Test { label: "s1 longer than s2", s1: "ab", s2: "a", expected: false },
-    ];
-    let mut passed = 0;
-    for (i, t) in tests.iter().enumerate() {
-        let got = check_inclusion(t.s1, t.s2);
-        if got == t.expected {
-            println!("  Test {} ({}): PASS", i + 1, t.label);
-            passed += 1;
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, t.label);
-            println!("    Expected: {}\n    Got: {}", t.expected, got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let s1 = read_line();
+    let s2 = read_line();
+    let result = solve(&s1, &s2);
+    write_bool(result);
+    std::process::exit(0);
 }

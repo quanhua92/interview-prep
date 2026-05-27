@@ -30,10 +30,9 @@
  *         def findPaths(self, m: int, n: int, maxMove: int, startRow: int, startColumn: int) -> int:
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 #include <vector>
-#include <cstring>
+#include <algorithm>
 
 int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
     int mod = 1000000007;
@@ -62,26 +61,12 @@ int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
     return (int)result;
 }
 
-int main() {
-    struct TC { const char *label; int m; int n; int mm; int sr; int sc; int expected; };
-    std::vector<TC> tests = {
-        {"example 1", 2, 2, 2, 0, 0, 6},
-        {"example 2", 1, 3, 3, 0, 1, 12},
-        {"1x1 grid single move", 1, 1, 1, 0, 0, 4},
-        {"corner 1 move", 2, 2, 1, 0, 0, 2},
-        {"zero moves", 3, 3, 0, 1, 1, 0},
-    };
-    int total = (int)tests.size();
-    int passed = 0;
-    for (int i = 0; i < total; i++) {
-        int got = findPaths(tests[i].m, tests[i].n, tests[i].mm, tests[i].sr, tests[i].sc);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, total);
-    return passed == total ? 0 : 1;
+int main(void) {
+    int m = read_int();
+    int n = read_int();
+    int mm = read_int();
+    int sr = read_int();
+    int sc = read_int();
+    write_int(findPaths(m, n, mm, sr, sc));
+    return 0;
 }

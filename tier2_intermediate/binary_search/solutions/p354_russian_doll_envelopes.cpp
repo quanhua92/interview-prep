@@ -26,10 +26,10 @@
  *         def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
  */
 
-
+#include "io.h"
 #include <algorithm>
-#include <cstdio>
 #include <cstdlib>
+#include <cstdio>
 #include <vector>
 
 int maxEnvelopes(std::vector<std::vector<int>> envelopes)
@@ -50,29 +50,14 @@ int maxEnvelopes(std::vector<std::vector<int>> envelopes)
 
 int main(void)
 {
-    struct Tc { const char *label; std::vector<std::vector<int>> envelopes; int expected; bool pass; };
-    std::vector<Tc> tests = {
-        {"example 1", {{5,4},{6,4},{6,7},{2,3}}, 3, false},
-        {"example 2", {{1,1},{1,1},{1,1}}, 1, false},
-        {"single envelope", {{1,2}}, 1, false},
-        {"strictly increasing", {{1,2},{2,3},{3,4}}, 3, false},
-        {"width ties sorted by height desc", {{4,5},{4,6},{6,7},{2,3},{1,1}}, 4, false},
-        {"height breaks chain", {{2,100},{3,200},{4,300},{5,250}}, 3, false},
-    };
-
-    int passed = 0;
-    for (auto &tc : tests) {
-        int got = maxEnvelopes(tc.envelopes);
-        tc.pass = (got == tc.expected);
-        if (tc.pass) passed++;
+    int total;
+    int *flat = read_ints(&total);
+    int cols = flat[0];
+    std::vector<std::vector<int>> envelopes;
+    for (int i = 0; i < cols; i++) {
+        envelopes.push_back({flat[1 + i * 2], flat[1 + i * 2 + 1]});
     }
-
-    printf("\n============================================================\n");
-    printf("  354. Russian Doll Envelopes\n");
-    printf("============================================================\n");
-    for (int i = 0; i < (int)tests.size(); i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, (int)tests.size());
-    printf("============================================================\n");
-    return passed == (int)tests.size() ? 0 : 1;
+    free(flat);
+    write_int(maxEnvelopes(envelopes));
+    return 0;
 }

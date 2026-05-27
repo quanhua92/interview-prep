@@ -51,6 +51,8 @@
  *     # param_2 = obj.getIntervals()
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool, writeMatrix } from '../../../wasm_libs/js/io.mjs';
+
 function solve(values) {
   const intervals = [];
 
@@ -72,24 +74,6 @@ function solve(values) {
   return intervals;
 }
 
-const tests = [
-  { label: "example from problem", input: [1, 3, 7, 2, 6], expected: [[1, 3], [6, 7]] },
-  { label: "adjacent values merge", input: [1, 0], expected: [[0, 1]] },
-  { label: "single zero", input: [0], expected: [[0, 0]] },
-  { label: "no merges sorted output", input: [100, 1, 50], expected: [[1, 1], [50, 50], [100, 100]] },
-  { label: "empty stream", input: [], expected: [] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const values = readInts();
+const result = solve(values);
+writeMatrix(result);

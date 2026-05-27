@@ -39,7 +39,7 @@
  * Hint: DP approach: ans[i] = ans[i >> 1] + (i & 1).
  */
 
-#include "cpptest.h"
+#include "io.h"
 
 static std::vector<int> countBits(int n) {
     std::vector<int> ans(n + 1, 0);
@@ -50,40 +50,8 @@ static std::vector<int> countBits(int n) {
 }
 
 int main() {
-    struct { const char *label; int input; std::vector<int> expected; } tests[] = {
-        {"example 1", 2, {0, 1, 1}},
-        {"example 2", 5, {0, 1, 1, 2, 1, 2}},
-        {"zero", 0, {0}},
-        {"one", 1, {0, 1}},
-        {"power-of-2 minus 1", 7, {0, 1, 1, 2, 1, 2, 2, 3}},
-        {"four bits all", 15, {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4}},
-        {"power of 2", 16, {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1}},
-    };
-
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    printf("\n============================================================\n");
-    printf("  338. Counting Bits\n");
-    printf("============================================================\n");
-
-    for (int i = 0; i < n; i++) {
-        std::vector<int> got = countBits(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: ");
-            print_arr(tests[i].expected);
-            printf("\n    Got:      ");
-            print_arr(got);
-            printf("\n");
-        }
-    }
-
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-
-    return passed == n ? 0 : 1;
+    int n = read_int();
+    std::vector<int> result = countBits(n);
+    write_ints(result);
+    return 0;
 }

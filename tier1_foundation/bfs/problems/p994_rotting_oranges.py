@@ -34,41 +34,21 @@ Template (python3):
 Hint: Use BFS starting from all rotten oranges simultaneously.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "994. Rotting Oranges"
-    test_cases = [
-        TestCase(
-            input=[[2, 1, 1], [1, 1, 0], [0, 1, 1]], expected=4, label="example 1"
-        ),
-        TestCase(
-            input=[[2, 1, 1], [0, 1, 1], [1, 0, 1]], expected=-1, label="example 2"
-        ),
-        TestCase(input=[[0, 2]], expected=0, label="no fresh"),
-        TestCase(input=[[1]], expected=-1, label="single fresh no rotten"),
-        TestCase(input=[[2]], expected=0, label="single rotten"),
-        TestCase(
-            input=[[1, 1, 1], [1, 1, 1], [1, 1, 1]],
-            expected=-1,
-            label="all fresh no rotten",
-        ),
-        TestCase(
-            input=[[2, 2], [1, 1], [0, 1]],
-            expected=2,
-            label="multiple rotten sources",
-        ),
-    ]
+def solve(grid: list[list[int]]) -> int:
+    raise NotImplementedError
 
-    def solve(self, grid: list[list[int]]) -> int:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, grid: list[list[int]]) -> int"
-        )
 
 
 if __name__ == "__main__":
-    Solution().run()
+    _cols = read_int()
+    grid = []
+    while True:
+        row = read_ints()
+        if not row:
+            break
+        grid.append(row)
+    result = solve(grid)
+    write_int(result)

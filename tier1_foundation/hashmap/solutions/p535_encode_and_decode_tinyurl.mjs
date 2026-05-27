@@ -18,34 +18,19 @@
  * Constraints:
  *     - 1 <= url.length <= 104
  *     - url is guranteed to be a valid URL.
- *
- * Template (python3):
- *     class Codec:
- *
- *         def encode(self, longUrl: str) -> str:
- *             '''Encodes a URL to a shortened URL.
- *             '''
- *
- *
- *         def decode(self, shortUrl: str) -> str:
- *             '''Decodes a shortened URL to its original URL.
- *             '''
- *
- *     # Your Codec object will be instantiated and called as such:
- *     # codec = Codec()
- *     # codec.decode(codec.encode(url))
  */
 
-import { createHash } from "node:crypto";
+import { readLine, writeString } from '../../wasm_libs/js/io.mjs';
 
 class Codec {
   constructor() {
     this.urlMap = new Map();
     this.shortMap = new Map();
+    this.nextId = 0;
   }
 
   encode(longUrl) {
-    const key = createHash("md5").update(longUrl).digest("hex").slice(0, 6);
+    const key = this.nextId++;
     this.urlMap.set(key, longUrl);
     this.shortMap.set(key, longUrl);
     return `http://tinyurl.com/${key}`;
@@ -62,23 +47,5 @@ function solve(longUrl) {
   return codec.decode(codec.encode(longUrl));
 }
 
-const tests = [
-  { label: "example 1", input: "https://leetcode.com/problems/design-tinyurl", expected: "https://leetcode.com/problems/design-tinyurl" },
-  { label: "URL with query and fragment", input: "https://example.com/path/to/resource?query=1&param=2#section", expected: "https://example.com/path/to/resource?query=1&param=2#section" },
-  { label: "URL with many path segments", input: "http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u", expected: "http://a.co/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u" },
-  { label: "minimal URL", input: "https://site.com", expected: "https://site.com" },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const url = readLine();
+writeString(solve(url));

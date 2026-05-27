@@ -32,7 +32,7 @@
  *         def checkSubarraySum(self, nums: List[int], k: int) -> bool:
  */
 
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 #include <limits.h>
 
@@ -91,7 +91,7 @@ static void hm_clear(void)
     }
 }
 
-int *check_subarray_sum(int *nums, int numsSize, int k, int *retSize)
+int check_subarray_sum(int *nums, int numsSize, int k)
 {
     hm_init();
     hm_set(0, -1);
@@ -110,22 +110,18 @@ int *check_subarray_sum(int *nums, int numsSize, int k, int *retSize)
         }
     }
     hm_clear();
-    int *r = (int *)malloc(sizeof(int));
-    r[0] = result;
-    *retSize = 1;
-    return r;
+    return result;
 }
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {23, 2, 4, 6, 7}, 5, 6, {1}, 1},
-        {"example 2", {23, 2, 6, 4, 7}, 5, 6, {1}, 1},
-        {"example 3", {23, 2, 6, 4, 7}, 5, 13, {0}, 1},
-        {"two zeros sum to 0", {5, 0, 0}, 3, 3, {1}, 1},
-        {"no valid subarray", {1, 2}, 2, 4, {0}, 1},
-        {"two zeros always valid", {0, 0}, 2, 1, {1}, 1},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("523. Continuous Subarray Sum", check_subarray_sum, tests, n);
+    int n;
+    int *nums = read_ints(&n);
+    int kl;
+    int *target_line = read_ints(&kl);
+    int k = target_line[0];
+    free(target_line);
+    write_bool(check_subarray_sum(nums, n, k));
+    free(nums);
+    return 0;
 }

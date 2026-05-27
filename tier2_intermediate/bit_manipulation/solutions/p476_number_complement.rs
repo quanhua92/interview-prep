@@ -25,8 +25,7 @@
  *         def findComplement(self, num: int) -> int:
  */
 
-#[allow(unused_imports)]
-use rstest;
+use wasm_libs::*;
 
 fn find_complement(num: i32) -> i32 {
     let bits = 32 - num.leading_zeros();
@@ -35,40 +34,8 @@ fn find_complement(num: i32) -> i32 {
 }
 
 fn main() {
-    struct TestCase {
-        label: &'static str,
-        input: i32,
-        expected: i32,
-    }
-
-    let tests: &[TestCase] = &[
-        TestCase { label: "example 1", input: 5, expected: 2 },
-        TestCase { label: "example 2", input: 1, expected: 0 },
-        TestCase { label: "power of two", input: 2, expected: 1 },
-        TestCase { label: "1000 flips to 0111", input: 8, expected: 7 },
-        TestCase { label: "all ones flips to zero", input: 15, expected: 0 },
-        TestCase { label: "large power of two", input: 1 << 30, expected: (1 << 30) - 1 },
-    ];
-
-    println!("\n============================================================");
-    println!("  476. Number Complement");
-    println!("============================================================");
-
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = find_complement(tc.input);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {}", tc.expected);
-            println!("    Got:      {}", got);
-        }
-    }
-
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let num = read_int();
+    let result = find_complement(num);
+    write_int(result);
+    std::process::exit(0);
 }

@@ -33,41 +33,11 @@
  * 
  * Hint: This is essentially Fibonacci -- each step depends on the two before it.
  */
-function solve(n)
-  if (n <= 2) return n;
-  let a = 1, b = 2;
-  for (let i = 3; i <= n; i++)
-    const temp = b;
-    b = a + b;
-    a = temp;
-  }
-  return b; {
-    throw new Error("NotImplementedError");
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
+function solve(n) {
+  throw new Error("NotImplementedError");
 }
 
-const tests = [
-  { label: "example 1", input: 2, expected: 2 },
-  { label: "example 2", input: 3, expected: 3 },
-  { label: "base case", input: 1, expected: 1 },
-  { label: "larger", input: 10, expected: 89 },
-  { label: "max constraint", input: 45, expected: 1836311903 },
-  { label: "n=4", input: 4, expected: 5 },
-  { label: "n=5", input: 5, expected: 8 },
-  { label: "n=6", input: 6, expected: 13 },
-  { label: "n=20", input: 20, expected: 10946 },
-  { label: "near max constraint", input: 44, expected: 1134903170 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const n = readInt();
+writeInt(solve(n));

@@ -42,69 +42,57 @@ Template (python3):
         def findMinStep(self, board: str, hand: str) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "488. Zuma Game"
-    test_cases = [
-        TestCase(input=("WRRBBW", "RB"), expected=-1, label="example 1"),
-        TestCase(input=("WWRRBBWW", "WRBRW"), expected=2, label="example 2"),
-        TestCase(input=("G", "GGGGG"), expected=2, label="example 3"),
-        TestCase(input=("RBYYBBRR", "YRB"), expected=1, label="one insertion clears chain reaction"),
-        TestCase(input=("RRWWRRBB", "WWB"), expected=2, label="insert triggers cascade"),
-        TestCase(input=("R", "R"), expected=-1, label="insufficient balls single"),
-        TestCase(input=("RR", "RR"), expected=1, label="pair plus one makes triple"),
-    ]
+def solve(board: str, hand: str) -> int:
+    def collapse(s: str) -> str:
+        changed = True
+        while changed:
+            changed = False
+            i = 0
+            while i < len(s):
+                j = i
+                while j < len(s) and s[j] == s[i]:
+                    j += 1
+                if j - i >= 3:
+                    s = s[:i] + s[j:]
+                    changed = True
+                else:
+                    i = j
+        return s
 
-    def solve(self, board: str, hand: str) -> int:
-        def collapse(s: str) -> str:
-            changed = True
-            while changed:
-                changed = False
-                i = 0
-                while i < len(s):
-                    j = i
-                    while j < len(s) and s[j] == s[i]:
-                        j += 1
-                    if j - i >= 3:
-                        s = s[:i] + s[j:]
-                        changed = True
-                    else:
-                        i = j
-            return s
+    memo: dict[tuple[str, tuple[str, ...]], int] = {}
 
-        memo: dict[tuple[str, tuple[str, ...]], int] = {}
+    def dfs(board_str: str, hand_sorted: tuple[str, ...]) -> int:
+        board_str = collapse(board_str)
+        if not board_str:
+            return 0
+        if not hand_sorted:
+            return -1
+        key = (board_str, hand_sorted)
+        if key in memo:
+            return memo[key]
+        min_balls = -1
+        for i in range(len(board_str) + 1):
+            for hi in range(len(hand_sorted)):
+                if hi > 0 and hand_sorted[hi] == hand_sorted[hi - 1]:
+                    continue
+                color = hand_sorted[hi]
+                new_board = board_str[:i] + color + board_str[i:]
+                new_hand = hand_sorted[:hi] + hand_sorted[hi + 1 :]
+                result = dfs(new_board, new_hand)
+                if result != -1:
+                    if min_balls == -1 or result + 1 < min_balls:
+                        min_balls = result + 1
+        memo[key] = min_balls
+        return min_balls
 
-        def dfs(board_str: str, hand_sorted: tuple[str, ...]) -> int:
-            board_str = collapse(board_str)
-            if not board_str:
-                return 0
-            if not hand_sorted:
-                return -1
-            key = (board_str, hand_sorted)
-            if key in memo:
-                return memo[key]
-            min_balls = -1
-            for i in range(len(board_str) + 1):
-                for hi in range(len(hand_sorted)):
-                    if hi > 0 and hand_sorted[hi] == hand_sorted[hi - 1]:
-                        continue
-                    color = hand_sorted[hi]
-                    new_board = board_str[:i] + color + board_str[i:]
-                    new_hand = hand_sorted[:hi] + hand_sorted[hi + 1 :]
-                    result = dfs(new_board, new_hand)
-                    if result != -1:
-                        if min_balls == -1 or result + 1 < min_balls:
-                            min_balls = result + 1
-            memo[key] = min_balls
-            return min_balls
-
-        return dfs(board, tuple(sorted(hand)))
+    return dfs(board, tuple(sorted(hand)))
 
 
 if __name__ == "__main__":
-    Solution().run()
+    board = read_line()
+    hand = read_line()
+    result = solve(board, hand)
+    write_int(result)

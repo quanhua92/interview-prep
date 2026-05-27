@@ -28,40 +28,16 @@ Template (python3):
 Hint: Use backtracking with a start index to generate all k-length combinations from 1..n.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "77. Combinations"
-    test_cases = [
-        TestCase(
-            input=(4, 2),
-            expected=[[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
-            label="example 1",
-        ),
-        TestCase(input=(1, 1), expected=[[1]], label="example 2"),
-        TestCase(input=(3, 1), expected=[[1], [2], [3]], label="example 3"),
-        TestCase(input=(5, 5), expected=[[1, 2, 3, 4, 5]], label="k equals n"),
-        TestCase(
-            input=(5, 3),
-            expected=[
-                [1, 2, 3], [1, 2, 4], [1, 2, 5], [1, 3, 4], [1, 3, 5], [1, 4, 5],
-                [2, 3, 4], [2, 3, 5], [2, 4, 5], [3, 4, 5],
-            ],
-            label="mid range",
-        ),
-        TestCase(input=(2, 2), expected=[[1, 2]], label="smallest k equals n"),
-        TestCase(input=(6, 1), expected=[[1], [2], [3], [4], [5], [6]], label="k equals 1 larger n"),
-    ]
-
-    def solve(self, n: int, k: int) -> list[list[int]]:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, n: int, k: int) -> list[list[int]]"
-        )
+def solve(n: int, k: int) -> list[list[int]]:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    k = read_int()
+    result = solve(n, k)
+    for row in result:
+        write_ints(row)

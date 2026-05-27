@@ -46,8 +46,8 @@
  *     # obj.reset()
  */
 
-
 use std::collections::{HashMap, HashSet};
+use wasm_libs::*;
 
 fn solve(m: i64, n: i64, num_flips: i64) -> i64 {
     let mut total = m * n;
@@ -65,23 +65,9 @@ fn solve(m: i64, n: i64, num_flips: i64) -> i64 {
 }
 
 fn main() {
-    let tests: Vec<(&str, i64, i64, i64, i64)> = vec![
-        ("single cell one flip", 1, 1, 1, 1),
-        ("flip all cells in 2x2", 2, 2, 4, 4),
-        ("column matrix flip all", 3, 1, 3, 3),
-    ];
-
-    let mut passed = 0;
-    println!("\n============================================================");
-    println!("  519. Random Flip Matrix");
-    println!("============================================================");
-    for (i, (label, m, n, num_flips, expected)) in tests.iter().enumerate() {
-        let got = solve(*m, *n, *num_flips);
-        let ok = got == *expected;
-        if ok { passed += 1; }
-        println!("  Test {} ({}): {}", i + 1, label, if ok { "PASS" } else { "FAIL" });
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    let m = read_int();
+    let n = read_int();
+    let num_flips = read_int();
+    let result = solve(m as i64, n as i64, num_flips as i64);
+    write_int(result as i32);
 }

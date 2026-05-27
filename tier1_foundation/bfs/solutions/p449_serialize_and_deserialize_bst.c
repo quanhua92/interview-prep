@@ -47,16 +47,17 @@
  *     # return ans
  */
 
-
-#include "ctest.h"
+#include "io.h"
+#include <stdlib.h>
+#include <string.h>
 #include <limits.h>
+
+#define NULL_VAL INT_MIN
 
 typedef struct TreeNode {
     int val;
     struct TreeNode *left, *right;
 } TreeNode;
-
-#define NULL_VAL INT_MIN
 
 static TreeNode *make_node(int val) {
     TreeNode *n = (TreeNode *)malloc(sizeof(TreeNode));
@@ -72,11 +73,8 @@ static void free_tree(TreeNode *root) {
     free(root);
 }
 
-static int *solve(const int *vals, int vals_n, int *returnSize) {
-    if (vals_n == 0 || vals[0] == NULL_VAL) {
-        *returnSize = 0;
-        return NULL;
-    }
+static void solve(const int *vals, int vals_n) {
+    if (vals_n == 0 || vals[0] == NULL_VAL) return;
     TreeNode *root = make_node(vals[0]);
     TreeNode *bq[10000];
     int front = 0, back = 0;
@@ -85,21 +83,15 @@ static int *solve(const int *vals, int vals_n, int *returnSize) {
     while (front < back && i < vals_n) {
         TreeNode *node = bq[front++];
         if (i < vals_n) {
-            if (vals[i] != NULL_VAL) {
-                node->left = make_node(vals[i]);
-                bq[back++] = node->left;
-            }
+            if (vals[i] != NULL_VAL) { node->left = make_node(vals[i]); bq[back++] = node->left; }
             i++;
         }
         if (i < vals_n) {
-            if (vals[i] != NULL_VAL) {
-                node->right = make_node(vals[i]);
-                bq[back++] = node->right;
-            }
+            if (vals[i] != NULL_VAL) { node->right = make_node(vals[i]); bq[back++] = node->right; }
             i++;
         }
     }
-    int *result = (int *)malloc(sizeof(int) * 10000);
+    int result[10000];
     int count = 0;
     front = back = 0;
     bq[back++] = root;
@@ -115,56 +107,39 @@ static int *solve(const int *vals, int vals_n, int *returnSize) {
             result[count++] = NULL_VAL;
         }
     }
-    while (count > 0 && result[count - 1] == NULL_VAL) {
-        count--;
+    while (count > 0 && result[count - 1] == NULL_VAL) count--;
+    char buf[100000];
+    int pos = 0;
+    for (int j = 0; j < count; j++) {
+        if (j > 0) buf[pos++] = ' ';
+        if (result[j] == NULL_VAL) {
+            strcpy(buf + pos, "null");
+            pos += 4;
+        } else {
+            pos += sprintf(buf + pos, "%d", result[j]);
+        }
     }
+    write_string(buf);
     free_tree(root);
-    *returnSize = count;
-    return result;
 }
 
-typedef struct {
-    const char *label;
-    int vals[20];
-    int vals_n;
-    int expected[20];
-    int expected_n;
-} TC;
-
-int main(void) {
-    TC tests[] = {
-        {"example 1", {2,1,3}, 3, {2,1,3}, 3},
-        {"empty tree", {0}, 0, {0}, 0},
-        {"single node", {1}, 1, {1}, 1},
-        {"bst with left subtree", {3,1,4,NULL_VAL,2}, 5, {3,1,4,NULL_VAL,2}, 5},
-        {"balanced bst 3 levels", {5,3,8,1,4,7,9}, 7, {5,3,8,1,4,7,9}, 7},
-        {"complete bst", {4,2,5,1,3}, 5, {4,2,5,1,3}, 5},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        int got_size = 0;
-        int *got = solve(tests[i].vals, tests[i].vals_n, &got_size);
-        int ok;
-        if (tests[i].expected_n == 0) {
-            ok = (got_size == 0);
+int main(void)
+{
+    int n = read_int();
+    if (n == 0) return 0;
+    char *line = read_line();
+    int *vals = (int *)malloc(sizeof(int) * n);
+    char *tok = strtok(line, " ");
+    for (int i = 0; i < n; i++) {
+        if (strcmp(tok, "null") == 0) {
+            vals[i] = NULL_VAL;
         } else {
-            ok = th_arr_eq(got, got_size, tests[i].expected, tests[i].expected_n);
+            vals[i] = atoi(tok);
         }
-        if (ok) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: ");
-            th_print_arr(tests[i].expected, tests[i].expected_n);
-            printf("\n    Got:      ");
-            if (got) th_print_arr(got, got_size);
-            else printf("NULL");
-            printf("\n");
-        }
-        free(got);
+        tok = strtok(NULL, " ");
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+    free(line);
+    solve(vals, n);
+    free(vals);
+    return 0;
 }

@@ -27,8 +27,7 @@
  *         def canCross(self, stones: List[int]) -> bool:
  */
 
-
-#include "ctest.h"
+#include "io.h"
 #include <stdbool.h>
 #include <string.h>
 
@@ -58,26 +57,9 @@ bool canCross(int *stones, int stonesSize) {
 }
 
 int main(void) {
-    int passed = 0;
-    int total = 6;
-    struct TC { const char *label; int stones[10]; int sz; int expected; };
-    struct TC tests[] = {
-        {"example 1", {0,1,3,5,6,8,12,17}, 8, 1},
-        {"example 2", {0,1,2,3,4,8,9,11}, 8, 0},
-        {"minimum 2 stones", {0,1}, 2, 1},
-        {"gap too large for first jump", {0,2}, 2, 0},
-        {"increasing jumps 1,2,3,4,5,6", {0,1,3,6,10,15,21}, 7, 1},
-        {"consecutive stones", {0,1,2,3,4,5,6,7,8,9}, 10, 1},
-    };
-    for (int i = 0; i < total; i++) {
-        int got = canCross(tests[i].stones, tests[i].sz);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, total);
-    return passed == total ? 0 : 1;
+    int n;
+    int *stones = read_ints(&n);
+    write_bool(canCross(stones, n));
+    free(stones);
+    return 0;
 }

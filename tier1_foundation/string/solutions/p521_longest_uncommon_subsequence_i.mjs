@@ -34,29 +34,12 @@
  *         def findLUSlength(self, a: str, b: str) -> int:
  */
 
+import { readLine, writeInt } from '../../wasm_libs/js/io.mjs';
+
 function solve(a, b) {
   return a === b ? -1 : Math.max(a.length, b.length);
 }
 
-const tests = [
-  { label: "example 1", input: ["aba", "cdc"], expected: 3 },
-  { label: "example 2", input: ["aaa", "bbb"], expected: 3 },
-  { label: "example 3", input: ["aaa", "aaa"], expected: -1 },
-  { label: "single char different", input: ["a", "b"], expected: 1 },
-  { label: "one is subsequence of other", input: ["a", "aa"], expected: 2 },
-  { label: "one longer than other", input: ["abc", "abcde"], expected: 5 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const a = readLine();
+const b = readLine();
+writeInt(solve(a, b));

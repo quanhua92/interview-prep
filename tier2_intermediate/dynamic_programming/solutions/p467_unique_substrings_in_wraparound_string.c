@@ -31,8 +31,7 @@
  *         def findSubstringInWraproundString(self, s: str) -> int:
  */
 
-
-#include "ctest.h"
+#include "io.h"
 #include <string.h>
 
 int findSubstringInWraproundString(const char *s) {
@@ -54,25 +53,8 @@ int findSubstringInWraproundString(const char *s) {
 }
 
 int main(void) {
-    struct { const char *label; const char *s; int expected; } tests[] = {
-        {"example 1", "a", 1},
-        {"example 2", "cac", 2},
-        {"example 3", "zab", 6},
-        {"all same chars only a in wraparound", "aaaaa", 1},
-        {"wraparound chain length 8", "zabcdefg", 36},
-        {"full alphabet", "abcdefghijklmnopqrstuvwxyz", 351},
-    };
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = findSubstringInWraproundString(tests[i].s);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    char *s = read_line();
+    write_int(findSubstringInWraproundString(s));
+    free(s);
+    return 0;
 }

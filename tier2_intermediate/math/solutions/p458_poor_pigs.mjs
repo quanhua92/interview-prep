@@ -40,6 +40,8 @@
  *         def poorPigs(self, buckets: int, minutesToDie: int, minutesToTest: int) -> int:
  */
 
+import { readInts, writeInt } from '../../wasm_libs/js/io.mjs';
+
 function solve(buckets, minutesToDie, minutesToTest) {
   const tests = Math.floor(minutesToTest / minutesToDie);
   let pigs = 0;
@@ -49,25 +51,5 @@ function solve(buckets, minutesToDie, minutesToTest) {
   return pigs;
 }
 
-const tests = [
-  { label: "example 1", input: [4, 15, 15], expected: 2 },
-  { label: "example 2", input: [4, 15, 30], expected: 2 },
-  { label: "single bucket", input: [1, 100, 100], expected: 0 },
-  { label: "single test round", input: [125, 1, 1], expected: 7 },
-  { label: "large buckets", input: [1000, 15, 60], expected: 5 },
-  { label: "medium buckets", input: [8, 15, 30], expected: 2 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1], t.input[2]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const vals = readInts();
+writeInt(solve(vals[0], vals[1], vals[2]));

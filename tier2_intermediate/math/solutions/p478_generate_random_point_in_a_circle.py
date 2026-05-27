@@ -20,7 +20,7 @@ Example 1:
     solution.randPoint(); // return [0.36572, 0.17248]
 
 Constraints:
-    - 0 < radius <= 108
+    - 0 < radius <= 108
     - -107 <= x_center, y_center <= 107
     - At most 3 * 104 calls will be made to randPoint.
 
@@ -39,84 +39,29 @@ Template (python3):
     # param_1 = obj.randPoint()
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "478. Generate Random Point in a Circle"
-    test_cases = [
-        TestCase(
-            input={"radius": 1.0, "x_center": 0.0, "y_center": 0.0, "count": 1000},
-            expected="in_circle",
-            label="points within unit circle",
-        ),
-        TestCase(
-            input={"radius": 0.5, "x_center": 1.0, "y_center": 2.0, "count": 1000},
-            expected="in_circle",
-            label="points within offset circle",
-        ),
-        TestCase(
-            input={"radius": 0.01, "x_center": 0.0, "y_center": 0.0, "count": 100},
-            expected="in_circle",
-            label="tiny circle",
-        ),
-        TestCase(
-            input={"radius": 5.0, "x_center": -100.0, "y_center": 200.0, "count": 500},
-            expected="in_circle",
-            label="large offset center",
-        ),
-        TestCase(
-            input={"radius": 1.0, "x_center": 0.0, "y_center": 0.0, "count": 1},
-            expected="in_circle",
-            label="single point",
-        ),
-    ]
+def solve(radius: float, x_center: float, y_center: float, count: int) -> list[list[float]]:
+    import random
 
-    def solve(self, radius: float, x_center: float, y_center: float, count: int) -> list[list[float]]:
-        import random
-
-        points = []
-        for _ in range(count):
-            while True:
-                x = random.uniform(-1, 1)
-                y = random.uniform(-1, 1)
-                if x * x + y * y <= 1:
-                    break
-            points.append([x_center + x * radius, y_center + y * radius])
-        return points
-
-    def run(self) -> bool:
-        print(f"\n{'=' * 60}")
-        print(f"  {self.name}")
-        print(f"{'=' * 60}")
-
-        all_passed = True
-        for i, tc in enumerate(self.test_cases, 1):
-            label = f" ({tc.label})" if tc.label else ""
-            inp = tc.input
-            points = self.solve(inp["radius"], inp["x_center"], inp["y_center"], inp["count"])
-            r = inp["radius"]
-            cx, cy = inp["x_center"], inp["y_center"]
-            in_circle = all(
-                (p[0] - cx) ** 2 + (p[1] - cy) ** 2 <= r * r + 1e-9 for p in points
-            )
-            passed = in_circle and len(points) == inp["count"]
-            status = "PASS" if passed else "FAIL"
-            if not passed:
-                all_passed = False
-            print(f"  Test {i}{label}: {status}")
-            if not in_circle:
-                print("    Some points outside circle!")
-
-        total = len(self.test_cases)
-        passed_count = total if all_passed else 0
-        print(f"\n  {passed_count}/{total} passed")
-        print(f"{'=' * 60}\n")
-        return all_passed
+    points = []
+    for _ in range(count):
+        while True:
+            x = random.uniform(-1, 1)
+            y = random.uniform(-1, 1)
+            if x * x + y * y <= 1:
+                break
+        points.append([x_center + x * radius, y_center + y * radius])
+    return points
 
 
 if __name__ == "__main__":
-    Solution().run()
+    params = read_line().split()
+    radius = float(params[0])
+    x_center = float(params[1])
+    y_center = float(params[2])
+    count = read_int()
+    points = solve(radius, x_center, y_center, count)
+    for p in points:
+        print(f"{p[0]} {p[1]}")

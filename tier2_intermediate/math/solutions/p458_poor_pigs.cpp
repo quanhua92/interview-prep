@@ -29,7 +29,7 @@
  *
  * Constraints:
  *     - 1 <= buckets <= 1000
- *     - 1 <= minutesToDie <= minutesToTest <= 100
+ *     - 1 <= minutesToDie <= minutesToTest <= 100
  *
  * Hint: What if you only have one shot? Eg. 4 buckets, 15 mins to die, and 15 mins to test.
  * Hint: How many states can we generate with x pigs and T tests?
@@ -41,7 +41,7 @@
  */
 
 
-#include "cpptest.h"
+#include "io.h"
 
 int poorPigs(int buckets, int minutesToDie, int minutesToTest) {
     int tests = minutesToTest / minutesToDie;
@@ -56,25 +56,7 @@ int poorPigs(int buckets, int minutesToDie, int minutesToTest) {
 }
 
 int main() {
-    struct { const char *label; int buckets; int mtd; int mtt; int expected; } tests[] = {
-        {"example 1", 4, 15, 15, 2},
-        {"example 2", 4, 15, 30, 2},
-        {"single bucket", 1, 100, 100, 0},
-        {"single test round", 125, 1, 1, 7},
-        {"large buckets", 1000, 15, 60, 5},
-        {"medium buckets", 8, 15, 30, 2},
-    };
-    int tn = sizeof(tests) / sizeof(tests[0]);
-    int passed = 0;
-    for (int i = 0; i < tn; i++) {
-        int got = poorPigs(tests[i].buckets, tests[i].mtd, tests[i].mtt);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, tn);
-    return passed == tn ? 0 : 1;
+    std::vector<int> vals = read_ints();
+    write_int(poorPigs(vals[0], vals[1], vals[2]));
+    return 0;
 }

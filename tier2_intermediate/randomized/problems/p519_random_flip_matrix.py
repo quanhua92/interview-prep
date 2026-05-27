@@ -46,23 +46,16 @@ Template (python3):
     # obj.reset()
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "519. Random Flip Matrix"
-    test_cases = [
-        TestCase(input=(1, 1, 1), expected=1, label="single cell one flip"),
-        TestCase(input=(2, 2, 4), expected=4, label="flip all cells in 2x2"),
-        TestCase(input=(3, 1, 3), expected=3, label="column matrix flip all"),
-    ]
-
-    def solve(self, m: int, n: int, num_flips: int) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, m, n, num_flips) -> int")
+def solve(m: int, n: int, num_flips: int) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    m = read_int()
+    n = read_int()
+    num_flips = read_int()
+    result = solve(m, n, num_flips)
+    write_int(result)

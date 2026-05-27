@@ -1,93 +1,71 @@
-"""
-P538: Convert BST to Greater Tree [PREMIUM] (Medium)
-https://leetcode.com/problems/convert-bst-to-greater-tree/
-Topics: Tree, Depth-First Search, Binary Search Tree, Binary Tree
+from src.wasm_libs.py.io import read_line
 
-Given the root of a Binary Search Tree (BST), convert it to a Greater Tree such that every key of the original BST is changed to the original key plus the sum of all keys greater than the original key in BST.
-As a reminder, a binary search tree is a tree that satisfies these constraints:
-Example 2:
-Note: This question is the same as 1038: https://leetcode.com/problems/binary-search-tree-to-greater-sum-tree/
-Example 1:
-    Input: root = [4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
-    Output: [30,36,21,36,35,26,15,null,null,null,33,null,null,null,8]
-
-Example 2:
-    Input: root = [0,null,1]
-    Output: [1,null,1]
-
-Constraints:
-    - The number of nodes in the tree is in the range [0, 104].
-    - -104 <= Node.val <= 104
-    - All the values in the tree are unique.
-    - root is guaranteed to be a valid binary search tree.
-
-Template (python3):
-    # Definition for a binary tree node.
-    # class TreeNode:
-    #     def __init__(self, val=0, left=None, right=None):
-    #         self.val = val
-    #         self.left = left
-    #         self.right = right
-    class Solution:
-        def convertBST(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
-"""
-
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase, TreeNode
+NL = 2147483647
 
 
-class Solution(Problem):
-    name = "538. Convert BST to Greater Tree"
-    test_cases = [
-        TestCase(
-            input=TreeNode.from_list(
-                [4, 1, 6, 0, 2, 5, 7, None, None, None, 3, None, None, None, 8]
-            ),
-            expected=TreeNode.from_list(
-                [30, 36, 21, 36, 35, 26, 15, None, None, None, 33, None, None, None, 8]
-            ),
-            label="example 1",
-        ),
-        TestCase(
-            input=TreeNode.from_list([0, None, 1]),
-            expected=TreeNode.from_list([1, None, 1]),
-            label="example 2",
-        ),
-        TestCase(
-            input=TreeNode.from_list([2, 1, 3]),
-            expected=TreeNode.from_list([5, 6, 3]),
-            label="small balanced BST",
-        ),
-        TestCase(
-            input=TreeNode.from_list([1]),
-            expected=TreeNode.from_list([1]),
-            label="single node",
-        ),
-        TestCase(
-            input=TreeNode.from_list([1, None, 2, None, 3]),
-            expected=TreeNode.from_list([6, None, 5, None, 3]),
-            label="right-skewed BST",
-        ),
-        TestCase(input=None, expected=None, label="empty tree"),
-    ]
+def build_tree(vals):
+    if not vals or vals[0] is None:
+        return None
+    root = {"val": vals[0], "left": None, "right": None}
+    queue = [root]
+    i = 1
+    while queue and i < len(vals):
+        node = queue.pop(0)
+        if i < len(vals) and vals[i] is not None:
+            node["left"] = {"val": vals[i], "left": None, "right": None}
+            queue.append(node["left"])
+        i += 1
+        if i < len(vals) and vals[i] is not None:
+            node["right"] = {"val": vals[i], "left": None, "right": None}
+            queue.append(node["right"])
+        i += 1
+    return root
 
-    def solve(self, root: TreeNode | None) -> TreeNode | None:
-        total = 0
 
-        def reverse_inorder(node: TreeNode | None):
-            nonlocal total
-            if not node:
-                return
-            reverse_inorder(node.right)
-            total += node.val
-            node.val = total
-            reverse_inorder(node.left)
+def tree_to_bfs(root):
+    if not root:
+        return []
+    result = []
+    queue = [root]
+    while queue:
+        node = queue.pop(0)
+        if node:
+            result.append(node["val"])
+            queue.append(node.get("left"))
+            queue.append(node.get("right"))
+        else:
+            result.append(None)
+    while len(result) > 1 and result[-1] is None:
+        result.pop()
+    return result
 
-        reverse_inorder(root)
-        return root
+
+def reverse_inorder(node, total):
+    if not node:
+        return total
+    total = reverse_inorder(node.get("right"), total)
+    total += node["val"]
+    node["val"] = total
+    total = reverse_inorder(node.get("left"), total)
+    return total
+
+
+def main():
+    line = read_line()
+    if not line.strip():
+        print()
+        return
+    parts = line.split()
+    vals = [None if x == "null" else int(x) for x in parts]
+    if not vals or vals[0] is None:
+        print()
+        return
+    root = build_tree(vals)
+    reverse_inorder(root, 0)
+    result = tree_to_bfs(root)
+    output = " ".join("null" if v is None else str(v) for v in result)
+    print(output)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    main()

@@ -24,10 +24,8 @@
  *         def longestPalindromeSubseq(self, s: str) -> int:
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 #include <vector>
-#include <cstring>
 #include <algorithm>
 
 int longestPalindromeSubseq(const std::string &s) {
@@ -47,26 +45,8 @@ int longestPalindromeSubseq(const std::string &s) {
     return n > 0 ? dp[0][n - 1] : 0;
 }
 
-int main() {
-    struct { const char *label; std::string s; int expected; } tests[] = {
-        {"example 1", "bbbab", 4},
-        {"example 2", "cbbd", 2},
-        {"single char", "a", 1},
-        {"two same chars", "aa", 2},
-        {"all distinct", "abcdef", 1},
-        {"full palindrome", "aabbaa", 6},
-    };
-    int tn = sizeof(tests) / sizeof(tests[0]);
-    int passed = 0;
-    for (int i = 0; i < tn; i++) {
-        int got = longestPalindromeSubseq(tests[i].s);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, tn);
-    return passed == tn ? 0 : 1;
+int main(void) {
+    std::string s = read_line();
+    write_int(longestPalindromeSubseq(s));
+    return 0;
 }

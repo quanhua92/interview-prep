@@ -27,58 +27,28 @@ Template (python3):
 Hint: Sort intervals by start time, then merge overlapping ones.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "56. Merge Intervals"
-    test_cases = [
-        TestCase(
-            input=[[1, 3], [2, 6], [8, 10], [15, 18]],
-            expected=[[1, 6], [8, 10], [15, 18]],
-            label="example 1",
-        ),
-        TestCase(input=[[1, 4], [4, 5]], expected=[[1, 5]], label="example 2"),
-        TestCase(input=[[1, 4], [0, 4]], expected=[[0, 4]], label="overlapping start"),
-        TestCase(input=[[1, 1]], expected=[[1, 1]], label="single interval"),
-        TestCase(
-            input=[[1, 4], [2, 3], [3, 5]],
-            expected=[[1, 5]],
-            label="all overlap into one",
-        ),
-        TestCase(
-            input=[[1, 2], [3, 4], [5, 6]],
-            expected=[[1, 2], [3, 4], [5, 6]],
-            label="no overlaps",
-        ),
-        TestCase(
-            input=[[1, 10], [2, 3], [4, 5]],
-            expected=[[1, 10]],
-            label="interval contains others",
-        ),
-        TestCase(
-            input=[[1, 2], [2, 3], [3, 4]],
-            expected=[[1, 4]],
-            label="adjacent intervals touching",
-        ),
-    ]
-
-    def solve(self, intervals: list[list[int]]) -> list[list[int]]:
-        if not intervals:
-            return []
-        intervals.sort(key=lambda x: x[0])
-        merged = [intervals[0]]
-        for start, end in intervals[1:]:
-            last = merged[-1]
-            if start <= last[1]:
-                last[1] = max(last[1], end)
-            else:
-                merged.append([start, end])
-        return merged
+def solve(intervals: list[list[int]]) -> list[list[int]]:
+    if not intervals:
+        return []
+    intervals.sort(key=lambda x: x[0])
+    merged = [intervals[0][:]]
+    for start, end in intervals[1:]:
+        last = merged[-1]
+        if start <= last[1]:
+            last[1] = max(last[1], end)
+        else:
+            merged.append([start, end])
+    return merged
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    intervals = []
+    for _ in range(n):
+        intervals.append(read_ints())
+    result = solve(intervals)
+    for row in result:
+        write_ints(row)

@@ -31,6 +31,8 @@
  * Hint: Binary search the answer in [max(nums), sum(nums)] and check feasibility greedily.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
+
 function solve(nums, k) {
   let left = Math.max(...nums);
   let right = nums.reduce((a, b) => a + b, 0);
@@ -60,27 +62,6 @@ function solve(nums, k) {
   return left;
 }
 
-const tests = [
-  { label: "example 1", input: [[7, 2, 5, 10, 8], 2], expected: 18 },
-  { label: "example 2", input: [[1, 2, 3, 4, 5], 2], expected: 9 },
-  { label: "example 3", input: [[1, 4, 4], 3], expected: 4 },
-  { label: "k equals length", input: [[1, 2, 3, 4, 5], 5], expected: 5 },
-  { label: "single element", input: [[5], 1], expected: 5 },
-  { label: "all zeros", input: [[0, 0, 0, 0], 2], expected: 0 },
-  { label: "uniform values", input: [[1, 1, 1, 1, 1, 1, 1, 1], 4], expected: 2 },
-  { label: "large values", input: [[1000000, 1000000, 1000000], 2], expected: 2000000 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input[0], t.input[1]);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+const k = readInt();
+writeInt(solve(nums, k));

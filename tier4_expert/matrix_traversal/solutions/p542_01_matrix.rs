@@ -30,7 +30,7 @@
 
 
 use std::collections::VecDeque;
-use std::process::exit;
+use wasm_libs::*;
 
 fn update_matrix(mat: &Vec<Vec<i32>>) -> Vec<Vec<i32>>
 {
@@ -72,41 +72,25 @@ fn update_matrix(mat: &Vec<Vec<i32>>) -> Vec<Vec<i32>>
     dist
 }
 
-struct MatDistTC {
-    label: &'static str,
-    input: Vec<Vec<i32>>,
-    expected: Vec<Vec<i32>>,
+fn read_int_matrix() -> Vec<Vec<i32>> {
+    let header = read_ints();
+    let cols = header[0] as usize;
+    let mut matrix = Vec::with_capacity(cols);
+    for _ in 0..cols {
+        matrix.push(read_ints());
+    }
+    matrix
+}
+
+fn write_matrix(mat: &[Vec<i32>]) {
+    for row in mat {
+        write_ints(row);
+    }
 }
 
 fn main()
 {
-    let tests: Vec<MatDistTC> = vec![
-        MatDistTC { label: "example 1", input: vec![vec![0,0,0],vec![0,1,0],vec![0,0,0]], expected: vec![vec![0,0,0],vec![0,1,0],vec![0,0,0]] },
-        MatDistTC { label: "example 2", input: vec![vec![0,0,0],vec![0,1,0],vec![1,1,1]], expected: vec![vec![0,0,0],vec![0,1,0],vec![1,2,1]] },
-        MatDistTC { label: "single zero", input: vec![vec![0]], expected: vec![vec![0]] },
-        MatDistTC { label: "single column", input: vec![vec![1],vec![0],vec![1]], expected: vec![vec![1],vec![0],vec![1]] },
-        MatDistTC { label: "single row", input: vec![vec![0,1,1,1]], expected: vec![vec![0,1,2,3]] },
-        MatDistTC { label: "cross of ones around center zero", input: vec![vec![1,1,1],vec![1,0,1],vec![1,1,1]], expected: vec![vec![2,1,2],vec![1,0,1],vec![2,1,2]] },
-        MatDistTC { label: "corner zeros", input: vec![vec![1,1,0],vec![1,1,1],vec![0,1,1]], expected: vec![vec![2,1,0],vec![1,2,1],vec![0,1,2]] },
-    ];
-
-    println!("\n============================================================");
-    println!("  542. 01 Matrix");
-    println!("============================================================");
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let got = update_matrix(&tc.input);
-        if got == tc.expected {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: {:?}", tc.expected);
-            println!("    Got:      {:?}", got);
-        }
-    }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    if passed == tests.len() { exit(0); } else { exit(1); }
+    let mat = read_int_matrix();
+    let result = update_matrix(&mat);
+    write_matrix(&result);
 }

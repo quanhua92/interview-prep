@@ -31,8 +31,7 @@
  *         def findSubstringInWraproundString(self, s: str) -> int:
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 
 int findSubstringInWraproundString(const std::string &s) {
     int max_len[26] = {};
@@ -52,26 +51,8 @@ int findSubstringInWraproundString(const std::string &s) {
     return result;
 }
 
-int main() {
-    struct { const char *label; std::string s; int expected; } tests[] = {
-        {"example 1", "a", 1},
-        {"example 2", "cac", 2},
-        {"example 3", "zab", 6},
-        {"all same chars only a in wraparound", "aaaaa", 1},
-        {"wraparound chain length 8", "zabcdefg", 36},
-        {"full alphabet", "abcdefghijklmnopqrstuvwxyz", 351},
-    };
-    int tn = sizeof(tests) / sizeof(tests[0]);
-    int passed = 0;
-    for (int i = 0; i < tn; i++) {
-        int got = findSubstringInWraproundString(tests[i].s);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL (expected %d, got %d)\n", i + 1, tests[i].label, tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, tn);
-    return passed == tn ? 0 : 1;
+int main(void) {
+    std::string s = read_line();
+    write_int(findSubstringInWraproundString(s));
+    return 0;
 }

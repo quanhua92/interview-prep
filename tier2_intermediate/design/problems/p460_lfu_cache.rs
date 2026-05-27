@@ -2,7 +2,7 @@
  * P460: LFU Cache [PREMIUM] (Hard)
  * https://leetcode.com/problems/lfu-cache/
  * Topics: Hash Table, Linked List, Design, Doubly-Linked List
- * 
+ *
  * Design and implement a data structure for a Least Frequently Used (LFU) cache.
  * Implement the LFUCache class:
  * To determine the least frequently used key, a use counter is maintained for each key in the cache. The key with the smallest use counter is the least frequently used key.
@@ -15,7 +15,7 @@
  *     [[2], [1, 1], [2, 2], [1], [3, 3], [2], [3], [4, 4], [1], [3], [4]]
  *     Output
  *     [null, null, null, 1, null, -1, 3, null, -1, 3, 4]
- * 
+ *
  *     Explanation
  *     // cnt(x) = the use counter for key x
  *     // cache=[] will show the last used order for tiebreakers (leftmost element is  most recent)
@@ -36,33 +36,33 @@
  *     // cache=[3,4], cnt(4)=1, cnt(3)=3
  *     lfu.get(4);      // return 4
  *     // cache=[4,3], cnt(4)=2, cnt(3)=3
- * 
+ *
  * Constraints:
  *     - 1 <= capacity <= 104
  *     - 0 <= key <= 105
  *     - 0 <= value <= 109
  *     - At most 2 * 105 calls will be made to get and put.
- * 
+ *
  * Template (python3):
  *     class LFUCache:
- * 
+ *
  *         def __init__(self, capacity: int):
- * 
- * 
+ *
+ *
  *         def get(self, key: int) -> int:
- * 
- * 
+ *
+ *
  *         def put(self, key: int, value: int) -> None:
- * 
- * 
- * 
+ *
+ *
+ *
  *     # Your LFUCache object will be instantiated and called as such:
  *     # obj = LFUCache(capacity)
  *     # param_1 = obj.get(key)
  *     # obj.put(key,value)
  */
-#[allow(unused_imports)]
-use rstest;
+
+use wasm_libs::*;
 use std::collections::{HashMap, VecDeque};
 
 struct Node {
@@ -101,32 +101,26 @@ impl LFUCache {
 }
 
 fn main() {
-    println!("\n============================================================");
-    println!("  460. LFU Cache");
-    println!("============================================================");
+    let capacity = read_int();
+    let num_ops = read_int();
+    let mut lfu = LFUCache::new(capacity);
 
-    let mut lfu = LFUCache::new(2);
-    lfu.put(1, 1);
-    lfu.put(2, 2);
-    let r1 = lfu.get(1);
-    lfu.put(3, 3);
-    let r2 = lfu.get(2);
-    let r3 = lfu.get(3);
-    lfu.put(4, 4);
-    let r4 = lfu.get(1);
-    let r5 = lfu.get(3);
-    let r6 = lfu.get(4);
-
-    println!("  Test 1 (get key=1 after puts): {}", if r1 == 1 { "PASS" } else { "FAIL" });
-    println!("  Test 2 (get evicted key=2): {}", if r2 == -1 { "PASS" } else { "FAIL" });
-    println!("  Test 3 (get key=3): {}", if r3 == 3 { "PASS" } else { "FAIL" });
-    println!("  Test 4 (get evicted key=1): {}", if r4 == -1 { "PASS" } else { "FAIL" });
-    println!("  Test 5 (get key=3): {}", if r5 == 3 { "PASS" } else { "FAIL" });
-    println!("  Test 6 (get key=4): {}", if r6 == 4 { "PASS" } else { "FAIL" });
-
-    let passed = (r1 == 1) as i32 + (r2 == -1) as i32 + (r3 == 3) as i32 + (r4 == -1) as i32 + (r5 == 3) as i32 + (r6 == 4) as i32;
-    println!("\n  {}/6 passed", passed);
-    println!("============================================================\n");
-
-    std::process::exit(if passed == 6 { 0 } else { 1 });
+    for _ in 0..num_ops {
+        let line = read_line();
+        let parts: Vec<&str> = line.split_whitespace().collect();
+        match parts[0] {
+            "get" => {
+                let key: i32 = parts[1].parse().unwrap();
+                write_int(lfu.get(key));
+            }
+            "put" => {
+                let key: i32 = parts[1].parse().unwrap();
+                let value: i32 = parts[2].parse().unwrap();
+                lfu.put(key, value);
+                write_string("null");
+            }
+            _ => {}
+        }
+    }
+    std::process::exit(0);
 }

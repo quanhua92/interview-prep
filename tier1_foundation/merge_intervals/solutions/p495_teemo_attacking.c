@@ -32,11 +32,9 @@
  *         def findPoisonedDuration(self, timeSeries: List[int], duration: int) -> int:
  */
 
+#include "io.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
-static int findPoisonedDuration(int *ts, int tsSize, int duration)
+int solve(int *ts, int tsSize, int duration)
 {
     if (tsSize == 0) return 0;
     int total = 0;
@@ -49,32 +47,10 @@ static int findPoisonedDuration(int *ts, int tsSize, int duration)
 
 int main(void)
 {
-    struct {
-        const char *label;
-        int input[10];
-        int input_n;
-        int duration;
-        int expected;
-    } tests[] = {
-        {"example 1",                {1, 4},                  2, 2, 4},
-        {"example 2",                {1, 2},                  2, 2, 3},
-        {"single attack",            {1},                     1, 2, 2},
-        {"consecutive attacks, duration 1", {1,2,3,4,5},      5, 1, 5},
-        {"non-overlapping attacks",  {1, 3, 5, 7, 9},         5, 2, 10},
-        {"duplicate timestamps",     {1, 1, 1, 1},            4, 5, 5},
-    };
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = findPoisonedDuration(tests[i].input, tests[i].input_n, tests[i].duration);
-        if (got == tests[i].expected) {
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-            passed++;
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got: %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    return passed == n ? 0 : 1;
+    int n;
+    int *ts = read_ints(&n);
+    int duration = read_int();
+    write_int(solve(ts, n, duration));
+    free(ts);
+    return 0;
 }

@@ -30,46 +30,36 @@ Template (python3):
         def findRotateSteps(self, ring: str, key: str) -> int:
 """
 
-import sys
+from collections import defaultdict
 
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "514. Freedom Trail"
-    test_cases = [
-        TestCase(input=("godding", "gd"), expected=4, label="example 1"),
-        TestCase(input=("godding", "godding"), expected=13, label="example 2"),
-        TestCase(input=("a", "a"), expected=1, label="single char ring and key"),
-        TestCase(input=("abc", "cba"), expected=6, label="reverse order key"),
-        TestCase(input=("aaaaa", "aaa"), expected=3, label="repeated chars"),
-    ]
+def solve(ring: str, key: str) -> int:
+    char_positions: dict[str, list[int]] = defaultdict(list)
+    for i, ch in enumerate(ring):
+        char_positions[ch].append(i)
 
-    def solve(self, ring: str, key: str) -> int:
-        from collections import defaultdict
+    n = len(ring)
+    dp = [0] * n
 
-        char_positions: dict[str, list[int]] = defaultdict(list)
-        for i, ch in enumerate(ring):
-            char_positions[ch].append(i)
+    for ki in range(len(key) - 1, -1, -1):
+        new_dp = [float("inf")] * n
+        for pos in range(n):
+            for target in char_positions[key[ki]]:
+                diff = abs(pos - target)
+                steps = min(diff, n - diff) + 1
+                if ki == len(key) - 1:
+                    new_dp[pos] = min(new_dp[pos], steps)
+                else:
+                    new_dp[pos] = min(new_dp[pos], steps + dp[target])
+        dp = new_dp
 
-        n = len(ring)
-        dp = [0] * n
-
-        for ki in range(len(key) - 1, -1, -1):
-            new_dp = [float("inf")] * n
-            for pos in range(n):
-                for target in char_positions[key[ki]]:
-                    diff = abs(pos - target)
-                    steps = min(diff, n - diff) + 1
-                    if ki == len(key) - 1:
-                        new_dp[pos] = min(new_dp[pos], steps)
-                    else:
-                        new_dp[pos] = min(new_dp[pos], steps + dp[target])
-            dp = new_dp
-
-        return dp[0]
+    return dp[0]
 
 
 if __name__ == "__main__":
-    Solution().run()
+    ring = read_line()
+    key = read_line()
+    result = solve(ring, key)
+    write_int(result)

@@ -37,54 +37,49 @@ Template (python3):
 Hint: Use a queue to process nodes level by level.
 """
 
+from src.wasm_libs.py.io import *
 import sys
+from collections import deque
 
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase, TreeNode
+NULL_VAL = -2147483648
 
 
-class Solution(Problem):
-    name = "102. Binary Tree Level Order Traversal"
-    test_cases = [
-        TestCase(
-            input=TreeNode.from_list([3, 9, 20, None, None, 15, 7]),
-            expected=[[3], [9, 20], [15, 7]],
-            label="example 1",
-        ),
-        TestCase(input=TreeNode.from_list([1]), expected=[[1]], label="example 2"),
-        TestCase(input=TreeNode.from_list([]), expected=[], label="empty"),
-        TestCase(
-            input=TreeNode.from_list([1, None, 2]),
-            expected=[[1], [2]],
-            label="right child only",
-        ),
-        TestCase(
-            input=TreeNode.from_list([1, 2, None]),
-            expected=[[1], [2]],
-            label="left child only",
-        ),
-        TestCase(
-            input=TreeNode.from_list([5, 3, 8, 1, 4, 7, 9]),
-            expected=[[5], [3, 8], [1, 4, 7, 9]],
-            label="full binary tree depth 2",
-        ),
-        TestCase(
-            input=TreeNode.from_list([-1, -2, -3]),
-            expected=[[-1], [-2, -3]],
-            label="negative values",
-        ),
-        TestCase(
-            input=TreeNode.from_list([1, 1, 1, 1, 1, 1, 1]),
-            expected=[[1], [1, 1], [1, 1, 1, 1]],
-            label="all same value",
-        ),
-    ]
+def build_tree(vals: list[int]) -> list | None:
+    if not vals or vals[0] is None:
+        return None
+    root = {"val": vals[0], "left": None, "right": None}
+    queue = deque([root])
+    i = 1
+    while queue and i < len(vals):
+        node = queue.popleft()
+        if i < len(vals) and vals[i] is not None:
+            node["left"] = {"val": vals[i], "left": None, "right": None}
+            queue.append(node["left"])
+        i += 1
+        if i < len(vals) and vals[i] is not None:
+            node["right"] = {"val": vals[i], "left": None, "right": None}
+            queue.append(node["right"])
+        i += 1
+    return root
 
-    def solve(self, root: TreeNode | None) -> list[list[int]]:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, root: TreeNode | None) -> list[list[int]]"
-        )
+
+def solve(vals: list[int]) -> list[list[int]]:
+    raise NotImplementedError
+
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    if n == 0:
+        sys.exit(0)
+    else:
+        tokens = read_line().split()
+        vals = []
+        for t in tokens:
+            if t == "null":
+                vals.append(None)
+            else:
+                vals.append(int(t))
+        result = solve(vals)
+        for row in result:
+            write_ints(row)

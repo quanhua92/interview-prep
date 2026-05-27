@@ -19,34 +19,17 @@ Constraints:
     - 1 <= n <= 5 * 104
     - -109 <= nums[i] <= 109
 
-Template (python3):
-    class Solution:
-        def majorityElement(self, nums: List[int]) -> int:
-
 Hint: Use Boyer-Moore voting algorithm — maintain a candidate and count.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "169. Majority Element"
-    test_cases = [
-        TestCase(input=[3, 2, 3], expected=3, label="example 1"),
-        TestCase(input=[2, 2, 1, 1, 1, 2, 2], expected=2, label="example 2"),
-        TestCase(input=[1], expected=1, label="single element"),
-        TestCase(input=[1, 2, 3, 2, 2], expected=2, label="majority at end"),
-        TestCase(input=[5, 5, 5, 5, 5], expected=5, label="all same"),
-        TestCase(input=[-1, -1, 2], expected=-1, label="negative majority"),
-        TestCase(input=[3, 3], expected=3, label="two elements"),
-    ]
-
-    def solve(self, nums: list[int]) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, nums: list[int]) -> int")
+def solve(nums: list[int]) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    result = solve(nums)
+    write_int(result)

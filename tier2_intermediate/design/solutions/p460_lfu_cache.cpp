@@ -7,7 +7,7 @@
  * Implement the LFUCache class:
  * To determine the least frequently used key, a use counter is maintained for each key in the cache. The key with the smallest use counter is the least frequently used key.
  * When a key is first inserted into the cache, its use counter is set to 1 (due to the put operation). The use counter for a key in the cache is incremented either a get or put operation is called on it.
- * The functions get and put must each run in O(1) average time complexity.
+ * The functions get and put must each run in O(1) average time complexity.
  * Example 1:
  *     Input
  * Example 1:
@@ -38,10 +38,10 @@
  *     // cache=[4,3], cnt(4)=2, cnt(3)=3
  *
  * Constraints:
- *     - 1 <= capacity <= 104
+ *     - 1 <= capacity <= 104
  *     - 0 <= key <= 105
  *     - 0 <= value <= 109
- *     - At most 2 * 105 calls will be made to get and put.
+ *     - At most 2 * 105 calls will be made to get and put.
  *
  * Template (python3):
  *     class LFUCache:
@@ -62,8 +62,10 @@
  *     # obj.put(key,value)
  */
 
-
-#include "cpptest.h"
+#include "io.h"
+#include <cstdio>
+#include <cstring>
+#include <sstream>
 #include <unordered_map>
 #include <list>
 
@@ -113,34 +115,31 @@ public:
     }
 };
 
-int main() {
-    (void)print_arr;
+static int read_int_val() {
+    std::string line = read_line();
+    return std::stoi(line);
+}
 
-    printf("\n============================================================\n");
-    printf("  460. LFU Cache\n");
-    printf("============================================================\n");
+int main(void) {
+    int capacity = read_int_val();
+    int num_ops = read_int_val();
+    LFUCache lfu(capacity);
 
-    LFUCache lfu(2);
-    lfu.put(1, 1);
-    lfu.put(2, 2);
-    int r1 = lfu.get(1);
-    lfu.put(3, 3);
-    int r2 = lfu.get(2);
-    int r3 = lfu.get(3);
-    lfu.put(4, 4);
-    int r4 = lfu.get(1);
-    int r5 = lfu.get(3);
-    int r6 = lfu.get(4);
-
-    printf("  Test 1 (get key=1 after puts): %s\n", r1 == 1 ? "PASS" : "FAIL");
-    printf("  Test 2 (get evicted key=2): %s\n", r2 == -1 ? "PASS" : "FAIL");
-    printf("  Test 3 (get key=3): %s\n", r3 == 3 ? "PASS" : "FAIL");
-    printf("  Test 4 (get evicted key=1): %s\n", r4 == -1 ? "PASS" : "FAIL");
-    printf("  Test 5 (get key=3): %s\n", r5 == 3 ? "PASS" : "FAIL");
-    printf("  Test 6 (get key=4): %s\n", r6 == 4 ? "PASS" : "FAIL");
-
-    int passed = (r1 == 1) + (r2 == -1) + (r3 == 3) + (r4 == -1) + (r5 == 3) + (r6 == 4);
-    printf("\n  %d/6 passed\n", passed);
-    printf("============================================================\n\n");
-    return passed == 6 ? 0 : 1;
+    for (int i = 0; i < num_ops; i++) {
+        std::string line = read_line();
+        std::istringstream iss(line);
+        std::string op;
+        iss >> op;
+        if (op == "get") {
+            int key;
+            iss >> key;
+            write_int(lfu.get(key));
+        } else {
+            int key, value;
+            iss >> key >> value;
+            lfu.put(key, value);
+            write_string("null");
+        }
+    }
+    return 0;
 }

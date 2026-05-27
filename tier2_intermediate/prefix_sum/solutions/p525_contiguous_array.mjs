@@ -28,6 +28,8 @@
  *         def findMaxLength(self, nums: List[int]) -> int:
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(nums) {
   const firstOccurrence = new Map();
   firstOccurrence.set(0, -1);
@@ -44,25 +46,5 @@ function solve(nums) {
   return maxLen;
 }
 
-const tests = [
-  { label: "example 1", input: [[0, 1]], expected: 2 },
-  { label: "example 2", input: [[0, 1, 0]], expected: 2 },
-  { label: "example 3", input: [[0, 1, 1, 1, 1, 1, 0, 0, 0]], expected: 6 },
-  { label: "single element", input: [[1]], expected: 0 },
-  { label: "balanced halves", input: [[0, 0, 0, 0, 1, 1, 1, 1]], expected: 8 },
-  { label: "middle balanced", input: [[0, 0, 1, 0, 0, 0, 1, 1]], expected: 6 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+writeInt(solve(nums));

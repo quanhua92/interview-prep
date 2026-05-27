@@ -29,62 +29,40 @@ Template (python3):
 Hint: Map each digit to its letters and use backtracking to build all combinations.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "17. Letter Combinations of a Phone Number"
-    test_cases = [
-        TestCase(
-            input="23",
-            expected=["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"],
-            label="example 1",
-        ),
-        TestCase(input="", expected=[], label="empty input"),
-        TestCase(input="2", expected=["a", "b", "c"], label="single digit"),
-        TestCase(input="7", expected=["p", "q", "r", "s"], label="digit with 4 letters"),
-        TestCase(input="9", expected=["w", "x", "y", "z"], label="digit 9"),
-        TestCase(
-            input="79",
-            expected=[
-                "pw", "px", "py", "pz", "qw", "qx", "qy", "qz",
-                "rw", "rx", "ry", "rz", "sw", "sx", "sy", "sz",
-            ],
-            label="two 4-letter digits",
-        ),
-    ]
+def solve(digits: str) -> list[str]:
+    if not digits:
+        return []
 
-    def solve(self, digits: str) -> list[str]:
-        if not digits:
-            return []
+    phone_map = {
+        "2": "abc",
+        "3": "def",
+        "4": "ghi",
+        "5": "jkl",
+        "6": "mno",
+        "7": "pqrs",
+        "8": "tuv",
+        "9": "wxyz",
+    }
+    result: list[str] = []
 
-        phone_map = {
-            "2": "abc",
-            "3": "def",
-            "4": "ghi",
-            "5": "jkl",
-            "6": "mno",
-            "7": "pqrs",
-            "8": "tuv",
-            "9": "wxyz",
-        }
-        result: list[str] = []
+    def backtrack(index: int, path: list[str]):
+        if index == len(digits):
+            result.append("".join(path))
+            return
+        for letter in phone_map[digits[index]]:
+            path.append(letter)
+            backtrack(index + 1, path)
+            path.pop()
 
-        def backtrack(index: int, path: list[str]):
-            if index == len(digits):
-                result.append("".join(path))
-                return
-            for letter in phone_map[digits[index]]:
-                path.append(letter)
-                backtrack(index + 1, path)
-                path.pop()
-
-        backtrack(0, [])
-        return sorted(result)
+    backtrack(0, [])
+    return sorted(result)
 
 
 if __name__ == "__main__":
-    Solution().run()
+    digits = read_line()
+    combos = solve(digits)
+    for c in combos:
+        write_string(c)

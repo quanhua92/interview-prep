@@ -30,6 +30,8 @@
  *         def nearestPalindromic(self, n: str) -> str:
  */
 
+import { readLine, writeString } from '../../wasm_libs/js/io.mjs';
+
 function solve(n) {
   const num = parseInt(n, 10);
   if (num <= 10) return String(num - 1);
@@ -65,25 +67,5 @@ function solve(n) {
   return String(best);
 }
 
-const tests = [
-  { label: "example 1", input: ["123"], expected: "121" },
-  { label: "example 2", input: ["1"], expected: "0" },
-  { label: "edge at 10", input: ["10"], expected: "9" },
-  { label: "two same digits", input: ["99"], expected: "101" },
-  { label: "power of 10", input: ["100"], expected: "99" },
-  { label: "four digit", input: ["1283"], expected: "1331" },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const n = readLine();
+writeString(solve(n));

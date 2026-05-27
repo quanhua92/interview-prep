@@ -32,10 +32,7 @@
  */
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+#include "io.h"
 #include <set>
 
 static bool isRectangleCover(const std::vector<std::vector<int>> &rectangles)
@@ -72,41 +69,16 @@ static bool isRectangleCover(const std::vector<std::vector<int>> &rectangles)
     return total_area == (max_x - min_x) * (max_y - min_y);
 }
 
-typedef struct {
-    const char *label;
-    std::vector<std::vector<int>> rects;
-    bool expected;
-} RectTC;
-
 int main(void)
 {
-    RectTC tests[] = {
-        {"example 1", {{1,1,3,3},{3,1,4,2},{3,2,4,4},{1,3,2,4},{2,3,3,4}}, true},
-        {"example 2", {{1,1,2,3},{1,3,2,4},{3,1,4,2},{3,2,4,4}}, false},
-        {"example 3", {{1,1,3,3},{3,1,4,2},{1,3,2,4},{2,2,4,4}}, false},
-        {"single rectangle", {{0,0,1,1}}, true},
-        {"two rects side by side", {{0,0,1,2},{1,0,2,2}}, true},
-        {"overlapping rectangles", {{0,0,2,2},{1,1,3,3}}, false},
-    };
+    std::vector<int> header = read_ints();
+    int n = header[0];
 
-    int n_tests = (int)(sizeof(tests) / sizeof(tests[0]));
-    printf("\n============================================================\n");
-    printf("  391. Perfect Rectangle\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int t = 0; t < n_tests; t++) {
-        RectTC &tc = tests[t];
-        bool got = isRectangleCover(tc.rects);
-        if (got == tc.expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", t + 1, tc.label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", t + 1, tc.label);
-            printf("    Expected: %s\n", tc.expected ? "true" : "false");
-            printf("    Got:      %s\n", got ? "true" : "false");
-        }
+    std::vector<std::vector<int>> rectangles;
+    for (int i = 0; i < n; i++) {
+        rectangles.push_back(read_ints());
     }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+
+    write_bool(isRectangleCover(rectangles));
+    return 0;
 }

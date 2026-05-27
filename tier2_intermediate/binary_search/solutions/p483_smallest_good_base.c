@@ -29,11 +29,11 @@
  *         def smallestGoodBase(self, n: str) -> str:
  */
 
-
+#include "io.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 static long long calc(long long k, int m, long long num)
 {
@@ -52,7 +52,7 @@ static int bit_length(long long n)
     return b;
 }
 
-char *smallestGoodBase(char *n)
+char *smallestGoodBase(const char *n)
 {
     long long num = 0;
     for (int i = 0; n[i]; i++) num = num * 10 + (n[i] - '0');
@@ -80,32 +80,10 @@ char *smallestGoodBase(char *n)
 
 int main(void)
 {
-    struct { const char *label; char input[30]; const char *expected; int pass; } tests[] = {
-        { "example 1", "13", "3", 0 },
-        { "example 2", "4681", "8", 0 },
-        { "example 3", "1000000000000000000", "999999999999999999", 0 },
-        { "smallest n equals 11 base 2", "3", "2", 0 },
-        { "111 base 2", "7", "2", 0 },
-        { "11111 base 2", "31", "2", 0 },
-    };
-    int tn = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    for (int i = 0; i < tn; i++) {
-        char buf[30];
-        strcpy(buf, tests[i].input);
-        char *got = smallestGoodBase(buf);
-        tests[i].pass = (strcmp(got, tests[i].expected) == 0);
-        if (tests[i].pass) passed++;
-        free(got);
-    }
-
-    printf("\n============================================================\n");
-    printf("  483. Smallest Good Base\n");
-    printf("============================================================\n");
-    for (int i = 0; i < tn; i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, tn);
-    printf("============================================================\n");
-    return passed == tn ? 0 : 1;
+    char *n = read_line();
+    char *result = smallestGoodBase(n);
+    write_string(result);
+    free(n);
+    free(result);
+    return 0;
 }

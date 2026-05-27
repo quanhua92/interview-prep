@@ -29,6 +29,8 @@
  * Hint: Use two variables (prev, curr) -- for each house decide to rob or skip.
  */
 
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+
 function solve(nums) {
   let prev = 0, curr = 0;
   for (const num of nums) {
@@ -39,29 +41,5 @@ function solve(nums) {
   return curr;
 }
 
-const tests = [
-  { label: "example 1", input: [1, 2, 3, 1], expected: 4 },
-  { label: "example 2", input: [2, 7, 9, 3, 1], expected: 12 },
-  { label: "single house", input: [1], expected: 1 },
-  { label: "no houses", input: [], expected: 0 },
-  { label: "alternate houses equal", input: [2, 1, 1, 2], expected: 4 },
-  { label: "all zeros", input: [0, 0, 0], expected: 0 },
-  { label: "two houses", input: [1, 2], expected: 2 },
-  { label: "alternating high low", input: [10, 1, 10, 1, 10], expected: 30 },
-  { label: "three peaks", input: [100, 1, 1, 100, 1, 1, 100], expected: 300 },
-  { label: "max values large array", input: Array(100).fill(400), expected: 20000 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+const nums = readInts();
+writeInt(solve(nums));

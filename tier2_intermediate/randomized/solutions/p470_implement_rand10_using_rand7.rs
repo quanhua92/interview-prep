@@ -33,8 +33,7 @@
  *             '''
  */
 
-#[allow(unused_imports)]
-use rstest;
+use wasm_libs::*;
 
 static mut RNG_STATE: u64 = 12345;
 
@@ -57,42 +56,14 @@ fn rand10() -> i32 {
 }
 
 fn main() {
-    struct TestCase {
-        label: &'static str,
-        input: i32,
-    }
-
-    let tests: &[TestCase] = &[
-        TestCase { label: "generates 5 values in range [1, 10]", input: 5 },
-        TestCase { label: "single value", input: 1 },
-        TestCase { label: "100 values", input: 100 },
-    ];
-
-    println!("\n============================================================");
-    println!("  470. Implement Rand10() Using Rand7()");
-    println!("============================================================");
-
-    let mut passed = 0;
-    for (i, tc) in tests.iter().enumerate() {
-        let mut ok = true;
-        for _ in 0..tc.input {
-            let v = rand10();
-            if v < 1 || v > 10 {
-                ok = false;
-                break;
-            }
-        }
-        if ok {
-            passed += 1;
-            println!("  Test {} ({}): PASS", i + 1, tc.label);
-        } else {
-            println!("  Test {} ({}): FAIL", i + 1, tc.label);
-            println!("    Expected: all values in [1, 10]");
+    let n = read_int();
+    let mut ok = true;
+    for _ in 0..n {
+        let v = rand10();
+        if v < 1 || v > 10 {
+            ok = false;
+            break;
         }
     }
-
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    write_bool(ok);
 }

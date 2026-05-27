@@ -21,7 +21,7 @@ Constraints:
     - The input is generated such that answer[i] is guaranteed to fit in a 32-bit integer.
 
 Follow up:
-    - Can you solve the problem in O(1) extra space complexity? (The output array does not count as extra space for space complexity analysis.)
+    - Can you solve the problem in O(1) extra space complexity? (The output array does not count as extra space for space complexity analysis.)
 
 Hints:
     - Think how you can efficiently utilize prefix and suffix products to calculate the product of all elements except self for each index. Can you pre-compute the prefix and suffix products in linear time to avoid redundant calculations?
@@ -34,42 +34,27 @@ Template (python3):
 Hint: Build left and right product arrays, then combine.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "238. Product of Array Except Self"
-    test_cases = [
-        TestCase(input=[1, 2, 3, 4], expected=[24, 12, 8, 6], label="example 1"),
-        TestCase(input=[-1, 1, 0, -3, 3], expected=[0, 0, 9, 0, 0], label="example 2"),
-        TestCase(input=[1, 2], expected=[2, 1], label="two elements"),
-        TestCase(input=[1, 1, 1], expected=[1, 1, 1], label="all ones"),
-        TestCase(input=[-1, -1, -1], expected=[1, 1, 1], label="all negatives"),
-        TestCase(input=[1, -1], expected=[-1, 1], label="two elements negative"),
-        TestCase(input=[0, 0, 0, 0], expected=[0, 0, 0, 0], label="all zeros"),
-    ]
+def solve(nums: list[int]) -> list[int]:
+    n = len(nums)
+    output = [1] * n
 
-    def solve(self, nums: list[int]) -> list[int]:
-        n = len(nums)
-        output = [1] * n
+    left_product = 1
+    for i in range(n):
+        output[i] = left_product
+        left_product *= nums[i]
 
-        # Left pass: output[i] = product of nums[0:i]
-        left_product = 1
-        for i in range(n):
-            output[i] = left_product
-            left_product *= nums[i]
+    right_product = 1
+    for i in range(n - 1, -1, -1):
+        output[i] *= right_product
+        right_product *= nums[i]
 
-        # Right pass: multiply by product of nums[i+1:n]
-        right_product = 1
-        for i in range(n - 1, -1, -1):
-            output[i] *= right_product
-            right_product *= nums[i]
-
-        return output
+    return output
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    result = solve(nums)
+    write_ints(result)

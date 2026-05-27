@@ -25,7 +25,7 @@
  *         def findComplement(self, num: int) -> int:
  */
 
-#include "ctest.h"
+#include "io.h"
 
 static int findComplement(int num) {
     unsigned int mask = (unsigned int)(1 << (32 - __builtin_clz(num))) - 1;
@@ -33,38 +33,7 @@ static int findComplement(int num) {
 }
 
 int main(void) {
-    (void)th_print_arr;
-    (void)th_arr_eq;
-
-    struct { const char *label; int input; int expected; } tests[] = {
-        {"example 1", 5, 2},
-        {"example 2", 1, 0},
-        {"power of two", 2, 1},
-        {"1000 flips to 0111", 8, 7},
-        {"all ones flips to zero", 15, 0},
-        {"large power of two", 1 << 30, (1 << 30) - 1},
-    };
-
-    int n = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-
-    printf("\n============================================================\n");
-    printf("  476. Number Complement\n");
-    printf("============================================================\n");
-
-    for (int i = 0; i < n; i++) {
-        int got = findComplement(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-
-    return passed == n ? 0 : 1;
+    int num = read_int();
+    write_int(findComplement(num));
+    return 0;
 }

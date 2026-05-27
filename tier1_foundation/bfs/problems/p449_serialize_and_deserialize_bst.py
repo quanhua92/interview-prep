@@ -47,38 +47,48 @@ Template (python3):
     # return ans
 """
 
+from src.wasm_libs.py.io import *
 import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from collections import deque
 
 
-class Solution(Problem):
-    name = "449. Serialize and Deserialize BST"
-    test_cases = [
-        TestCase(input={"vals": [2, 1, 3]}, expected=[2, 1, 3], label="example 1"),
-        TestCase(input={"vals": []}, expected=[], label="empty tree"),
-        TestCase(input={"vals": [1]}, expected=[1], label="single node"),
-        TestCase(
-            input={"vals": [3, 1, 4, None, 2]},
-            expected=[3, 1, 4, None, 2],
-            label="bst with left subtree",
-        ),
-        TestCase(
-            input={"vals": [5, 3, 8, 1, 4, 7, 9]},
-            expected=[5, 3, 8, 1, 4, 7, 9],
-            label="balanced bst 3 levels",
-        ),
-        TestCase(
-            input={"vals": [4, 2, 5, 1, 3]},
-            expected=[4, 2, 5, 1, 3],
-            label="complete bst",
-        ),
-    ]
+def solve(vals: list[int | None]) -> list[int | None]:
+    raise NotImplementedError
 
-    def solve(self, vals: list[int]) -> list[int | None]:
-        raise NotImplementedError("TODO: Implement solve(self, vals: list[int]) -> list[int | None]")
+
+    serialized = []
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()
+        if node:
+            serialized.append(node["val"])
+            if node["left"] or node["right"]:
+                queue.append(node["left"])
+                queue.append(node["right"])
+        else:
+            serialized.append(None)
+    while serialized and serialized[-1] is None:
+        serialized.pop()
+    return serialized
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    if n == 0:
+        sys.exit(0)
+    else:
+        tokens = read_line().split()
+        vals = []
+        for t in tokens:
+            if t == "null":
+                vals.append(None)
+            else:
+                vals.append(int(t))
+        result = solve(vals)
+        parts = []
+        for v in result:
+            if v is None:
+                parts.append("null")
+            else:
+                parts.append(str(v))
+        write_string(" ".join(parts))

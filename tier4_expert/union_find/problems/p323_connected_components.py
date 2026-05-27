@@ -29,41 +29,19 @@ Template (python3):
 Hint: Use a Union-Find data structure to merge connected nodes and count components.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class UnionFind:
-    def __init__(self, n: int): ...
-
-    def find(self, x: int) -> int: ...
-
-    def union(self, x: int, y: int) -> bool: ...
-
-
-class Solution(Problem):
-    name = "323. Number of Connected Components in an Undirected Graph"
-    test_cases = [
-        TestCase(input=(5, [[0, 1], [1, 2], [3, 4]]), expected=2, label="example"),
-        TestCase(
-            input=(5, [[0, 1], [1, 2], [2, 3], [3, 4]]),
-            expected=1,
-            label="fully connected",
-        ),
-        TestCase(input=(3, []), expected=3, label="no edges"),
-        TestCase(input=(1, []), expected=1, label="single node no edges"),
-        TestCase(input=(4, [[0, 1], [2, 3]]), expected=2, label="two disjoint pairs"),
-        TestCase(input=(6, [[0, 1], [1, 2], [2, 0], [3, 4], [4, 5], [5, 3]]), expected=2, label="two triangles"),
-        TestCase(input=(7, [[0, 1], [1, 2], [3, 4], [5, 6]]), expected=3, label="three components with chain and pairs"),
-    ]
-
-    def solve(self, n: int, edges: list[list[int]]) -> int:
-        raise NotImplementedError(
-            "TODO: Implement solve(self, n: int, edges: list[list[int]]) -> int"
-        )
+def solve(n: int, edges: list[list[int]]) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    m = read_int()
+    edges = []
+    for _ in range(m):
+        row = read_ints()
+        edges.append([row[0], row[1]])
+    result = solve(n, edges)
+    write_int(result)

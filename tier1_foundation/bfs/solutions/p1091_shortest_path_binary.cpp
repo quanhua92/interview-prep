@@ -35,14 +35,13 @@
  * Hint: BFS from (0,0) with 8 directions, return distance to (n-1,n-1) or -1.
  */
 
-
-#include "cpptest.h"
+#include "io.h"
 #include <queue>
 #include <tuple>
 
 using namespace std;
 
-static int shortestPathBinaryMatrix(vector<vector<int>> &grid) {
+static int solve(vector<vector<int>> &grid) {
     int n = (int)grid.size();
     if (grid[0][0] == 1 || grid[n - 1][n - 1] == 1) return -1;
     if (n == 1) return 1;
@@ -67,35 +66,14 @@ static int shortestPathBinaryMatrix(vector<vector<int>> &grid) {
     return -1;
 }
 
-int main() {
-    (void)print_arr;
-    struct TC {
-        string label;
-        vector<vector<int>> grid;
-        int expected;
-    };
-    TC tests[] = {
-        {"example 1", {{0,1},{1,0}}, 2},
-        {"example 2", {{0,0,0},{1,1,0},{1,1,0}}, 4},
-        {"blocked", {{1,0},{0,1}}, -1},
-        {"single cell", {{0}}, 1},
-        {"3x3 all open (diagonal)", {{0,0,0},{0,0,0},{0,0,0}}, 3},
-        {"2x2 all open (diagonal)", {{0,0},{0,0}}, 2},
-        {"3x3 only corners open", {{0,1,1},{1,1,1},{1,1,0}}, -1},
-    };
-    int nt = (int)(sizeof(tests) / sizeof(tests[0]));
-    int passed = 0;
-    for (int i = 0; i < nt; i++) {
-        vector<vector<int>> g = tests[i].grid;
-        int got = shortestPathBinaryMatrix(g);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label.c_str());
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label.c_str());
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
+int main(void)
+{
+    int n = read_int();
+    (void)n;
+    vector<vector<int>> grid;
+    for (int i = 0; i < n; i++) {
+        grid.push_back(read_ints());
     }
-    printf("\n  %d/%d passed\n", passed, nt);
-    return passed == nt ? 0 : 1;
+    write_int(solve(grid));
+    return 0;
 }

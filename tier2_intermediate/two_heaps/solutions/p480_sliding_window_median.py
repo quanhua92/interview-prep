@@ -40,131 +40,91 @@ Template (python3):
 Hint: Use a max-heap for the small half and a min-heap for the large half with lazy deletion.
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 import heapq
 
 
-class Solution(Problem):
-    name = "480. Sliding Window Median"
-    test_cases = [
-        TestCase(
-            input=([1, 3, -1, -3, 5, 3, 6, 7], 3),
-            expected=[1.0, -1.0, -1.0, 3.0, 5.0, 6.0],
-            label="example 1",
-        ),
-        TestCase(input=([1, 2], 1), expected=[1.0, 2.0], label="window size 1"),
-        TestCase(
-            input=([1, 2, 3, 4, 2, 3, 1, 4, 2], 3),
-            expected=[2.0, 3.0, 3.0, 3.0, 2.0, 3.0, 2.0],
-            label="example 2",
-        ),
-        TestCase(
-            input=([2147483647, -2147483648], 2),
-            expected=[-0.5],
-            label="large int boundary",
-        ),
-        TestCase(
-            input=([1, 1, 1, 1], 2),
-            expected=[1.0, 1.0, 1.0],
-            label="all same values",
-        ),
-        TestCase(
-            input=([5, 5, 5, 5, 5], 5),
-            expected=[5.0],
-            label="window equals array",
-        ),
-        TestCase(
-            input=([-5, -4, -3, -2, -1], 3),
-            expected=[-4.0, -3.0, -2.0],
-            label="all negative ascending",
-        ),
-        TestCase(
-            input=([10, 9, 8, 7, 6], 3),
-            expected=[9.0, 8.0, 7.0],
-            label="descending order",
-        ),
-    ]
+def solve(nums: list[int], k: int) -> list[float]:
+    small: list[tuple[int, int]] = []
+    large: list[tuple[int, int]] = []
+    delayed: dict[int, int] = {}
+    in_small: dict[int, bool] = {}
+    small_size = 0
+    large_size = 0
 
-    def solve(self, nums: list[int], k: int) -> list[float]:
-        small: list[tuple[int, int]] = []
-        large: list[tuple[int, int]] = []
-        delayed: dict[int, int] = {}
-        in_small: dict[int, bool] = {}
-        small_size = 0
-        large_size = 0
-
-        def prune(heap: list[tuple[int, int]]) -> None:
-            while heap:
-                _, idx = heap[0]
-                if idx in delayed:
-                    delayed[idx] -= 1
-                    if delayed[idx] == 0:
-                        del delayed[idx]
-                    heapq.heappop(heap)
-                else:
-                    break
-
-        def make_balanced() -> None:
-            nonlocal small_size, large_size
-            if small_size > large_size + 1:
-                prune(small)
-                val, idx = heapq.heappop(small)
-                heapq.heappush(large, (-val, idx))
-                in_small[idx] = False
-                small_size -= 1
-                large_size += 1
-                prune(small)
-            elif small_size < large_size:
-                prune(large)
-                val, idx = heapq.heappop(large)
-                heapq.heappush(small, (-val, idx))
-                in_small[idx] = True
-                large_size -= 1
-                small_size += 1
-                prune(large)
-
-        def get_median() -> float:
-            if k % 2 == 1:
-                return float(-small[0][0])
+    def prune(heap: list[tuple[int, int]]) -> None:
+        while heap:
+            _, idx = heap[0]
+            if idx in delayed:
+                delayed[idx] -= 1
+                if delayed[idx] == 0:
+                    del delayed[idx]
+                heapq.heappop(heap)
             else:
-                return (-small[0][0] + large[0][0]) / 2.0
+                break
 
-        result: list[float] = []
-
-        for i in range(len(nums)):
+    def make_balanced() -> None:
+        nonlocal small_size, large_size
+        if small_size > large_size + 1:
             prune(small)
+            val, idx = heapq.heappop(small)
+            heapq.heappush(large, (-val, idx))
+            in_small[idx] = False
+            small_size -= 1
+            large_size += 1
+            prune(small)
+        elif small_size < large_size:
+            prune(large)
+            val, idx = heapq.heappop(large)
+            heapq.heappush(small, (-val, idx))
+            in_small[idx] = True
+            large_size -= 1
+            small_size += 1
             prune(large)
 
-            if not small or nums[i] <= -small[0][0]:
-                heapq.heappush(small, (-nums[i], i))
-                in_small[i] = True
-                small_size += 1
-            else:
-                heapq.heappush(large, (nums[i], i))
-                in_small[i] = False
-                large_size += 1
+    def get_median() -> float:
+        if k % 2 == 1:
+            return float(-small[0][0])
+        else:
+            return (-small[0][0] + large[0][0]) / 2.0
 
+    result: list[float] = []
+
+    for i in range(len(nums)):
+        prune(small)
+        prune(large)
+
+        if not small or nums[i] <= -small[0][0]:
+            heapq.heappush(small, (-nums[i], i))
+            in_small[i] = True
+            small_size += 1
+        else:
+            heapq.heappush(large, (nums[i], i))
+            in_small[i] = False
+            large_size += 1
+
+        make_balanced()
+
+        if i >= k:
+            out_idx = i - k
+            delayed[out_idx] = delayed.get(out_idx, 0) + 1
+            if in_small.get(out_idx, True):
+                small_size -= 1
+            else:
+                large_size -= 1
             make_balanced()
 
-            if i >= k:
-                out_idx = i - k
-                delayed[out_idx] = delayed.get(out_idx, 0) + 1
-                if in_small.get(out_idx, True):
-                    small_size -= 1
-                else:
-                    large_size -= 1
-                make_balanced()
+        if i >= k - 1:
+            prune(small)
+            prune(large)
+            result.append(get_median())
 
-            if i >= k - 1:
-                prune(small)
-                prune(large)
-                result.append(get_median())
-
-        return result
+    return result
 
 
 if __name__ == "__main__":
-    Solution().run()
+    nums = read_ints()
+    k = read_int()
+    result = solve(nums, k)
+    for m in result:
+        print(m)

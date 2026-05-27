@@ -34,12 +34,11 @@
  * Hint: Build left and right product arrays, then combine.
  */
 
-#include "ctest.h"
-#include <limits.h>
+#include "io.h"
+#include <stdlib.h>
 
-int *product_except_self(int *nums, int numsSize, int target, int *retSize)
+int *product_except_self(int *nums, int numsSize, int *retSize)
 {
-    (void)target;
     int *output = (int *)malloc(numsSize * sizeof(int));
     *retSize = numsSize;
 
@@ -60,15 +59,12 @@ int *product_except_self(int *nums, int numsSize, int target, int *retSize)
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {1, 2, 3, 4}, 4, 0, {24, 12, 8, 6}, 4},
-        {"example 2", {-1, 1, 0, -3, 3}, 5, 0, {0, 0, 9, 0, 0}, 5},
-        {"two elements", {1, 2}, 2, 0, {2, 1}, 2},
-        {"all ones", {1, 1, 1}, 3, 0, {1, 1, 1}, 3},
-        {"all negatives", {-1, -1, -1}, 3, 0, {1, 1, 1}, 3},
-        {"two elements negative", {1, -1}, 2, 0, {-1, 1}, 2},
-        {"all zeros", {0, 0, 0, 0}, 4, 0, {0, 0, 0, 0}, 4},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("238. Product of Array Except Self", product_except_self, tests, n);
+    int n;
+    int *nums = read_ints(&n);
+    int retSize;
+    int *result = product_except_self(nums, n, &retSize);
+    write_ints(result, retSize);
+    free(nums);
+    free(result);
+    return 0;
 }

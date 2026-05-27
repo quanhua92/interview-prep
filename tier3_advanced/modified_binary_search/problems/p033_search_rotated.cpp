@@ -33,16 +33,9 @@
  * 
  * Hint: Determine which half is sorted, then check if target lies in that half.
  */
-#include <cstdio>
-#include <vector>
-#include <string>
 
-struct TestCase {
-    std::string label;
-    std::vector<int> nums;
-    int target;
-    int expected;
-};
+#include "io.h"
+#include <vector>
 
 int search(const std::vector<int> &nums, int target)
 {
@@ -51,37 +44,9 @@ int search(const std::vector<int> &nums, int target)
 
 int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {4,5,6,7,0,1,2}, 0, 4},
-        {"example 2", {4,5,6,7,0,1,2}, 3, -1},
-        {"single element", {1}, 0, -1},
-        {"single element found", {1}, 1, 0},
-        {"two elements rotated at pivot", {1,3}, 3, 1},
-        {"two elements no rotation", {1,3}, 1, 0},
-        {"target at first index", {5,1,3}, 5, 0},
-        {"target at last index", {5,1,3}, 3, 2},
-        {"large rotated target at start", {6,7,0,1,2,3,4,5}, 6, 0},
-        {"large rotated target at end", {6,7,0,1,2,3,4,5}, 5, 7},
-        {"no rotation sorted", {1,2,3,4,5}, 3, 2},
-        {"negative values target at start", {-10,-5,0,1,2,3,-9}, -10, 0},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  33. Search in Rotated Sorted Array\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n; i++) {
-        int got = search(tests[i].nums, tests[i].target);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label.c_str());
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label.c_str());
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n);
-    printf("============================================================\n\n");
-    return passed == n ? 0 : 1;
+    std::vector<int> nums = read_ints();
+    std::vector<int> target_line = read_ints();
+    int target = target_line[0];
+    write_int(search(nums, target));
+    return 0;
 }

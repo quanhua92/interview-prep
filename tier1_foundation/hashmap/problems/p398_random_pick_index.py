@@ -40,61 +40,29 @@ Template (python3):
     # param_1 = obj.pick(target)
 """
 
-import sys
 import random
+from collections import defaultdict
 
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 random.seed(42)
 
 
 class Solution:
     def __init__(self, nums: list[int]):
-        raise NotImplementedError
+        self.idx = defaultdict(list)
+        for i, v in enumerate(nums):
+            self.idx[v].append(i)
 
     def pick(self, target: int) -> int:
-        raise NotImplementedError
+        return random.choice(self.idx[target])
 
 
-class ProblemSolution(Problem):
-    name = "398. Random Pick Index"
-    test_cases = [
-        TestCase(
-            input=([1, 2, 3, 3, 3], 3),
-            expected=4,
-            label="returns valid index for target 3",
-        ),
-        TestCase(
-            input=([1, 2, 3, 3, 3], 1),
-            expected=0,
-            label="single occurrence",
-        ),
-        TestCase(
-            input=([5], 5),
-            expected=0,
-            label="single element array",
-        ),
-        TestCase(
-            input=([1, 2, 1, 2, 1], 1),
-            expected=4,
-            label="non-contiguous duplicates",
-        ),
-        TestCase(
-            input=([-1, -2, -1, -3, -1], -1),
-            expected=2,
-            label="negative numbers with duplicates",
-        ),
-        TestCase(
-            input=([1, 1, 1, 1, 1], 1),
-            expected=1,
-            label="all same elements",
-        ),
-    ]
-
-    def solve(self, nums: list[int], target: int) -> int:
-        return Solution(nums).pick(target)
+def solve(nums: list[int], target: int) -> int:
+    return Solution(nums).pick(target)
 
 
 if __name__ == "__main__":
-    ProblemSolution().run()
+    nums = read_ints()
+    target = read_int()
+    write_int(solve(nums, target))

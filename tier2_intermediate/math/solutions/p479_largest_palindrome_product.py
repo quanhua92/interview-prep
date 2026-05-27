@@ -21,38 +21,26 @@ Template (python3):
         def largestPalindrome(self, n: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "479. Largest Palindrome Product"
-    test_cases = [
-        TestCase(input=2, expected=987, label="example 1"),
-        TestCase(input=1, expected=9, label="example 2"),
-        TestCase(input=3, expected=123, label="3 digits"),
-        TestCase(input=4, expected=597, label="4 digits"),
-        TestCase(input=8, expected=475, label="8 digits (max n)"),
-    ]
-
-    def solve(self, n: int) -> int:
-        if n == 1:
-            return 9
-        upper = 10**n - 1
-        lower = 10 ** (n - 1)
-        for left in range(upper, lower - 1, -1):
-            s = str(left)
-            palindrome = int(s + s[::-1])
-            # Check if divisible by any n-digit number
-            for right in range(upper, lower - 1, -1):
-                if right * right < palindrome:
-                    break
-                if palindrome % right == 0:
-                    return palindrome % 1337
-        return 0
+def solve(n: int) -> int:
+    if n == 1:
+        return 9
+    upper = 10**n - 1
+    lower = 10 ** (n - 1)
+    for left in range(upper, lower - 1, -1):
+        s = str(left)
+        palindrome = int(s + s[::-1])
+        for right in range(upper, lower - 1, -1):
+            if right * right < palindrome:
+                break
+            if palindrome % right == 0:
+                return palindrome % 1337
+    return 0
 
 
 if __name__ == "__main__":
-    Solution().run()
+    n = read_int()
+    result = solve(n)
+    write_int(result)

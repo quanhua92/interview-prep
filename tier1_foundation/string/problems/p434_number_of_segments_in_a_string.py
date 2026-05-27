@@ -24,26 +24,14 @@ Template (python3):
         def countSegments(self, s: str) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "434. Number of Segments in a String"
-    test_cases = [
-        TestCase(input="Hello, my name is John", expected=5, label="example 1"),
-        TestCase(input="Hello", expected=1, label="example 2"),
-        TestCase(input="", expected=0, label="empty string"),
-        TestCase(input="   ", expected=0, label="only spaces"),
-        TestCase(input="    foo    bar   ", expected=2, label="leading/trailing/multiple spaces"),
-        TestCase(input="a b c d e", expected=5, label="single char segments"),
-    ]
-
-    def solve(self, s: str) -> int:
-        raise NotImplementedError("TODO: Implement solve(self, s) -> int")
+def solve(s: str) -> int:
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
-    Solution().run()
+    s = read_line()
+    result = solve(s)
+    write_int(result)

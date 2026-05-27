@@ -34,12 +34,10 @@
  *     - <a href="https://www.youtube.com/watch?v=ozso3xxkVGU" target="_blank">Topological Sort via DFS</a> - A great video tutorial (21 minutes) on Coursera explaining the basic concepts of Topological Sort.
  *     - Topological sort could also be done via <a href="http://en.wikipedia.org/wiki/Topological_sorting#Algorithms" target="_blank">BFS</a>.
  *
- * Template (python3):
- *     class Solution:
- *         def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
- *
  * Hint: Use Kahn's algorithm (topological sort with BFS) to produce a valid course order.
  */
+
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
 
 function solve(numCourses, prerequisites) {
   const graph = {};
@@ -67,26 +65,11 @@ function solve(numCourses, prerequisites) {
   return order.length === numCourses ? order : [];
 }
 
-const tests = [
-  { label: "example 1", input: [2, [[1, 0]]], expected: [0, 1] },
-  { label: "example 2", input: [4, [[1, 0], [2, 0], [3, 1], [3, 2]]], expected: [0, 1, 2, 3] },
-  { label: "no prerequisites", input: [1, []], expected: [0] },
-  { label: "cycle returns empty", input: [2, [[1, 0], [0, 1]]], expected: [] },
-  { label: "3-node cycle", input: [3, [[0, 1], [1, 2], [2, 0]]], expected: [] },
-  { label: "all depend on course 0", input: [4, [[0, 1], [0, 2], [0, 3]]], expected: [1, 2, 3, 0] },
-  { label: "linear chain", input: [3, [[2, 1], [1, 0]]], expected: [0, 1, 2] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(...t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const header = readInts();
+const numCourses = header[0];
+const pairCount = header[1];
+const prerequisites = [];
+for (let i = 0; i < pairCount; i++) {
+  prerequisites.push(readInts());
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
+writeInts(solve(numCourses, prerequisites));

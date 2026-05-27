@@ -32,13 +32,13 @@
  *         def checkSubarraySum(self, nums: List[int], k: int) -> bool:
  */
 
-#include "cpptest.h"
-#include <vector>
+#include "io.h"
 #include <unordered_map>
+#include <vector>
 
 using namespace std;
 
-vector<int> check_subarray_sum(const vector<int>& nums, int k)
+bool check_subarray_sum(const vector<int>& nums, int k)
 {
     unordered_map<int, int> mod_index;
     mod_index[0] = -1;
@@ -47,25 +47,20 @@ vector<int> check_subarray_sum(const vector<int>& nums, int k)
         prefix = (prefix + nums[i]) % k;
         auto it = mod_index.find(prefix);
         if (it != mod_index.end() && i - it->second > 1) {
-            return {1};
+            return true;
         }
         if (it == mod_index.end()) {
             mod_index[prefix] = i;
         }
     }
-    return {0};
+    return false;
 }
 
-int main()
+int main(void)
 {
-    TestCase tests[] = {
-        {"example 1", {23, 2, 4, 6, 7}, 6, {1}},
-        {"example 2", {23, 2, 6, 4, 7}, 6, {1}},
-        {"example 3", {23, 2, 6, 4, 7}, 13, {0}},
-        {"two zeros sum to 0", {5, 0, 0}, 3, {1}},
-        {"no valid subarray", {1, 2}, 4, {0}},
-        {"two zeros always valid", {0, 0}, 1, {1}},
-    };
-    int n = sizeof(tests) / sizeof(tests[0]);
-    RUN_TESTS("523. Continuous Subarray Sum", check_subarray_sum, tests, n);
+    vector<int> nums = read_ints();
+    vector<int> target_line = read_ints();
+    int k = target_line[0];
+    write_bool(check_subarray_sum(nums, k));
+    return 0;
 }

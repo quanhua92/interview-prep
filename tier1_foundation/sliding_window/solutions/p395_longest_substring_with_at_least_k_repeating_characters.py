@@ -25,72 +25,38 @@ Template (python3):
         def longestSubstring(self, s: str, k: int) -> int:
 """
 
-import sys
-
-sys.path.insert(0, ".")
-from src.utils import Problem, TestCase
+from src.wasm_libs.py.io import *
 
 
-class Solution(Problem):
-    name = "395. Longest Substring with At Least K Repeating Characters"
-    test_cases = [
-        TestCase(input=("aaabb", 3), expected=3, label="example 1"),
-        TestCase(input=("ababbc", 2), expected=5, label="example 2"),
-        TestCase(input=("ababacb", 3), expected=0, label="no valid substring"),
-        TestCase(input=("a", 1), expected=1, label="single char k=1"),
-        TestCase(input=("a", 2), expected=0, label="single char k>1"),
-        TestCase(input=("bbaaacbd", 3), expected=3, label="multiple runs"),
-    ]
-
-    def solve(self, s: str, k: int) -> int:
-        max_len = 0
-        for t in range(1, 27):
-            freq: dict[str, int] = {}
-            left = 0
-            unique = 0
-            at_least_k = 0
-            for right in range(len(s)):
-                ch = s[right]
-                freq[ch] = freq.get(ch, 0) + 1
-                if freq[ch] == 1:
-                    unique += 1
-                if freq[ch] == k:
-                    at_least_k += 1
-                while unique > t:
-                    lc = s[left]
-                    if freq[lc] == k:
-                        at_least_k -= 1
-                    freq[lc] -= 1
-                    if freq[lc] == 0:
-                        unique -= 1
-                    left += 1
-                if unique == t and at_least_k == t:
-                    max_len = max(max_len, right - left + 1)
-        return max_len
-
-    def solve_alternative(self, s: str, k: int) -> int:
-        def helper(sub: str, k: int) -> int:
-            if len(sub) < k:
-                return 0
-            freq = {}
-            for ch in sub:
-                freq[ch] = freq.get(ch, 0) + 1
-            bad_chars = [ch for ch, cnt in freq.items() if cnt < k]
-            if not bad_chars:
-                return len(sub)
-            max_len = 0
-            start = 0
-            for i, ch in enumerate(sub):
-                if ch in bad_chars:
-                    if i - start >= k:
-                        max_len = max(max_len, helper(sub[start:i], k))
-                    start = i + 1
-            if len(sub) - start >= k:
-                max_len = max(max_len, helper(sub[start:], k))
-            return max_len
-
-        return helper(s, k)
+def solve(s: str, k: int) -> int:
+    max_len = 0
+    for t in range(1, 27):
+        freq: dict[str, int] = {}
+        left = 0
+        unique = 0
+        at_least_k = 0
+        for right in range(len(s)):
+            ch = s[right]
+            freq[ch] = freq.get(ch, 0) + 1
+            if freq[ch] == 1:
+                unique += 1
+            if freq[ch] == k:
+                at_least_k += 1
+            while unique > t:
+                lc = s[left]
+                if freq[lc] == k:
+                    at_least_k -= 1
+                freq[lc] -= 1
+                if freq[lc] == 0:
+                    unique -= 1
+                left += 1
+            if unique == t and at_least_k == t:
+                max_len = max(max_len, right - left + 1)
+    return max_len
 
 
 if __name__ == "__main__":
-    Solution().run()
+    s = read_line()
+    k = read_int()
+    result = solve(s, k)
+    write_int(result)
