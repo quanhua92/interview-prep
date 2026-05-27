@@ -1,8 +1,8 @@
 # Multi-User Deployment
 
-> **ON HOLD** — The sandbox layer requires `--userns=host` + `seccomp=unconfined` on the outer Docker container to enable bwrap inside. This weakens Docker's security (root inside container = root on host, no seccomp filtering). The bwrap tradeoff is acceptable for small-team/personal use (bwrap's user namespace is the real security boundary for code execution), but not for a public multi-tenant service. Revisit with a custom seccomp profile (restore Docker's default syscall filtering while allowing `unshare()`), or a stronger isolation approach (Firecracker/Kata VMs, gVisor user-space kernel).
-
 Deploying interview-prep to a shared server where multiple people can use it simultaneously, each with their own isolated workspace and progress.
+
+Code execution is sandboxed via **WASM** (wasmtime). See [WASM_SANDBOX.md](./WASM_SANDBOX.md) for benchmarks, toolchain details, and security properties.
 
 ## Problem
 
@@ -15,7 +15,7 @@ The current architecture is single-user:
 | Version history | `_file_snapshots` in-memory dict | Lost on restart, shared |
 | Code execution | `subprocess.run` on host | Any user can run arbitrary code, access other users' files, network, etc. |
 
-If deployed as-is, all users share the same system. Two people working on the same problem would overwrite each other's code. More critically, the `/api/run` endpoint (`web.py:259`) runs user-edited code directly on the host via `subprocess.run` — a major security vulnerability in a multi-user context.
+If deployed as-is, all users share the same system. Two people working on the same problem would overwrite each other's code. More critically, the `/api/run` endpoint (`web.py`) runs user-edited code — a major security vulnerability in a multi-user context.
 
 ## Multi-User Architecture
 
@@ -23,7 +23,7 @@ If deployed as-is, all users share the same system. Two people working on the sa
 
 ```
 ┌──────────────────────────────────────────────────────┐
-│  Main Container (FastAPI + auth + bwrap)             │
+│  Main Container (FastAPI + auth + wasmtime)          │
 │                                                       │
 │  Auth Layer (session cookie)                        │
 │  ┌────────────────────────────────────────────┐       │
@@ -45,23 +45,18 @@ If deployed as-is, all users share the same system. Two people working on the sa
 │    ... all other topic dirs                            │
 │    static/ (JS, CSS, CodeMirror)                      │
 │                                                       │
-│  /api/run ──spawn── bwrap ──┐                         │
-│                    bwrap ──┤  (sandboxed)             │
-│                    bwrap ──┘                         │
+│  /api/run ──compile── .wasm ──┐                       │
+│              (wasm_runner.py)  ├── wasmtime (sandboxed)│
+│                               ┘                       │
 │                                                       │
-│  Sandboxed view per run:                              │
-│    /usr  → ro-bind (compilers, libs)                 │
-│    /bin  → ro-bind (essential binaries)              │
-│    /lib  → ro-bind (shared libs)                     │
-│    /lib64 → ro-bind (dynamic linker)                 │
-│    /etc  → ro-bind (system config)                   │
-│    /app  → ro-bind (code, solutions)                 │
-│    /tmp  → rw-bind (compilation output)              │
-│    /dev  → minimal (null only)                       │
-│    /proc → new proc namespace                         │
-│    user  → new user namespace (unprivileged mapping)  │
+│  WASM sandbox per run:                                │
+│    fuel=2B      → CPU instruction limit               │
+│    timeout=120s → wall-clock timeout                   │
+│    max-mem=256M → hard memory cap                     │
+│    --dir <user> → only user's code dir visible        │
+│    no network  → WASI has no networking               │
 └──────────────────────────────────────────────────────┘
-  No --privileged. No Docker socket. No external daemon.
+  No --privileged. No Docker socket. No special flags.
 ```
 
 ### Auth Layer
@@ -121,304 +116,92 @@ All functions that read/write tracker data accept `user_id` and use the dynamic 
 - `/api/files/solution` still reads from shared `solutions/` dirs (no change)
 - `/api/files/ls` for shared topics (system_design, behavioral, etc.) returns the read-only shared files
 
-## Code Execution Sandbox (bubblewrap)
+## Code Execution Sandbox (WASM)
 
-### The Problem
+See [WASM_SANDBOX.md](./WASM_SANDBOX.md) for full details.
 
-When someone uses `/api/run`, we execute their code on the server. Without sandboxing, they could:
+### Implementation Status
 
-- Read other users' files
-- Access the network
-- Fork bomb or exhaust memory
-- See host processes
+The WASM sandbox is **implemented and wired end-to-end**. Code runs inside wasmtime, not native subprocess.
 
-### Linux Namespaces Explained
+**What's done:**
 
-Linux namespaces are the same technology that Docker uses under the hood. They let you create "mini containers" without Docker. Each namespace type isolates something:
+- `src/runners/wasm_runner.py` — compile C/C++/Rust/JS to `.wasm`, execute via wasmtime
+- `run.py` — uses `wasm_runner` when `wasm_sandbox_active()` (checks `WASM_SANDBOX` env), falls back to native runners otherwise
+- `run.py` — stub detection (`abort()`, `todo!()`, `NotImplementedError`) in WASM path, matching native runner behavior
+- `wasm_runner.py` — sets `PYTHONPATH` for Python WASM so `src.utils` imports work
+- `web.py` — `/api/run` delegates to `run.py`; response includes `"runtime": "wasm" | "native"` field
+- `/api/health` — reports WASM toolchain availability and sandbox status
+- `.env.example` — configurable toolchain paths (see [Configuration](#configuration))
+- `python-dotenv` — `.env` loaded at `web.py` import time, env vars inherited by `run.py` subprocess
+- `docker-compose.yml` — `WASM_SANDBOX=auto` with commented-out toolchain path overrides
+- `Dockerfile` — installs wasmtime, wasi-sdk v33, javy v8.1.1, python-3.12.0.wasm
+- MD5-based `.wasm` cache in `/tmp/wasm-cache/` — avoids recompiling identical source
+- `WASM_SANDBOX=auto` — enables WASM when wasmtime available, falls back to native
+- `WASM_SANDBOX=0` — disables sandbox, uses native subprocess directly
+- All bwrap code removed (no `_detect_bwrap`, `_run_sandboxed`, `import resource`)
+- Verified: all 5 languages (py, c, cpp, rs, js) pass in Docker via WASM, stubs correctly skipped
 
-| Namespace | Isolates | bwrap Flag | Example |
-|-----------|----------|------------|---------|
-| **user** | User IDs (root inside = nobody outside) | `--unshare-user` | Process thinks it's root, but is actually UID 100000 on host |
-| **pid** | Process IDs (PID 1 inside) | `--unshare-pid` | Can't see or kill host processes |
-| **ipc** | Inter-process communication | `--unshare-ipc` | Can't interact with host IPC (shared memory, semaphores) |
-| **uts** | Hostname | `--unshare-uts` | Isolated hostname |
-| **net** | Network interfaces | `--unshare-net` | No network interfaces (not used — see below) |
-| **mount** | Filesystem view | (implicit) | Only explicitly bind-mounted paths are visible |
+**What's NOT done yet (multi-user):**
 
-`bubblewrap` (bwrap) is a lightweight tool that sets up these namespaces. Same primitives as Docker, but ~50ms spawn time and no daemon. It's used by **Flatpak** (the Linux app sandbox) and is maintained by Red Hat.
+- Per-user data directories (`data/{user_id}/`)
+- Auth layer (register/login/logout/session middleware)
+- Per-user file isolation
+- Snapshot persistence to disk
 
-### Why `--unshare-user` Is the Key
+### Configuration
 
-Here's what happened during debugging:
+All WASM toolchain paths are configurable via environment variables with sensible defaults (container paths). Set them in `.env` (loaded by `python-dotenv` at startup) or export directly.
 
-1. **First attempt**: Used `--unshare-net`, `--unshare-pid` → **failed** (Operation not permitted)
-2. **Added `--cap-add SYS_ADMIN`** → **still failed**
-3. **Added `--security-opt seccomp=unconfined`** → **still failed**
-4. **Added `--userns=host` + `--unshare-user`** → **worked!**
+See [`.env.example`](../.env.example) for all variables:
 
-Why? In Docker's default setup, the container runs in Docker's own user namespace. Docker blocks `unshare()` inside the container (via seccomp) to prevent a process from creating nested namespaces — that's a security feature of Docker itself.
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `WASM_SANDBOX` | `auto` | `auto` = WASM if available, else native; `0` = force native; `1` = force WASM |
+| `WASMTIME_BIN` | `wasmtime` | Path to wasmtime binary |
+| `WASI_SDK_CLANG` | `/opt/wasi-sdk/bin/clang` | wasi-sdk clang for C |
+| `WASI_SDK_CLANGPP` | `/opt/wasi-sdk/bin/clang++` | wasi-sdk clang++ for C++ |
+| `WASI_SDK_SYSROOT` | `/opt/wasi-sdk/share/wasi-sysroot` | wasi-sdk sysroot |
+| `JAVY_BIN` | `javy` | Javy binary for JS → WASM |
+| `PYTHON_WASM` | `/opt/python.wasm` | Python WASM interpreter |
+| `WASM_CACHE_DIR` | `/tmp/wasm-cache` | Directory for compiled `.wasm` cache |
 
-`--userns=host` tells Docker: "don't create your own user namespace, use the host's." This allows bwrap to call `unshare(CLONE_NEWUSER)` inside the container. Once bwrap creates its own user namespace, the process inside the sandbox is mapped to an unprivileged user (typically UID 0 inside → some high UID outside). **This is the isolation boundary** — the sandboxed code thinks it's root, but it's actually a nobody user with no real permissions.
+`load_dotenv()` runs at `web.py` module import time, before `wasm_runner.py` reads `os.environ.get()`. Env vars are inherited by `run.py` subprocess (no need for `load_dotenv()` in `run.py`). Exported env vars take precedence over `.env` file values.
 
-Then with user namespace established, all other namespace types (`--unshare-pid`, `--unshare-ipc`, `--unshare-uts`) work because the process has its own user namespace.
+### Resource Limits (enforced by wasmtime)
 
-We don't use `--unshare-net` because Docker doesn't give containers `CAP_NET_ADMIN` by default, and we don't want to add it. The outer container's network is already isolated by Docker.
-
-### What the Sandboxed Process Sees
-
-```
-Normal container filesystem:
-/home, /var, /etc, /usr, /app, /tmp, /proc, /dev, ...
-
-Bwrap sandbox (only what we explicitly mount):
-/usr  → read-only (compilers, python, node)
-/bin  → read-only (essential binaries)
-/lib  → read-only (shared libraries)
-/lib64 → read-only (dynamic linker)
-/etc  → read-only (system config)
-/app  → read-only (your code, solutions)
-/tmp  → read-write (compilation output only)
-/dev  → minimal devices
-/proc → new namespace (can't see host processes)
-
-Everything else: doesn't exist. No /home, no /var, no /root.
-```
-
-### Security Tradeoff: `--userns=host` + `seccomp=unconfined` + `apparmor=unconfined`
-
-> **WARNING** These flags weaken the outer Docker container's security. Read this section carefully.
-
-#### What each flag does
-
-| Flag | Effect | Why we need it |
-|------|--------|----------------|
-| `--userns=host` | Container shares the host's UID mapping. Root inside container = root on host. | bwrap needs `CLONE_NEWUSER` to create its own user namespace |
-| `seccomp=unconfined` | All syscalls allowed inside the container (Docker normally blocks ~50 dangerous ones) | Docker's default seccomp blocks `unshare()` |
-| `apparmor=unconfined` | AppArmor MAC profile disabled | AppArmor blocks `unshare()` |
-
-#### What the risks actually are
-
-These flags primarily matter for **container escape** scenarios. If someone finds a kernel exploit (e.g., CVE-2022-0185, dirty pipe):
-
-- **With these flags**: attacker is root on host with unrestricted syscalls — full host compromise
-- **Without these flags**: attacker is an unprivileged high-UID user with restricted syscalls — much harder to escalate
-
-The attack chain would be:
-1. User submits malicious code via `/api/run`
-2. bwrap sandbox contains the code (user namespace isolation)
-3. Attacker finds a **kernel vulnerability** inside the bwrap sandbox
-4. Kernel exploit breaks out of bwrap's user namespace
-5. With `userns=host`: they're now root on the host with no seccomp/AppArmor restrictions
-
-Steps 3-4 require a **zero-day kernel exploit**. This is extremely hard and would affect millions of servers.
-
-#### Why it's acceptable for this use case
-
-- **Small team / personal tool**, not a public-facing multi-tenant service
-- The main threat (user running arbitrary code) is mitigated by **bwrap's namespace isolation** — the inner sandbox is the real security boundary for code execution
-- Container escape requires a **kernel-level vulnerability**, which is a host-wide problem regardless of these flags
-- Keep the host kernel updated to minimize the container escape surface
-- For a **production multi-tenant service**, you'd want either a custom seccomp profile (allowlist only `unshare`, `clone`, `clone3`, `mount`, `pivot_root`, `setns`, `move_mount` instead of disabling seccomp entirely) or a stronger isolation approach (Firecracker/Kata VMs, gVisor user-space kernel)
-
-#### Two-layer model
-
-```
-Outer layer (Docker):  filesystem + process isolation from host
-                       ↑ weakened by userns=host, seccomp=unconfined
-Inner layer (bwrap):   user namespace isolation for code execution
-                       ↑ this is the real security boundary for /api/run
-```
-
-`--userns=host` and `seccomp=unconfined` weaken the outer layer to allow the inner layer to work. The inner layer (bwrap namespaces) is the security boundary that protects against the primary threat: user-submitted code.
-
-#### Future improvement: custom seccomp profile
-
-A custom seccomp profile that adds only `unshare`, `clone3`, `mount`, `pivot_root`, `setns`, and `move_mount` to Docker's default allowlist would keep all of Docker's default protections (~50 blocked syscalls like `keyctl`, `bpf`, `kexec_load`, `reboot`) while allowing bwrap to work.
-
-However, creating this profile is non-trivial:
-1. Docker's default profile is compiled into the binary — there's no JSON file on disk to extend
-2. Every syscall the app and its dependencies need must be audited at runtime
-3. An incomplete profile will crash the container at startup (tested — missing syscalls broke `uv`)
-
-### Auto-Detection and Fallback
-
-```
-At startup:
-1. Check if `bwrap` binary exists
-2. Try running: bwrap --unshare-user --unshare-pid ... /bin/true
-3. If exit code 0 → sandbox active
-4. If fails → fallback to direct subprocess (with same resource limits)
-
-Docker Desktop (macOS/Windows): fails (VM kernel limitation) → fallback
-Linux server with proper flags: works → full sandbox
-```
-
-Resource limits (512MB memory, 16 processes, 64 file descriptors, 130s timeout) apply in both paths.
-
-### Why bubblewrap over alternatives
-
-| | Docker-from-Docker | nsjail | bubblewrap |
-|---|---|---|---|
-| Extra privileges needed | Docker socket (`--privileged` equiv) | `--privileged` (nested namespaces) | **None** |
-| Container security | Exposes Docker daemon to container | Requires `--privileged` — defeats purpose | Works in unprivileged containers |
-| Attack surface | Full Docker API | nsjail binary + privileged container | Single `bwrap` binary, no privileges |
-| Isolation level | Container | Namespace (same primitives) | Namespace (same primitives) |
-| Spawn time | ~1-2 seconds | ~50ms | ~50ms |
-| Installation | Mount Docker socket | Build from source | `apt install bubblewrap` |
-| Works in Docker Desktop | Yes (but insecure) | No (needs `--privileged`) | Yes on Linux servers |
-
-**Key insight:** nsjail requires `--privileged` to create namespaces inside a container, which completely defeats the purpose of sandboxing — a privileged container has full access to the host, same as exposing the Docker socket. bubblewrap is specifically designed to work **inside** unprivileged containers using `CLONE_NEWUSER`.
-
-### Installation
-
-```bash
-# Debian/Ubuntu
-sudo apt install bubblewrap
-
-# RHEL/CentOS
-sudo dnf install bubblewrap
-
-# Alpine
-sudo apk add bubblewrap
-```
-
-Single binary. No build from source. No dependencies beyond glibc.
+| Limit | Flag | Value | Purpose |
+|-------|------|-------|---------|
+| CPU instructions | `-W fuel` | 2,000,000,000 | Deterministic CPU limit (kills infinite loops) |
+| Wall-clock timeout | `-W timeout` | 120s | Hard time limit |
+| Memory | `-W max-memory-size` | 256MB | Hard memory cap |
 
 ### Security Properties
 
-The sandboxed process **cannot**:
-
-- Access the network (no `--unshare-net` — not available in Docker containers without `CAP_NET_ADMIN`, but the outer container's network is controlled by Docker)
-- Read/write host filesystem (only explicitly bind-mounted paths are visible)
-- Read other users' files (only `/app` is mounted read-only)
-- See host processes (`--unshare-user` + `--unshare-pid` — new user and PID namespaces)
-- Access IPC resources (`--unshare-ipc`)
-- Escape the user namespace (`--unshare-user` maps to unprivileged UID)
-- Fork bombs (`resource.setrlimit(RLIMIT_NPROC, 16)` before sandbox spawn)
-- Exhaust memory (`resource.setrlimit(RLIMIT_AS, 512MB)` before sandbox spawn)
-- Exhaust file descriptors (`resource.setrlimit(RLIMIT_NOFILE, 64)` before sandbox spawn)
-- Run longer than the time limit (`subprocess.run(timeout=130)`)
+| Attack | Protection |
+|--------|-----------|
+| Read other users' files | No filesystem access unless explicitly `--dir` |
+| Network access from code | WASI has no networking syscalls |
+| Kernel escape | WASM runs in user-space — no kernel, no syscalls |
+| Fork bomb | WASM is single-threaded, no `fork()` |
+| Memory exhaustion | Hard memory cap enforced by wasmtime |
+| Infinite loops | Fuel limit + wall-clock timeout |
+| Cross-user data access | Per-user directories, session-based user_id injection |
+| Path traversal on file API | `_validate_fs_name` + `resolve().is_relative_to()` |
+| Session hijacking | `httponly`, `Secure`, `SameSite=Strict` cookie flags |
 
 ### Dockerfile
 
-```dockerfile
-FROM python:3.14-slim
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc g++ rustc nodejs bubblewrap \
-  && rm -rf /var/lib/apt/lists/*
-
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
-
-WORKDIR /app
-
-COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev
-
-COPY . .
-
-EXPOSE 8888
-
-CMD ["uv", "run", "python", "main.py", "start"]
-```
-
-No `--privileged`. No Docker socket. Just `apt install bubblewrap`.
+See [WASM_SANDBOX.md](./WASM_SANDBOX.md#dockerfile-wasm-toolchain) for the full Dockerfile with WASM toolchain (wasmtime, wasi-sdk, javy, python.wasm).
 
 ### docker-compose.yml
 
-Default (local dev — no sandbox):
+No special compose file needed. Just:
 ```bash
 docker compose up -d
 ```
 
-With bwrap sandbox (Linux server):
-```bash
-docker compose -f docker-compose.sandbox.yml up -d
-```
-
-### How `/api/run` Works
-
-Current (unsafe — runs directly on host):
-```python
-result = subprocess.run(
-    [sys.executable, str(tracker.ROOT / "run.py")],
-    capture_output=True, text=True, timeout=120,
-    cwd=str(tracker.ROOT),
-)
-```
-
-After (sandboxed via bwrap):
-```python
-import resource
-
-_BWRAP_BASE = [
-    "--unshare-user",     # user namespace (unprivileged UID mapping)
-    "--unshare-pid",      # PID isolation
-    "--unshare-ipc",      # IPC isolation
-    "--unshare-uts",      # UTS isolation
-    "--die-with-parent",  # cleanup when parent dies
-    "--new-session",      # new session (no controlling terminal)
-]
-
-def _set_resource_limits():
-    resource.setrlimit(resource.RLIMIT_AS, (512 * 1024 * 1024, 512 * 1024 * 1024))
-    resource.setrlimit(resource.RLIMIT_NPROC, (16, 16))
-    resource.setrlimit(resource.RLIMIT_NOFILE, (64, 64))
-
-def _run_in_bwrap(cmd: list[str], timeout: int = 120) -> subprocess.CompletedProcess:
-    return subprocess.run(
-        [
-            "bwrap",
-            *_BWRAP_BASE,
-            "--ro-bind", "/usr", "/usr",          # compilers, libs (read-only)
-            "--ro-bind", "/bin", "/bin",           # essential binaries (read-only)
-            "--ro-bind", "/lib", "/lib",           # shared libs (read-only)
-            "--ro-bind", "/lib64", "/lib64",       # linker (read-only)
-            "--ro-bind", "/etc", "/etc",           # config (read-only)
-            "--ro-bind", "/app", "/app",           # app code (read-only)
-            "--bind", "/tmp", "/tmp",              # compilation output (read-write)
-            "--dev", "/dev",                        # minimal /dev
-            "--proc", "/proc",                      # new proc namespace
-            "--chdir", "/app",
-            "--",
-            *cmd,
-        ],
-        capture_output=True,
-        text=True,
-        timeout=timeout + 10,
-        preexec_fn=_set_resource_limits,           # memory, process, fd limits
-    )
-```
-
-### bwrap Flags Reference
-
-| Flag | Purpose |
-|------|---------|
-| `--unshare-user` | New user namespace (maps to unprivileged UID — key isolation primitive) |
-| `--ro-bind /usr /usr` | Mount system binaries/libs read-only |
-| `--ro-bind /bin /bin` | Mount essential binaries read-only |
-| `--ro-bind /lib /lib` | Mount shared libraries read-only |
-| `--ro-bind /lib64 /lib64` | Mount dynamic linker read-only |
-| `--ro-bind /etc /etc` | Mount system config read-only |
-| `--ro-bind /app /app` | Mount app code read-only (no edits possible) |
-| `--bind /tmp /tmp` | Mount /tmp read-write (needed for compilation) |
-| `--dev /dev` | Minimal `/dev` (only essential devices) |
-| `--proc /proc` | New `/proc` filesystem (can't see host processes) |
-| `--unshare-pid` | New PID namespace (isolated process tree) |
-| `--unshare-ipc` | New IPC namespace (can't interact with host IPC) |
-| `--unshare-uts` | New UTS namespace (isolated hostname) |
-| `--die-with-parent` | Sandbox dies if the parent process dies |
-| `--new-session` | New session group (no controlling terminal) |
-| `--chdir /app` | Set working directory |
-
-### Resource Limits (set via Python `resource` module)
-
-| Limit | Value | Purpose |
-|-------|-------|---------|
-| `RLIMIT_AS` | 512MB | Max virtual memory (prevent memory exhaustion) |
-| `RLIMIT_NPROC` | 16 | Max child processes (prevent fork bombs) |
-| `RLIMIT_NOFILE` | 64 | Max open file descriptors (prevent fd exhaustion) |
-| `subprocess timeout` | 130s | Kill sandbox after timeout (prevent infinite loops) |
+No `--privileged`. No Docker socket. No `--userns=host`. No `seccomp=unconfined`.
 
 ## Security Considerations
 
@@ -430,44 +213,26 @@ The system is designed to be safe against:
 2. **Path traversal** — user tries to read/write files outside their own directory (already handled by `_validate_fs_name` and `_resolve_safe_path`)
 3. **Session hijacking** — protected by `httponly`, `Secure`, `SameSite=Strict` cookie flags
 
-### What Is Protected
-
-| Attack | Protection |
-|--------|-----------|
-| Read other users' files | bwrap namespace isolation — only `/app` visible, read-only |
-| Network access from code | Outer container's network is controlled by Docker (no `CAP_NET_ADMIN` exposed) |
-| Fork bomb | `RLIMIT_NPROC 16` via Python `resource` module |
-| Memory exhaustion | `RLIMIT_AS 512MB` via Python `resource` module |
-| Infinite loops | `subprocess.run(timeout=130)` kills the sandbox |
-| Read host /proc | `--unshare-pid` (new PID namespace, new /proc) |
-| IPC attacks | `--unshare-ipc` (new IPC namespace) |
-| User namespace escape | `--unshare-user` (maps to unprivileged UID inside sandbox) |
-| File descriptor exhaustion | `RLIMIT_NOFILE 64` via Python `resource` module |
-| Path traversal on file API | `_validate_fs_name` + `resolve().is_relative_to()` |
-| Cross-user data access | Per-user directories, session-based user_id injection |
-
 ### Why No `--privileged` or Docker Socket
 
-| Approach | Risk | Required for |
-|----------|------|-------------|
-| `--privileged` | Full host access — same as running on bare metal | nsjail nested namespaces |
-| Docker socket mount | Full Docker API — can create privileged containers | Docker-from-Docker |
-| `--cap-add SYS_ADMIN` | Broad capability — can mount filesystems, bypass restrictions | nsjail (partial) |
-| `--userns=host` + `seccomp=unconfined` | Low — outer container has normal isolation, bwrap creates its own unprivileged user namespace | **bwrap** |
+| Approach | Risk | Used by |
+|----------|------|---------|
+| `--privileged` | Full host access — same as running on bare metal | nsjail, Docker-from-Docker |
+| Docker socket mount | Full Docker API — can create privileged containers | Docker-in-Docker |
+| `--userns=host` + `seccomp=unconfined` | Root inside container = root on host, no syscall filtering | bwrap (legacy) |
+| **WASM (wasmtime)** | **No kernel access, no special Docker flags** | **This project** |
 
-| **Nothing** (bwrap on Docker Desktop) | **Minimal** — container provides isolation, fallback to direct subprocess | **Development only** |
+### Historical note: bubblewrap tradeoffs
 
-bwrap with `--userns=host` + `seccomp=unconfined` is the recommended approach for production Linux servers.
+The previous approach used bubblewrap (bwrap) with Linux namespaces. bwrap works well but requires `--userns=host` + `seccomp=unconfined` on the Docker container, which weakens the outer container's security. The main concerns:
 
-### Docker Desktop vs Linux Server
+- **`--ro-bind /app /app`** exposes all users' data directories to sandboxed code (cross-user data leak)
+- **Shared `/tmp`** between concurrent bwrap instances allows reading other users' compilation artifacts
+- **No `--unshare-net`** — sandboxed code has network access through the outer container
+- **Linux only** — doesn't work on Docker Desktop (macOS/Windows VM kernel doesn't support user namespaces)
+- **Kernel exploit surface** — bwrap escape combined with weakened Docker security could lead to full host compromise
 
-| Environment | bwrap works? | Notes |
-|-------------|-------------|-------|
-| Linux server (EC2, DigitalOcean, etc.) | Yes | Needs `--userns=host` + `--security-opt seccomp=unconfined --security-opt apparmor=unconfined` on outer container |
-| Docker Desktop on macOS | No | VM kernel doesn't support user namespaces, even with `--userns=host` |
-| Docker Desktop on Windows | No | Same VM limitation |
-
-On Docker Desktop, bwrap is installed but namespace creation fails (VM limitation). The system **automatically falls back** to direct `subprocess.run` with the same resource limits applied — this is acceptable for local development (single-user). On a real Linux server, bwrap sandboxing is fully active.
+All bwrap code has been removed. WASM eliminates all of these issues. See [WASM_SANDBOX.md](./WASM_SANDBOX.md) for the full comparison.
 
 ### Health Check
 
@@ -481,29 +246,24 @@ Returns system health, sandbox status, and runtime availability:
 {
   "status": "ok",
   "sandbox": {
-    "type": "bwrap",
-    "bwrap_available": true,
-    "bwrap_namespaces": true,
+    "type": "wasm",
+    "wasmtime_available": true,
     "sandbox_active": true
   },
   "runtimes": {
-    "python": { "available": true, "version": "Python 3.14.5" },
-    "gcc":    { "available": true, "version": "gcc (Debian 14.2.0-19) 14.2.0" },
-    "g++":    { "available": true, "version": "g++ (Debian 14.2.0-19) 14.2.0" },
-    "rustc":  { "available": true, "version": "rustc 1.85.0 ..." },
-    "node":   { "available": true, "version": "v20.19.2" }
+    "wasmtime": { "available": true },
+    "wasi-sdk-clang": { "available": true },
+    "javy": { "available": true },
+    "python-wasm": { "available": true }
   }
 }
 ```
 
 | Field | Meaning |
 |-------|---------|
-| `sandbox.type` | `"bwrap"` or `"none (direct subprocess)"` |
-| `sandbox.bwrap_available` | Whether `bwrap` binary exists |
-| `sandbox.bwrap_namespaces` | Whether namespace creation succeeded (false on Docker Desktop) |
-| `sandbox.sandbox_active` | Whether `/api/run` will use bwrap isolation |
-
-On Docker Desktop you'll see `sandbox_active: false`. On a Linux server, `sandbox_active: true`.
+| `sandbox.type` | `"wasm"` or `"none (direct subprocess)"` |
+| `sandbox.wasmtime_available` | Whether `wasmtime` binary exists |
+| `sandbox.sandbox_active` | Whether `/api/run` will use WASM isolation |
 
 ### Password Security
 
@@ -513,25 +273,56 @@ On Docker Desktop you'll see `sandbox_active: false`. On a Linux server, `sandbo
 
 ## API Changes
 
-### New Endpoints
+### Existing Endpoints
 
 ```
-GET  /api/health           → system health, sandbox status, runtime versions
+GET  /api/health           → system health, sandbox status, runtime availability
+POST /api/run              → run problems, returns results with "runtime" field (wasm/native)
+GET  /api/files/ls         → list files
+GET  /api/files/read       → read file
+POST /api/files/write      → write file
+GET  /api/files/solution   → read-only solutions
+GET  /api/files/history    → file version history
+POST /api/files/revert     → revert file
+GET  /api/files/in-progress → in-progress files
+GET  /api/tracker          → progress tracker
+POST /api/update           → update progress
+POST /api/attempt          → record attempt
+```
+
+### `/api/run` response format
+
+```json
+{
+  "results": [
+    {
+      "lang": "py",
+      "runtime": "wasm",
+      "output": "...",
+      "exit_code": 0
+    }
+  ]
+}
+```
+
+The `runtime` field indicates whether the code ran in WASM sandbox (`"wasm"`) or native subprocess (`"native"`).
+
+### Planned New Endpoints (not yet implemented)
+
+```
 POST /api/auth/register    { username, password }    → { ok, user_id }
 POST /api/auth/login       { username, password }    → set session cookie
 POST /api/auth/logout      (session cookie)          → clear session cookie
 GET  /api/auth/me          (session cookie)          → { user_id, username }
 ```
 
-### Modified Endpoints (all require session cookie)
+### Modified Endpoints (planned, all require session cookie)
 
 ```
 GET  /api/tracker          → user's tracker.json
 POST /api/update           → update user's progress
 POST /api/attempt          → record user's attempt
-POST /api/run              → run in bwrap sandbox (or fallback with resource limits if bwrap unavailable)
 GET  /api/files/ls         → user's files (or shared topic files)
-GET  /api/files/read       → user's file (or shared topic file)
 POST /api/files/write      → write to user's data dir
 GET  /api/files/in-progress → user's in-progress files
 GET  /api/files/history    → user's version history
@@ -549,9 +340,8 @@ GET /api/files/solution    → shared read-only solutions (no user scope)
 
 ## Implementation Order
 
-1. **Per-user data directories** — modify `tracker.py` to accept `user_id`, create `data/` structure
-2. **Auth layer** — add login/register/logout endpoints, session middleware
-3. **File isolation** — update all file endpoints to use per-user paths
-4. **bwrap sandbox** — add `bubblewrap` to Dockerfile, replace `subprocess.run` with bwrap wrapper
-5. **Fallback for Docker Desktop** — detect when bwrap is unavailable and fall back to direct subprocess
-6. **Testing** — verify isolation between users, sandbox escape attempts, resource limits
+1. **WASM sandbox** — done (`src/runners/wasm_runner.py`, `web.py` integration, `Dockerfile`)
+2. **Per-user data directories** — modify `tracker.py` to accept `user_id`, create `data/` structure
+3. **Auth layer** — add login/register/logout endpoints, session middleware
+4. **File isolation** — update all file endpoints to use per-user paths
+5. **Testing** — verify isolation between users, sandbox escape attempts, resource limits
