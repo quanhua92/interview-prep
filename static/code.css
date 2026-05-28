@@ -21,6 +21,12 @@
   border-radius: 0;
 }
 
+@media (max-width: 768px) {
+  #editor-card .CodeMirror-lines {
+    padding-bottom: 25vh;
+  }
+}
+
 #editor-card .CodeMirror-scroll,
 #editor-card .CodeMirror-vscrollbar {
   overflow-y: auto !important;
