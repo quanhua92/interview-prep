@@ -36,6 +36,16 @@ class RandomizedSet {
   constructor() {
     this.vals = [];
     this.idxMap = new Map();
+    this._state = 42;
+  }
+
+  _next() {
+    this._state = (this._state * 16807 + 2) & 0x7fffffff;
+    return this._state;
+  }
+
+  getRandom() {
+    return this.vals[this._next() % this.vals.length];
   }
 
   insert(val) {
@@ -54,10 +64,6 @@ class RandomizedSet {
     this.vals.pop();
     this.idxMap.delete(val);
     return true;
-  }
-
-  getRandom() {
-    return this.vals[Math.floor(Math.random() * this.vals.length)];
   }
 }
 

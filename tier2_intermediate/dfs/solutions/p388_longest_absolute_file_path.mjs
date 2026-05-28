@@ -30,5 +30,11 @@ function solve(input) {
   return maxLen;
 }
 
-const input = readLine();
+const lines = [];
+while (true) {
+  const line = readLine();
+  if (!line) break;
+  lines.push(line);
+}
+const input = lines.join("\n");
 writeInt(solve(input));

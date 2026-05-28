@@ -25,18 +25,21 @@ import { readInts, writeInt } from '../../wasm_libs/js/io.mjs';
 
 function solve(n) {
   if (n === 1) return 9;
-  const upper = 10 ** n - 1;
-  const lower = 10 ** (n - 1);
-  const MOD = 1337n;
+  let upper = 1;
+  let lower = 1;
+  for (let i = 0; i < n; i++) { upper *= 10; lower *= 10; }
+  upper -= 1;
+  lower = Math.floor(lower / 10);
   for (let left = upper; left >= lower; left--) {
-    const s = String(left);
-    const palindrome = BigInt(s + s.split("").reverse().join(""));
+    let palindrome = left;
+    let tmp = left;
+    while (tmp > 0) {
+      palindrome = palindrome * 10 + tmp % 10;
+      tmp = Math.floor(tmp / 10);
+    }
     for (let right = upper; right >= lower; right--) {
-      const rightBig = BigInt(right);
-      if (rightBig * rightBig < palindrome) break;
-      if (palindrome % rightBig === 0n) {
-        return Number(palindrome % MOD);
-      }
+      if (right * right < palindrome) break;
+      if (palindrome % right === 0) return palindrome % 1337;
     }
   }
   return 0;

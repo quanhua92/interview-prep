@@ -64,7 +64,11 @@ function solve(grid) {
   return fresh === 0 ? minutes : -1;
 }
 
-const n = readInt();
+const _cols = readInt();
 const grid = [];
-for (let i = 0; i < n; i++) grid.push(readInts());
+while (true) {
+  const row = readInts();
+  if (row.length === 0) break;
+  grid.push(row);
+}
 writeInt(solve(grid));

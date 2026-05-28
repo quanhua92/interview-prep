@@ -36,9 +36,8 @@ function solve(n, edges) {
   return components;
 }
 
-const firstLine = readInts();
-const n = firstLine[0];
-const m = firstLine[1];
+const n = readInt();
+const m = readInt();
 const edges = [];
 for (let i = 0; i < m; i++) {
   const row = readInts();

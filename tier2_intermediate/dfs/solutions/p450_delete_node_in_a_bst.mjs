@@ -4,7 +4,7 @@
  * Topics: Tree, Binary Search Tree, Binary Tree
  */
 
-import { readLine, readInts } from '../../../wasm_libs/js/io.mjs';
+import { readLine, writeString } from '../../../wasm_libs/js/io.mjs';
 
 function buildTree(arr) {
   if (arr.length === 0) return null;
@@ -71,5 +71,4 @@ const key = parseInt(readLine(), 10);
 const vals = treeLine.split(' ').map(x => x === 'null' ? null : parseInt(x, 10));
 const root = buildTree(vals);
 const result = treeToList(deleteNode(root, key));
-const _w = (s) => { if (typeof Javy !== 'undefined' && Javy.IO) { Javy.IO.write(s); return; } process.stdout.write(s); };
-_w((result.length === 0 ? 'null' : result.map(v => v === null ? 'null' : String(v)).join(' ')) + '\n');
+writeString(result.length === 0 ? 'null' : result.map(v => v === null ? 'null' : String(v)).join(' '));

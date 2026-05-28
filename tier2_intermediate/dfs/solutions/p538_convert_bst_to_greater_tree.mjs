@@ -4,7 +4,7 @@
  * Topics: Tree, Depth-First Search, Binary Search Tree, Binary Tree
  */
 
-import { readLine } from '../../../wasm_libs/js/io.mjs';
+import { readLine, writeString } from '../../../wasm_libs/js/io.mjs';
 
 class TreeNode {
   constructor(val) { this.val = val; this.left = null; this.right = null; }
@@ -57,7 +57,6 @@ if (!line.trim()) {
   const result = solve(root);
   if (result) {
     const list = result.toList();
-    const _w = (s) => { if (typeof Javy !== 'undefined' && Javy.IO) { Javy.IO.write(s); return; } process.stdout.write(s); };
-    _w(list.map(v => v === null ? 'null' : String(v)).join(' ') + '\n');
+    writeString(list.map(v => v === null ? 'null' : String(v)).join(' '));
   }
 }

@@ -77,7 +77,10 @@ class LFUCache {
     const freq = this.keyToFreq.get(key);
     const keys = this.freqToKeys.get(freq);
     keys.delete(key);
-    if (keys.size === 0) this.freqToKeys.delete(freq);
+    if (keys.size === 0) {
+      this.freqToKeys.delete(freq);
+      if (freq === this.minFreq) this.minFreq = freq + 1;
+    }
     this.keyToFreq.set(key, freq + 1);
     if (!this.freqToKeys.has(freq + 1)) this.freqToKeys.set(freq + 1, new Set());
     this.freqToKeys.get(freq + 1).add(key);

@@ -51,7 +51,7 @@
  *     # param_2 = obj.getIntervals()
  */
 
-import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool, writeMatrix } from '../../../wasm_libs/js/io.mjs';
+import { readInts, writeInts } from '../../../wasm_libs/js/io.mjs';
 
 function solve(values) {
   const intervals = [];
@@ -76,4 +76,6 @@ function solve(values) {
 
 const values = readInts();
 const result = solve(values);
-writeMatrix(result);
+for (const row of result) {
+  writeInts(row);
+}

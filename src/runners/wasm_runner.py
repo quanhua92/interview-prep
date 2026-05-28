@@ -30,6 +30,7 @@ _COMPILE_TIMEOUTS = {
 }
 
 _WASM_FUEL = 5_000_000_000
+_WASM_FUEL_MULTIPLIER = {}
 _WASM_TIMEOUT = 120
 _WASM_MAX_MEMORY = 536870912
 
@@ -276,6 +277,10 @@ def run_wasm(wasm_path: Path, source_dir: Path, timeout: int = _WASM_TIMEOUT, st
         return {"exit_code": -1, "output": "", "timed_out": False, "error": "wasmtime not found. Install wasmtime to use the WASM sandbox."}
 
 
+def _fuel_for(lang: str) -> int:
+    return _WASM_FUEL * _WASM_FUEL_MULTIPLIER.get(lang, 1)
+
+
 def run_python_wasm(source: Path, project_root: Path, timeout: int = _WASM_TIMEOUT, stdin_text: str = "") -> dict:
     if not Path(_PYTHON_WASM).exists():
         return {"exit_code": -1, "output": "", "timed_out": False, "error": f"python.wasm not found at {_PYTHON_WASM}"}
@@ -283,7 +288,7 @@ def run_python_wasm(source: Path, project_root: Path, timeout: int = _WASM_TIMEO
     python_home = Path(_PYTHON_WASM_HOME)
     cmd = [
         _WASMTIME_BIN, "run",
-        "-W", f"fuel={_WASM_FUEL}",
+        "-W", f"fuel={_fuel_for('py')}",
         "-W", f"timeout={timeout}s",
         "-W", f"max-memory-size={_WASM_MAX_MEMORY}",
         "--dir", str(python_home),
@@ -333,7 +338,7 @@ def run_quickjs_wasm(source: Path, timeout: int = _WASM_TIMEOUT, stdin_text: str
     source_dir = source.parent
     cmd = [
         _WASMTIME_BIN, "run",
-        "-W", f"fuel={_WASM_FUEL}",
+        "-W", f"fuel={_fuel_for('js')}",
         "-W", f"timeout={timeout}s",
         "-W", f"max-memory-size={_WASM_MAX_MEMORY}",
         "--dir", str(source_dir),

@@ -29,14 +29,21 @@ def solve(n: int) -> int:
         return 9
     upper = 10**n - 1
     lower = 10 ** (n - 1)
-    for left in range(upper, lower - 1, -1):
-        s = str(left)
-        palindrome = int(s + s[::-1])
-        for right in range(upper, lower - 1, -1):
+    left = upper
+    while left >= lower:
+        palindrome = left
+        tmp = left
+        while tmp > 0:
+            palindrome = palindrome * 10 + tmp % 10
+            tmp //= 10
+        right = upper
+        while right >= lower:
             if right * right < palindrome:
                 break
             if palindrome % right == 0:
                 return palindrome % 1337
+            right -= 1
+        left -= 1
     return 0
 
 

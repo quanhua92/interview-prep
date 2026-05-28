@@ -23,14 +23,15 @@
  * Hint: Group by i+j diagonal index. If d is even, reverse to simulate up-right direction.
  */
 
-import { readInts, writeInts } from '../../../wasm_libs/js/io.mjs';
+import { readInts, readInt, writeInts } from '../../../wasm_libs/js/io.mjs';
 
 function readIntMatrix() {
-  const header = readInts();
-  const cols = header[0];
+  readInt();
   const matrix = [];
-  for (let i = 0; i < cols; i++) {
-    matrix.push(readInts());
+  while (true) {
+    const row = readInts();
+    if (row.length === 0) break;
+    matrix.push(row);
   }
   return matrix;
 }

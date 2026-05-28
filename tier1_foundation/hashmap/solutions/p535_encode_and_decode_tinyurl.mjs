@@ -37,7 +37,7 @@ class Codec {
   }
 
   decode(shortUrl) {
-    const key = shortUrl.split("/").pop();
+    const key = parseInt(shortUrl.split("/").pop(), 10);
     return this.shortMap.get(key);
   }
 }

@@ -56,8 +56,10 @@ function solve(vals) {
 }
 
 const n = readInt();
-if (n === 0) { process.exit(0); }
-const tokens = readLine().split(' ');
-const vals = tokens.map(t => t === 'null' ? null : parseInt(t, 10));
-const result = solve(vals);
-writeInts(result);
+if (n === 0) {
+} else {
+  const tokens = readLine().split(' ');
+  const vals = tokens.map(t => t === 'null' ? null : parseInt(t, 10));
+  const result = solve(vals);
+  writeInts(result);
+}

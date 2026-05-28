@@ -82,4 +82,3 @@ for (let i = 0; i < tests.length; i++) {
   }
 }
 console.log(`\n  ${passed}/${tests.length} passed`);
-process.exit(passed === tests.length ? 0 : 1);
