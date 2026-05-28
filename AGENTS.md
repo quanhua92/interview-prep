@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Interview prep toolkit: 144 LeetCode coding problems across 29 patterns x 5 languages (Python, C, C++, Rust, JS) = 720 problem files + 720 solution files. Runs in Docker with WASM sandbox (wasmtime). FastAPI web dashboard + CLI.
+Interview prep toolkit: 144 LeetCode coding problems across 29 patterns x 5 languages (Python, C, C++, Rust, JS) = 720 problem files + 720 solution files + 116 non-coding topics = 145 total tracked items. Runs in Docker with WASM sandbox (wasmtime). FastAPI web dashboard + CLI.
 
 ## Tech Stack
 
@@ -137,7 +137,7 @@ if __name__ == "__main__":
 | 3 Advanced | `tier3_advanced/` | backtracking, cyclic_sort, modified_binary_search, subsets, trie | 19 |
 | 4 Expert | `tier4_expert/` | graph, greedy, matrix_traversal, monotonic_stack, union_find | 42 |
 
-## Non-Coding Sections
+## Non-Coding Sections (116 topics total)
 
 Each has `discussion.md` + `checklist.md` (or `README.md` + `TIPS.md` for ai_assisted):
 - `system_design/` (25 topics)
@@ -150,6 +150,8 @@ Each has `discussion.md` + `checklist.md` (or `README.md` + `TIPS.md` for ai_ass
 - `data_analytics/` (9 topics)
 - `low_level_design/` (12 topics)
 - `production_engineering/` (10 topics)
+
+**Total tracked items: 29 coding patterns (144 problems) + 116 non-coding topics = 145 topics.**
 
 ---
 

@@ -3,7 +3,7 @@
 A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, AI-assisted interview scenarios, data analytics, low-level design, and production engineering. Track progress across 144 coding problems and 145 topics with a unified CLI dashboard. Solutions available in **Python, C, C++, Rust, and JavaScript**.
 
 **Features:**
-- **WASM sandbox** — all code runs inside wasmtime (no native subprocess, no special Docker flags)
+- **WASM sandbox** — user code runs safely inside wasmtime with fuel-based CPU limits, memory caps, wall-clock timeout, and no network/filesystem access
 - Progress ring, stats cards, and per-section breakdowns
 - **Code Editor** — auto-loads all in-progress problem files with CodeMirror syntax highlighting
 - **Save & Run** — edit code in the browser, save (`Ctrl+S`), and run (`Ctrl+R`) directly from the editor header
@@ -88,7 +88,7 @@ uv run python main.py start
 
 ## WASM Sandbox
 
-Code runs inside **wasmtime** (WebAssembly runtime), not native subprocess. No special Docker flags needed — just `docker compose up`.
+User code runs inside **wasmtime** (WebAssembly runtime) for safe sandboxed execution — fuel-based CPU limit, hard memory cap, wall-clock timeout, no network, no filesystem access unless explicitly mapped. Set `WASM_SANDBOX=0` to force native execution (no sandbox).
 
 | Language | Toolchain | Compile | .wasm size |
 |---|---|---|---|
@@ -124,6 +124,7 @@ interview-prep/
 │       ├── template.py
 │       ├── problems/              # Practice stubs
 │       ├── solutions/             # Answer keys
+│       ├── test_runners/           # JudgeBase subclasses (test cases + I/O contract)
 │       └── README.md
 ├── system_design/                 # 25 system design topics
 │   └── <topic>/
@@ -133,7 +134,7 @@ interview-prep/
 │   └── <theme>/
 │       ├── discussion.md
 │       └── checklist.md
-├── salary_negotiation/            # 7 salary negotiation topics
+├── salary_negotiation/            # 8 salary negotiation topics
 │   └── <topic>/
 │       ├── discussion.md
 │       └── checklist.md
@@ -168,6 +169,7 @@ interview-prep/
 ├── tests/                         # pytest suite
 ├── src/utils/                     # Shared utilities (Problem, TestCase, ListNode, TreeNode)
 ├── src/runners/                   # Cross-language test runners (C, C++, Rust, JavaScript)
+├── src/wasm_libs/                 # Per-language IO libraries (linked into WASM or native)
 └── progress/tracker.json          # Progress data (gitignored)
 ```
 
@@ -190,7 +192,7 @@ interview-prep/
 | Pattern | Key Problems |
 |---------|-------------|
 | DFS | P200 Number of Islands, P695 Max Area of Island, P1306 Jump Game III, P572 Subtree of Another Tree, P538 Convert BST to Greater Tree, P508 Most Frequent Subtree Sum, P450 Delete Node in a BST |
-| Two Heaps | P295 Median Finder, P480 Sliding Window Median |
+| Two Heaps | P295 Median Finder, P355 Design Twitter, P480 Sliding Window Median |
 | Top K Elements | P215 Kth Largest Element, P347 Top K Frequent Elements, P973 K Closest Points, P407 Trapping Rain Water II |
 | Binary Search | P704 Binary Search, P153 Find Minimum in Rotated Sorted Array, P278 First Bad Version, P354 Russian Doll Envelopes |
 | Dynamic Programming | P070 Climbing Stairs, P322 Coin Change, P198 House Robber, P516 Longest Palindromic Subsequence, P518 Coin Change II, P514 Freedom Trail, P552 Student Attendance Record II, P576 Out of Boundary Paths |
@@ -242,6 +244,21 @@ Each pattern contains:
 | [Key-Value Store](system_design/key_value_store/) | SSTables, LSM trees, Bloom filters |
 | [Web Crawler](system_design/web_crawler/) | URL frontier, politeness, dedup, BFS |
 | [Ticket Booking](system_design/ticket_booking/) | Concurrency, locks, idempotency, oversell |
+| [Abuse Detection](system_design/abuse_detection/) | Velocity features, device fingerprinting, graph analysis, tiered mitigation |
+| [Ad Click Prediction](system_design/ad_click_prediction/) | CTR prediction, multi-stage ranking, calibration, embedding tables |
+| [Coding Platform](system_design/coding_platform/) | Sandbox isolation, code execution, test cases, contest leaderboard |
+| [Customer LTV](system_design/customer_ltv/) | Probabilistic CLV, survival analysis, uplift modeling, churn prediction |
+| [Demand Forecasting](system_design/demand_forecasting/) | Spatial-temporal ML, H3 zones, multi-quantile forecasting, online adaptation |
+| [Fraud Detection](system_design/fraud_detection/) | Rules cascade, GBDT scoring, graph deep learning, sub-100ms latency |
+| [Gaming Leaderboard](system_design/gaming_leaderboard/) | Redis sorted sets, sharding, anti-cheat, tournament sliding windows |
+| [Hotel Booking](system_design/hotel_booking/) | Date-range inventory, overbooking buffers, Redis holds, fan-out writes |
+| [News Aggregator](system_design/news_aggregator/) | Vote-based ranking, nested comments, community feeds, hot algorithm |
+| [Online Auction](system_design/online_auction/) | Bid serialization, proxy bidding, anti-sniping, WebSocket broadcast |
+| [Pastebin](system_design/pastebin/) | Short URL, base62 ID, TTL expiration, CDN, object storage |
+| [RAG System](system_design/rag_system/) | Hybrid retrieval, vector search, cross-encoder rerank, hallucination mitigation |
+| [Recommender System](system_design/recommender_system/) | Multi-stage pipeline, candidate retrieval, ranking, cold start |
+| [Search Ranking](system_design/search_ranking/) | BM25 + dense retrieval, learning-to-rank, cross-encoder, query understanding |
+| [Video Conferencing](system_design/video_conferencing/) | SFU routing, WebRTC, simulcast, adaptive bitrate, TURN relay |
 
 Each topic contains:
 - `discussion.md` — Concise reference (key concepts, trade-offs, vocabulary)
@@ -251,6 +268,8 @@ Each topic contains:
 
 | Theme | Competency |
 |-------|-----------|
+| [Amazon Leadership Principles](behavioral/amazon_leadership/) | Leadership judgment, accountability |
+| [Meta Behavioral](behavioral/meta_behavioral/) | Scope amplification, cross-functional influence |
 | [Teamwork Conflict](behavioral/teamwork_conflict/) | Collaboration, empathy |
 | [Handling Failure](behavioral/handling_failure/) | Self-awareness, resilience |
 | [Leadership Without Authority](behavioral/leadership_initiative/) | Influence, ownership |
@@ -294,6 +313,21 @@ Each topic contains:
 | [Distributed Systems](cs_fundamentals/distributed_systems/) | CAP, consensus, replication, fault tolerance |
 | [Data Structures & Algos](cs_fundamentals/data_structures_algos/) | Arrays, trees, graphs, hash tables, complexity |
 | [System Security](cs_fundamentals/system_security/) | OWASP, auth, encryption, secure design |
+| [API Gateway](cs_fundamentals/api_gateway/) | Routing, rate limiting, auth, TLS termination |
+| [Architectural Patterns](cs_fundamentals/architectural_patterns/) | Recurring distributed system patterns |
+| [Auth Systems](cs_fundamentals/auth_systems/) | JWTs, OAuth2, RBAC/ABAC/ReBAC |
+| [Back-of-Envelope](cs_fundamentals/back_of_envelope/) | DAU, QPS, storage, capacity estimation |
+| [Bloom Filters](cs_fundamentals/bloom_filters/) | Probabilistic set membership, false positives |
+| [Caching Strategies](cs_fundamentals/caching_strategies/) | Cache write strategies, eviction, Redis |
+| [CDN](cs_fundamentals/cdn/) | Edge caching, DNS routing, origin shielding |
+| [Consistency Models](cs_fundamentals/consistency_models/) | Strong vs eventual, replication, quorum |
+| [Geohashing](cs_fundamentals/geohashing/) | Spatial indexing, proximity queries, coordinates |
+| [Idempotency Patterns](cs_fundamentals/idempotency_patterns/) | Safe retries, idempotency keys, fencing tokens |
+| [Load Balancer](cs_fundamentals/load_balancer/) | L4/L7 routing, health checks, failover |
+| [Multi-Region](cs_fundamentals/multi_region/) | Replication, failover, conflict resolution |
+| [Realtime Protocols](cs_fundamentals/realtime_protocols/) | WebSocket, SSE, long polling, WebTransport |
+| [System Design Framework](cs_fundamentals/system_design_framework/) | CIRCLE method, requirements, trade-offs |
+| [Zero-Downtime](cs_fundamentals/zero_downtime/) | Blue-green, canary, rolling, feature flags |
 
 Each topic contains:
 - `discussion.md` — Key concepts, definitions, common questions, reference tables
@@ -347,3 +381,61 @@ Each scenario contains:
 - `TIPS.md` — Key concepts, common mistakes, AI prompting strategy, and what interviewers look for
 
 See [ai_assisted/README.md](ai_assisted/) for the full guide including interview formats, evaluation rubric, and prompting strategy.
+
+## Data Analytics (9 topics)
+
+| Topic | Focus |
+|-------|-------|
+| [Cohort & Retention](data_analytics/cohort_retention/) | D1/D7/D30 retention curves and cohort SQL |
+| [Data Quality](data_analytics/data_quality/) | Defense-in-depth monitoring and anomaly detection |
+| [Experiment Design](data_analytics/experiment_design/) | A/B testing from hypothesis to ramp |
+| [Funnel Analysis](data_analytics/funnel_analysis/) | Conversion drop-off diagnosis and attribution |
+| [North Star Metrics](data_analytics/north_star_metrics/) | Choosing and decomposing the one metric |
+| [Product Sense](data_analytics/product_sense/) | Problem-first structured product reasoning |
+| [Scenario Problems](data_analytics/scenario_problems/) | DIAGNOSE framework for metric triage |
+| [SQL Foundations](data_analytics/sql_foundations/) | JOINs, NULLs, and CTE patterns |
+| [SQL Window Functions](data_analytics/sql_window_functions/) | Ranking, LAG/LEAD, and frame clauses |
+
+Each topic contains:
+- `discussion.md` — Key concepts, definitions, common questions, reference tables
+- `checklist.md` — Concept self-assessment, explain-out-loud prompts, practice log
+
+## Low-Level Design (12 topics)
+
+| Topic | Focus |
+|-------|-------|
+| [Antipatterns](low_level_design/antipatterns/) | Spot and fix six design anti-patterns |
+| [API Design](low_level_design/api_design/) | Stable service contracts with idempotency and versioning |
+| [Behavioral Patterns](low_level_design/behavioral_patterns/) | Object communication and delegation patterns |
+| [Database Schema Design](low_level_design/database_schema_design/) | ER modeling, indexing, and online migrations |
+| [Design Framework](low_level_design/design_framework/) | SEDIE 5-step repeatable LLD interview method |
+| [Design Patterns](low_level_design/design_patterns/) | Seven essential patterns for LLD interviews |
+| [LRU Cache](low_level_design/lru_cache/) | O(1) cache with concurrency and distributed scaling |
+| [Parking Lot](low_level_design/parking_lot/) | Multi-floor lot with spot matching and extensible pricing |
+| [Rate Limiter](low_level_design/rate_limiter_lld/) | Thread-safe, algorithm-swappable rate limiter |
+| [Refactoring Patterns](low_level_design/refactoring_patterns/) | Incremental legacy modernization without big-bang rewrites |
+| [Shopping Cart](low_level_design/shopping_cart/) | Immutable snapshots, idempotent checkout, aggregate boundaries |
+| [UML Class Diagrams](low_level_design/uml_class_diagrams/) | Correct relationship notation and Mermaid syntax |
+
+Each topic contains:
+- `discussion.md` — Key concepts, definitions, common questions, reference tables
+- `checklist.md` — Concept self-assessment, explain-out-loud prompts, practice log
+
+## Production Engineering (10 topics)
+
+| Topic | Focus |
+|-------|-------|
+| [AI Coding Tools](production_engineering/ai_coding_tools/) | Safe AI-assisted dev with generation, verification, learning loops |
+| [Capacity Planning](production_engineering/capacity_planning/) | Forecast load with uncertainty and tiered headroom policies |
+| [CI/CD Pipelines](production_engineering/cicd_pipelines/) | Safe fast delivery with test gates and deployment strategies |
+| [Cloud Cost](production_engineering/cloud_cost/) | Systematic spend reduction through rightsizing and FinOps |
+| [Code Review](production_engineering/code_review/) | Structured review hierarchy from correctness to style |
+| [Feature Flags](production_engineering/feature_flags/) | Decouple deploy from release with typed flag taxonomy |
+| [Performance Profiling](production_engineering/performance_profiling/) | Production profiling triage and flame graph reading |
+| [Postmortem](production_engineering/postmortem/) | Blameless root cause analysis with actionable items |
+| [Security](production_engineering/security/) | Defense-in-depth across OWASP, secrets, and supply chain |
+| [SLO Error Budgets](production_engineering/slo_error_budgets/) | Measurable reliability through error budgets and burn rate |
+
+Each topic contains:
+- `discussion.md` — Key concepts, definitions, common questions, reference tables
+- `checklist.md` — Concept self-assessment, explain-out-loud prompts, practice log
