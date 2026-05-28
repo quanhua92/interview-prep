@@ -21,11 +21,12 @@ RUN ARCH=$(case "$(uname -m)" in x86_64) echo "x86_64" ;; aarch64|arm64) echo "a
     curl -L "https://github.com/quickjs-ng/quickjs/releases/download/v0.15.0/qjs-wasi.wasm" \
     -o /opt/quickjs.wasm && chmod +x /opt/quickjs.wasm
 
-ARG PYTHON_WASM_VERSION=3.14.5
-RUN curl -L "https://github.com/brettcannon/cpython-wasi-build/releases/download/v${PYTHON_WASM_VERSION}/python-${PYTHON_WASM_VERSION}-wasi_sdk-24.zip" \
+ARG CPYTHON_WASM_VERSION=3.14.5
+RUN curl -L "https://github.com/brettcannon/cpython-wasi-build/releases/download/v${CPYTHON_WASM_VERSION}/python-${CPYTHON_WASM_VERSION}-wasi_sdk-24.zip" \
     -o /tmp/python-wasi.zip \
     && unzip -q /tmp/python-wasi.zip -d /opt/python-wasi \
-    && rm /tmp/python-wasi.zip
+    && rm /tmp/python-wasi.zip \
+    && wasmtime compile -W fuel=1 -W epoch-interruption=y -W max-memory-size=536870912 /opt/python-wasi/python.wasm -o /opt/python-wasi/python.cwasm
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 

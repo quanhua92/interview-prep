@@ -11,8 +11,7 @@ services:
       # WASI_SDK_CLANGPP=/opt/wasi-sdk/bin/clang++
       # WASI_SDK_SYSROOT=/opt/wasi-sdk/share/wasi-sysroot
       # JAVY_BIN=javy
-      # PYTHON_WASM=/opt/python-wasi/python.wasm
-      # PYTHON_WASM_HOME=/opt/python-wasi
+      # PYTHON_WASM=/opt/python-wasi/python.cwasm
       # WASM_CACHE_DIR=/tmp/wasm-cache
     volumes:
       - ./progress:/app/progress

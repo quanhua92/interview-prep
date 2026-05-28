@@ -16,8 +16,7 @@ _WASI_SDK_SYSROOT = os.environ.get("WASI_SDK_SYSROOT", "/opt/wasi-sdk/share/wasi
 _WASI_SDK_CLANG = os.environ.get("WASI_SDK_CLANG", "/opt/wasi-sdk/bin/clang")
 _WASI_SDK_CLANGPP = os.environ.get("WASI_SDK_CLANGPP", "/opt/wasi-sdk/bin/clang++")
 _QUICKJS_WASM = os.environ.get("QUICKJS_WASM", "/opt/quickjs.wasm")
-_PYTHON_WASM = os.environ.get("PYTHON_WASM", "/opt/python-wasi/python.wasm")
-_PYTHON_WASM_HOME = os.environ.get("PYTHON_WASM_HOME", "/opt/python-wasi")
+_PYTHON_WASM = os.environ.get("PYTHON_WASM", "/opt/python-wasi/python.cwasm")
 
 _WASM_LIBS_DIR = Path("src/wasm_libs")
 
@@ -283,20 +282,21 @@ def _fuel_for(lang: str) -> int:
 
 def run_python_wasm(source: Path, project_root: Path, timeout: int = _WASM_TIMEOUT, stdin_text: str = "") -> dict:
     if not Path(_PYTHON_WASM).exists():
-        return {"exit_code": -1, "output": "", "timed_out": False, "error": f"python.wasm not found at {_PYTHON_WASM}"}
+        return {"exit_code": -1, "output": "", "timed_out": False, "error": f"Python WASM not found at {_PYTHON_WASM}"}
 
-    python_home = Path(_PYTHON_WASM_HOME)
     cmd = [
         _WASMTIME_BIN, "run",
+        "--allow-precompiled",
         "-W", f"fuel={_fuel_for('py')}",
         "-W", f"timeout={timeout}s",
         "-W", f"max-memory-size={_WASM_MAX_MEMORY}",
-        "--dir", str(python_home),
+        "--dir", str(source.parent),
         "--dir", str(project_root),
-        "--env", f"PYTHONHOME={python_home}",
+        "--dir", "/opt/python-wasi",
+        "--env", "PYTHONHOME=/opt/python-wasi",
         "--env", f"PYTHONPATH={project_root}",
         _PYTHON_WASM,
-        "--", str(source),
+        str(source),
     ]
     try:
         result = subprocess.run(
@@ -305,7 +305,7 @@ def run_python_wasm(source: Path, project_root: Path, timeout: int = _WASM_TIMEO
             capture_output=True,
             text=True,
             timeout=timeout + 10,
-            env={**os.environ, "WASMTIME_BACKTRACE_DETAILS": "1"},
+            env={**os.environ},
         )
         output = result.stdout
         if result.stderr:

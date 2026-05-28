@@ -284,11 +284,12 @@ def health_check():
             "wasmtime": ["wasmtime", "--version"],
             "wasi-sdk-clang": [wasm_runner._WASI_SDK_CLANG, "--version"],
             "quickjs-wasm": None,
-            "python-wasm": ["wasmtime", "--dir", wasm_runner._PYTHON_WASM_HOME, "--env", f"PYTHONHOME={wasm_runner._PYTHON_WASM_HOME}", wasm_runner._PYTHON_WASM, "-c", "pass"],
+            "cpython-wasm": None,
         }
         for name, cmd in runtimes.items():
             if cmd is None:
-                checks["runtimes"][name] = {"available": Path(wasm_runner._QUICKJS_WASM).exists()}
+                path = wasm_runner._QUICKJS_WASM if name == "quickjs-wasm" else wasm_runner._PYTHON_WASM
+                checks["runtimes"][name] = {"available": Path(path).exists()}
                 continue
             try:
                 r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
