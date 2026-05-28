@@ -7,7 +7,7 @@ Benchmarks, architecture, and implementation details for the WebAssembly (WASM) 
 **Implemented and wired end-to-end.** Code runs inside wasmtime, not native subprocess.
 
 - 5 languages supported: C, C++, Rust, JavaScript, Python
-- `run.py` calls `wasm_runner` when `wasm_sandbox_active()`, falls back to native runners otherwise
+- `run.py` calls `wasm_runner` when `wasm_sandbox_active()`, falls back to `native_runner` otherwise
 - Stub detection (`abort()`, `todo!()`, `NotImplementedError`) works in WASM path
 - All 5 languages compile and run successfully via WASM in Docker (144/144 problems pass)
 - MD5-based `.wasm` cache avoids recompiling identical source
@@ -189,8 +189,8 @@ Toolchain: wasi-sdk (clang targeting `wasm32-wasip1`)
 
 ```bash
 clang --target=wasm32-wasip1 --sysroot=/opt/wasi-sdk/share/wasi-sysroot \
-  -O2 -Wall -Wextra -Isrc/runners source.c -o solution.wasm -lm
-wasmtime run -W fuel=2_000_000_000 -W timeout=120s solution.wasm
+  -O2 -Wall -Wextra -Isrc/wasm_libs/c source.c src/wasm_libs/c/io.c -o solution.wasm -lm
+wasmtime run --dir /tmp -W fuel=5_000_000_000 -W timeout=120s solution.wasm
 ```
 
 The existing `ctest.h` test harness uses standard C (`printf`, `assert`-like macros, `abort()`). All work with wasi-libc. No changes to solution files needed.
@@ -201,8 +201,8 @@ Toolchain: wasi-sdk (clang++ targeting `wasm32-wasip1`)
 
 ```bash
 clang++ --target=wasm32-wasip1 --sysroot=/opt/wasi-sdk/share/wasi-sysroot \
-  -O2 -Wall -Wextra -fno-exceptions -Isrc/runners source.cpp -o solution.wasm
-wasmtime run -W fuel=2_000_000_000 -W timeout=120s solution.wasm
+  -O2 -Wall -Wextra -fno-exceptions -Isrc/wasm_libs/cpp source.cpp src/wasm_libs/cpp/io.cpp -o solution.wasm
+wasmtime run --dir /tmp -W fuel=5_000_000_000 -W timeout=120s solution.wasm
 ```
 
 Requires `-fno-exceptions`. The existing `cpptest.h` test harness uses wasi-libc++. Solution files using `unordered_map`, `string`, `vector`, `algorithm` all work. Files using `std::optional`, `std::variant`, or exception-based error handling need `-fno-exceptions` stubs.
@@ -215,14 +215,14 @@ Judge mode (test_runners):
 ```bash
 rustc --edition 2024 -O --target wasm32-wasip1 \
   --extern wasm_libs=libwasm_libs.rlib source.rs -o solution.wasm
-wasmtime run -W fuel=5_000_000_000 -W timeout=120s solution.wasm
+wasmtime run --dir /tmp -W fuel=5_000_000_000 -W timeout=120s solution.wasm
 ```
 
 Legacy mode (ctest.h/cpptest.h/rstest.rs):
 ```bash
 rustc --edition 2024 -O --target wasm32-wasip1 \
   --extern rstest=librstest.rlib source.rs -o solution.wasm
-wasmtime run -W fuel=5_000_000_000 -W timeout=120s solution.wasm
+wasmtime run --dir /tmp -W fuel=5_000_000_000 -W timeout=120s solution.wasm
 ```
 
 Judge mode uses `wasm_libs` crate (I/O via stdin/stdout), legacy mode uses `rstest` crate (embedded test cases).
@@ -300,11 +300,11 @@ The WASM sandbox **cannot**:
 
 | Attack | Protection |
 |---|---|
-| Read other users' files | No filesystem access unless explicitly `--dir` |
+| Read host files | No filesystem access except paths explicitly `--dir` |
 | Network access | WASI has no networking (no socket syscalls) |
 | Kernel escape | WASM runs in user-space — no kernel, no syscalls |
 | Fork bomb | WASM is single-threaded, no `fork()` |
-| Memory exhaustion | `-W max-memory-size=512MB` (hard cap) |
+| Memory exhaustion | `-W max-memory-size=512MiB` (hard cap) |
 | Infinite loops | `-W timeout=120s` (wall-clock) or `-W fuel=N` (instruction count) |
 | CPU exhaustion | `-W fuel=5_000_000_000` (deterministic instruction limit) |
 ## Dockerfile (WASM toolchain)

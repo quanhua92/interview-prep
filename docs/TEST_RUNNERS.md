@@ -20,7 +20,7 @@ Python Judge (run.py)
 
 **One judge. Five languages. Per-problem IO contracts.**
 
-The judge system is the **default and only** execution path in `run.py`. Patterns without `test_runners/` are rejected with an error.
+The judge system is the **default and only** execution path in `run.py`. Patterns without `test_runners/` are skipped with a warning.
 
 ## Why This Architecture
 
@@ -62,7 +62,7 @@ src/
     c/   io.h, io.c
     cpp/ io.h, io.cpp
     rs/  lib.rs
-    js/  io.mjs
+     js/  io.mjs, io_node.mjs
     py/  io.py
   utils/
     judge_base.py         # JudgeBase class with common IO helpers
@@ -196,48 +196,43 @@ int main(void) {
 ```cpp
 #include "io.h"
 
-class Solution {
-public:
-    int maxArea(vector<int>& height) {
-        int left = 0, right = (int)height.size() - 1;
-        int max_area = 0;
-        while (left < right) {
-            int h = std::min(height[left], height[right]);
-            max_area = std::max(max_area, h * (right - left));
-            if (height[left] < height[right]) left++;
-            else right--;
-        }
-        return max_area;
+int maxArea(const std::vector<int>& height) {
+    int left = 0, right = (int)height.size() - 1;
+    int max_area = 0;
+    while (left < right) {
+        int h = std::min(height[left], height[right]);
+        max_area = std::max(max_area, h * (right - left));
+        if (height[left] < height[right]) left++;
+        else right--;
     }
-};
+    return max_area;
+}
 
 int main() {
     auto height = read_ints();
-    write_int(Solution{}.maxArea(height));
+    write_int(maxArea(height));
 }
 ```
 
 ### Rust
 
 ```rust
-use wasm_libs::io::{read_ints, write_int};
+use wasm_libs::*;
 
-impl Solution {
-    pub fn max_area(height: &[i32]) -> i32 {
-        let (mut left, mut right) = (0, height.len() - 1);
-        let mut max_a = 0;
-        while left < right {
-            let h = height[left].min(height[right]);
-            max_a = max_a.max(h * (right - left) as i32);
-            if height[left] < height[right] { left += 1; } else { right -= 1; }
-        }
-        max_a
+fn max_area(height: &[i32]) -> i32 {
+    let (mut left, mut right) = (0, height.len() - 1);
+    let mut max_a = 0;
+    while left < right {
+        let h = height[left].min(height[right]);
+        max_a = max_a.max(h * (right - left) as i32);
+        if height[left] < height[right] { left += 1; } else { right -= 1; }
     }
+    max_a
 }
 
 fn main() {
     let height = read_ints();
-    write_int(Solution::max_area(&height));
+    write_int(max_area(&height));
 }
 ```
 
@@ -383,12 +378,14 @@ run.py two_pointers --solution --lang rs
   3. Import all test_runners/*.py -> populate judge registry
   4. Match problem stems to judges
   5. For each file:
-     a. _is_stub() -> [SKIP] (regex scan, no compile)
-      b. Compile to .wasm via judge_compile_to_wasm() (or inline io.mjs + run via run_quickjs_wasm() for JS)
-     c. For each TestCase:
-        - stdin = judge.to_stdin(tc.input)
-        - result = run_wasm(wasm_path, stdin_text=stdin)
-        - passed = judge.check_stdout(result["output"], tc.expected)
+      a. _is_stub() -> [SKIP] (regex scan, no compile)
+       b. Compile to .wasm via judge_compile_to_wasm() (C/C++/Rust), or run_quickjs_wasm() for JS, or run_python_wasm() for Python
+      c. For each TestCase:
+         - stdin = judge.to_stdin(tc.input)
+         - result = run_wasm(wasm_path, stdin_text=stdin) [C/C++/Rust]
+         - or result = run_quickjs_wasm(source, source_dir) [JS]
+         - or result = run_python_wasm(source, project_root) [Python]
+         - passed = judge.check_stdout(result["output"], tc.expected)
      d. Print [PASS] (all tests) or [FAIL] (show failing tests)
 ```
 
@@ -427,4 +424,4 @@ Multi-arg stdin: arguments are line-separated. Count-prefixed arrays (p522, p524
 
 ## POC Scope
 
-All 29 topics, 144 problems verified across all 5 languages (720 solutions + 720 stubs = 1440 files).
+All 29 patterns, 144 problems verified across all 5 languages (720 solutions + 720 stubs = 1440 files).

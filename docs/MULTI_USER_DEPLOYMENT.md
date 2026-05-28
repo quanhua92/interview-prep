@@ -255,7 +255,7 @@ Returns system health, sandbox status, and runtime availability:
     "wasmtime": { "available": true },
     "wasi-sdk-clang": { "available": true },
     "quickjs-wasm": { "available": true },
-    "python-wasm": { "available": true }
+    "cpython-wasm": { "available": true }
   }
 }
 ```

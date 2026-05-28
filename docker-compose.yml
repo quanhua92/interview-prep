@@ -2,6 +2,7 @@ services:
   web:
     container_name: interview-prep
     image: quanhua92/interview-prep:latest
+    pull_policy: always
     # build: .  # uncomment to build locally instead of pulling from Docker Hub
     ports:
       - "8888:8888"
@@ -9,13 +10,14 @@ services:
     restart: unless-stopped
     environment:
       - WASM_SANDBOX=auto  # auto | 1 (force wasm) | 0 (force native)
-      # WASMTIME_BIN=wasmtime
-      # WASI_SDK_CLANG=/opt/wasi-sdk/bin/clang
-      # WASI_SDK_CLANGPP=/opt/wasi-sdk/bin/clang++
-      # WASI_SDK_SYSROOT=/opt/wasi-sdk/share/wasi-sysroot
-      # JAVY_BIN=javy
-      # PYTHON_WASM=/opt/python-wasi/python.cwasm
-      # WASM_CACHE_DIR=/tmp/wasm-cache
+      - WASMTIME_BIN=wasmtime
+      - WASI_SDK_CLANG=/opt/wasi-sdk/bin/clang
+      - WASI_SDK_CLANGPP=/opt/wasi-sdk/bin/clang++
+      - WASI_SDK_SYSROOT=/opt/wasi-sdk/share/wasi-sysroot
+      - QUICKJS_WASM=/opt/quickjs.wasm
+      - PYTHON_WASM=/opt/python-wasi/python.cwasm
+      - PYTHON_WASM_HOME=/opt/python-wasi
+      - WASM_CACHE_DIR=/tmp/wasm-cache
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8888/')"]
       interval: 10s
