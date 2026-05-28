@@ -37,10 +37,12 @@ docker compose up -d
 
 Go to [http://localhost:8888](http://localhost:8888) to view the dashboard, or [http://localhost:8888/code](http://localhost:8888/code) for the full-screen code editor.
 
+> **Note:** `docker-compose.yml` pulls a pre-built image from Docker Hub by default. To build locally instead, uncomment the `build: .` line and comment out the `image:` line.
+
 For a minimal setup (no file persistence):
 
 ```bash
-docker run -d -p 8888:8888 -v $(pwd)/progress:/app/progress quanhua92/interview-prep
+docker run -d -p 8888:8888 quanhua92/interview-prep
 ```
 
 ### CLI

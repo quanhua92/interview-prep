@@ -1,9 +1,12 @@
 services:
   web:
     container_name: interview-prep
-    build: .
+    image: quanhua92/interview-prep:latest
+    # build: .  # uncomment to build locally instead of pulling from Docker Hub
     ports:
       - "8888:8888"
+    init: true
+    restart: unless-stopped
     environment:
       - WASM_SANDBOX=auto  # auto | 1 (force wasm) | 0 (force native)
       # WASMTIME_BIN=wasmtime
@@ -13,11 +16,12 @@ services:
       # JAVY_BIN=javy
       # PYTHON_WASM=/opt/python-wasi/python.cwasm
       # WASM_CACHE_DIR=/tmp/wasm-cache
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8888/')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     volumes:
-      - ./progress:/app/progress
-      - ./static:/app/static
-      - ./src:/app/src
-      - ./tier1_foundation:/app/tier1_foundation
-      - ./tier2_intermediate:/app/tier2_intermediate
-      - ./tier3_advanced:/app/tier3_advanced
-      - ./tier4_expert:/app/tier4_expert
+      - .:/app
+      - /app/.venv  # exclude host .venv — container uses its own
