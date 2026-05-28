@@ -11,6 +11,10 @@
  * Example 2:
  *     Input: root = [1,2,3,4,null,5,6,null,null,7]
  *     Output: 7
+ *
+ * Constraints:
+ *     - The number of nodes in the tree is in the range [1, 104].
+ *     - -231 <= Node.val <= 231 - 1
  */
 
 import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';

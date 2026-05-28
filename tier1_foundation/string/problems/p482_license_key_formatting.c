@@ -34,39 +34,7 @@
 
 char *licenseKeyFormatting(const char *s, int k)
 {
-    int len = (int)strlen(s);
-    static char cleaned[100001];
-    int clen = 0;
-    for (int i = 0; i < len; i++) {
-        if (s[i] != '-') {
-            cleaned[clen++] = (char)toupper((unsigned char)s[i]);
-        }
-    }
-    if (clen == 0) {
-        char *result = malloc(1);
-        result[0] = '\0';
-        return result;
-    }
-    int first_len = clen % k;
-    int dash_count;
-    if (first_len > 0)
-        dash_count = (clen - first_len) / k;
-    else
-        dash_count = clen / k - 1;
-    int result_len = clen + dash_count;
-    char *result = malloc((size_t)result_len + 1);
-    int pos = 0;
-    if (first_len > 0) {
-        memcpy(result, cleaned, (size_t)first_len);
-        pos = first_len;
-    }
-    for (int i = first_len; i < clen; i += k) {
-        if (pos > 0) result[pos++] = '-';
-        memcpy(result + pos, cleaned + i, (size_t)k);
-        pos += k;
-    }
-    result[pos] = '\0';
-    return result;
+    abort();
 }
 
 int main(void)

@@ -7,8 +7,59 @@
  * Implement the MinStack class:
  * You must implement a solution with O(1) time complexity for each function.
  *
- * Hint: stdin: n, then n blocks of (op_name, value_count, values...)
- *       stdout: one line per result, "null" or integer
+ * Example 1:
+ *     Input
+ *     ["MinStack","push","push","push","getMin","pop","top","getMin"]
+ *     [[],[-2],[0],[-3],[],[],[],[]]
+ *
+ *     Output
+ *     [null,null,null,null,-3,null,0,-2]
+ *
+ *     Explanation
+ *     MinStack minStack = new MinStack();
+ *     minStack.push(-2);
+ *     minStack.push(0);
+ *     minStack.push(-3);
+ *     minStack.getMin(); // return -3
+ *     minStack.pop();
+ *     minStack.top();    // return 0
+ *     minStack.getMin(); // return -2
+ *
+ * Constraints:
+ *     - -231 <= val <= 231 - 1
+ *     - Methods pop, top and getMin operations will always be called on non-empty stacks.
+ *     - At most 3 * 104 calls will be made to push, pop, top, and getMin.
+ *
+ * Hints:
+ *     - Consider each node in the stack having a minimum value. (Credits to @aakarshmadhavan)
+ *
+ * Template (python3):
+ *     class MinStack:
+ *
+ *         def __init__(self):
+ *
+ *
+ *         def push(self, val: int) -> None:
+ *
+ *
+ *         def pop(self) -> None:
+ *
+ *
+ *         def top(self) -> int:
+ *
+ *
+ *         def getMin(self) -> int:
+ *
+ *
+ *
+ *     # Your MinStack object will be instantiated and called as such:
+ *     # obj = MinStack()
+ *     # obj.push(val)
+ *     # obj.pop()
+ *     # param_3 = obj.top()
+ *     # param_4 = obj.getMin()
+ *
+ * Hint: The solve method receives a list of operations and returns a list of outputs.
  */
 
 #include "io.h"

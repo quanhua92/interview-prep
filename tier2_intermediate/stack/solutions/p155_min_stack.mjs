@@ -4,10 +4,33 @@
  * Topics: Stack, Design
  *
  * Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+ * Implement the MinStack class:
  * You must implement a solution with O(1) time complexity for each function.
  *
- * Hint: stdin: n, then n blocks of (op_name, value_count, values...)
- *       stdout: one line per result, "null" or integer
+ * Example 1:
+ *     Input
+ *     ["MinStack","push","push","push","getMin","pop","top","getMin"]
+ *     [[],[-2],[0],[-3],[],[],[],[]]
+ *
+ *     Output
+ *     [null,null,null,null,-3,null,0,-2]
+ *
+ *     Explanation
+ *     MinStack minStack = new MinStack();
+ *     minStack.push(-2);
+ *     minStack.push(0);
+ *     minStack.push(-3);
+ *     minStack.getMin(); // return -3
+ *     minStack.pop();
+ *     minStack.top();    // return 0
+ *     minStack.getMin(); // return -2
+ *
+ * Constraints:
+ *     - -231 <= val <= 231 - 1
+ *     - Methods pop, top and getMin operations will always be called on non-empty stacks.
+ *     - At most 3 * 10^4 calls will be made to push, pop, top, and getMin.
+ *
+ * Hint: Consider each node in the stack having a minimum value. (Credits to @aakarshmadhavan)
  */
 
 import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';

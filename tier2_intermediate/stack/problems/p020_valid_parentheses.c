@@ -42,24 +42,13 @@
 #include <stdlib.h>
 
 static int is_valid(const char *s) {
-    char stack[10001];
-    int top = 0;
-    for (int i = 0; s[i]; i++) {
-        char ch = s[i];
-        if (ch == '(' || ch == '[' || ch == '{') {
-            stack[top++] = ch;
-        } else {
-            if (top == 0) return 0;
-            char open = stack[--top];
-            if ((ch == ')' && open != '(') ||
-                (ch == ']' && open != '[') ||
-                (ch == '}' && open != '{')) return 0;
-        }
-    }
-    return top == 0;
+    abort();
 }
 
 int main(void)
 {
-    abort();
+    char *s = read_line();
+    write_bool(is_valid(s));
+    free(s);
+    return 0;
 }
