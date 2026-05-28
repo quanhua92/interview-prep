@@ -270,66 +270,75 @@ WASM_TIME_LIMIT = 120
 
 @app.get("/api/health")
 def health_check():
-    checks = {
-        "status": "ok",
-        "sandbox": {
-            "type": "wasm" if wasm_runner.wasm_available() else "none (direct subprocess)",
-            "wasmtime_available": wasm_runner.wasm_available(),
-            "sandbox_active": wasm_runner.wasm_available(),
-        },
-        "runtimes": {},
-    }
-    runtimes = {
-        "wasmtime": ["wasmtime", "--version"],
-        "wasi-sdk-clang": [wasm_runner._WASI_SDK_CLANG, "--version"],
-        "javy": [wasm_runner._JAVY_BIN, "--version"],
-        "python-wasm": ["wasmtime", "--dir", wasm_runner._PYTHON_WASM_HOME, "--env", f"PYTHONHOME={wasm_runner._PYTHON_WASM_HOME}", wasm_runner._PYTHON_WASM, "-c", "pass"],
-    }
-    for name, cmd in runtimes.items():
-        try:
-            r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
-            if r.returncode == 0:
-                checks["runtimes"][name] = {"available": True}
-            else:
-                checks["runtimes"][name] = {"available": False, "error": r.stderr.strip()[:200]}
-        except (FileNotFoundError, subprocess.TimeoutExpired):
-            checks["runtimes"][name] = {"available": False}
+    try:
+        checks = {
+            "status": "ok",
+            "sandbox": {
+                "type": "wasm" if wasm_runner.wasm_available() else "none (direct subprocess)",
+                "wasmtime_available": wasm_runner.wasm_available(),
+                "sandbox_active": wasm_runner.wasm_available(),
+            },
+            "runtimes": {},
+        }
+        runtimes = {
+            "wasmtime": ["wasmtime", "--version"],
+            "wasi-sdk-clang": [wasm_runner._WASI_SDK_CLANG, "--version"],
+            "quickjs-wasm": None,
+            "python-wasm": ["wasmtime", "--dir", wasm_runner._PYTHON_WASM_HOME, "--env", f"PYTHONHOME={wasm_runner._PYTHON_WASM_HOME}", wasm_runner._PYTHON_WASM, "-c", "pass"],
+        }
+        for name, cmd in runtimes.items():
+            if cmd is None:
+                checks["runtimes"][name] = {"available": Path(wasm_runner._QUICKJS_WASM).exists()}
+                continue
+            try:
+                r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+                if r.returncode == 0:
+                    checks["runtimes"][name] = {"available": True}
+                else:
+                    checks["runtimes"][name] = {"available": False, "error": r.stderr.strip()[:200]}
+            except (FileNotFoundError, subprocess.TimeoutExpired):
+                checks["runtimes"][name] = {"available": False}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
     return checks
 
 
 @app.post("/api/run")
 def run_problems(lang: list[str] = Query(default=["py"]), pattern: str | None = None, all_patterns: bool = False, solution: bool = False):
-    valid_langs = {"py", "c", "cpp", "rs", "js"}
-    langs = lang
-    for l in langs:
-        if l not in valid_langs:
-            raise HTTPException(status_code=400, detail=f"Invalid lang: {l}. Must be one of {valid_langs}")
-    results = []
-    for l in langs:
-        run_cmd = ["/usr/local/bin/python3", "/app/run.py"]
-        if all_patterns:
-            run_cmd.append("--all")
-        if pattern:
-            run_cmd.append(pattern)
-        if l != "py":
-            run_cmd.extend(["--lang", l])
-        if solution:
-            run_cmd.append("--solution")
-        try:
-            result = subprocess.run(
-                run_cmd,
-                capture_output=True,
-                text=True,
-                timeout=WASM_TIME_LIMIT + 10,
-                cwd=str(tracker.ROOT),
-            )
-            output = result.stdout
-            if result.stderr:
-                output += "\n" + result.stderr
-            results.append({"lang": l, "runtime": "wasm" if wasm_sandbox_active() else "native", "output": output, "exit_code": result.returncode})
-        except subprocess.TimeoutExpired:
-            results.append({"lang": l, "runtime": "wasm" if wasm_sandbox_active() else "native", "error": f"Timed out after {WASM_TIME_LIMIT} seconds"})
-    return {"results": results}
+    try:
+        valid_langs = {"py", "c", "cpp", "rs", "js"}
+        langs = lang
+        for l in langs:
+            if l not in valid_langs:
+                raise HTTPException(status_code=400, detail=f"Invalid lang: {l}. Must be one of {valid_langs}")
+        results = []
+        for l in langs:
+            run_cmd = ["/usr/local/bin/python3", "/app/run.py"]
+            if all_patterns:
+                run_cmd.append("--all")
+            if pattern:
+                run_cmd.append(pattern)
+            if l != "py":
+                run_cmd.extend(["--lang", l])
+            if solution:
+                run_cmd.append("--solution")
+            try:
+                result = subprocess.run(
+                    run_cmd,
+                    capture_output=True,
+                    text=True,
+                    timeout=WASM_TIME_LIMIT + 10,
+                    cwd=str(tracker.ROOT),
+                )
+                output = result.stdout
+                if result.stderr:
+                    output += "\n" + result.stderr
+                results.append({"lang": l, "runtime": "wasm" if wasm_sandbox_active() else "native", "output": output, "exit_code": result.returncode})
+            except subprocess.TimeoutExpired:
+                results.append({"lang": l, "runtime": "wasm" if wasm_sandbox_active() else "native", "error": f"Timed out after {WASM_TIME_LIMIT} seconds"})
+        return {"results": results}
+    except Exception as e:
+        return {"error": str(e)}
 
 
 # --- File editor helpers ---

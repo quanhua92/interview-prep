@@ -93,7 +93,7 @@ Code runs inside **wasmtime** (WebAssembly runtime), not native subprocess. No s
 | C | wasi-sdk (clang `wasm32-wasip1`) | ~60ms | ~100KB |
 | C++ | wasi-sdk (clang++ `-fno-exceptions`) | ~340ms | ~200KB |
 | Rust | rustc `wasm32-wasip1` + rstest rlib | ~70ms | ~1.9MB |
-| JavaScript | [Javy](https://github.com/bytecodealliance/javy) dynamic linking | ~500ms | ~3KB |
+| JavaScript | [QuickJS-NG](https://github.com/quickjs-ng/quickjs) WASI (single `.wasm`) | ~100ms | ~3KB |
 | Python | [CPython 3.14.5 WASI](https://github.com/brettcannon/cpython-wasi-build) (Tier 2) | N/A (pre-built) | 28MB |
 
 **Security:** Fuel-based CPU limit, hard memory cap, wall-clock timeout, no network, no filesystem access unless explicitly mapped. See [docs/WASM_SANDBOX.md](docs/WASM_SANDBOX.md) for full details.
