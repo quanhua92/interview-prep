@@ -13,7 +13,7 @@ The current architecture is single-user:
 | Progress | `progress/tracker.json` | Single file, all users see same state |
 | Code edits | `tier*_*/.../problems/` on disk | Overwrites between users |
 | Version history | `_file_snapshots` in-memory dict | Lost on restart, shared |
-| Code execution | `subprocess.run` on host | Any user can run arbitrary code, access other users' files, network, etc. |
+| Code execution | `wasmtime` sandbox | Code runs in WASM sandbox, no host access |
 
 If deployed as-is, all users share the same system. Two people working on the same problem would overwrite each other's code. More critically, the `/api/run` endpoint (`web.py`) runs user-edited code — a major security vulnerability in a multi-user context.
 
@@ -50,9 +50,9 @@ If deployed as-is, all users share the same system. Two people working on the sa
 │                               ┘                       │
 │                                                       │
 │  WASM sandbox per run:                                │
-│    fuel=2B      → CPU instruction limit               │
+│    fuel=5B      → CPU instruction limit               │
 │    timeout=120s → wall-clock timeout                   │
-│    max-mem=256M → hard memory cap                     │
+│    max-mem=512M → hard memory cap                     │
 │    --dir <user> → only user's code dir visible        │
 │    no network  → WASI has no networking               │
 └──────────────────────────────────────────────────────┘
@@ -163,7 +163,7 @@ See [`.env.example`](../.env.example) for all variables:
 | `WASI_SDK_CLANGPP` | `/opt/wasi-sdk/bin/clang++` | wasi-sdk clang++ for C++ |
 | `WASI_SDK_SYSROOT` | `/opt/wasi-sdk/share/wasi-sysroot` | wasi-sdk sysroot |
 | `QUICKJS_WASM` | `/opt/quickjs.wasm` | QuickJS-NG WASI binary for JS |
-| `PYTHON_WASM` | `/opt/python-wasi/python.wasm` | Python WASM interpreter binary |
+| `PYTHON_WASM` | `/opt/python-wasi/python.cwasm` | Python WASM interpreter binary (precompiled) |
 | `PYTHON_WASM_HOME` | `/opt/python-wasi` | Python WASM install dir (contains `lib/python3.14/`) |
 | `WASM_CACHE_DIR` | `/tmp/wasm-cache` | Directory for compiled `.wasm` cache |
 
@@ -173,9 +173,9 @@ See [`.env.example`](../.env.example) for all variables:
 
 | Limit | Flag | Value | Purpose |
 |-------|------|-------|---------|
-| CPU instructions | `-W fuel` | 2,000,000,000 | Deterministic CPU limit (kills infinite loops) |
+| CPU instructions | `-W fuel` | 5,000,000,000 | Deterministic CPU limit (kills infinite loops) |
 | Wall-clock timeout | `-W timeout` | 120s | Hard time limit |
-| Memory | `-W max-memory-size` | 256MB | Hard memory cap |
+| Memory | `-W max-memory-size` | 512MB | Hard memory cap |
 
 ### Security Properties
 

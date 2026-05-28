@@ -13,29 +13,25 @@ System health, sandbox status, and runtime availability.
 {
   "status": "ok",
   "sandbox": {
-    "type": "bwrap",
-    "bwrap_available": true,
-    "bwrap_namespaces": true,
+    "type": "wasm",
+    "wasmtime_available": true,
     "sandbox_active": true
   },
   "runtimes": {
-    "python": { "available": true, "version": "Python 3.14.5" },
-    "gcc":    { "available": true, "version": "gcc (Debian 14.2.0-19) 14.2.0" },
-    "g++":    { "available": true, "version": "g++ (Debian 14.2.0-19) 14.2.0" },
-    "rustc":  { "available": true, "version": "rustc 1.85.0 ..." },
-    "node":   { "available": true, "version": "v20.19.2" }
+    "wasmtime": { "available": true },
+    "wasi-sdk-clang": { "available": true },
+    "quickjs-wasm": { "available": true },
+    "cpython-wasm": { "available": true }
   }
 }
 ```
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `sandbox.type` | `string` | `"bwrap"` if sandbox is active, `"none (direct subprocess)"` otherwise |
-| `sandbox.bwrap_available` | `bool` | Whether `bwrap` binary exists on the system |
-| `sandbox.bwrap_namespaces` | `bool` | Whether namespace creation succeeded (false on Docker Desktop) |
-| `sandbox.sandbox_active` | `bool` | Whether `/api/run` uses bwrap isolation |
-| `runtimes.{name}.available` | `bool` | Whether the runtime is installed |
-| `runtimes.{name}.version` | `string \| null` | Runtime version string |
+| `sandbox.type` | `string` | `"wasm"` if sandbox is active, `"none (direct subprocess)"` otherwise |
+| `sandbox.wasmtime_available` | `bool` | Whether `wasmtime` binary is available |
+| `sandbox.sandbox_active` | `bool` | Whether `/api/run` uses WASM isolation |
+| `runtimes.{name}.available` | `bool` | Whether the runtime/toolchain is installed |
 
 ---
 
@@ -136,7 +132,7 @@ Record a practice attempt (+1).
 
 ### POST /api/run
 
-Run problem files through the test runner. Uses bwrap sandbox on Linux servers, falls back to direct subprocess with resource limits on Docker Desktop.
+Run problem files through the WASM judge. Code executes inside wasmtime sandbox. Falls back to native subprocess if wasmtime is unavailable.
 
 **Query Parameters:**
 
@@ -162,6 +158,7 @@ POST /api/run?lang=py&all_patterns=true
   "results": [
     {
       "lang": "py",
+      "runtime": "wasm",
       "output": "============================================================\n  Running 3 pattern(s) (problems)\n...",
       "exit_code": 0
     }
@@ -173,22 +170,23 @@ On timeout:
 ```json
 {
   "results": [
-    { "lang": "py", "error": "Timed out after 120 seconds" }
+    { "lang": "py", "runtime": "wasm", "error": "Timed out after 120 seconds" }
   ]
 }
 ```
 
-**Resource limits** (applied to all runs):
-- 512MB max memory
-- 16 max child processes
-- 64 max open file descriptors
-- 130s timeout
+`runtime` is `"wasm"` when wasmtime is available, `"native"` otherwise.
 
-**Sandbox** (when bwrap is active):
-- No network access (empty network namespace)
-- Read-only filesystem (only `/usr`, `/lib`, `/etc`, `/app` visible)
-- No host process visibility
-- Isolated PID, IPC, UTS namespaces
+**Resource limits** (enforced by wasmtime):
+- 512MB max memory (`-W max-memory-size=536870912`)
+- 5B fuel (`-W fuel=5_000_000_000`, CPU instruction limit)
+- 120s timeout (`-W timeout=120s`)
+
+**Sandbox** (WASM/wasmtime):
+- No filesystem access unless explicitly `--dir`
+- No network (WASI has no networking syscalls)
+- No kernel access (WASM runs in user-space)
+- No `fork()` (WASM is single-threaded)
 
 ---
 
@@ -410,13 +408,12 @@ All `name` and `file` parameters are validated:
 - Resolved paths must be relative to the topic's directory
 - Solutions are read-only (cannot be written)
 
-### Resource Limits (all `/api/run` calls)
+### Resource Limits (all `/api/run` calls, enforced by wasmtime)
 
 | Limit | Value | Prevents |
 |-------|-------|----------|
 | Memory | 512 MB | Memory exhaustion |
-| Processes | 16 | Fork bombs |
-| File descriptors | 64 | FD exhaustion |
-| Timeout | 130s | Infinite loops |
-| Network | blocked | Network access (bwrap only) |
-| Filesystem | read-only | Host file access (bwrap only) |
+| CPU fuel | 5B instructions | Infinite loops |
+| Timeout | 120s | Long-running code |
+| Filesystem | none by default | Host file access |
+| Network | none (WASI) | Network access |

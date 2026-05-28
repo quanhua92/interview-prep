@@ -9,7 +9,7 @@ Benchmarks, architecture, and implementation details for the WebAssembly (WASM) 
 - 5 languages supported: C, C++, Rust, JavaScript, Python
 - `run.py` calls `wasm_runner` when `wasm_sandbox_active()`, falls back to native runners otherwise
 - Stub detection (`abort()`, `todo!()`, `NotImplementedError`) works in WASM path
-- All 5 languages compile and run successfully via WASM in Docker (40/40 tests pass)
+- All 5 languages compile and run successfully via WASM in Docker (144/144 problems pass)
 - MD5-based `.wasm` cache avoids recompiling identical source
 - `WASM_SANDBOX=auto` enables WASM when wasmtime is available, falls back to native otherwise
 - All toolchain paths configurable via `.env` (see [Configuration](#configuration))
@@ -80,7 +80,7 @@ Python is slower due to CPython WASM startup overhead (~170ms for interpreter in
 
 | Limit | wasmtime flag | Tested |
 |---|---|---|
-| CPU (instruction count) | `-W fuel=2_000_000_000` | Infinite loop killed ("all fuel consumed") |
+| CPU (instruction count) | `-W fuel=5_000_000_000` | Infinite loop killed ("all fuel consumed") |
 | Wall-clock timeout | `-W timeout=5s` | Infinite loop killed ("interrupt") |
 | Memory cap | `-W max-memory-size=33554432` | MemoryError raised |
 
@@ -163,7 +163,7 @@ See [`.env.example`](../.env.example):
 | `WASI_SDK_CLANGPP` | `/opt/wasi-sdk/bin/clang++` | wasi-sdk clang++ for C++ |
 | `WASI_SDK_SYSROOT` | `/opt/wasi-sdk/share/wasi-sysroot` | wasi-sdk sysroot |
 | `QUICKJS_WASM` | `/opt/quickjs.wasm` | QuickJS-NG WASI binary for JS |
-| `PYTHON_WASM` | `/opt/python-wasi/python.wasm` | Python WASM interpreter binary |
+| `PYTHON_WASM` | `/opt/python-wasi/python.cwasm` | Python WASM interpreter binary (precompiled) |
 | `PYTHON_WASM_HOME` | `/opt/python-wasi` | Python WASM install dir (contains `lib/python3.14/`) |
 | `WASM_CACHE_DIR` | `/tmp/wasm-cache` | Directory for compiled `.wasm` cache |
 
@@ -177,7 +177,7 @@ WASI_SDK_CLANG=/tmp/wasi-sdk-33.0-arm64-macos/bin/clang
 WASI_SDK_CLANGPP=/tmp/wasi-sdk-33.0-arm64-macos/bin/clang++
 WASI_SDK_SYSROOT=/tmp/wasi-sdk-33.0-arm64-macos/share/wasi-sysroot
 QUICKJS_WASM=/tmp/quickjs.wasm
-PYTHON_WASM=/tmp/python-wasi/python.wasm
+PYTHON_WASM=/tmp/python-wasi/python.cwasm
 PYTHON_WASM_HOME=/tmp/python-wasi
 ```
 
@@ -211,19 +211,21 @@ Requires `-fno-exceptions`. The existing `cpptest.h` test harness uses wasi-libc
 
 Toolchain: rustup `wasm32-wasip1` target
 
+Judge mode (test_runners):
+```bash
+rustc --edition 2024 -O --target wasm32-wasip1 \
+  --extern wasm_libs=libwasm_libs.rlib source.rs -o solution.wasm
+wasmtime run -W fuel=5_000_000_000 -W timeout=120s solution.wasm
+```
+
+Legacy mode (ctest.h/cpptest.h/rstest.rs):
 ```bash
 rustc --edition 2024 -O --target wasm32-wasip1 \
   --extern rstest=librstest.rlib source.rs -o solution.wasm
-wasmtime run -W fuel=2_000_000_000 -W timeout=120s solution.wasm
+wasmtime run -W fuel=5_000_000_000 -W timeout=120s solution.wasm
 ```
 
-Two-step compilation (same as native):
-1. Compile `src/runners/rstest.rs` → `librstest.rlib` (once, cached in memory)
-2. Compile problem file → `.wasm` (cached to disk by MD5)
-
-The `rstest.rs` test harness (`run_tests!` macro, `TestCase` struct, `print_arr`) works unchanged on `wasm32-wasip1`. Solution files need no modifications.
-
-`std::process::exit()` works in WASI — no patching needed.
+Judge mode uses `wasm_libs` crate (I/O via stdin/stdout), legacy mode uses `rstest` crate (embedded test cases).
 
 ### JavaScript → WASM
 
@@ -256,14 +258,14 @@ Toolchain: [brettcannon/cpython-wasi-build](https://github.com/brettcannon/cpyth
 **Not VMware WLR.** That project (python-3.12.0.wasm) was archived in 2024. These builds are from unmodified upstream CPython source by Brett Cannon, the CPython WASI maintainer. WASI is a Tier 2 platform in CPython 3.13+, meaning WASI breakage blocks releases.
 
 ```bash
-wasmtime run -W fuel=5_000_000_000 -W timeout=120s \
+wasmtime run --allow-precompiled -W fuel=5_000_000_000 -W timeout=120s \
   --dir /opt/python-wasi --dir /app \
   --env PYTHONHOME=/opt/python-wasi \
   --env PYTHONPATH=/app \
-  /opt/python-wasi/python.wasm -- /app/tier1_foundation/two_pointers/solutions/p003.py
+  /opt/python-wasi/python.cwasm -- /app/tier1_foundation/two_pointers/solutions/p003.py
 ```
 
-Binary: 28MB `python.wasm` + stdlib in `lib/python3.14/` (separate `.py` files, ~13MB total zip). Requires `PYTHONHOME` set to the install directory so CPython can find its stdlib. No compilation step — the interpreter is pre-built.
+Binary: 28MB `python.wasm` (precompiled to `python.cwasm` via `wasmtime compile` in Dockerfile) + stdlib in `lib/python3.14/` (separate `.py` files, ~13MB total zip). Requires `PYTHONHOME` set to the install directory so CPython can find its stdlib. No compilation step — the interpreter is pre-built.
 
 Fuel: ~5B needed for CPython 3.14 startup + import + solve a problem (3.12 needed ~2B).
 
@@ -302,45 +304,41 @@ The WASM sandbox **cannot**:
 | Network access | WASI has no networking (no socket syscalls) |
 | Kernel escape | WASM runs in user-space — no kernel, no syscalls |
 | Fork bomb | WASM is single-threaded, no `fork()` |
-| Memory exhaustion | `-W max-memory-size=256MB` (hard cap) |
+| Memory exhaustion | `-W max-memory-size=512MB` (hard cap) |
 | Infinite loops | `-W timeout=120s` (wall-clock) or `-W fuel=N` (instruction count) |
 | CPU exhaustion | `-W fuel=5_000_000_000` (deterministic instruction limit) |
-
 ## Dockerfile (WASM toolchain)
 
 ```dockerfile
 FROM python:3.14-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc g++ rustc nodejs curl ca-certificates xz-utils \
+    gcc g++ rustc nodejs curl ca-certificates xz-utils unzip \
   && rm -rf /var/lib/apt/lists/*
 
-# wasmtime runtime
 RUN curl https://wasmtime.dev/install.sh -sSf | bash
 ENV PATH="/root/.wasmtime/bin:${PATH}"
 
-# wasi-sdk for C/C++ → WASM compilation (multi-arch)
 ARG WASI_SDK_VERSION=33
 RUN ARCH=$(case "$(uname -m)" in x86_64) echo "x86_64" ;; aarch64|arm64) echo "arm64" ;; esac) && \
     curl -L "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_SDK_VERSION}/wasi-sdk-${WASI_SDK_VERSION}.0-${ARCH}-linux.tar.gz" \
     | tar xz -C /opt/ && \
     ln -s /opt/wasi-sdk-${WASI_SDK_VERSION}.0-${ARCH}-linux /opt/wasi-sdk
 
-# Rust wasm32-wasip1 target
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal \
     && /root/.cargo/bin/rustup target add wasm32-wasip1
 ENV PATH="/root/.cargo/bin:${PATH}"
 
-# QuickJS-NG for JS → WASI (precompiled, 1.5MB)
-RUN curl -L "https://github.com/quickjs-ng/quickjs/releases/download/v0.15.0/qjs-wasi.wasm" \
+RUN ARCH=$(case "$(uname -m)" in x86_64) echo "x86_64" ;; aarch64|arm64) echo "arm64" ;; esac) && \
+    curl -L "https://github.com/quickjs-ng/quickjs/releases/download/v0.15.0/qjs-wasi.wasm" \
     -o /opt/quickjs.wasm && chmod +x /opt/quickjs.wasm
 
-# Python WASM (CPython 3.14 for WASI via brettcannon/cpython-wasi-build)
-ARG PYTHON_WASM_VERSION=3.14.5
-RUN curl -L "https://github.com/brettcannon/cpython-wasi-build/releases/download/v${PYTHON_WASM_VERSION}/python-${PYTHON_WASM_VERSION}-wasi_sdk-24.zip" \
+ARG CPYTHON_WASM_VERSION=3.14.5
+RUN curl -L "https://github.com/brettcannon/cpython-wasi-build/releases/download/v${CPYTHON_WASM_VERSION}/python-${CPYTHON_WASM_VERSION}-wasi_sdk-24.zip" \
     -o /tmp/python-wasi.zip \
     && unzip -q /tmp/python-wasi.zip -d /opt/python-wasi \
-    && rm /tmp/python-wasi.zip
+    && rm /tmp/python-wasi.zip \
+    && wasmtime compile -W fuel=1 -W epoch-interruption=y -W max-memory-size=536870912 /opt/python-wasi/python.wasm -o /opt/python-wasi/python.cwasm
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
@@ -356,16 +354,14 @@ EXPOSE 8888
 CMD ["uv", "run", "python", "main.py", "start"]
 ```
 
-Key differences from the pre-WASM Dockerfile:
-- `xz-utils` added (required for wasmtime `.tar.xz` extraction)
-- wasmtime installed via official install script, added to `PATH`
-- wasi-sdk downloaded with multi-arch detection (`x86_64` / `arm64`)
-- rustup installed (not just system `rustc`) for `wasm32-wasip1` target
-- QuickJS-NG precompiled WASI binary downloaded (1.5MB, no build step)
-- CPython 3.14.5 WASI build extracted to `/opt/python-wasi/` (brettcannon/cpython-wasi-build)
-- No bubblewrap, no `--privileged`, no special Docker flags
-
-No `--privileged`. No Docker socket. No `--userns=host`. No `seccomp=unconfined`. Just `docker compose up`.
+Key details:
+- `xz-utils` + `unzip` for wasmtime and python-wasi archive extraction
+- wasmtime installed via official install script
+- wasi-sdk with multi-arch detection (`x86_64` / `arm64`)
+- rustup for `wasm32-wasip1` target
+- QuickJS-NG precompiled WASI binary (1.5MB, no build step)
+- CPython 3.14.5 WASI build precompiled to `python.cwasm` via `wasmtime compile`
+- No `--privileged`, no Docker socket, no `--userns=host`, no `seccomp=unconfined`
 
 ## Comparison: bwrap vs WASM
 
@@ -382,4 +378,5 @@ No `--privileged`. No Docker socket. No `--userns=host`. No `seccomp=unconfined`
 | Rust compile + run | ~50ms + native speed | 70ms + native speed |
 | JS run | ~10ms (node) | ~0.03s run (QuickJS-NG WASI, no compile) |
 | Python run | ~20ms (CPython) | **~180ms** (CPython 3.14 WASM startup) |
-| Network from code | Outer Docker network | **Blocked** |
+| Network from code | Outer Docker network | **Blocked** (WASI) |
+| Memory limit | `setrlimit` (approximate) | **512MB hard cap** |

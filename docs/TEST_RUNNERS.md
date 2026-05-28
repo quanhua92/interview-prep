@@ -297,10 +297,10 @@ void write_bool(int b);                // 1 -> "true\n", 0 -> "false\n"
 
 ```cpp
 std::vector<int> read_ints();
-std::vector<std::vector<int>> read_int_matrix();
+int read_int();
+std::string read_line();
 void write_int(int val);
 void write_ints(const std::vector<int>& arr);
-void write_matrix(const std::vector<std::vector<int>>& mat);
 void write_string(const std::string& s);
 void write_bool(bool b);
 ```
@@ -427,4 +427,4 @@ Multi-arg stdin: arguments are line-separated. Count-prefixed arrays (p522, p524
 
 ## POC Scope
 
-Only `tier1_foundation/two_pointers/` (8 problems x 5 languages = 40 solutions + 40 stubs = 80 files). All 29 topics, 144 problems verified across all 5 languages. All other topics remain unchanged until migrated.
+All 29 topics, 144 problems verified across all 5 languages (720 solutions + 720 stubs = 1440 files).

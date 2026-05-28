@@ -189,10 +189,12 @@ Host Python (subprocess.run)
 
 | Mode | Input source | Test location | Current use |
 |------|-------------|---------------|-------------|
-| **Embedded tests** | Hardcoded in `main()` | Inside WASM | Current (all langs) |
-| **Judge mode** | stdin | Host Python | Future (Phase 4) |
+| **Judge mode** | stdin (from `test_runners/`) | Host Python (`JudgeBase`) | **Current** (all judge topics) |
+| **Embedded tests** | Hardcoded in `main()` | Inside WASM | Legacy (non-judge topics) |
 
-Currently all solutions use embedded test cases (Option A). Judge mode (stdin/stdout) is a future improvement that enables external test case injection.
+Judge mode is the current architecture. Each solution reads stdin → calls `solve()` → writes stdout. The judge (`test_runners/pXXX.py`) provides test cases and validates output. See [TEST_RUNNERS.md](./TEST_RUNNERS.md) for details.
+
+Legacy embedded tests are used by topics that haven't been migrated to the judge system yet (they use `ctest.h`, `cpptest.h`, `rstest.rs` with inline test cases).
 
 ## Per-Language Library Guide
 
@@ -200,25 +202,22 @@ Currently all solutions use embedded test cases (Option A). Judge mode (stdin/st
 
 **Include mechanism:** `-Isrc/wasm_libs/c` flag passed to clang
 
-**Current compile** (`wasm_runner.py:70-81`):
+**Current compile** (`wasm_runner.py` — judge path uses `-Isrc/wasm_libs/c`):
 ```python
-# Only compiles the solution file
-cmd = [
-    _WASI_SDK_CLANG, "--target=wasm32-wasip1", "--sysroot", _WASI_SDK_SYSROOT,
-    "-O2", "-Wall", "-Wextra", "-Isrc/runners",
-    str(source), "-o", str(out), "-lm",
-]
-```
-
-**Updated compile** (after refactor — must also link library `.c` files):
-```python
+# Judge compile (_judge_compile_c) — used by test_runners/ topics
 cmd = [
     _WASI_SDK_CLANG, "--target=wasm32-wasip1", "--sysroot", _WASI_SDK_SYSROOT,
     "-O2", "-Wall", "-Wextra", "-Isrc/wasm_libs/c",
     str(source),
-    "src/wasm_libs/c/data_structures.c",
-    "src/wasm_libs/c/test_runner.c",
+    str(_WASM_LIBS_DIR / "c" / "io.c"),
     "-o", str(out), "-lm",
+]
+
+# Legacy compile (_compile_c) — used by non-judge topics
+cmd = [
+    _WASI_SDK_CLANG, "--target=wasm32-wasip1", "--sysroot", _WASI_SDK_SYSROOT,
+    "-O2", "-Wall", "-Wextra", "-Isrc/runners",
+    str(source), "-o", str(out), "-lm",
 ]
 ```
 
@@ -304,16 +303,23 @@ int** read_matrix_stdin(int* rows, int* cols);
 
 **Include mechanism:** `-Isrc/wasm_libs/cpp` flag passed to clang++
 
-**Updated compile:**
+**Judge compile** (`_judge_compile_cpp`):
 ```python
 cmd = [
     _WASI_SDK_CLANGPP, "--target=wasm32-wasip1", "--sysroot", _WASI_SDK_SYSROOT,
     "-O2", "-Wall", "-Wextra", "-fno-exceptions",
     "-Isrc/wasm_libs/cpp",
     str(source),
-    "src/wasm_libs/cpp/data_structures.cpp",
-    "src/wasm_libs/cpp/test_runner.cpp",
+    str(_WASM_LIBS_DIR / "cpp" / "io.cpp"),
     "-o", str(out),
+]
+
+# Legacy compile (_compile_cpp) — used by non-judge topics
+cmd = [
+    _WASI_SDK_CLANGPP, "--target=wasm32-wasip1", "--sysroot", _WASI_SDK_SYSROOT,
+    "-O2", "-Wall", "-Wextra", "-fno-exceptions",
+    "-Isrc/runners",
+    str(source), "-o", str(out),
 ]
 ```
 
@@ -375,26 +381,12 @@ void print_arr(const std::vector<int>& a);
 
 **Link mechanism:** Pre-compile as `.rlib`, link with `--extern`
 
-The current `rstest.rs` is already compiled as a library and linked per solution. The refactor adds `data_structures.rs` to this pattern. Both can be combined into one rlib or kept separate.
-
-**Current compile** (`wasm_runner.py:98-128`):
-```python
-# Step 1: compile rstest lib (cached in memory)
-lib_out = _compile_rstest_lib(out.parent)  # -> librstest.rlib
-
-# Step 2: compile solution, linking rstest
-cmd = [
-    "rustc", "--edition", "2024", "-O", "--target", "wasm32-wasip1",
-    str(source), "--extern", f"rstest={lib_out}", "-o", str(out),
-]
-```
-
-**Updated compile** (data_structures + test_runner in one rlib):
+**Judge compile** (`_judge_compile_rust`):
 ```python
 # Step 1: compile wasm_libs rlib (cached)
 cmd_lib = [
     "rustc", "--edition", "2024", "-O", "--target", "wasm32-wasip1",
-    "src/wasm_libs/rs/data_structures.rs",
+    str(_WASM_LIBS_DIR / "rs" / "lib.rs"),
     "--crate-type", "lib", "--crate-name", "wasm_libs",
     "-o", str(lib_out),
 ]
@@ -404,6 +396,10 @@ cmd = [
     "rustc", "--edition", "2024", "-O", "--target", "wasm32-wasip1",
     str(source), "--extern", f"wasm_libs={lib_out}", "-o", str(out),
 ]
+
+# Legacy compile (_compile_rust) — used by non-judge topics
+# Step 1: compile rstest lib
+# Step 2: compile solution with --extern rstest=librstest.rlib
 ```
 
 **Alternative:** Cargo with path dependency:
@@ -686,18 +682,17 @@ ENV PATH="/usr/local/tinygo/bin:${PATH}"
 
 ## Implementation Checklist
 
-### Phase 1: Restructure (no behavior change)
+### Phase 1: Restructure (partially done)
 
 Move existing test harnesses from `src/runners/` to `src/wasm_libs/`, update compile paths.
 
-- [ ] Create `src/wasm_libs/` directory structure (`c/`, `cpp/`, `rs/`, `js/`, `py/`)
-- [ ] Move `src/runners/rstest.rs` -> `src/wasm_libs/rs/test_runner.rs`
-- [ ] Move `src/runners/ctest.h` -> `src/wasm_libs/c/test_runner.h`
-- [ ] Move `src/runners/cpptest.h` -> `src/wasm_libs/cpp/test_runner.h`
-- [ ] Update `wasm_runner.py` `_compile_c`: `-Isrc/runners` -> `-Isrc/wasm_libs/c`
-- [ ] Update `wasm_runner.py` `_compile_cpp`: `-Isrc/runners` -> `-Isrc/wasm_libs/cpp`
-- [ ] Update `wasm_runner.py` `_compile_rust`: `--extern rstest=` -> `--extern wasm_libs=`, update rlib path
-- [ ] Verify all existing solutions still compile and pass (no solution file changes)
+- [x] Create `src/wasm_libs/` directory structure (`c/`, `cpp/`, `rs/`, `js/`, `py/`)
+- [ ] Move `src/runners/rstest.rs` -> `src/wasm_libs/rs/test_runner.rs` (legacy rstest still at `src/runners/rstest.rs`)
+- [ ] Move `src/runners/ctest.h` -> `src/wasm_libs/c/test_runner.h` (legacy ctest still at `src/runners/ctest.h`)
+- [ ] Move `src/runners/cpptest.h` -> `src/wasm_libs/cpp/test_runner.h` (legacy cpptest still at `src/runners/cpptest.h`)
+- [x] Update `wasm_runner.py` judge compile: `-Isrc/wasm_libs/c` (legacy `_compile_c` still uses `-Isrc/runners`)
+- [x] Update `wasm_runner.py` judge compile: `--extern wasm_libs=` (legacy `_compile_rust` still uses `--extern rstest=`)
+- [x] Verify all existing solutions still compile and pass (judge path verified, legacy path verified)
 
 ### Phase 2: Extract data structures
 
@@ -721,16 +716,17 @@ Replace inline data structure definitions with `#include` / `use` / `import`.
 - [ ] Refactor JS solutions: remove inline definitions, add `import` from wasm_libs
 - [ ] Python solutions: no change (already use `src/utils/data_structures.py`)
 
-### Phase 4: Standardize I/O (optional, future)
+### Phase 4: Standardize I/O (DONE)
 
-Add stdin/stdout based judge mode alongside embedded test cases.
+IO libraries exist in `wasm_libs/`. Judge mode uses them via stdin/stdout.
 
-- [ ] Create `wasm_libs/c/io.h/.c` (read_ints_stdin, read_line_stdin, read_matrix_stdin)
-- [ ] Create `wasm_libs/cpp/io.h/.cpp`
-- [ ] Create `wasm_libs/rs/io.rs`
-- [ ] Create `wasm_libs/js/io.mjs`
-- [ ] Decide on input/output format standard (see Input Formats section)
-- [ ] Add judge mode to runners: pipe stdin, capture stdout, compare with expected
+- [x] Create `wasm_libs/c/io.h/.c` (read_ints, read_line, write_int, etc.)
+- [x] Create `wasm_libs/cpp/io.h/.cpp`
+- [x] Create `wasm_libs/rs/lib.rs` (includes IO functions)
+- [x] Create `wasm_libs/js/io.mjs`
+- [x] Create `wasm_libs/py/io.py`
+- [x] Decide on input/output format standard
+- [x] Add judge mode to runners: pipe stdin, capture stdout, compare with expected
 
 ## WASM Concepts Reference
 
