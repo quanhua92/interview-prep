@@ -17,7 +17,9 @@
  */
 
 
-#include "ctest.h"
+#include "io.h"
+#include <stdlib.h>
+#include <string.h>
 
 int leastInterval(char *tasks, int tasksSize, int n) {
     int freq[26] = {0};

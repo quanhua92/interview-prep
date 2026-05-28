@@ -16,7 +16,7 @@
  */
 
 
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 
 int cmp_int(const void *a, const void *b) {

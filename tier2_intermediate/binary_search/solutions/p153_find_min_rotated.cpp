@@ -65,10 +65,7 @@ int findMin(const std::vector<int> &nums)
 
 int main(void)
 {
-    int n;
-    int *nums_arr = read_ints(&n);
-    std::vector<int> nums(nums_arr, nums_arr + n);
-    free(nums_arr);
+    std::vector<int> nums = read_ints();
     write_int(findMin(nums));
     return 0;
 }

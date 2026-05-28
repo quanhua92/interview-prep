@@ -79,25 +79,20 @@ struct LFUCache {
 
 impl LFUCache {
     fn new(capacity: i32) -> Self {
-        LFUCache {
-            cap: capacity as usize,
-            min_freq: 0,
-            cache: HashMap::new(),
-            freq_map: HashMap::new(),
-        }
-    }
+    todo!();
+}
 
     fn update_freq(&mut self, key: i32) {
-        todo!()
-    }
+    todo!();
+}
 
     fn get(&mut self, key: i32) -> i32 {
-        todo!()
-    }
+    todo!();
+}
 
     fn put(&mut self, key: i32, value: i32) {
-        todo!()
-    }
+    todo!();
+}
 }
 
 fn main() {

@@ -14,6 +14,7 @@
  */
 
 #include "io.h"
+#include <functional>
 #include <vector>
 
 static std::vector<std::vector<int>> subsets(std::vector<int> nums) {

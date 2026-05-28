@@ -37,9 +37,8 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn optimal_division(nums: &[i32]) -> String {
-        match nums.len() {
+fn optimal_division(nums: &[i32]) -> String {
+    match nums.len() {
         1 => nums[0].to_string(),
         2 => format!("{}/{}", nums[0], nums[1]),
         _ => {
@@ -47,10 +46,7 @@ impl Solution {
             format!("{}/({})", nums[0], divisor.join("/"))
         }
     }
-    }
 }
-
-struct Solution;
 
 fn main() {
     let nums = read_ints();

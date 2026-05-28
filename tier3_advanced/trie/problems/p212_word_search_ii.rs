@@ -14,16 +14,44 @@
  *     Input: board = [["a","b"],["c","d"]], words = ["abcb"]
  *     Output: []
  *
+ * Constraints:
+ *     - m == board.length
+ *     - n == board[i].length
+ *     - 1 <= m, n <= 12
+ *     - board[i][j] is a lowercase English letter.
+ *     - 1 <= words.length <= 3 * 104
+ *     - 1 <= words[i].length <= 10
+ *     - words[i] consists of lowercase English letters.
+ *     - All the strings of words are unique.
+ *
+ * Hints:
+ *     - You would need to optimize your backtracking to pass the larger test. Could you stop backtracking earlier?
+ *     - If the current candidate does not exist in all words' prefix, you could stop backtracking immediately. What kind of data structure could answer such query efficiently? Does a hash table work? Why or why not? How about a Trie? If you would like to learn how to implement a basic trie, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+ *
  * Hint: Build a Trie from the word list, then use DFS on the board to find matching words.
  */
 
 use wasm_libs::*;
+use std::collections::HashMap;
+
+struct TrieNode {
+    children: HashMap<char, Box<TrieNode>>,
+    word: Option<String>,
+}
+
+impl TrieNode {
+    fn new() -> Self {
+    todo!()
+}
+}
 
 fn find_words(board: &mut Vec<Vec<char>>, words: &[String]) -> Vec<String> {
     todo!()
 }
-
-struct Solution;
 
 fn main() {
     let rows = read_int() as usize;

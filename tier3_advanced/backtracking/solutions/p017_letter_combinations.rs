@@ -21,8 +21,7 @@
  * Hint: Map each digit to its letters and use backtracking to build all combinations.
  */
 
-use interview_prep::read_line;
-use interview_prep::write_string;
+use wasm_libs::*;
 
 fn letter_combinations(digits: &str) -> Vec<String> {
     let phone_map: &[&str] = &["", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"];

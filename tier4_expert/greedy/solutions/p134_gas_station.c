@@ -29,7 +29,8 @@
  */
 
 
-#include "ctest.h"
+#include "io.h"
+#include <stdlib.h>
 
 int canCompleteCircuit(int *gas, int *cost, int n) {
     int total_surplus = 0, current_surplus = 0, start = 0;

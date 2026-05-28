@@ -5,10 +5,25 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 #include <string.h>
 
 int main(void) {
     char *input = read_line();
+    int input_cap = strlen(input) + 1;
+    while (1) {
+        char *next = read_line();
+        int next_len = strlen(next);
+        if (next_len == 0) { free(next); break; }
+        int old_len = strlen(input);
+        while (old_len + 1 + next_len + 1 > input_cap) {
+            input_cap *= 2;
+        }
+        input = realloc(input, input_cap);
+        input[old_len] = '\n';
+        memcpy(input + old_len + 1, next, next_len + 1);
+        free(next);
+    }
     int stack[100];
     int sp = 1;
     stack[0] = 0;

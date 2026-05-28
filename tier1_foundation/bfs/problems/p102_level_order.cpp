@@ -38,6 +38,7 @@
  */
 
 #include "io.h"
+#include <cstdlib>
 #include <queue>
 #include <climits>
 #include <string>

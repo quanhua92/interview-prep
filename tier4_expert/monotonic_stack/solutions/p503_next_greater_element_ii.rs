@@ -49,6 +49,6 @@ struct Solution;
 
 fn main() {
     let nums = read_ints();
-    write_ints(Solution::next_greater_elements(&nums));
+    write_ints(&Solution::next_greater_elements(&nums));
     std::process::exit(0);
 }

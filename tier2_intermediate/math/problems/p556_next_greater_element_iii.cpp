@@ -21,7 +21,9 @@
  *         def nextGreaterElement(self, n: int) -> int:
  */
 
+
 #include "io.h"
+#include <algorithm>
 
 int nextGreaterElement(int n) {
     abort();

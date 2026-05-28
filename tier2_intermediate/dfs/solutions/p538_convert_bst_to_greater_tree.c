@@ -5,6 +5,7 @@
  */
 
 #include "io.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -12,18 +13,32 @@
 
 typedef struct TreeNode { int val; struct TreeNode *left, *right; } TreeNode;
 
-static TreeNode *from_list(int *vals, int n) {
+static TreeNode *make_node(int val) {
+    TreeNode *n = malloc(sizeof(TreeNode));
+    n->val = val;
+    n->left = n->right = NULL;
+    return n;
+}
+
+static TreeNode *build_tree(const int *vals, int n) {
     if (n == 0 || vals[0] == NL) return NULL;
-    TreeNode **nodes = calloc(n, sizeof(TreeNode*));
-    for (int i = 0; i < n; i++) {
-        if (vals[i] != NL) { nodes[i] = malloc(sizeof(TreeNode)); nodes[i]->val = vals[i]; nodes[i]->left = nodes[i]->right = NULL; }
+    TreeNode *root = make_node(vals[0]);
+    TreeNode **queue = malloc(n * sizeof(TreeNode *));
+    int front = 0, back = 0;
+    queue[back++] = root;
+    int i = 1;
+    while (front < back && i < n) {
+        TreeNode *node = queue[front++];
+        if (i < n) {
+            if (vals[i] != NL) { node->left = make_node(vals[i]); queue[back++] = node->left; }
+            i++;
+        }
+        if (i < n) {
+            if (vals[i] != NL) { node->right = make_node(vals[i]); queue[back++] = node->right; }
+            i++;
+        }
     }
-    for (int i = 0; i < n; i++) {
-        if (nodes[i] && 2*i+1 < n) nodes[i]->left = nodes[2*i+1];
-        if (nodes[i] && 2*i+2 < n) nodes[i]->right = nodes[2*i+2];
-    }
-    TreeNode *root = nodes[0];
-    free(nodes);
+    free(queue);
     return root;
 }
 
@@ -36,35 +51,59 @@ static void reverse_inorder(TreeNode *node) {
     reverse_inorder(node->left);
 }
 
+static void serialize_level_order(TreeNode *root, int *out, int *out_n) {
+    if (!root) { *out_n = 0; return; }
+    TreeNode **queue = malloc(10000 * sizeof(TreeNode *));
+    int front = 0, back = 0;
+    queue[back++] = root;
+    int count = 0;
+    while (front < back) {
+        TreeNode *node = queue[front++];
+        if (node) {
+            out[count++] = node->val;
+            queue[back++] = node->left;
+            queue[back++] = node->right;
+        } else {
+            out[count++] = NL;
+        }
+    }
+    while (count > 0 && out[count - 1] == NL) count--;
+    *out_n = count;
+    free(queue);
+}
+
 int main(void) {
     char *line = read_line();
-    if (!line[0]) { printf("\n"); return 0; }
-    int vals[10000], n = 0;
+    if (!line || !line[0]) { write_string(""); free(line); return 0; }
+    int *vals = malloc(10000 * sizeof(int));
+    int n = 0;
     char *tok = strtok(line, " ");
     while (tok) {
         if (strcmp(tok, "null") == 0) vals[n++] = NL;
         else vals[n++] = atoi(tok);
         tok = strtok(NULL, " ");
     }
-    if (n == 0 || vals[0] == NL) { printf("\n"); return 0; }
-    TreeNode *root = from_list(vals, n);
+    if (n == 0 || vals[0] == NL) { write_string(""); free(line); free(vals); return 0; }
+    TreeNode *root = build_tree(vals, n);
     gtotal = 0;
     reverse_inorder(root);
-    int first = 1;
-    for (int i = 0; i < n; i++) {
-        if (!first) printf(" ");
-        first = 0;
-        if (vals[i] == NL) printf("null");
-        else printf("%d", vals[i]);
+
+    int *result = malloc(10000 * sizeof(int));
+    int result_n;
+    serialize_level_order(root, result, &result_n);
+
+    char *buf = malloc(100000);
+    int bpos = 0;
+    for (int i = 0; i < result_n; i++) {
+        if (i > 0) buf[bpos++] = ' ';
+        if (result[i] == NL) { strcpy(buf + bpos, "null"); bpos += 4; }
+        else bpos += sprintf(buf + bpos, "%d", result[i]);
     }
-    while (n > 0 && vals[n-1] == NL) n--;
-    first = 1;
-    for (int i = 0; i < n; i++) {
-        if (!first) printf(" ");
-        first = 0;
-        printf("%d", vals[i]);
-    }
-    printf("\n");
+    buf[bpos] = '\0';
+    write_string(buf);
     free(line);
+    free(vals);
+    free(result);
+    free(buf);
     return 0;
 }

@@ -2,7 +2,7 @@
  * P497: Random Point in Non-overlapping Rectangles [PREMIUM] (Medium)
  * https://leetcode.com/problems/random-point-in-non-overlapping-rectangles/
  * Topics: Array, Math, Binary Search, Reservoir Sampling, Prefix Sum, Ordered Set, Randomized
- * 
+ *
  * You are given an array of non-overlapping axis-aligned rectangles rects where rects[i] = [ai, bi, xi, yi] indicates that (ai, bi) is the bottom-left corner point of the ith rectangle and (xi, yi) is the top-right corner point of the ith rectangle. Design an algorithm to pick a random integer point inside the space covered by one of the given rectangles. A point on the perimeter of a rectangle is included in the space covered by the rectangle.
  * Any integer point inside the space covered by one of the given rectangles should be equally likely to be returned.
  * Note that an integer point is a point that has integer coordinates.
@@ -14,7 +14,7 @@
  *     [[[[-2, -2, 1, 1], [2, 2, 4, 6]]], [], [], [], [], []]
  *     Output
  *     [null, [1, -2], [1, -1], [-1, -2], [-2, -2], [0, 0]]
- * 
+ *
  *     Explanation
  *     Solution solution = new Solution([[-2, -2, 1, 1], [2, 2, 4, 6]]);
  *     solution.pick(); // return [1, -2]
@@ -22,7 +22,7 @@
  *     solution.pick(); // return [-1, -2]
  *     solution.pick(); // return [-2, -2]
  *     solution.pick(); // return [0, 0]
- * 
+ *
  * Constraints:
  *     - 1 <= rects.length <= 100
  *     - rects[i].length == 4
@@ -32,68 +32,38 @@
  *     - yi - bi <= 2000
  *     - All the rectangles do not overlap.
  *     - At most 104 calls will be made to pick.
- * 
+ *
  * Template (python3):
  *     class Solution:
- * 
+ *
  *         def __init__(self, rects: List[List[int]]):
- * 
- * 
+ *
+ *
  *         def pick(self) -> List[int]:
- * 
- * 
- * 
+ *
+ *
+ *
  *     # Your Solution object will be instantiated and called as such:
  *     # obj = Solution(rects)
  *     # param_1 = obj.pick()
  */
+
+#include "io.h"
 #include <cstdio>
-#include <cstdlib>
 #include <vector>
 
-std::vector<int> solve_prefix_sums(const std::vector<std::vector<int>> &rects)
-{
-    abort();
-}
-
-static void print_arr(const std::vector<int> &a)
-{
+static std::vector<int> solve(const std::vector<std::vector<int>> &rects) {
     abort();
 }
 
 int main(void)
 {
-    struct Tc {
-        const char *label;
-        std::vector<std::vector<int>> rects;
-        std::vector<int> expected;
-        bool pass;
-    };
-    std::vector<Tc> tests = {
-        {"area sum for two rectangles", {{-2,-2,1,1},{2,2,4,6}}, {16,31}, false},
-        {"area for single 3x3 rectangle", {{0,0,2,2}}, {9}, false},
-        {"single point rectangle", {{0,0,0,0}}, {1}, false},
-        {"negative and positive rects same size", {{-5,-5,-3,-3},{1,1,3,3}}, {9,18}, false},
-        {"different sized rects", {{1,1,2,2},{3,3,5,5}}, {4,13}, false},
-    };
-
-    int passed = 0;
-    for (auto &tc : tests) {
-        std::vector<int> got = solve_prefix_sums(tc.rects);
-        tc.pass = (got == tc.expected);
-        if (!tc.pass) {
-            printf("    Expected: "); print_arr(tc.expected); printf("\n");
-            printf("    Got:      "); print_arr(got); printf("\n");
-        }
-        if (tc.pass) passed++;
+    int cols = read_int();
+    std::vector<std::vector<int>> rects;
+    for (int i = 0; i < cols; i++) {
+        rects.push_back(read_ints());
     }
-
-    printf("\n============================================================\n");
-    printf("  497. Random Point in Non-overlapping Rectangles\n");
-    printf("============================================================\n");
-    for (int i = 0; i < (int)tests.size(); i++)
-        printf("  Test %d (%s): %s\n", i + 1, tests[i].label, tests[i].pass ? "PASS" : "FAIL");
-    printf("\n  %d/%d passed\n", passed, (int)tests.size());
-    printf("============================================================\n");
-    return passed == (int)tests.size() ? 0 : 1;
+    auto result = solve(rects);
+    write_ints(result);
+    return 0;
 }

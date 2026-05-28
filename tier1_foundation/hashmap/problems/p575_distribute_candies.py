@@ -41,17 +41,7 @@ from src.wasm_libs.py.io import *
 
 
 def solve(candyType: list[int]) -> int:
-    candyType.sort()
-    unique = 1
-    limit = len(candyType) // 2
-    left, right = 0, 1
-    while right < len(candyType) and unique < limit:
-        if candyType[right] != candyType[left]:
-            unique += 1
-            left = right
-        right += 1
-    return min(unique, limit)
-
+    raise NotImplementedError
 
 if __name__ == "__main__":
     candyType = read_ints()

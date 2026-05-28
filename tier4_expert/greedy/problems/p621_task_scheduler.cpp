@@ -4,11 +4,23 @@
  * Topics: Array, Hash Table, Greedy, Sorting, Heap, Counting
  *
  * Given tasks and cooldown n, return minimum CPU intervals.
+ * Tasks are space-separated letters on one line, followed by n on the next line.
+ *
+ * Constraints:
+ *     - 1 <= tasks.length <= 104
+ *     - tasks[i] is an uppercase English letter.
+ *     - 0 <= n <= 100
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def leastInterval(self, tasks: List[str], n: int) -> int:
  */
 
 
-#include "cpptest.h"
+#include "io.h"
+#include <algorithm>
 #include <string>
+#include <vector>
 
 int leastInterval(const std::string &tasks, int n) {
     abort();

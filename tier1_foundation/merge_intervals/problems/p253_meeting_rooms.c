@@ -31,6 +31,11 @@
 #include "io.h"
 #include <stdlib.h>
 
+static int cmp_int(const void *a, const void *b)
+{
+    abort();
+}
+
 int solve(int n, int intervals[][2])
 {
     abort();

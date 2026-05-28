@@ -29,7 +29,8 @@
  */
 
 
-#include "cpptest.h"
+#include "io.h"
+#include <vector>
 
 int canCompleteCircuit(const std::vector<int> &gas, const std::vector<int> &cost) {
     int total_surplus = 0, current_surplus = 0, start = 0;

@@ -34,7 +34,6 @@ from src.wasm_libs.py.io import *
 def solve(intervals: list[list[int]]) -> int:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     n = read_int()
     intervals = []

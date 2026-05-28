@@ -8,6 +8,9 @@
  * Example 1:
  *     Input: nums = [1,2,1]
  *     Output: [2,-1,2]
+ *     Explanation: The first 1's next greater number is 2;
+ *     The number 2 can't find next greater number.
+ *     The second 1's next greater number needs to search circularly, which is also 2.
  *
  * Example 2:
  *     Input: nums = [1,2,3,4,3]
@@ -26,14 +29,14 @@ use wasm_libs::*;
 
 impl Solution {
     fn next_greater_elements(nums: &[i32]) -> Vec<i32> {
-        todo!()
-    }
+    todo!();
+}
 }
 
 struct Solution;
 
 fn main() {
     let nums = read_ints();
-    write_ints(Solution::next_greater_elements(&nums));
+    write_ints(&Solution::next_greater_elements(&nums));
     std::process::exit(0);
 }

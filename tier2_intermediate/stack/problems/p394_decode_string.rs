@@ -12,7 +12,7 @@
 use wasm_libs::*;
 
 fn decode_string(s: &str) -> String {
-    todo!()
+    todo!();
 }
 
 fn main() {

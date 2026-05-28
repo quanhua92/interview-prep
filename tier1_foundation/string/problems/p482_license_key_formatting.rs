@@ -31,7 +31,7 @@ use wasm_libs::*;
 
 impl Solution {
     fn license_key_formatting(s: &str, k: i32) -> String {
-        todo!()
+        todo!();
     }
 }
 

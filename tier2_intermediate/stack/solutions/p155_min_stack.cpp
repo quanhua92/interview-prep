@@ -31,11 +31,11 @@ public:
 
 int main(void)
 {
-    int n = read_int();
+    int n = read_ints()[0];
     MinStack ms;
     for (int i = 0; i < n; i++) {
         std::string op = read_line();
-        int count = read_int();
+        int count = read_ints()[0];
         int val = 0;
         if (count > 0) {
             std::vector<int> vals = read_ints();

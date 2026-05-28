@@ -10,13 +10,17 @@
  *     Input: candidates = [2,3,6,7], target = 7
  *     Output: [[2,2,3],[7]]
  *
+ * Example 2:
+ *     Input: candidates = [2,3,5], target = 8
+ *     Output: [[2,2,2,2],[2,3,3],[3,5]]
+ *
  * Hint: Use backtracking with early pruning when the remaining sum goes negative.
  */
 
 import { readInts, readInt, writeInts } from '../../../wasm_libs/js/io.mjs';
 
 function solve(candidates, target) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const candidates = readInts();

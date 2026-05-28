@@ -29,8 +29,7 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn can_cross(stones: &[i32]) -> bool {
+fn can_cross(stones: &[i32]) -> bool {
     let n = stones.len();
     let stones_i64: Vec<i64> = stones.iter().map(|&x| x as i64).collect();
     let mut dp = vec![vec![false; n + 1]; n];
@@ -49,10 +48,7 @@ impl Solution {
         }
     }
     (0..=n).any(|k| dp[n - 1][k])
-    }
 }
-
-struct Solution;
 
 fn main() {
     let stones = read_ints();

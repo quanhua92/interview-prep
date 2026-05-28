@@ -46,13 +46,6 @@
 #include "io.h"
 #include <stdlib.h>
 
-static int read_int(void)
-{
-    char *line = read_line();
-    int val = atoi(line);
-    free(line);
-    return val;
-}
 
 struct ListNode {
     int val;
@@ -68,8 +61,7 @@ int main(void)
 {
     int n;
     int *vals = read_ints(&n);
-    int pos = read_int();
-    struct ListNode *nodes = NULL;
+    int pos = read_int();    struct ListNode *nodes = NULL;
     if (n > 0) {
         nodes = (struct ListNode *)malloc(n * sizeof(struct ListNode));
         for (int i = 0; i < n; i++) {

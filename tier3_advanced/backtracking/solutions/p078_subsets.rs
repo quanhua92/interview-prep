@@ -13,7 +13,7 @@
  * Hint: Use backtracking to generate all possible subsets by including/excluding each element.
  */
 
-use interview_prep::{read_ints, write_ints, write_string};
+use wasm_libs::*;
 
 fn subsets(nums: Vec<i32>) -> Vec<Vec<i32>> {
     let mut result: Vec<Vec<i32>> = Vec::new();

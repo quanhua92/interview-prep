@@ -47,7 +47,7 @@ static int *countBits(int n, int *returnSize) {
 }
 
 int main(void) {
-    int n = read_int();
+    int c; int *a = read_ints(&c); int n = a[0]; free(a);
     int retSize = 0;
     int *result = countBits(n, &retSize);
     write_ints(result, retSize);

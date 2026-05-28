@@ -32,23 +32,24 @@
  */
 
 #include "io.h"
+#include <cstdlib>
 #include <queue>
 #include <utility>
 
 using namespace std;
 
 static int solve(vector<vector<int>> &grid) {
-    int dr[] = {0, 0, 1, -1};
     abort();
 }
 
 int main(void)
 {
-    int n = read_int();
-    (void)n;
+    (void)read_int();
     vector<vector<int>> grid;
-    for (int i = 0; i < n; i++) {
-        grid.push_back(read_ints());
+    while (true) {
+        vector<int> row = read_ints();
+        if (row.empty()) break;
+        grid.push_back(row);
     }
     write_int(solve(grid));
     return 0;

@@ -50,7 +50,9 @@
 #include "io.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include <limits.h>
+
 
 #define NULL_VAL INT_MIN
 
@@ -59,6 +61,9 @@ typedef struct TreeNode {
     struct TreeNode *left, *right;
 } TreeNode;
 
+static TreeNode **node_pool;
+static int pool_size;
+
 static TreeNode *make_node(int val) {
     TreeNode *n = (TreeNode *)malloc(sizeof(TreeNode));
     n->val = val;
@@ -66,18 +71,11 @@ static TreeNode *make_node(int val) {
     return n;
 }
 
-static void free_tree(TreeNode *root) {
-    if (!root) return;
-    free_tree(root->left);
-    free_tree(root->right);
-    free(root);
-}
-
 static void solve(const int *vals, int vals_n) {
     if (vals_n == 0 || vals[0] == NULL_VAL) return;
-    TreeNode *root = make_node(vals[0]);
-    TreeNode *bq[10000];
+    TreeNode **bq = malloc(vals_n * sizeof(TreeNode *));
     int front = 0, back = 0;
+    TreeNode *root = make_node(vals[0]);
     bq[back++] = root;
     int i = 1;
     while (front < back && i < vals_n) {
@@ -91,7 +89,7 @@ static void solve(const int *vals, int vals_n) {
             i++;
         }
     }
-    int result[10000];
+    int *result = malloc(vals_n * sizeof(int));
     int count = 0;
     front = back = 0;
     bq[back++] = root;
@@ -108,7 +106,7 @@ static void solve(const int *vals, int vals_n) {
         }
     }
     while (count > 0 && result[count - 1] == NULL_VAL) count--;
-    char buf[100000];
+    char *buf = malloc(100000);
     int pos = 0;
     for (int j = 0; j < count; j++) {
         if (j > 0) buf[pos++] = ' ';
@@ -120,7 +118,9 @@ static void solve(const int *vals, int vals_n) {
         }
     }
     write_string(buf);
-    free_tree(root);
+    free(result);
+    free(bq);
+    free(buf);
 }
 
 int main(void)

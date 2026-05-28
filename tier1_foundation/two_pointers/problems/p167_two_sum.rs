@@ -41,7 +41,7 @@ use wasm_libs::*;
 
 impl Solution {
     fn two_sum(numbers: &[i32], target: i32) -> Vec<i32> {
-        todo!()
+        todo!();
     }
 }
 

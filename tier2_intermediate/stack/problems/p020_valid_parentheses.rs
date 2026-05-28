@@ -11,11 +11,19 @@
 use wasm_libs::*;
 
 fn is_valid(s: &str) -> bool {
-    todo!()
+    let mut stack: Vec<char> = Vec::new();
+    for ch in s.chars() {
+        match ch {
+            '(' | '[' | '{' => stack.push(ch),
+            ')' => if stack.pop() != Some('(') { return false; },
+            ']' => if stack.pop() != Some('[') { return false; },
+            '}' => if stack.pop() != Some('{') { return false; },
+            _ => {}
+        }
+    }
+    stack.is_empty()
 }
 
 fn main() {
-    let s = read_line();
-    write_bool(is_valid(&s));
-    std::process::exit(0);
+    todo!();
 }

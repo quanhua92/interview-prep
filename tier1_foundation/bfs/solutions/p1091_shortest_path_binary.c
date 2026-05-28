@@ -38,10 +38,10 @@
 #include "io.h"
 #include <stdlib.h>
 
-int solve(int **grid, int n) {
-    if (grid[0][0] == 1 || grid[n - 1][n - 1] == 1) return -1;
-    if (n == 1) return 1;
-    int queue[30000];
+int solve(int **grid, int rows, int cols) {
+    if (grid[0][0] == 1 || grid[rows - 1][cols - 1] == 1) return -1;
+    if (rows == 1 && cols == 1) return 1;
+    int *queue = malloc(30000 * sizeof(int));
     int front = 0, back = 0;
     queue[back++] = 0;
     queue[back++] = 0;
@@ -56,8 +56,8 @@ int solve(int **grid, int n) {
         for (int d = 0; d < 8; d++) {
             int nr = r + dr[d];
             int nc = c + dc[d];
-            if (nr >= 0 && nr < n && nc >= 0 && nc < n && grid[nr][nc] == 0) {
-                if (nr == n - 1 && nc == n - 1) return dist + 1;
+            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == 0) {
+                if (nr == rows - 1 && nc == cols - 1) { free(queue); return dist + 1; }
                 grid[nr][nc] = 1;
                 queue[back++] = nr;
                 queue[back++] = nc;
@@ -65,6 +65,7 @@ int solve(int **grid, int n) {
             }
         }
     }
+    free(queue);
     return -1;
 }
 
@@ -74,14 +75,17 @@ int main(void)
     int *size_line = read_ints(&n);
     int cols = size_line[0];
     free(size_line);
-    int **grid = (int **)malloc(sizeof(int *) * cols);
-    for (int i = 0; i < cols; i++) {
+    int **grid = (int **)malloc(sizeof(int *) * 100);
+    int rows = 0;
+    while (1) {
         int row_n;
-        grid[i] = read_ints(&row_n);
+        grid[rows] = read_ints(&row_n);
+        if (row_n == 0) { free(grid[rows]); break; }
+        rows++;
     }
-    int result = solve(grid, cols);
+    int result = solve(grid, rows, cols);
     write_int(result);
-    for (int i = 0; i < cols; i++) free(grid[i]);
+    for (int i = 0; i < rows; i++) free(grid[i]);
     free(grid);
     return 0;
 }

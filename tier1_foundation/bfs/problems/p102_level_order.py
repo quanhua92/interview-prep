@@ -45,28 +45,10 @@ NULL_VAL = -2147483648
 
 
 def build_tree(vals: list[int]) -> list | None:
-    if not vals or vals[0] is None:
-        return None
-    root = {"val": vals[0], "left": None, "right": None}
-    queue = deque([root])
-    i = 1
-    while queue and i < len(vals):
-        node = queue.popleft()
-        if i < len(vals) and vals[i] is not None:
-            node["left"] = {"val": vals[i], "left": None, "right": None}
-            queue.append(node["left"])
-        i += 1
-        if i < len(vals) and vals[i] is not None:
-            node["right"] = {"val": vals[i], "left": None, "right": None}
-            queue.append(node["right"])
-        i += 1
-    return root
-
+    raise NotImplementedError
 
 def solve(vals: list[int]) -> list[list[int]]:
     raise NotImplementedError
-
-
 
 if __name__ == "__main__":
     n = read_int()

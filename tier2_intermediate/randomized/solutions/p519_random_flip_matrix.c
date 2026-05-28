@@ -72,9 +72,9 @@ static void map_set(MapEntry *map, int *n, long long key, long long val)
 static int solve(int m, int n, int num_flips)
 {
     long long total = (long long)m * n;
-    MapEntry mapping[10001];
+    static MapEntry mapping[10001];
     int map_n = 0;
-    long long results[10001];
+    static long long results[10001];
     int result_n = 0;
 
     for (int f = 0; f < num_flips; f++) {
@@ -99,9 +99,9 @@ static int solve(int m, int n, int num_flips)
 
 int main(void)
 {
-    int m = read_int();
-    int n = read_int();
-    int num_flips = read_int();
+    int c1; int *a1 = read_ints(&c1); int m = a1[0]; free(a1);
+    int c2; int *a2 = read_ints(&c2); int n = a2[0]; free(a2);
+    int c3; int *a3 = read_ints(&c3); int num_flips = a3[0]; free(a3);
     write_int(solve(m, n, num_flips));
     return 0;
 }

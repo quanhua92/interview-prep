@@ -11,8 +11,30 @@
  * Example 2:
  *     Input: board = "WWRRBBWW", hand = "WRBRW"
  *     Output: 2
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def findMinStep(self, board: str, hand: str) -> int:
  */
 
-fn main() {
+use wasm_libs::*;
+use std::collections::HashMap;
+
+fn collapse(s: &str) -> String {
     todo!()
+}
+
+fn dfs(board: &str, hand: &[u8], memo: &mut HashMap<(String, String), i32>) -> i32 {
+    todo!()
+}
+
+fn find_min_step(board: &str, hand: &str) -> i32 {
+    todo!()
+}
+
+fn main() {
+    let board = read_line();
+    let hand = read_line();
+    let result = find_min_step(&board, &hand);
+    write_int(result);
 }

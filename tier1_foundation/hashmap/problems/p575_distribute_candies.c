@@ -42,20 +42,11 @@
 #include <stdlib.h>
 
 static int cmp_int(const void *a, const void *b) {
-    return (*(const int *)a) - (*(const int *)b);
+    abort();
 }
 
 static int distributeCandies(const int *candyType, int n) {
-    int *arr = malloc(n * sizeof(int));
-    for (int i = 0; i < n; i++) arr[i] = candyType[i];
-    qsort(arr, n, sizeof(int), cmp_int);
-    int unique = 1;
-    int limit = n / 2;
-    for (int i = 1; i < n && unique < limit; i++) {
-        if (arr[i] != arr[i - 1]) unique++;
-    }
-    free(arr);
-    return unique < limit ? unique : limit;
+    abort();
 }
 
 int main(void)

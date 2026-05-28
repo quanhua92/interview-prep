@@ -27,7 +27,7 @@ Constraints:
 Template (python3):
     class Solution:
         def findDuplicates(self, nums: List[int]) -> List[int]:
-
+            raise NotImplementedError
 Hint: Negate the value at index abs(num)-1 to mark seen numbers in-place.
 """
 
@@ -36,8 +36,6 @@ from src.wasm_libs.py.io import *
 
 def solve(nums: list[int]) -> list[int]:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     nums = read_ints()
     result = solve(nums)

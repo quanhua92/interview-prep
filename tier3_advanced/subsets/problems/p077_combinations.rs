@@ -23,6 +23,16 @@
 
 use wasm_libs::*;
 
-fn main() {
+fn combine(n: i32, k: i32) -> Vec<Vec<i32>> {
     todo!()
+}
+
+fn main() {
+    let n = read_int();
+    let k = read_int();
+    let result = combine(n, k);
+    for row in &result {
+        write_ints(row);
+    }
+    std::process::exit(0);
 }

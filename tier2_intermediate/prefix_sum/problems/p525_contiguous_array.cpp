@@ -27,48 +27,21 @@
  *     class Solution:
  *         def findMaxLength(self, nums: List[int]) -> int:
  */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+
+#include "io.h"
+#include <unordered_map>
 #include <vector>
 
-int find_max_length(const std::vector<int>& nums)
+using namespace std;
+
+int find_max_length(const vector<int>& nums)
 {
     abort();
 }
 
 int main(void)
 {
-    struct {
-        const char *label;
-        std::vector<int> input;
-        int expected;
-    } tests[] = {
-        {"example 1",       {0, 1},                     2},
-        {"example 2",       {0, 1, 0},                  2},
-        {"example 3",       {0, 1, 1, 1, 1, 1, 0, 0, 0}, 6},
-        {"single element",  {1},                         0},
-        {"balanced halves", {0, 0, 0, 0, 1, 1, 1, 1},    8},
-        {"middle balanced", {0, 0, 1, 0, 0, 0, 1, 1},    6},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  525. Contiguous Array\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int got = find_max_length(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    vector<int> nums = read_ints();
+    write_int(find_max_length(nums));
+    return 0;
 }

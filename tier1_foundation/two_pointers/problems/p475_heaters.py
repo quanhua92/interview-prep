@@ -36,7 +36,6 @@ from src.wasm_libs.py.io import *
 def solve(houses: list[int], heaters: list[int]) -> int:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     houses = read_ints()
     heaters = read_ints()

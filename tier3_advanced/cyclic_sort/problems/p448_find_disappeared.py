@@ -29,7 +29,7 @@ Hints:
 Template (python3):
     class Solution:
         def findDisappearedNumbers(self, nums: List[int]) -> List[int]:
-
+            raise NotImplementedError
 Hint: Negate the value at index abs(n)-1 for each number. Indices with positive values are missing.
 """
 
@@ -38,8 +38,6 @@ from src.wasm_libs.py.io import *
 
 def solve(nums: list[int]) -> list[int]:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     nums = read_ints()
     result = solve(nums)

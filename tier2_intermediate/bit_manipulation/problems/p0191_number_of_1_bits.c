@@ -35,13 +35,14 @@
 
 #include "io.h"
 #include <stdint.h>
+#include <stdlib.h>
 
 static int hammingWeight(uint32_t n) {
     abort();
 }
 
 int main(void) {
-    int n = read_int();
+    int c; int *a = read_ints(&c); int n = a[0]; free(a);
     write_int(hammingWeight((uint32_t)n));
     return 0;
 }

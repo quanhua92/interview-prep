@@ -33,7 +33,7 @@
 use wasm_libs::*;
 
 fn solve(s1: &str, s2: &str) -> bool {
-    todo!()
+    todo!();
 }
 
 fn main() {

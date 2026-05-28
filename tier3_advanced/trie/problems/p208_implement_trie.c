@@ -54,6 +54,7 @@
 
 #include "io.h"
 #include <string.h>
+#include <stdlib.h>
 
 #define ALPHA 26
 
@@ -98,8 +99,8 @@ int main(void) {
             trie_insert(trie, val);
             write_string("null");
         } else if (strcmp(op, "search") == 0) {
-            write_bool(trie_search(trie, val));
-        } else {
+    abort();
+}
             write_bool(trie_starts_with(trie, val));
         }
         free(op);

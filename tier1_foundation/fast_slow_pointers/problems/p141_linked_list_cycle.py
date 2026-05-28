@@ -57,7 +57,6 @@ class ListNode:
 def solve(vals: list[int], pos: int) -> bool:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     vals = read_ints()
     pos = read_int()

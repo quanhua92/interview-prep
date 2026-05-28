@@ -11,7 +11,7 @@
  *     Output: 2
  *
  * Example 2:
- *     Input: n = 5, edges = [[0,1],[1,2],[2,3],[3,4]]
+ *     Input: n = 5, edges = [[1,2],[2,3],[3,4]]
  *     Output: 1
  *
  * Hint: Use a Union-Find data structure to merge connected nodes and count components.
@@ -70,15 +70,11 @@ int countComponents(int n, int edge_count, int (*edges)[2]) {
 
 int main(void)
 {
-    int cnt;
-    int *first = read_ints(&cnt);
-    int n = first[0];
-    int m = cnt > 1 ? first[1] : 0;
-    free(first);
+    int n = read_int();
+    int m = read_int();
     int (*edges)[2] = malloc(m * 2 * sizeof(int));
     for (int i = 0; i < m; i++) {
-        int rc;
-        int *row = read_ints(&rc);
+        int *row = read_ints(NULL);
         edges[i][0] = row[0];
         edges[i][1] = row[1];
         free(row);

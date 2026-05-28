@@ -68,11 +68,11 @@ int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
 }
 
 int main(void) {
-    int m = read_int();
-    int n = read_int();
-    int mm = read_int();
-    int sr = read_int();
-    int sc = read_int();
+    int c1; int *a1 = read_ints(&c1); int m = a1[0]; free(a1);
+    int c2; int *a2 = read_ints(&c2); int n = a2[0]; free(a2);
+    int c3; int *a3 = read_ints(&c3); int mm = a3[0]; free(a3);
+    int c4; int *a4 = read_ints(&c4); int sr = a4[0]; free(a4);
+    int c5; int *a5 = read_ints(&c5); int sc = a5[0]; free(a5);
     write_int(findPaths(m, n, mm, sr, sc));
     return 0;
 }

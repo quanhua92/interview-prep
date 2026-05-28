@@ -54,7 +54,7 @@ static int rand10(void) {
 
 int main()
 {
-    int n = read_int();
+    int n = read_ints()[0];
     bool ok = true;
     for (int i = 0; i < n; i++) {
         int v = rand10();

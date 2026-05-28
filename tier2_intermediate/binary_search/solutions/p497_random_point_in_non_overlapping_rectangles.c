@@ -53,21 +53,21 @@
 
 int main(void)
 {
-    int total;
-    int *flat = read_ints(&total);
-    int cols = flat[0];
-    int *result = (int *)malloc(cols * sizeof(int));
+    int cnt;
+    int *header = read_ints(&cnt);
+    int num_rects = header[0];
+    free(header);
+    int *result = (int *)malloc(num_rects * sizeof(int));
     int prefix_total = 0;
-    for (int i = 0; i < cols; i++) {
-        int x1 = flat[1 + i * 4];
-        int y1 = flat[1 + i * 4 + 1];
-        int x2 = flat[1 + i * 4 + 2];
-        int y2 = flat[1 + i * 4 + 3];
+    for (int i = 0; i < num_rects; i++) {
+        int rc;
+        int *row = read_ints(&rc);
+        int x1 = row[0], y1 = row[1], x2 = row[2], y2 = row[3];
         prefix_total += (x2 - x1 + 1) * (y2 - y1 + 1);
         result[i] = prefix_total;
+        free(row);
     }
-    write_ints(result, cols);
-    free(flat);
+    write_ints(result, num_rects);
     free(result);
     return 0;
 }

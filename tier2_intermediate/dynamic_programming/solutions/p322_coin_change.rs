@@ -34,8 +34,7 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn coin_change(coins: &[i32], amount: i32) -> i32 {
+fn coin_change(coins: &[i32], amount: i32) -> i32 {
     if amount == 0 { return 0; }
     let amt = amount as usize;
     let inf = amt + 1;
@@ -50,10 +49,7 @@ impl Solution {
         }
     }
     if dp[amt] < inf { dp[amt] as i32 } else { -1 }
-    }
 }
-
-struct Solution;
 
 fn main() {
     let coins = read_ints();

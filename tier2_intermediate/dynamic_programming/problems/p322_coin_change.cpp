@@ -41,7 +41,7 @@ int coinChange(std::vector<int> coins, int amount) {
 
 int main(void) {
     std::vector<int> coins = read_ints();
-    int amount = read_int();
+    int amount = read_ints()[0];
     write_int(coinChange(coins, amount));
     return 0;
 }

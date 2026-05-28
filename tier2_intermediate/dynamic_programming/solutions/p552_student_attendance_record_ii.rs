@@ -31,9 +31,8 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn check_record(n: i32) -> i32 {
-        let mod_val = 1_000_000_007i64;
+fn check_record(n: i32) -> i32 {
+    let mod_val = 1_000_000_007i64;
     let mut dp = [[[0i64; 3]; 2]; 2];
     dp[0][0][0] = 1;
     for i in 0..n as usize {
@@ -62,10 +61,7 @@ impl Solution {
         }
     }
     result as i32
-    }
 }
-
-struct Solution;
 
 fn main() {
     let n = read_int();

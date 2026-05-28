@@ -42,7 +42,7 @@
 use wasm_libs::*;
 
 fn count_bits(n: i32) -> Vec<i32> {
-    todo!()
+    todo!();
 }
 
 fn main() {

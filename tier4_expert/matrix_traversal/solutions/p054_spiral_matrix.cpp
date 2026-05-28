@@ -66,12 +66,13 @@ static std::vector<int> spiralOrder(const std::vector<std::vector<int>> &matrix)
 
 int main(void)
 {
-    std::vector<int> header = read_ints();
-    int cols = header[0];
-    int rows = cols;
+    (void)read_int();
     std::vector<std::vector<int>> matrix;
-    for (int i = 0; i < rows; i++)
-        matrix.push_back(read_ints());
+    while (true) {
+        std::vector<int> row = read_ints();
+        if (row.empty()) break;
+        matrix.push_back(row);
+    }
     auto result = spiralOrder(matrix);
     write_ints(result);
     return 0;

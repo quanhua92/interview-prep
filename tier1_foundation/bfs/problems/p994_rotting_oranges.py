@@ -35,20 +35,22 @@ Hint: Use BFS starting from all rotten oranges simultaneously.
 """
 
 from src.wasm_libs.py.io import *
+from collections import deque
 
 
 def solve(grid: list[list[int]]) -> int:
     raise NotImplementedError
 
-
-
 if __name__ == "__main__":
     _cols = read_int()
     grid = []
     while True:
-        row = read_ints()
-        if not row:
+        try:
+            row = read_ints()
+            if not row:
+                break
+            grid.append(row)
+        except EOFError:
             break
-        grid.append(row)
     result = solve(grid)
     write_int(result)

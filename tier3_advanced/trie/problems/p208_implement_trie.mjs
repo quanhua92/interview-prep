@@ -27,13 +27,77 @@
  *     - word and prefix consist only of lowercase English letters.
  *     - At most 3 * 104 calls in total will be made to insert, search, and startsWith.
  *
+ * Template (python3):
+ *     class Trie:
+ *
+ *         def __init__(self):
+ *
+ *
+ *         def insert(self, word: str) -> None:
+ *
+ *
+ *         def search(self, word: str) -> bool:
+ *
+ *
+ *         def startsWith(self, prefix: str) -> bool:
+ *
+ *
+ *
+ *     # Your Trie object will be instantiated and called as such:
+ *     # obj = Trie()
+ *     # obj.insert(word)
+ *     # param_2 = obj.search(word)
+ *     # param_3 = obj.startsWith(prefix)
+ *
  * Hint: Build a Trie class with insert, search, and starts_with methods.
  */
 
 import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
 
+class TrieNode {
+  constructor() {
+    this.children = {};
+    this.isEnd = false;
+  }
+}
+
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  insert(word) {
+    let node = this.root;
+    for (const ch of word) {
+      if (!(ch in node.children)) {
+        node.children[ch] = new TrieNode();
+      }
+      node = node.children[ch];
+    }
+    node.isEnd = true;
+  }
+
+  search(word) {
+    const node = this._find(word);
+    return node !== null && node.isEnd;
+  }
+
+  startsWith(prefix) {
+    return this._find(prefix) !== null;
+  }
+
+  _find(prefix) {
+    let node = this.root;
+    for (const ch of prefix) {
+      if (!(ch in node.children)) return null;
+      node = node.children[ch];
+    }
+    return node;
+  }
+}
+
 function solve(operations) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const numOps = readInt();

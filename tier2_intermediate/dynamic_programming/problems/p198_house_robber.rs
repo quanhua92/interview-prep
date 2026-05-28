@@ -31,13 +31,9 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn rob(nums: &[i32]) -> i32 {
-        todo!()
-    }
+fn rob(nums: &[i32]) -> i32 {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let nums = read_ints();

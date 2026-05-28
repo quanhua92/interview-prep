@@ -28,7 +28,8 @@
  */
 
 
-#include "cpptest.h"
+#include "io.h"
+#include <vector>
 
 int candy(const std::vector<int> &ratings) {
     int n = (int)ratings.size();

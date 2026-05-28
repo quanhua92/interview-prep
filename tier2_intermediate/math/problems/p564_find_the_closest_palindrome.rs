@@ -31,9 +31,14 @@
  */
 
 use wasm_libs::*;
+use std::collections::BTreeSet;
+
+fn make_palindrome(prefix: i64, total_len: usize) -> i64 {
+    todo!();
+}
 
 fn nearest_palindromic(n: &str) -> String {
-    todo!()
+    todo!();
 }
 
 fn main() {

@@ -69,9 +69,9 @@ static int solve(int m, int n, int num_flips)
 
 int main(void)
 {
-    int m = read_int();
-    int n = read_int();
-    int num_flips = read_int();
+    int m = read_ints()[0];
+    int n = read_ints()[0];
+    int num_flips = read_ints()[0];
     write_int(solve(m, n, num_flips));
     return 0;
 }

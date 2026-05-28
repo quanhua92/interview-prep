@@ -29,7 +29,6 @@ from src.wasm_libs.py.io import *
 def solve(s: str, t: str) -> bool:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     s = read_line()
     t = read_line()

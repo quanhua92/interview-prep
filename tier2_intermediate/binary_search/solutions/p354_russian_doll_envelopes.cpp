@@ -28,7 +28,6 @@
 
 #include "io.h"
 #include <algorithm>
-#include <cstdlib>
 #include <cstdio>
 #include <vector>
 
@@ -50,14 +49,11 @@ int maxEnvelopes(std::vector<std::vector<int>> envelopes)
 
 int main(void)
 {
-    int total;
-    int *flat = read_ints(&total);
-    int cols = flat[0];
+    int cols = read_int();
     std::vector<std::vector<int>> envelopes;
     for (int i = 0; i < cols; i++) {
-        envelopes.push_back({flat[1 + i * 2], flat[1 + i * 2 + 1]});
+        envelopes.push_back(read_ints());
     }
-    free(flat);
     write_int(maxEnvelopes(envelopes));
     return 0;
 }

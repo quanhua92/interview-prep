@@ -20,13 +20,17 @@
  *     - intervals[i].length == 2
  *     - 0 <= starti <= endi <= 104
  *
+ * Template (python3):
+ *     class Solution:
+ *         def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+ *
  * Hint: Sort intervals by start time, then merge overlapping ones.
  */
 
 use wasm_libs::*;
 
 fn solve(intervals: &mut Vec<[i32; 2]>) {
-    todo!()
+    todo!();
 }
 
 fn main() {

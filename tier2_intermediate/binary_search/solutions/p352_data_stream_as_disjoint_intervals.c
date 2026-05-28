@@ -105,7 +105,11 @@ int main(void)
     int *values = read_ints(&n);
     int ret_size = 0;
     Interval *result = solve_intervals(values, n, &ret_size);
-    write_matrix2d_int((int *)result, ret_size, 2);
+    for (int i = 0; i < ret_size; i++) {
+        if (i > 0) printf("\n");
+        printf("%d %d", result[i].lo, result[i].hi);
+    }
+    printf("\n");
     free(values);
     free(result);
     return 0;

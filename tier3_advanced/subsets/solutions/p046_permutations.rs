@@ -41,9 +41,6 @@ fn permute(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
         }
     }
     backtrack(&mut nums, 0, &mut res);
-    for t in &mut res {
-        t.sort();
-    }
     res.sort();
     res
 }

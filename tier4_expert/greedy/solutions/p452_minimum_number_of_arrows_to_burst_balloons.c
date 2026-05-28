@@ -29,7 +29,7 @@
  */
 
 
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 
 typedef long long ll;
@@ -54,7 +54,7 @@ int main(void) {
     int header_n;
     int *header = read_ints(&header_n);
     free(header);
-    ll pts[100000][2];
+    static ll pts[100000][2];
     int n = 0;
     while (1) {
         int row_n;

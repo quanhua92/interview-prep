@@ -57,29 +57,35 @@
 #include <unordered_map>
 #include <vector>
 
+
 struct TrieNode {
     std::unordered_map<char, TrieNode*> children;
     bool is_end = false;
 
     ~TrieNode() {
-        for (auto &p : children) delete p.second;
-    }
+    abort();
+}
 };
 
 class Trie {
     TrieNode root;
 public:
     void insert(const std::string &word) {
-        abort();
-    }
+    abort();
+}
 
     bool search(const std::string &word) {
-        abort();
-    }
+    abort();
+}
 
     bool startsWith(const std::string &prefix) {
-        abort();
-    }
+    abort();
+}
+
+private:
+    TrieNode *find(const std::string &prefix) {
+    abort();
+}
 };
 
 int main(void) {
@@ -94,8 +100,8 @@ int main(void) {
             trie.insert(val);
             write_string("null");
         } else if (op == "search") {
-            write_bool(trie.search(val));
-        } else {
+    abort();
+}
             write_bool(trie.startsWith(val));
         }
     }

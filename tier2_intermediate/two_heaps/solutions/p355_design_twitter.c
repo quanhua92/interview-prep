@@ -161,13 +161,13 @@ int main(void)
 {
     twitter_init();
 
-    int num_ops = read_int();
+    int c0; int *a0 = read_ints(&c0); int num_ops = a0[0]; free(a0);
     for (int i = 0; i < num_ops; i++) {
         char *op = read_line();
-        int arg_count = read_int();
+        int c1; int *a1 = read_ints(&c1); int arg_count = a1[0]; free(a1);
         int args[4];
         for (int j = 0; j < arg_count; j++) {
-            args[j] = read_int();
+            int cj; int *aj = read_ints(&cj); args[j] = aj[0]; free(aj);
         }
         free(op);
 

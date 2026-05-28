@@ -21,6 +21,7 @@
  *         def largestPalindrome(self, n: int) -> int:
  */
 
+
 #include "io.h"
 
 int largestPalindrome(int n) {

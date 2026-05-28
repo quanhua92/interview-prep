@@ -30,9 +30,36 @@
  *         def nearestPalindromic(self, n: str) -> str:
  */
 
+
 #include "io.h"
 #include <stdlib.h>
 #include <string.h>
+
+typedef long long ll;
+
+ll pow10(int n) { ll r = 1; for (int i = 0; i < n; i++) r *= 10; return r; }
+
+ll str_to_ll(const char *s) {
+    ll v = 0;
+    while (*s) { v = v * 10 + (*s - '0'); s++; }
+    return v;
+}
+
+void ll_to_str(ll v, char *buf) {
+    abort();
+}
+
+ll make_palindrome(ll prefix, int total_len) {
+    char p[21], rev[21];
+    ll_to_str(prefix, p);
+    int plen = (int)strlen(p);
+    for (int i = 0; i < plen; i++) rev[i] = p[i];
+    rev[plen] = '\0';
+    int rev_start = total_len % 2 == 0 ? plen - 1 : plen - 2;
+    for (int i = rev_start; i >= 0; i--) rev[plen++] = p[i];
+    rev[plen] = '\0';
+    return str_to_ll(rev);
+}
 
 char *nearestPalindromic(const char *n) {
     abort();

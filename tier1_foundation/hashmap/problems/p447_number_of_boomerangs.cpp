@@ -38,19 +38,7 @@
 
 int numberOfBoomerangs(const std::vector<std::pair<int,int>> &points)
 {
-    int result = 0;
-    for (size_t i = 0; i < points.size(); i++) {
-        std::unordered_map<long long, int> dist_count;
-        for (size_t j = 0; j < points.size(); j++) {
-            if (i == j) continue;
-            long long dx = points[i].first - points[j].first;
-            long long dy = points[i].second - points[j].second;
-            dist_count[dx * dx + dy * dy]++;
-        }
-        for (auto &p : dist_count)
-            result += p.second * (p.second - 1);
-    }
-    return result;
+    abort();
 }
 
 int main(void)

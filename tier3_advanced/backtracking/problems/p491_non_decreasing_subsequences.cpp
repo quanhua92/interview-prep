@@ -11,10 +11,26 @@
  * Example 2:
  *     Input: nums = [4,4,3,2,1]
  *     Output: [[4,4]]
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def findSubsequences(self, nums: List[int]) -> List[List[int]]:
  */
 
 #include "io.h"
+#include <algorithm>
+#include <unordered_set>
+#include <vector>
+
+static std::vector<std::vector<int>> findSubsequences(const std::vector<int> &nums) {
+    abort();
+}
 
 int main() {
-    abort();
+    auto nums = read_ints();
+    auto result = findSubsequences(nums);
+    for (const auto &seq : result) {
+        write_ints(seq);
+    }
+    return 0;
 }

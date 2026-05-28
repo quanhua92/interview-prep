@@ -47,23 +47,16 @@ struct Codec {
     int next_id = 0;
 
     std::string encode(const std::string &longUrl) {
-        std::string key = std::to_string(next_id++);
-        url_map[key] = longUrl;
-        short_map[key] = longUrl;
-        return "http://tinyurl.com/" + key;
+        abort();
     }
 
     std::string decode(const std::string &shortUrl) {
-        size_t pos = shortUrl.rfind('/');
-        std::string key = shortUrl.substr(pos + 1);
-        return short_map[key];
+        abort();
     }
 };
 
 static std::string solve(const std::string &longUrl) {
-    Codec codec;
-    std::string tiny = codec.encode(longUrl);
-    return codec.decode(tiny);
+    abort();
 }
 
 int main(void)

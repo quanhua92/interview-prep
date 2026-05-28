@@ -40,7 +40,6 @@ from src.wasm_libs.py.io import *
 def solve(height: list[int]) -> int:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     height = read_ints()
     result = solve(height)

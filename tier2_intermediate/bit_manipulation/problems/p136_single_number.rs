@@ -36,7 +36,7 @@
 use wasm_libs::*;
 
 fn single_number(nums: &[i32]) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

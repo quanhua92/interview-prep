@@ -44,7 +44,7 @@ static int cmp_freq(const void *a, const void *b)
 
 static void topKFrequent(int *nums, int numsSize, int k, int *result)
 {
-    int freq[20001] = {0};
+    static int freq[20001];
     for (int i = 0; i < numsSize; i++) freq[nums[i] + 10000]++;
 
     int n_items = 0;

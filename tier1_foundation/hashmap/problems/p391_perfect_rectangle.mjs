@@ -34,33 +34,7 @@
 import { readInts, readInt, writeBool } from '../../wasm_libs/js/io.mjs';
 
 function solve(rectangles) {
-  const corners = new Set();
-  let totalArea = 0;
-  let minX = Infinity, minY = Infinity;
-  let maxX = -Infinity, maxY = -Infinity;
-  for (const [x1, y1, x2, y2] of rectangles) {
-    minX = Math.min(minX, x1);
-    minY = Math.min(minY, y1);
-    maxX = Math.max(maxX, x2);
-    maxY = Math.max(maxY, y2);
-    totalArea += (x2 - x1) * (y2 - y1);
-    for (const corner of [[x1, y1], [x1, y2], [x2, y1], [x2, y2]]) {
-      const key = `${corner[0]},${corner[1]}`;
-      if (corners.has(key)) {
-        corners.delete(key);
-      } else {
-        corners.add(key);
-      }
-    }
-  }
-  if (corners.size !== 4) return false;
-  const expectedCorners = new Set([
-    `${minX},${minY}`, `${minX},${maxY}`, `${maxX},${minY}`, `${maxX},${maxY}`
-  ]);
-  for (const c of corners) {
-    if (!expectedCorners.has(c)) return false;
-  }
-  return totalArea === (maxX - minX) * (maxY - minY);
+    throw new Error("NotImplementedError");
 }
 
 const n = readInt();

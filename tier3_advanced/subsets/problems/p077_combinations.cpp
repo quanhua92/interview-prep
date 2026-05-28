@@ -20,13 +20,26 @@
  *
  * Hint: Use backtracking with a start index to generate all k-length combinations from 1..n.
  */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+
+#include "io.h"
 #include <vector>
+
+static void backtrack(int start, int n, int k, std::vector<int>& path, std::vector<std::vector<int>>& res) {
+    abort();
+}
+
+static std::vector<std::vector<int>> combine(int n, int k) {
+    abort();
+}
 
 int main(void)
 {
-    abort();
+    std::string line_n = read_line();
+    int n = std::stoi(line_n);
+    std::string line_k = read_line();
+    int k = std::stoi(line_k);
+    auto result = combine(n, k);
+    for (const auto& row : result)
+        write_ints(row);
+    return 0;
 }

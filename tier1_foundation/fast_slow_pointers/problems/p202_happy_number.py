@@ -36,7 +36,6 @@ from src.wasm_libs.py.io import *
 def solve(n: int) -> bool:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     n = read_int()
     result = solve(n)

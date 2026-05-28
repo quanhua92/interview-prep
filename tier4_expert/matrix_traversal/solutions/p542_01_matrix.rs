@@ -28,9 +28,9 @@
  *         def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
  */
 
-
 use std::collections::VecDeque;
 use wasm_libs::*;
+use std::io::{self, BufRead};
 
 fn update_matrix(mat: &Vec<Vec<i32>>) -> Vec<Vec<i32>>
 {
@@ -73,13 +73,13 @@ fn update_matrix(mat: &Vec<Vec<i32>>) -> Vec<Vec<i32>>
 }
 
 fn read_int_matrix() -> Vec<Vec<i32>> {
-    let header = read_ints();
-    let cols = header[0] as usize;
-    let mut matrix = Vec::with_capacity(cols);
-    for _ in 0..cols {
-        matrix.push(read_ints());
-    }
-    matrix
+    let _cols = read_int();
+    let stdin = io::stdin();
+    let lines: Vec<String> = stdin.lock().lines().map(|l| l.unwrap()).collect();
+    lines.iter()
+        .filter(|l| !l.trim().is_empty())
+        .map(|l| l.split_whitespace().map(|s| s.parse().unwrap()).collect())
+        .collect()
 }
 
 fn write_matrix(mat: &[Vec<i32>]) {

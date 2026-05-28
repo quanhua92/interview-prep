@@ -20,6 +20,12 @@ std::string read_line()
     return trim_newline(buf);
 }
 
+int read_int()
+{
+    auto v = read_ints();
+    return v.empty() ? 0 : v[0];
+}
+
 std::vector<int> read_ints()
 {
     if (!std::fgets(buf, sizeof(buf), stdin))

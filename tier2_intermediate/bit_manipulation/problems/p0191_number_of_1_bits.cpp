@@ -41,7 +41,7 @@ static int hammingWeight(uint32_t n) {
 }
 
 int main() {
-    int n = read_int();
+    int n = read_ints()[0];
     write_int(hammingWeight((uint32_t)n));
     return 0;
 }

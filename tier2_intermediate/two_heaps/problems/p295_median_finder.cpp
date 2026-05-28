@@ -13,6 +13,14 @@
  *     Output
  *     [null, null, null, 1.5, null, 2.0]
  *
+ *     Explanation
+ *     MedianFinder medianFinder = new MedianFinder();
+ *     medianFinder.addNum(1);    // arr = [1]
+ *     medianFinder.addNum(2);    // arr = [1, 2]
+ *     medianFinder.findMedian(); // return 1.5 (i.e., (1 + 2) / 2)
+ *     medianFinder.addNum(3);    // arr[1, 2, 3]
+ *     medianFinder.findMedian(); // return 2.0
+ *
  * Constraints:
  *     - -105 <= num <= 105
  *     - There will be at least one element in the data structure before calling findMedian.
@@ -20,18 +28,50 @@
  *
  * Template (python3):
  *     class MedianFinder:
+ *
  *         def __init__(self):
+ *
+ *
  *         def addNum(self, num: int) -> None:
+ *
+ *
  *         def findMedian(self) -> float:
+ *
+ *
+ *
+ *     # Your MedianFinder object will be instantiated and called as such:
+ *     # obj = MedianFinder()
+ *     # obj.addNum(num)
+ *     # param_2 = obj.findMedian()
  *
  * Hint: Use a max-heap for the lower half and a min-heap for the upper half.
  */
 
+
 #include "io.h"
+#include <cmath>
+#include <queue>
 #include <vector>
+
+class MedianFinder {
+    std::priority_queue<int> small;
+    std::priority_queue<int, std::vector<int>, std::greater<int>> large;
+public:
+    void addNum(int num) {
+    abort();
+}
+    double findMedian() {
+    abort();
+}
+};
 
 int main(void)
 {
     std::vector<int> stream = read_ints();
-    abort();
+    MedianFinder mf;
+    for (int num : stream) {
+        mf.addNum(num);
+        printf("%.6f\n", mf.findMedian());
+    }
+    return 0;
 }

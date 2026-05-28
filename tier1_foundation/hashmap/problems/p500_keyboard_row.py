@@ -34,14 +34,7 @@ from src.wasm_libs.py.io import *
 
 
 def solve(words: list[str]) -> list[str]:
-    rows = [set("qwertyuiop"), set("asdfghjkl"), set("zxcvbnm")]
-    result = []
-    for w in words:
-        lower = set(w.lower())
-        if any(lower <= row for row in rows):
-            result.append(w)
-    return result
-
+    raise NotImplementedError
 
 if __name__ == "__main__":
     n = read_int()

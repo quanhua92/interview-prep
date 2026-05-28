@@ -48,6 +48,6 @@ int main(void)
 {
     std::vector<int> nums = read_ints();
     std::vector<int> result = findDuplicates(nums);
-    write_ints(result.data(), (int)result.size());
+    write_ints(result);
     return 0;
 }

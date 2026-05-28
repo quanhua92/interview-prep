@@ -38,9 +38,8 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn change(amount: i32, coins: &[i32]) -> i32 {
-        let amt = amount as usize;
+fn change(amount: i32, coins: &[i32]) -> i32 {
+    let amt = amount as usize;
     let mut dp = vec![0i32; amt + 1];
     dp[0] = 1;
     for &c in coins {
@@ -49,10 +48,7 @@ impl Solution {
         }
     }
     dp[amt]
-    }
 }
-
-struct Solution;
 
 fn main() {
     let amount = read_int();

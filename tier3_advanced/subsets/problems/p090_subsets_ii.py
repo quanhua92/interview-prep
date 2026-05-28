@@ -21,7 +21,7 @@ Constraints:
 Template (python3):
     class Solution:
         def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
-
+            raise NotImplementedError
 Hint: Sort first, then skip duplicates at the same recursion level during backtracking.
 """
 
@@ -30,8 +30,6 @@ from src.wasm_libs.py.io import *
 
 def solve(nums: list[int]) -> list[list[int]]:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     nums = read_ints()
     result = solve(nums)

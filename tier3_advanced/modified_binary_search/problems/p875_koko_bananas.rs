@@ -34,6 +34,10 @@
 
 use wasm_libs::*;
 
+fn hours_needed(piles: &[i32], k: i64) -> i64 {
+    todo!()
+}
+
 fn min_eating_speed(piles: &[i32], h: i64) -> i64 {
     todo!()
 }

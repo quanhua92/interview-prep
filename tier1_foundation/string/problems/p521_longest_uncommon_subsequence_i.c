@@ -36,6 +36,7 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
 
 int findLUSlength(const char *a, const char *b)
 {

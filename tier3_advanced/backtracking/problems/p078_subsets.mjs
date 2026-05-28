@@ -16,7 +16,7 @@
 import { readInts, writeInts, writeString } from '../../../wasm_libs/js/io.mjs';
 
 function solve(nums) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const nums = readInts();

@@ -58,21 +58,10 @@ class ListNode:
 
 
 def build_list(arr):
-    dummy = ListNode()
-    cur = dummy
-    for v in arr:
-        cur.next = ListNode(v)
-        cur = cur.next
-    return dummy.next
-
+    raise NotImplementedError
 
 def solve(head: ListNode) -> int:
-    slow = fast = head
-    while fast and fast.next:
-        slow = slow.next
-        fast = fast.next.next
-    return slow.val
-
+    raise NotImplementedError
 
 if __name__ == "__main__":
     arr = read_ints()

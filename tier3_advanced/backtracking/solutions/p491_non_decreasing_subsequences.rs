@@ -17,7 +17,7 @@
  *         def findSubsequences(self, nums: List[int]) -> List[List[int]]:
  */
 
-use interview_prep::{read_ints, write_ints};
+use wasm_libs::*;
 use std::collections::HashSet;
 
 fn find_subsequences(nums: &[i32]) -> Vec<Vec<i32>> {

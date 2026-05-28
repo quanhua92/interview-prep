@@ -5,6 +5,7 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 
 static int dfs(int **grid, int r, int c, int rows, int cols) {
     if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] != 1) return 0;

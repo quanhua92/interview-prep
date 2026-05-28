@@ -11,9 +11,11 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
 
-char *decode_string(const char *s)
-{
+static char result_buf[100001];
+
+static char *decode_string(const char *s) {
     abort();
 }
 

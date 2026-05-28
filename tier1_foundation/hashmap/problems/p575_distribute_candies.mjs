@@ -31,19 +31,7 @@
 import { readInts, writeInt } from '../../wasm_libs/js/io.mjs';
 
 function solve(candyType) {
-  candyType.sort((a, b) => a - b);
-  let unique = 1;
-  const limit = Math.floor(candyType.length / 2);
-  let left = 0;
-  let right = 1;
-  while (right < candyType.length && unique < limit) {
-    if (candyType[right] !== candyType[left]) {
-      unique++;
-      left = right;
-    }
-    right++;
-  }
-  return Math.min(unique, limit);
+    throw new Error("NotImplementedError");
 }
 
 const candyType = readInts();

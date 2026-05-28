@@ -5,52 +5,29 @@
  */
 
 use wasm_libs::*;
-use std::collections::{HashMap, VecDeque};
+use std::collections::HashMap;
 
-#[derive(Clone)]
-struct TreeNode {
-    val: i32,
-    left: Option<Box<TreeNode>>,
-    right: Option<Box<TreeNode>>,
-}
-
-fn from_list(vals: &[i32]) -> Option<Box<TreeNode>> {
-    if vals.is_empty() || vals[0] == 2147483647 { return None; }
-    let root = Box::new(TreeNode { val: vals[0], left: None, right: None });
-    let mut queue = VecDeque::new();
-    queue.push_back(root.clone());
-    let mut vi = 1;
-    while !queue.is_empty() && vi < vals.len() {
-        let mut node = queue.pop_front().unwrap();
-        if vi < vals.len() {
-            if vals[vi] != 2147483647 {
-                let child = Box::new(TreeNode { val: vals[vi], left: None, right: None });
-                node.left = Some(child.clone());
-                queue.push_back(child);
-            }
-            vi += 1;
+fn build_tree(vals: &[i32], nl: i32) -> (Vec<i32>, Vec<i32>) {
+    let n = vals.len();
+    if n == 0 || vals[0] == nl { return (vec![], vec![]); }
+    let mut left = vec![-1i32; n];
+    let mut right = vec![-1i32; n];
+    let mut qi = 1usize;
+    let mut queue = std::collections::VecDeque::new();
+    queue.push_back(0usize);
+    while let Some(i) = queue.pop_front() {
+        if qi < n {
+            left[i] = if vals[qi] == nl { -1 } else { qi as i32 };
+            if vals[qi] != nl { queue.push_back(qi); }
+            qi += 1;
         }
-        if vi < vals.len() {
-            if vals[vi] != 2147483647 {
-                let child = Box::new(TreeNode { val: vals[vi], left: None, right: None });
-                node.right = Some(child.clone());
-                queue.push_back(child);
-            }
-            vi += 1;
+        if qi < n {
+            right[i] = if vals[qi] == nl { -1 } else { qi as i32 };
+            if vals[qi] != nl { queue.push_back(qi); }
+            qi += 1;
         }
     }
-    Some(root)
-}
-
-fn subtree_sum(node: &Option<Box<TreeNode>>, freq: &mut HashMap<i32, i32>) -> i32 {
-    match node {
-        None => 0,
-        Some(n) => {
-            let s = n.val + subtree_sum(&n.left, freq) + subtree_sum(&n.right, freq);
-            *freq.entry(s).or_insert(0) += 1;
-            s
-        }
-    }
+    (left, right)
 }
 
 fn main() {
@@ -59,9 +36,26 @@ fn main() {
     let vals: Vec<i32> = line.split_whitespace()
         .map(|t| if t == "null" { nl } else { t.parse().unwrap() })
         .collect();
-    let root = from_list(&vals);
-    let mut freq = HashMap::new();
-    subtree_sum(&root, &mut freq);
+
+    if vals.is_empty() || vals[0] == nl {
+        write_ints(&[]);
+        return;
+    }
+
+    let (left, right) = build_tree(&vals, nl);
+    let mut freq: HashMap<i32, i32> = HashMap::new();
+
+    fn subtree_sum(idx: i32, vals: &[i32], left: &[i32], right: &[i32], freq: &mut HashMap<i32, i32>) -> i32 {
+        if idx < 0 { return 0; }
+        let s = vals[idx as usize]
+            + subtree_sum(left[idx as usize], vals, left, right, freq)
+            + subtree_sum(right[idx as usize], vals, left, right, freq);
+        *freq.entry(s).or_insert(0) += 1;
+        s
+    }
+
+    subtree_sum(0, &vals, &left, &right, &mut freq);
+
     let max_freq = *freq.values().max().unwrap_or(&0);
     let mut result: Vec<i32> = freq.into_iter().filter(|&(_, v)| v == max_freq).map(|(k, _)| k).collect();
     result.sort();

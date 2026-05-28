@@ -64,17 +64,12 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn random_pick_with_weight(w: &[i32]) -> Vec<i32> {
-        todo!()
-    }
+fn random_pick_with_weight(w: &[i32]) -> Vec<i32> {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let w = read_ints();
-    let result = Solution::random_pick_with_weight(&w);
-    write_ints(&result);
+    write_ints(&random_pick_with_weight(&w));
     std::process::exit(0);
 }

@@ -32,6 +32,7 @@
 #include <string.h>
 #include <limits.h>
 
+
 #define NULL_VAL INT_MIN
 
 typedef struct TreeNode {
@@ -46,35 +47,7 @@ static TreeNode *make_node(int val) {
     return n;
 }
 
-static TreeNode *build_tree(const int *vals, int n) {
-    if (n == 0 || vals[0] == NULL_VAL) return NULL;
-    TreeNode *root = make_node(vals[0]);
-    TreeNode *queue[10000];
-    int front = 0, back = 0;
-    queue[back++] = root;
-    int i = 1;
-    while (front < back && i < n) {
-        TreeNode *node = queue[front++];
-        if (i < n) {
-            if (vals[i] != NULL_VAL) { node->left = make_node(vals[i]); queue[back++] = node->left; }
-            i++;
-        }
-        if (i < n) {
-            if (vals[i] != NULL_VAL) { node->right = make_node(vals[i]); queue[back++] = node->right; }
-            i++;
-        }
-    }
-    return root;
-}
-
-static void free_tree(TreeNode *root) {
-    if (!root) return;
-    free_tree(root->left);
-    free_tree(root->right);
-    free(root);
-}
-
-void solve(TreeNode *root) {
+static void solve(const int *vals, int vals_n) {
     abort();
 }
 
@@ -91,9 +64,7 @@ int main(void)
         tok = strtok(NULL, " ");
     }
     free(line);
-    TreeNode *root = build_tree(vals, n);
-    solve(root);
+    solve(vals, n);
     free(vals);
-    free_tree(root);
     return 0;
 }

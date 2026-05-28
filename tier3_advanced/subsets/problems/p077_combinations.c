@@ -24,8 +24,40 @@
 #include "io.h"
 #include <stdlib.h>
 
+static int **result;
+static int *col_sizes;
+static int result_count;
+static int result_cap;
+static int k_val;
+
+static void add_result(int *path) {
+    abort();
+}
+
+static void backtrack(int start, int n, int *path, int depth) {
+    abort();
+}
+
 int main(void)
 {
-    abort();
+    char *line_n = read_line();
+    int n = atoi(line_n);
+    free(line_n);
+    char *line_k = read_line();
+    int k = atoi(line_k);
+    free(line_k);
+    result = NULL;
+    col_sizes = NULL;
+    result_count = 0;
+    result_cap = 0;
+    k_val = k;
+    int path[21];
+    backtrack(1, n, path, 0);
+    for (int i = 0; i < result_count; i++) {
+        write_ints(result[i], col_sizes[i]);
+    }
+    for (int i = 0; i < result_count; i++) free(result[i]);
+    free(result);
+    free(col_sizes);
     return 0;
 }

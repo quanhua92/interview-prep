@@ -10,18 +10,29 @@
  *     Input: nums = [5,2,3,1]
  *     Output: [1,2,3,5]
  *
+ * Example 2:
+ *     Input: nums = [5,1,1,2,0,0]
+ *     Output: [0,0,1,1,2,5]
+ *
+ * Constraints:
+ *     - 1 <= nums.length <= 5 * 104
+ *     - -5 * 104 <= nums[i] <= 5 * 104
+ *
  * Hint: Implement merge sort — divide array in half, sort recursively, merge.
  */
 
 use wasm_libs::*;
 
-fn sort_array(nums: &mut [i32]) -> Vec<i32> {
-    todo!()
+fn merge_sort(arr: &mut [i32], tmp: &mut [i32], l: usize, r: usize) {
+    todo!();
 }
 
 fn main() {
     let mut nums = read_ints();
-    let result = sort_array(&mut nums);
-    write_ints(&result);
+    let n = nums.len();
+    if n <= 1 { write_ints(&nums); std::process::exit(0); }
+    let mut tmp = vec![0i32; n];
+    merge_sort(&mut nums, &mut tmp, 0, n - 1);
+    write_ints(&nums);
     std::process::exit(0);
 }

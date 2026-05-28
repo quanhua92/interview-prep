@@ -29,13 +29,9 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn can_cross(stones: &[i32]) -> bool {
-        todo!()
-    }
+fn can_cross(stones: &[i32]) -> bool {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let stones = read_ints();

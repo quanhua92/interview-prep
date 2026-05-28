@@ -28,6 +28,14 @@ int *read_ints(int *count)
     return arr;
 }
 
+int read_int(void)
+{
+    int *a = read_ints(&(int){0});
+    int v = a[0];
+    free(a);
+    return v;
+}
+
 char *read_line(void)
 {
     if (!fgets(buf, sizeof(buf), stdin)) {

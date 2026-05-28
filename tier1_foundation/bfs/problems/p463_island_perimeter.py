@@ -32,12 +32,11 @@ Template (python3):
 """
 
 from src.wasm_libs.py.io import *
+from collections import deque
 
 
 def solve(grid: list[list[int]]) -> int:
     raise NotImplementedError
-
-
 
 if __name__ == "__main__":
     _cols = read_int()

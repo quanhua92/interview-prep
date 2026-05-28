@@ -14,7 +14,22 @@
  */
 
 #include "io.h"
+#include <functional>
+#include <vector>
+
+static std::vector<std::vector<int>> subsets(std::vector<int> nums) {
+    abort();
+}
 
 int main() {
-    abort();
+    auto nums = read_ints();
+    auto result = subsets(nums);
+    for (const auto &s : result) {
+        if (s.empty()) {
+            write_string("");
+        } else {
+            write_ints(s);
+        }
+    }
+    return 0;
 }

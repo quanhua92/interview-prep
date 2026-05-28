@@ -29,23 +29,7 @@
 import { readInt, readInts, writeInt } from '../../wasm_libs/js/io.mjs';
 
 function solve(points) {
-  let result = 0;
-  for (let i = 0; i < points.length; i++) {
-    const p = points[i];
-    const distCount = new Map();
-    for (let j = 0; j < points.length; j++) {
-      if (i === j) continue;
-      const q = points[j];
-      const dx = p[0] - q[0];
-      const dy = p[1] - q[1];
-      const dist = dx * dx + dy * dy;
-      distCount.set(dist, (distCount.get(dist) || 0) + 1);
-    }
-    for (const count of distCount.values()) {
-      result += count * (count - 1);
-    }
-  }
-  return result;
+    throw new Error("NotImplementedError");
 }
 
 const n = readInt();

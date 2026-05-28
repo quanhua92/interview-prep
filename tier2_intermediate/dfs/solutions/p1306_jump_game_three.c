@@ -5,6 +5,7 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 #include <string.h>
 
 static char visited[50001];

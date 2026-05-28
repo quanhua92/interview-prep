@@ -13,13 +13,25 @@
  *     Input: intervals = [[7,10],[2,4]]
  *     Output: 1
  *
+ * Constraints:
+ *     - 1 <= intervals.length <= 10^4
+ *     - 0 <= starti < endi <= 10^6
+ *
+ * Hints:
+ *     - Think about how we would approach this problem if we were given the intervals sorted by start time.
+ *     - What if we use a min-heap to track the ending times of meetings?
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def minMeetingRooms(self, intervals: List[List[int]]) -> int:
+ *
  * Hint: Sort start and end times separately, then use two pointers to count concurrent meetings.
  */
 
 use wasm_libs::*;
 
 fn solve(intervals: &Vec<[i32; 2]>) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

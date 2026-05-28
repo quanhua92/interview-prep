@@ -38,6 +38,7 @@
  */
 
 #include "io.h"
+#include <algorithm>
 #include <vector>
 
 int carFleet(int target, std::vector<int> position, std::vector<int> speed)

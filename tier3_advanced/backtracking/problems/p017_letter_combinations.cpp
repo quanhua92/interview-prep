@@ -22,7 +22,24 @@
  */
 
 #include "io.h"
+#include <algorithm>
+#include <functional>
+#include <string>
+#include <vector>
+
+static const std::string phone_map[] = {
+    "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"
+};
+
+static std::vector<std::string> letterCombinations(const std::string &digits) {
+    abort();
+}
 
 int main() {
-    abort();
+    std::string digits = read_line();
+    auto result = letterCombinations(digits);
+    for (const auto &s : result) {
+        write_string(s);
+    }
+    return 0;
 }

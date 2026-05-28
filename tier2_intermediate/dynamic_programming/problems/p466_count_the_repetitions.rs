@@ -27,13 +27,9 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn get_max_repetitions(s1: &str, n1: i32, s2: &str, n2: i32) -> i32 {
-        todo!()
-    }
+fn get_max_repetitions(s1: &str, n1: i32, s2: &str, n2: i32) -> i32 {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let s1 = read_line();

@@ -32,8 +32,12 @@
 
 import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
 
+function getNext(num) {
+    throw new Error("NotImplementedError");
+}
+
 function solve(n) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const n = readInt();

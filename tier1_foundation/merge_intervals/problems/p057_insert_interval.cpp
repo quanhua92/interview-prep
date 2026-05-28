@@ -25,11 +25,22 @@
  *     - newInterval.length == 2
  *     - 0 <= start <= end <= 105
  *
+ * Hints:
+ *     - Intervals Array is sorted. Can you use Binary Search to find the correct position to insert the new Interval.?
+ *     - Can you try merging the overlapping intervals while inserting the new interval?
+ *     - This can be done by comparing the end of the last interval with the start of the new interval and vice versa.
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
+ *
  * Hint: Add non-overlapping before, merge overlapping, add non-overlapping after.
  */
 
 
 #include "io.h"
+#include <cstdlib>
+#include <algorithm>
 #include <vector>
 
 void solve(std::vector<std::vector<int>> &intervals, std::vector<int> &new_interval)

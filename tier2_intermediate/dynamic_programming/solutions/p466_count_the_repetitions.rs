@@ -27,24 +27,30 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn get_max_repetitions(s1: &str, n1: i32, s2: &str, n2: i32) -> i32 {
+fn get_max_repetitions(s1: &str, n1: i32, s2: &str, n2: i32) -> i32 {
     if n1 == 0 { return 0; }
-    let s1b = s1.as_bytes(), s2b = s2.as_bytes();
-    let s1_len = s1b.len(), s2_len = s2b.len();
+    let s1b = s1.as_bytes();
+    let s2b = s2.as_bytes();
+    let s1_len = s1b.len();
+    let s2_len = s2b.len();
     let mut s1_count = [0i32; 26];
     for &c in s1b { s1_count[(c - 97) as usize] += 1; }
     for &c in s2b { if s1_count[(c - 97) as usize] == 0 { return 0; } }
-    let n1 = n1 as usize, n2 = n2 as i32;
-    let mut prev_iter = [-1i32; 101], prev_count = [0i32; 101];
-    let mut count = 0i32; let mut s2_idx = 0usize;
+    let n1 = n1 as usize;
+    let n2 = n2 as i32;
+    let mut prev_iter = [-1i32; 101];
+    let mut prev_count = [0i32; 101];
+    let mut count = 0i32;
+    let mut s2_idx = 0usize;
     'outer: for i in 0..n1 {
         for j in 0..s1_len {
             if s1b[j] == s2b[s2_idx] { s2_idx += 1; if s2_idx == s2_len { count += 1; s2_idx = 0; } }
         }
         if prev_iter[s2_idx] >= 0 {
-            let cycle_len = i as i32 - prev_iter[s2_idx], cycle_count = count - prev_count[s2_idx];
-            let remaining = (n1 - 1 - i) as i32, full_cycles = remaining / cycle_len;
+            let cycle_len = i as i32 - prev_iter[s2_idx];
+            let cycle_count = count - prev_count[s2_idx];
+            let remaining = (n1 - 1 - i) as i32;
+            let full_cycles = remaining / cycle_len;
             count += full_cycles * cycle_count;
             let processed = i + 1 + (full_cycles as usize) * (cycle_len as usize);
             for _ii in processed..n1 {
@@ -57,10 +63,7 @@ impl Solution {
         prev_iter[s2_idx] = i as i32; prev_count[s2_idx] = count;
     }
     count / n2
-    }
 }
-
-struct Solution;
 
 fn main() {
     let s1 = read_line();

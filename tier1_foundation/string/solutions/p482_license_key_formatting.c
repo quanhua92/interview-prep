@@ -35,7 +35,7 @@
 char *licenseKeyFormatting(const char *s, int k)
 {
     int len = (int)strlen(s);
-    char cleaned[100001];
+    static char cleaned[100001];
     int clen = 0;
     for (int i = 0; i < len; i++) {
         if (s[i] != '-') {

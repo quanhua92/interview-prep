@@ -28,11 +28,11 @@ use wasm_libs::*;
 
 impl Solution {
     fn is_subseq(a: &[u8], b: &[u8]) -> bool {
-        todo!()
+        todo!();
     }
 
     fn find_lus_length(strs: Vec<String>) -> i32 {
-        todo!()
+        todo!();
     }
 }
 

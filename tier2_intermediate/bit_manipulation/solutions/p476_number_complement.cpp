@@ -36,7 +36,7 @@ static int findComplement(int num) {
 }
 
 int main() {
-    int num = read_int();
+    int num = read_ints()[0];
     write_int(findComplement(num));
     return 0;
 }

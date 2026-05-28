@@ -38,7 +38,7 @@ use wasm_libs::*;
 
 impl Solution {
     fn max_area(height: &[i32]) -> i32 {
-        todo!()
+        todo!();
     }
 }
 

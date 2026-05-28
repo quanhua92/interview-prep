@@ -27,6 +27,15 @@
 
 use wasm_libs::*;
 
-fn main() {
+fn permute(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
     todo!()
+}
+
+fn main() {
+    let nums = read_ints();
+    let result = permute(nums);
+    for row in &result {
+        write_ints(row);
+    }
+    std::process::exit(0);
 }

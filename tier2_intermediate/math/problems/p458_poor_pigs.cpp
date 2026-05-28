@@ -40,6 +40,7 @@
  *         def poorPigs(self, buckets: int, minutesToDie: int, minutesToTest: int) -> int:
  */
 
+
 #include "io.h"
 
 int poorPigs(int buckets, int minutesToDie, int minutesToTest) {

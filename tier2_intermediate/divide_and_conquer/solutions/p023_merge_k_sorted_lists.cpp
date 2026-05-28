@@ -48,7 +48,7 @@ static std::vector<int> divide_merge(const std::vector<std::vector<int>> &lists,
 
 int main(void)
 {
-    int k = read_int();
+    int k = read_ints()[0];
     std::vector<std::vector<int>> lists(k);
     for (int i = 0; i < k; i++) {
         lists[i] = read_ints();

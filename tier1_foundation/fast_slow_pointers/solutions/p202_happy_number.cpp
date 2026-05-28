@@ -31,14 +31,10 @@
  */
 
 #include "io.h"
+#include <cstdlib>
 #include <algorithm>
 #include <vector>
 
-static int read_int(void)
-{
-    std::string line = read_line();
-    return std::stoi(line);
-}
 
 static int get_next(int num)
 {

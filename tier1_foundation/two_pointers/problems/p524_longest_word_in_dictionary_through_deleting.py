@@ -29,7 +29,6 @@ from src.wasm_libs.py.io import *
 def solve(s: str, dictionary: list[str]) -> str:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     s = read_line()
     dict_size = read_int()

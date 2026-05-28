@@ -59,7 +59,7 @@ int checkRecord(int n) {
 }
 
 int main(void) {
-    int n = read_int();
+    int n = read_ints()[0];
     write_int(checkRecord(n));
     return 0;
 }

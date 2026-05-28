@@ -96,8 +96,8 @@ fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
 
 impl Solution {
     fn solve(vals: &[i32]) -> Vec<i32> {
-    todo!()
-}
+        todo!();
+    }
 }
 
 struct Solution;

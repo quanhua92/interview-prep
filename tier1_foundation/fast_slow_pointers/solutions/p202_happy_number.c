@@ -33,13 +33,6 @@
 #include "io.h"
 #include <stdlib.h>
 
-static int read_int(void)
-{
-    char *line = read_line();
-    int val = atoi(line);
-    free(line);
-    return val;
-}
 
 static int get_next(int num)
 {

@@ -41,8 +41,7 @@ use wasm_libs::*;
 use std::collections::HashSet;
 
 fn distribute_candies(candy_type: &[i32]) -> i32 {
-    let unique: HashSet<&i32> = candy_type.iter().collect();
-    std::cmp::min(unique.len() as i32, candy_type.len() as i32 / 2)
+    todo!();
 }
 
 fn main() {

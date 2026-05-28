@@ -64,13 +64,7 @@ fn build_list(arr: &[i32]) -> Option<Box<ListNode>> {
 }
 
 fn solve(head: &Option<Box<ListNode>>) -> i32 {
-    let mut slow = head.as_ref();
-    let mut fast = head.as_ref();
-    while fast.is_some() && fast.unwrap().next.is_some() {
-        slow = slow.unwrap().next.as_ref();
-        fast = fast.unwrap().next.as_ref().unwrap().next.as_ref();
-    }
-    slow.unwrap().val
+    todo!();
 }
 
 fn main() {

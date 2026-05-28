@@ -42,12 +42,13 @@
 #include "io.h"
 
 static std::vector<int> countBits(int n) {
-    abort();
+    std::vector<int> ans(n + 1, 0);
+    for (int i = 1; i <= n; i++) {
+        ans[i] = ans[i >> 1] + (i & 1);
+    }
+    return ans;
 }
 
 int main() {
-    int n = read_int();
-    std::vector<int> result = countBits(n);
-    write_ints(result);
-    return 0;
+    abort();
 }

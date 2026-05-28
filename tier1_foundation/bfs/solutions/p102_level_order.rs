@@ -48,7 +48,7 @@ fn parse_tree_line(line: &str) -> Vec<i32> {
         .collect()
 }
 
-fn build_tree(vals: &[i32]) -> Option<Rc<TreeNode>> {
+fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
     if vals.is_empty() || vals[0] == NULL_VAL { return None; }
     let root = Rc::new(RefCell::new(TreeNode { val: vals[0], left: None, right: None }));
     let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();

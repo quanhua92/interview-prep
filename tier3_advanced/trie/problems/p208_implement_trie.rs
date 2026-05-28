@@ -53,10 +53,17 @@
  */
 
 use wasm_libs::*;
+use std::collections::HashMap;
 
 struct TrieNode {
-    children: std::collections::HashMap<char, Box<TrieNode>>,
+    children: HashMap<char, Box<TrieNode>>,
     is_end: bool,
+}
+
+impl TrieNode {
+    fn new() -> Self {
+    todo!()
+}
 }
 
 struct Trie {
@@ -64,34 +71,42 @@ struct Trie {
 }
 
 impl Trie {
-    fn insert(&mut self, word: &str) {
-        todo!()
-    }
-
-    fn search(&self, word: &str) -> bool {
-        todo!()
-    }
-
-    fn starts_with(&self, prefix: &str) -> bool {
-        todo!()
-    }
+    fn new() -> Self {
+    todo!()
 }
 
-struct Solution;
+    fn insert(&mut self, word: &str) {
+    todo!()
+}
+
+    fn search(&self, word: &str) -> bool {
+    todo!()
+}
+
+    fn starts_with(&self, prefix: &str) -> bool {
+    todo!()
+}
+
+    fn find(&self, prefix: &str) -> Option<&TrieNode> {
+    todo!()
+}
+}
 
 fn main() {
     let num_ops = read_int() as usize;
+    let mut trie = Trie::new();
 
     for _ in 0..num_ops {
         let op = read_line();
         let val = read_line();
 
         if op == "insert" {
+            trie.insert(&val);
             write_string("null");
         } else if op == "search" {
-            write_bool(false);
+            write_bool(trie.search(&val));
         } else {
-            write_bool(false);
+            write_bool(trie.starts_with(&val));
         }
     }
 

@@ -13,6 +13,20 @@
  * Hint: Use backtracking to generate all possible subsets by including/excluding each element.
  */
 
-fn main() {
+use wasm_libs::*;
+
+fn subsets(nums: Vec<i32>) -> Vec<Vec<i32>> {
     todo!()
+}
+
+fn main() {
+    let nums = read_ints();
+    let result = subsets(nums);
+    for s in result {
+        if s.is_empty() {
+            write_string("");
+        } else {
+            write_ints(&s);
+        }
+    }
 }

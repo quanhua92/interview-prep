@@ -29,42 +29,13 @@
  *     - There will be at least one element in the data structure when getRandom is called.
  */
 
+
 import { readInts, readLine, readInt, writeInt, writeBool } from '../../wasm_libs/js/io.mjs';
 
 class RandomizedSet {
   constructor() {
     this.vals = [];
     this.idxMap = new Map();
-    this.mtIdx = 0;
-    this.cache = [42];
-    for (let i = 0; i < 624; i++) this.cache[i] = 0;
-  }
-
-  genrandUint32() {
-    if (this.mtIdx >= 624) {
-      for (let i = 0; i < 624; i++) {
-        let y = (this.cache[i] & 0x80000000) | (this.cache[(i + 1) % 624] & 0x7fffffff);
-        this.cache[i] = (this.cache[(i + 397) % 624] ^ (y >>> 1)) >>> 0;
-        if ((y & 1) !== 0) this.cache[i] = (this.cache[i] ^ 0x9908b0df) >>> 0;
-      }
-      this.mtIdx = 0;
-    }
-    let y = this.cache[this.mtIdx++];
-    y = (y ^ (y >>> 11)) >>> 0;
-    y = (y ^ ((y << 7) & 0x9d2c5680)) >>> 0;
-    y = (y ^ ((y << 15) & 0xefc60000)) >>> 0;
-    y = (y ^ (y >>> 18)) >>> 0;
-    return y;
-  }
-
-  randbelow(n) {
-    if (n <= 1) return 0;
-    const k = 32 - Math.clz32(n - 1);
-    let r;
-    do {
-      r = (this.genrandUint32() >>> (32 - k)) >>> 0;
-    } while (r >= n);
-    return r;
   }
 
   insert(val) {
@@ -86,7 +57,7 @@ class RandomizedSet {
   }
 
   getRandom() {
-    return this.vals[this.randbelow(this.vals.length)];
+    return this.vals[Math.floor(Math.random() * this.vals.length)];
   }
 }
 

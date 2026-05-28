@@ -50,7 +50,9 @@
 #include "io.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include <limits.h>
+
 
 #define NULL_VAL INT_MIN
 
@@ -59,18 +61,14 @@ typedef struct TreeNode {
     struct TreeNode *left, *right;
 } TreeNode;
 
+static TreeNode **node_pool;
+static int pool_size;
+
 static TreeNode *make_node(int val) {
     TreeNode *n = (TreeNode *)malloc(sizeof(TreeNode));
     n->val = val;
     n->left = n->right = NULL;
     return n;
-}
-
-static void free_tree(TreeNode *root) {
-    if (!root) return;
-    free_tree(root->left);
-    free_tree(root->right);
-    free(root);
 }
 
 static void solve(const int *vals, int vals_n) {

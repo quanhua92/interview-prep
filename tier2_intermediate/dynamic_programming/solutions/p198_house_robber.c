@@ -30,6 +30,7 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 
 int rob(int *nums, int numsSize) {
     int prev = 0, curr = 0;

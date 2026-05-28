@@ -34,11 +34,9 @@
 #include "io.h"
 #include <stdlib.h>
 
-int *num_subarray_product_less_than_k(int *nums, int numsSize, int k, int *retSize)
+int num_subarray_product_less_than_k(int *nums, int numsSize, int k)
 {
     abort();
-    *retSize = 0;
-    return NULL;
 }
 
 int main(void)
@@ -49,10 +47,7 @@ int main(void)
     int *target_line = read_ints(&kl);
     int k = target_line[0];
     free(target_line);
-    int retSize;
-    int *result = num_subarray_product_less_than_k(nums, n, k, &retSize);
-    write_ints(result, retSize);
+    write_int(num_subarray_product_less_than_k(nums, n, k));
     free(nums);
-    free(result);
     return 0;
 }

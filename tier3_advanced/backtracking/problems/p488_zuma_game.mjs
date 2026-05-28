@@ -11,12 +11,16 @@
  * Example 2:
  *     Input: board = "WWRRBBWW", hand = "WRBRW"
  *     Output: 2
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def findMinStep(self, board: str, hand: str) -> int:
  */
 
 import { readLine, writeInt } from '../../../wasm_libs/js/io.mjs';
 
 function solve(board, hand) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const board = readLine();

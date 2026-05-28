@@ -19,7 +19,7 @@
 import { readInts, readInt, writeInt } from '../../wasm_libs/js/io.mjs';
 
 function solve(timeSeries, duration) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const timeSeries = readInts();

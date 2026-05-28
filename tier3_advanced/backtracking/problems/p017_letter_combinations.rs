@@ -21,6 +21,16 @@
  * Hint: Map each digit to its letters and use backtracking to build all combinations.
  */
 
-fn main() {
+use wasm_libs::*;
+
+fn letter_combinations(digits: &str) -> Vec<String> {
     todo!()
+}
+
+fn main() {
+    let digits = read_line();
+    let result = letter_combinations(&digits);
+    for s in result {
+        write_string(&s);
+    }
 }

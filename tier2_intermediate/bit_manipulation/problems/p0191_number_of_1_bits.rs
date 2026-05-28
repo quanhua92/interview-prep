@@ -36,7 +36,7 @@
 use wasm_libs::*;
 
 fn hamming_weight(mut n: u32) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

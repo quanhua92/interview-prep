@@ -39,7 +39,7 @@ use wasm_libs::*;
 use std::collections::VecDeque;
 
 fn solve(grid: &mut Vec<Vec<i32>>) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

@@ -24,7 +24,7 @@
 import { readLine, writeString } from '../../../wasm_libs/js/io.mjs';
 
 function solve(digits) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const digits = readLine();

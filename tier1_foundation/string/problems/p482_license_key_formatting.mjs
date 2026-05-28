@@ -30,7 +30,7 @@
 import { readLine, readInt, writeString } from '../../wasm_libs/js/io.mjs';
 
 function solve(s, k) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const s = readLine();

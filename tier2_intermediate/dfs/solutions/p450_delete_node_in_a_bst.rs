@@ -5,6 +5,7 @@
  */
 
 use wasm_libs::*;
+use std::io::{self, Write};
 
 #[derive(Debug, Clone)]
 struct TreeNode {
@@ -80,9 +81,8 @@ fn main() {
             let mut first = true;
             let mut all: Vec<Option<Box<TreeNode>>> = Vec::new();
             while let Some(node) = q.pop_front() {
-                let ptr = node.as_ref().map(|n| n as *const TreeNode);
                 all.push(node);
-                if let Some(ref n) = all.last().unwrap() {
+                if let Some(n) = all.last().unwrap() {
                     q.push_back(n.left.clone());
                     q.push_back(n.right.clone());
                 }

@@ -39,7 +39,12 @@
  *     # param_1 = obj.randPoint()
  */
 
+
 #include "io.h"
+#include <cmath>
+#include <cstdio>
+#include <random>
+#include <sstream>
 
 int main() {
     abort();

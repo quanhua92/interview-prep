@@ -11,8 +11,23 @@
  * Example 2:
  *     Input: nums = [4,4,3,2,1]
  *     Output: [[4,4]]
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def findSubsequences(self, nums: List[int]) -> List[List[int]]:
  */
 
-fn main() {
+use wasm_libs::*;
+use std::collections::HashSet;
+
+fn find_subsequences(nums: &[i32]) -> Vec<Vec<i32>> {
     todo!()
+}
+
+fn main() {
+    let nums = read_ints();
+    let result = find_subsequences(&nums);
+    for seq in result {
+        write_ints(&seq);
+    }
 }

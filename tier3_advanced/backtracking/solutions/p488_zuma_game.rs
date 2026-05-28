@@ -17,7 +17,7 @@
  *         def findMinStep(self, board: str, hand: str) -> int:
  */
 
-use interview_prep::{read_line, write_int};
+use wasm_libs::*;
 use std::collections::HashMap;
 
 fn collapse(s: &str) -> String {

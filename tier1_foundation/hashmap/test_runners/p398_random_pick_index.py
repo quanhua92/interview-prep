@@ -6,32 +6,32 @@ class P398RandomPickIndex(JudgeBase):
     test_cases = [
         TestCase(
             input=([1, 2, 3, 3, 3], 3),
-            expected=4,
+            expected=[2, 3, 4],
             label="returns valid index for target 3",
         ),
         TestCase(
             input=([1, 2, 3, 3, 3], 1),
-            expected=0,
+            expected=[0],
             label="single occurrence",
         ),
         TestCase(
             input=([5], 5),
-            expected=0,
+            expected=[0],
             label="single element array",
         ),
         TestCase(
             input=([1, 2, 1, 2, 1], 1),
-            expected=4,
+            expected=[0, 2, 4],
             label="non-contiguous duplicates",
         ),
         TestCase(
             input=([-1, -2, -1, -3, -1], -1),
-            expected=4,
+            expected=[0, 2, 4],
             label="negative numbers with duplicates",
         ),
         TestCase(
             input=([1, 1, 1, 1, 1], 1),
-            expected=0,
+            expected=[0, 1, 2, 3, 4],
             label="all same elements",
         ),
     ]
@@ -43,7 +43,8 @@ class P398RandomPickIndex(JudgeBase):
         )
 
     def check_stdout(self, stdout: str, tc_expected) -> bool:
-        return self.parse_int(stdout) == tc_expected
+        result = self.parse_int(stdout)
+        return result in tc_expected
 
 
 register(P398RandomPickIndex)

@@ -33,6 +33,7 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 
 int solve(int *ts, int tsSize, int duration)
 {

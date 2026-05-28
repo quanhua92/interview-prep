@@ -41,11 +41,14 @@ typedef struct {
 } Entry;
 
 typedef struct {
-    Entry entries[MAX_UNIQUE];
+    Entry *entries;
     int size;
+    int cap;
 } Solution;
 
 static void solution_init(Solution *sol, const int *nums, int n) {
+    sol->cap = 64;
+    sol->entries = malloc(sol->cap * sizeof(Entry));
     sol->size = 0;
     for (int i = 0; i < n; i++) {
         int key = nums[i];
@@ -54,6 +57,10 @@ static void solution_init(Solution *sol, const int *nums, int n) {
             if (sol->entries[j].key == key) break;
         }
         if (j == sol->size) {
+            if (sol->size >= sol->cap) {
+                sol->cap *= 2;
+                sol->entries = realloc(sol->entries, sol->cap * sizeof(Entry));
+            }
             sol->entries[j].key = key;
             sol->entries[j].count = 0;
             sol->entries[j].cap = 8;
@@ -73,7 +80,9 @@ static int solution_pick(Solution *sol, int target) {
     for (int j = 0; j < sol->size; j++) {
         if (sol->entries[j].key == target) {
             Entry *e = &sol->entries[j];
-            return e->indices[rand() % e->count];
+            int len = e->count;
+            int r = (len == 1) ? 0 : rand() % len;
+            return e->indices[r];
         }
     }
     return -1;
@@ -86,6 +95,7 @@ static void solution_free(Solution *sol) {
 
 int main(void)
 {
+    srand(42);
     int n;
     int *nums = read_ints(&n);
     int target = read_int();

@@ -55,23 +55,6 @@ from collections import deque
 def solve(vals: list[int | None]) -> list[int | None]:
     raise NotImplementedError
 
-
-    serialized = []
-    queue = deque([root])
-    while queue:
-        node = queue.popleft()
-        if node:
-            serialized.append(node["val"])
-            if node["left"] or node["right"]:
-                queue.append(node["left"])
-                queue.append(node["right"])
-        else:
-            serialized.append(None)
-    while serialized and serialized[-1] is None:
-        serialized.pop()
-    return serialized
-
-
 if __name__ == "__main__":
     n = read_int()
     if n == 0:

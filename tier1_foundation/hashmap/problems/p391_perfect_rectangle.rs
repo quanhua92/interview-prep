@@ -35,43 +35,7 @@ use wasm_libs::*;
 
 fn is_rectangle_cover(rectangles: &Vec<Vec<i32>>) -> bool
 {
-    let mut corners: std::collections::HashSet<(i64, i64)> = std::collections::HashSet::new();
-    let mut total_area: i64 = 0;
-    let mut min_x = 200000_i64;
-    let mut min_y = 200000_i64;
-    let mut max_x = -200000_i64;
-    let mut max_y = -200000_i64;
-
-    for r in rectangles {
-        let x1 = r[0] as i64;
-        let y1 = r[1] as i64;
-        let x2 = r[2] as i64;
-        let y2 = r[3] as i64;
-        min_x = min_x.min(x1);
-        min_y = min_y.min(y1);
-        max_x = max_x.max(x2);
-        max_y = max_y.max(y2);
-        total_area += (x2 - x1) * (y2 - y1);
-
-        let pts: [(i64, i64); 4] = [(x1,y1),(x1,y2),(x2,y1),(x2,y2)];
-        for p in &pts {
-            if !corners.remove(p) {
-                corners.insert(*p);
-            }
-        }
-    }
-
-    if corners.len() != 4 {
-        return false;
-    }
-    let expected: std::collections::HashSet<(i64, i64)> = [
-        (min_x, min_y), (min_x, max_y), (max_x, min_y), (max_x, max_y)
-    ].iter().cloned().collect();
-    if corners != expected {
-        return false;
-    }
-
-    total_area == (max_x - min_x) * (max_y - min_y)
+    todo!();
 }
 
 fn main() {

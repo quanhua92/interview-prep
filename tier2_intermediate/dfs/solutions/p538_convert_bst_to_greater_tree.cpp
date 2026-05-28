@@ -45,6 +45,25 @@ static void reverse_inorder(TreeNode *node) {
     reverse_inorder(node->left);
 }
 
+static std::vector<int> tree_to_bfs(TreeNode *root) {
+    if (!root) return {};
+    std::vector<int> result;
+    std::queue<TreeNode*> q;
+    q.push(root);
+    while (!q.empty()) {
+        TreeNode *node = q.front(); q.pop();
+        if (node) {
+            result.push_back(node->val);
+            q.push(node->left);
+            q.push(node->right);
+        } else {
+            result.push_back(2147483647);
+        }
+    }
+    while (result.size() > 1 && result.back() == 2147483647) result.pop_back();
+    return result;
+}
+
 int main() {
     auto line = read_line();
     if (line.empty()) { std::printf("\n"); return 0; }
@@ -63,12 +82,13 @@ int main() {
     TreeNode *root = from_list(vals);
     gtotal = 0;
     reverse_inorder(root);
-    while (!vals.empty() && vals.back() == 2147483647) vals.pop_back();
+    auto result = tree_to_bfs(root);
     bool first = true;
-    for (int v : vals) {
+    for (int v : result) {
         if (!first) std::printf(" ");
         first = false;
-        std::printf("%d", v);
+        if (v == 2147483647) std::printf("null");
+        else std::printf("%d", v);
     }
     std::printf("\n");
     return 0;

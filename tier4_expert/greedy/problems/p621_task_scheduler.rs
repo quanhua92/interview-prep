@@ -4,11 +4,12 @@
  * Topics: Array, Hash Table, Greedy, Sorting, Heap, Counting
  *
  * Given tasks and cooldown n, return minimum CPU intervals.
+ * Tasks are space-separated letters on one line, followed by n on the next line.
  */
 
 
 fn least_interval(tasks: &[char], n: i32) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

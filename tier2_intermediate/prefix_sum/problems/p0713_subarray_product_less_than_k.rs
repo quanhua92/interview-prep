@@ -33,18 +33,13 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn num_subarray_product_less_than_k(nums: &[i32], k: i32) -> i32 {
-        todo!()
-    }
+fn num_subarray_product_less_than_k(nums: &[i32], k: i32) -> i32 {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let nums = read_ints();
     let k = read_int();
-    let result = Solution::num_subarray_product_less_than_k(&nums, k);
-    write_int(result);
+    write_int(num_subarray_product_less_than_k(&nums, k));
     std::process::exit(0);
 }

@@ -1,9 +1,12 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+/*
+ * P385: Mini Parser [PREMIUM] (Medium)
+ * https://leetcode.com/problems/mini-parser/
+ * Topics: String, Stack, Depth-First Search
+ */
 
-int main(void)
-{
+#include "io.h"
+#include <string>
+
+int main() {
     abort();
 }

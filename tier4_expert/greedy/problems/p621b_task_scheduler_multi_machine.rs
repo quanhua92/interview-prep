@@ -1,15 +1,15 @@
 /*
  * P621b: Task Scheduler with Multiple Machines (Hard)
- * Extension of LeetCode 621 - Task Scheduler
  * https://leetcode.com/problems/task-scheduler/
  * Topics: Array, Hash Table, Greedy, Counting
  *
  * Given tasks, cooldown n, and m machines, return minimum time intervals.
+ * Tasks are space-separated letters on line 1, n on line 2, m on line 3.
  */
 
 
 fn least_interval_multi(tasks: &[char], n: i32, m: usize) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

@@ -30,20 +30,32 @@
  */
 
 #include "io.h"
-#include <cstdlib>
+#include <algorithm>
+#include <unordered_map>
 #include <vector>
 
 std::vector<int> topKFrequent(const std::vector<int> &nums, int k)
 {
-    abort();
+    std::unordered_map<int, int> freq;
+    for (int x : nums) freq[x]++;
+
+    std::vector<std::pair<int, int>> items;
+    items.reserve(freq.size());
+    for (auto &[val, cnt] : freq) items.push_back({val, cnt});
+
+    std::partial_sort(items.begin(), items.begin() + k, items.end(),
+                      [](const auto &a, const auto &b) {
+                          return a.second > b.second ||
+                                 (a.second == b.second && a.first > b.first);
+                      });
+
+    std::vector<int> result;
+    result.reserve(k);
+    for (int i = 0; i < k; i++) result.push_back(items[i].first);
+    return result;
 }
 
 int main(void)
 {
-    std::vector<int> nums = read_ints();
-    std::vector<int> k_arr = read_ints();
-    int k = k_arr[0];
-    auto result = topKFrequent(nums, k);
-    write_ints(result);
-    return 0;
+    abort();
 }

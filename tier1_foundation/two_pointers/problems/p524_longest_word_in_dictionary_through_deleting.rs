@@ -27,11 +27,11 @@ use wasm_libs::*;
 
 impl Solution {
     fn is_subseq(word: &[u8], target: &[u8]) -> bool {
-        todo!()
+        todo!();
     }
 
     fn find_longest_word(s: &str, dict: &[String]) -> String {
-        todo!()
+        todo!();
     }
 }
 

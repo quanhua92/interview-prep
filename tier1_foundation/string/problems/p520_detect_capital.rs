@@ -26,7 +26,7 @@ use wasm_libs::*;
 
 impl Solution {
     fn detect_capital_use(word: &str) -> bool {
-        todo!()
+        todo!();
     }
 }
 

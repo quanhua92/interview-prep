@@ -10,11 +10,29 @@
  *     Input: candidates = [2,3,6,7], target = 7
  *     Output: [[2,2,3],[7]]
  *
+ * Example 2:
+ *     Input: candidates = [2,3,5], target = 8
+ *     Output: [[2,2,2,2],[2,3,3],[3,5]]
+ *
  * Hint: Use backtracking with early pruning when the remaining sum goes negative.
  */
 
 #include "io.h"
+#include <algorithm>
+#include <functional>
+#include <vector>
+
+
+static std::vector<std::vector<int>> combinationSum(std::vector<int> candidates, int target) {
+    abort();
+}
 
 int main() {
-    abort();
+    auto candidates = read_ints();
+    int target = read_int();
+    auto result = combinationSum(candidates, target);
+    for (const auto &combo : result) {
+        write_ints(combo);
+    }
+    return 0;
 }

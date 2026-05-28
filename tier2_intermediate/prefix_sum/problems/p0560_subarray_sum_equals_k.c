@@ -37,11 +37,37 @@
 #include "io.h"
 #include <stdlib.h>
 
-int *subarray_sum(int *nums, int numsSize, int k, int *retSize)
+typedef struct Entry {
+    long long key;
+    int value;
+    struct Entry *next;
+} Entry;
+
+static Entry *hm[40007];
+
+static unsigned hm_hash(long long key)
 {
     abort();
-    *retSize = 0;
-    return NULL;
+}
+
+static void hm_set(long long key, int val)
+{
+    abort();
+}
+
+static int hm_get(long long key)
+{
+    abort();
+}
+
+static void hm_clear(void)
+{
+    abort();
+}
+
+int subarray_sum(int *nums, int numsSize, int k)
+{
+    abort();
 }
 
 int main(void)
@@ -52,10 +78,7 @@ int main(void)
     int *target_line = read_ints(&kl);
     int k = target_line[0];
     free(target_line);
-    int retSize;
-    int *result = subarray_sum(nums, n, k, &retSize);
-    write_ints(result, retSize);
+    write_int(subarray_sum(nums, n, k));
     free(nums);
-    free(result);
     return 0;
 }

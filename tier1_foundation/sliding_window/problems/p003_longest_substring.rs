@@ -38,7 +38,7 @@
 use wasm_libs::*;
 
 fn solve(s: &str) -> usize {
-    todo!()
+    todo!();
 }
 
 fn main() {

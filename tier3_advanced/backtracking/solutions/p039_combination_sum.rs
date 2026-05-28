@@ -17,7 +17,7 @@
  * Hint: Use backtracking with early pruning when the remaining sum goes negative.
  */
 
-use interview_prep::{read_int, read_ints, write_ints};
+use wasm_libs::*;
 
 fn combination_sum(mut candidates: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
     candidates.sort();

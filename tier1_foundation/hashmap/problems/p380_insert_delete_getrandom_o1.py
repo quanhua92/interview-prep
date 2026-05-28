@@ -62,40 +62,14 @@ class RandomizedSet:
         self.vals: list[int] = []
         self.idx_map: dict[int, int] = {}
 
-    def insert(self, val: int) -> bool:
-        if val in self.idx_map:
-            return False
-        self.idx_map[val] = len(self.vals)
-        self.vals.append(val)
-        return True
+        raise NotImplementedError
 
-    def remove(self, val: int) -> bool:
-        if val not in self.idx_map:
-            return False
-        idx = self.idx_map[val]
-        last = self.vals[-1]
-        self.vals[idx] = last
-        self.idx_map[last] = idx
-        self.vals.pop()
-        del self.idx_map[val]
-        return True
+        raise NotImplementedError
 
-    def getRandom(self) -> int:
-        return random.choice(self.vals)
-
+        raise NotImplementedError
 
 def solve(ops: list[str], args: list) -> list:
-    rs = RandomizedSet()
-    results = []
-    for op, arg in zip(ops, args):
-        if op == "insert":
-            results.append(rs.insert(arg[0]))
-        elif op == "remove":
-            results.append(rs.remove(arg[0]))
-        elif op == "getRandom":
-            results.append(rs.getRandom())
-    return results
-
+    raise NotImplementedError
 
 if __name__ == "__main__":
     n = read_int()

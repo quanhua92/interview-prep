@@ -30,12 +30,12 @@ Template (python3):
         def checkInclusion(self, s1: str, s2: str) -> bool:
 """
 
+from collections import Counter
 from src.wasm_libs.py.io import *
 
 
 def solve(s1: str, s2: str) -> bool:
     raise NotImplementedError
-
 
 if __name__ == "__main__":
     s1 = read_line()

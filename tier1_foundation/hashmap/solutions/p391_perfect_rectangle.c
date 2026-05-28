@@ -42,19 +42,19 @@ typedef struct {
     ll x, y;
 } Point;
 
-static bool isRectangleCover(const int *rects, int n)
+static bool isRectangleCover(const int *flat, int n)
 {
-    Point corners[80000];
+    static Point corners[80000];
     int nc = 0;
     ll total_area = 0;
     ll min_x = 200000LL, min_y = 200000LL;
     ll max_x = -200000LL, max_y = -200000LL;
 
     for (int i = 0; i < n; i++) {
-        ll x1 = rects[i * 4 + 0];
-        ll y1 = rects[i * 4 + 1];
-        ll x2 = rects[i * 4 + 2];
-        ll y2 = rects[i * 4 + 3];
+        ll x1 = flat[i * 4 + 0];
+        ll y1 = flat[i * 4 + 1];
+        ll x2 = flat[i * 4 + 2];
+        ll y2 = flat[i * 4 + 3];
         if (x1 < min_x) min_x = x1;
         if (y1 < min_y) min_y = y1;
         if (x2 > max_x) max_x = x2;
@@ -101,7 +101,15 @@ int main(void)
     int n = header[0];
     free(header);
 
-    int *flat = read_ints(&cnt);
+    int *flat = malloc(n * 4 * sizeof(int));
+    int total_read = 0;
+    for (int i = 0; i < n; i++) {
+        int rc;
+        int *row = read_ints(&rc);
+        for (int j = 0; j < rc; j++)
+            flat[total_read++] = row[j];
+        free(row);
+    }
     write_bool(isRectangleCover(flat, n));
     free(flat);
     return 0;

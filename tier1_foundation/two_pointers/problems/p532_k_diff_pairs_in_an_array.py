@@ -38,7 +38,6 @@ from src.wasm_libs.py.io import *
 def solve(nums: list[int], k: int) -> int:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     nums = read_ints()
     k = read_int()

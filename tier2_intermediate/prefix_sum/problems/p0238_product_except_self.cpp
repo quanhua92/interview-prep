@@ -33,48 +33,31 @@
  *
  * Hint: Build left and right product arrays, then combine.
  */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+
+#include "io.h"
 #include <vector>
 
 std::vector<int> product_except_self(const std::vector<int>& nums)
 {
-    abort();
+    int n = nums.size();
+    std::vector<int> output(n, 1);
+
+    long long left = 1;
+    for (int i = 0; i < n; i++) {
+        output[i] = (int)left;
+        left *= nums[i];
+    }
+
+    long long right = 1;
+    for (int i = n - 1; i >= 0; i--) {
+        output[i] = (int)((long long)output[i] * right);
+        right *= nums[i];
+    }
+
+    return output;
 }
 
 int main(void)
 {
-    struct {
-        const char *label;
-        std::vector<int> input;
-        std::vector<int> expected;
-    } tests[] = {
-        {"example 1",             {1, 2, 3, 4},       {24, 12, 8, 6}},
-        {"example 2",             {-1, 1, 0, -3, 3},  {0, 0, 9, 0, 0}},
-        {"two elements",          {1, 2},              {2, 1}},
-        {"all ones",              {1, 1, 1},           {1, 1, 1}},
-        {"all negatives",         {-1, -1, -1},        {1, 1, 1}},
-        {"two elements negative", {1, -1},             {-1, 1}},
-        {"all zeros",             {0, 0, 0, 0},        {0, 0, 0, 0}},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  238. Product of Array Except Self\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        std::vector<int> got = product_except_self(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    abort();
 }

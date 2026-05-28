@@ -28,7 +28,7 @@
 use wasm_libs::*;
 
 fn find_complement(num: i32) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

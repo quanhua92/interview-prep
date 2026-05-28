@@ -64,19 +64,29 @@ static void trie_insert(TrieNode *root, const char *word) {
     cur->is_end = 1;
 }
 
+static int memo[31];
+
 static int can_concatenate(TrieNode *root, const char *word, int start, int count) {
+    if (memo[start] >= 0) return memo[start];
     TrieNode *cur = root;
     for (int i = start; word[i]; i++) {
         int idx = word[i] - 'a';
-        if (!cur->children[idx]) return 0;
+        if (!cur->children[idx]) { memo[start] = 0; return 0; }
         cur = cur->children[idx];
         if (cur->is_end) {
             int len = (int)strlen(word);
-            if (i == len - 1) return count >= 1;
-            if (can_concatenate(root, word, i + 1, count + 1))
+            if (i == len - 1) {
+                int r = count >= 1;
+                memo[start] = r;
+                return r;
+            }
+            if (can_concatenate(root, word, i + 1, count + 1)) {
+                memo[start] = 1;
                 return 1;
+            }
         }
     }
+    memo[start] = 0;
     return 0;
 }
 
@@ -94,7 +104,7 @@ int main(void) {
     int nw = arr[0];
     free(arr);
 
-    char *words[MAX_WORDS];
+    char **words = malloc(nw * sizeof(char *));
     for (int i = 0; i < nw; i++) {
         words[i] = read_line();
     }
@@ -102,10 +112,11 @@ int main(void) {
     qsort(words, nw, sizeof(char*), cmp_len);
 
     TrieNode *root = node_new();
-    char *result[MAX_WORDS];
+    char **result = malloc(nw * sizeof(char *));
     int rc = 0;
 
     for (int i = 0; i < nw; i++) {
+        memset(memo, -1, sizeof(memo));
         if (can_concatenate(root, words[i], 0, 0))
             result[rc++] = words[i];
         trie_insert(root, words[i]);
@@ -119,6 +130,8 @@ int main(void) {
     }
 
     for (int i = 0; i < nw; i++) free(words[i]);
+    free(words);
+    free(result);
     node_free(root);
     return 0;
 }

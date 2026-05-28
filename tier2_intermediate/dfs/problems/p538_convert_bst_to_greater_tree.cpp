@@ -1,9 +1,76 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+/*
+ * P538: Convert BST to Greater Tree [PREMIUM] (Medium)
+ * https://leetcode.com/problems/convert-bst-to-greater-tree/
+ * Topics: Tree, Depth-First Search, Binary Search Tree, Binary Tree
+ */
 
-int main(void)
-{
+#include "io.h"
+#include <cstdio>
+#include <queue>
+#include <string>
+#include <vector>
+
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+    TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
+};
+
+static TreeNode *from_list(const std::vector<int>& vals) {
+    if (vals.empty() || vals[0] == 2147483647) return nullptr;
+    TreeNode *root = new TreeNode(vals[0]);
+    std::queue<TreeNode*> q;
+    q.push(root);
+    size_t i = 1;
+    while (!q.empty() && i < vals.size()) {
+        TreeNode *node = q.front(); q.pop();
+        if (i < vals.size()) {
+            if (vals[i] != 2147483647) { node->left = new TreeNode(vals[i]); q.push(node->left); }
+            i++;
+        }
+        if (i < vals.size()) {
+            if (vals[i] != 2147483647) { node->right = new TreeNode(vals[i]); q.push(node->right); }
+            i++;
+        }
+    }
+    return root;
+}
+
+static int gtotal;
+static void reverse_inorder(TreeNode *node) {
     abort();
+}
+
+static std::vector<int> tree_to_bfs(TreeNode *root) {
+    abort();
+}
+
+int main() {
+    auto line = read_line();
+    if (line.empty()) { std::printf("\n"); return 0; }
+    std::vector<int> vals;
+    size_t pos = 0;
+    while (pos < line.size()) {
+        while (pos < line.size() && line[pos] == ' ') pos++;
+        size_t end = line.find(' ', pos);
+        if (end == std::string::npos) end = line.size();
+        std::string tok = line.substr(pos, end - pos);
+        pos = end;
+        if (tok == "null") vals.push_back(2147483647);
+        else vals.push_back(std::stoi(tok));
+    }
+    if (vals.empty() || vals[0] == 2147483647) { std::printf("\n"); return 0; }
+    TreeNode *root = from_list(vals);
+    gtotal = 0;
+    reverse_inorder(root);
+    auto result = tree_to_bfs(root);
+    bool first = true;
+    for (int v : result) {
+        if (!first) std::printf(" ");
+        first = false;
+        if (v == 2147483647) std::printf("null");
+        else std::printf("%d", v);
+    }
+    std::printf("\n");
+    return 0;
 }

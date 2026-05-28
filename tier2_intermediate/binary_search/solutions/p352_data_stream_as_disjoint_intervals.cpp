@@ -53,7 +53,6 @@
 
 #include "io.h"
 #include <algorithm>
-#include <cstdlib>
 #include <cstdio>
 #include <vector>
 
@@ -78,11 +77,12 @@ std::vector<std::vector<int>> solve_intervals(const std::vector<int> &values)
 
 int main(void)
 {
-    int n;
-    int *values_arr = read_ints(&n);
-    std::vector<int> values(values_arr, values_arr + n);
-    free(values_arr);
+    std::vector<int> values = read_ints();
     auto result = solve_intervals(values);
-    write_matrix(result);
+    for (size_t i = 0; i < result.size(); i++) {
+        if (i > 0) std::printf("\n");
+        std::printf("%d %d", result[i][0], result[i][1]);
+    }
+    std::printf("\n");
     return 0;
 }

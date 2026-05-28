@@ -24,7 +24,7 @@
 import { readInt, writeInts } from '../../../wasm_libs/js/io.mjs';
 
 function solve(n, k) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const n = readInt();

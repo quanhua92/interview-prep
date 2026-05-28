@@ -25,11 +25,12 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 #include <string.h>
 
 int longestPalindromeSubseq(const char *s) {
     int n = (int)strlen(s);
-    int dp[1000][1000];
+    static int dp[1000][1000];
     memset(dp, 0, sizeof(dp));
     for (int i = 0; i < n; i++) dp[i][i] = 1;
     for (int length = 2; length <= n; length++) {

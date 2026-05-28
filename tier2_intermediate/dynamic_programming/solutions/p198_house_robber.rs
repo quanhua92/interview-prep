@@ -31,8 +31,7 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn rob(nums: &[i32]) -> i32 {
+fn rob(nums: &[i32]) -> i32 {
     let (mut prev, mut curr) = (0, 0);
     for &x in nums {
         let t = curr;
@@ -40,10 +39,7 @@ impl Solution {
         prev = t;
     }
     curr
-    }
 }
-
-struct Solution;
 
 fn main() {
     let nums = read_ints();

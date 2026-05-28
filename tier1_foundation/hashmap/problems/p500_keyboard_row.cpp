@@ -37,12 +37,7 @@
 
 static int get_row(char c)
 {
-    c = (char)tolower((unsigned char)c);
-    const char *rows[] = {"qwertyuiop", "asdfghjkl", "zxcvbnm"};
-    for (int r = 0; r < 3; r++) {
-        if (strchr(rows[r], c)) return r;
-    }
-    return -1;
+    abort();
 }
 
 int main(void)

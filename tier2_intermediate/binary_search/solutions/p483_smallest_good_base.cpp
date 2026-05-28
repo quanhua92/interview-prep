@@ -33,7 +33,6 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
-#include <cstdlib>
 #include <string>
 #include <vector>
 
@@ -69,9 +68,8 @@ std::string smallestGoodBase(const std::string &n)
 
 int main(void)
 {
-    char *n = read_line();
+    std::string n = read_line();
     std::string result = smallestGoodBase(n);
-    write_string(result.c_str());
-    free(n);
+    write_string(result);
     return 0;
 }

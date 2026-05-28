@@ -58,9 +58,8 @@ fn count_components(n: usize, edges: &[(i32, i32)]) -> i32 {
 }
 
 fn main() {
-    let first_line = read_ints();
-    let n = first_line[0] as usize;
-    let m = first_line[1] as usize;
+    let n = read_int() as usize;
+    let m = read_int() as usize;
     let mut edge_vec: Vec<(i32, i32)> = Vec::new();
     for _ in 0..m {
         let row = read_ints();

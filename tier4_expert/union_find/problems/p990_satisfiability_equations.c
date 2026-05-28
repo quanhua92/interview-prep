@@ -3,17 +3,31 @@
  * https://leetcode.com/problems/satisfiability-of-equality-equations/
  * Topics: Array, String, Union Find, Graph
  *
- * You are given an array of strings equations that represent relationships between variables where each string equations[i] is of length 4 and takes one of two different forms: "xi==yi" or "xi!=yi".Here, xi and yi are lowercase letters (not necessarily different) that represent one-letter variable names.
- * Return true if it is possible to assign integers to variable names so as to satisfy all the given equations, or false otherwise.
+ * Return true if it is possible to assign integers to variable names so as to satisfy all the given equations.
  *
  * Hint: Union-Find with 26 variables (map char to 0-25). First pass: union all "==". Second pass: check "!=" for contradiction.
  */
 
+
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
 
-int equationsPossible(int n_eq, const char **equations)
-{
+static int find(int *parent, int x) {
+    if (parent[x] != x)
+        parent[x] = find(parent, parent[x]);
+    return parent[x];
+}
+
+static void unite(int *parent, int *rank, int x, int y) {
+    int rx = find(parent, x), ry = find(parent, y);
+    if (rx == ry) return;
+    if (rank[rx] < rank[ry]) { int t = rx; rx = ry; ry = t; }
+    parent[ry] = rx;
+    if (rank[rx] == rank[ry]) rank[rx]++;
+}
+
+int equationsPossible(int n_eq, const char **equations) {
     abort();
 }
 

@@ -31,6 +31,14 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
+
+typedef struct { int val, freq; } Freq;
+
+static int cmp_freq(const void *a, const void *b)
+{
+    abort();
+}
 
 static void topKFrequent(int *nums, int numsSize, int k, int *result)
 {

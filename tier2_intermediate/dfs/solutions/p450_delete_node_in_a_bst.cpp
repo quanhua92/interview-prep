@@ -6,7 +6,6 @@
 
 #include "io.h"
 #include <cstdio>
-#include <cstdlib>
 #include <queue>
 #include <string>
 #include <vector>

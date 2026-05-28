@@ -5,60 +5,44 @@
  */
 
 use wasm_libs::*;
-use std::collections::VecDeque;
 
-#[derive(Clone)]
-struct TreeNode {
-    val: i32,
-    left: Option<Box<TreeNode>>,
-    right: Option<Box<TreeNode>>,
-}
-
-fn from_list(vals: &[i32]) -> Option<Box<TreeNode>> {
-    let nl = 2147483647i32;
-    if vals.is_empty() || vals[0] == nl { return None; }
-    let root = Box::new(TreeNode { val: vals[0], left: None, right: None });
-    let mut queue = VecDeque::new();
-    queue.push_back(root.clone());
-    let mut vi = 1;
-    while !queue.is_empty() && vi < vals.len() {
-        let mut node = queue.pop_front().unwrap();
-        if vi < vals.len() {
-            if vals[vi] != nl {
-                let child = Box::new(TreeNode { val: vals[vi], left: None, right: None });
-                node.left = Some(child.clone());
-                queue.push_back(child);
-            }
-            vi += 1;
+fn build_tree(vals: &[i32], nl: i32) -> (Vec<i32>, Vec<i32>) {
+    let n = vals.len();
+    if n == 0 || vals[0] == nl { return (vec![], vec![]); }
+    let mut left = vec![-1i32; n];
+    let mut right = vec![-1i32; n];
+    let mut qi = 1usize;
+    let mut queue = std::collections::VecDeque::new();
+    queue.push_back(0usize);
+    while let Some(i) = queue.pop_front() {
+        if qi < n {
+            left[i] = if vals[qi] == nl { -1 } else { qi as i32 };
+            if vals[qi] != nl { queue.push_back(qi); }
+            qi += 1;
         }
-        if vi < vals.len() {
-            if vals[vi] != nl {
-                let child = Box::new(TreeNode { val: vals[vi], left: None, right: None });
-                node.right = Some(child.clone());
-                queue.push_back(child);
-            }
-            vi += 1;
+        if qi < n {
+            right[i] = if vals[qi] == nl { -1 } else { qi as i32 };
+            if vals[qi] != nl { queue.push_back(qi); }
+            qi += 1;
         }
     }
-    Some(root)
+    (left, right)
 }
 
-fn is_same(a: &Option<Box<TreeNode>>, b: &Option<Box<TreeNode>>) -> bool {
-    match (a, b) {
-        (None, None) => true,
-        (None, _) | (_, None) => false,
-        (Some(an), Some(bn)) => {
-            an.val == bn.val && is_same(&an.left, &bn.left) && is_same(&an.right, &bn.right)
-        }
-    }
+fn is_same(ri: i32, si: i32, rvals: &[i32], svals: &[i32], rleft: &[i32], rright: &[i32], sleft: &[i32], sright: &[i32]) -> bool {
+    if ri < 0 && si < 0 { return true; }
+    if ri < 0 || si < 0 { return false; }
+    if rvals[ri as usize] != svals[si as usize] { return false; }
+    is_same(rleft[ri as usize], sleft[si as usize], rvals, svals, rleft, rright, sleft, sright)
+        && is_same(rright[ri as usize], sright[si as usize], rvals, svals, rleft, rright, sleft, sright)
 }
 
-fn is_subtree(root: &Option<Box<TreeNode>>, sub_root: &Option<Box<TreeNode>>) -> bool {
-    if sub_root.is_none() { return true; }
-    if root.is_none() { return false; }
-    if is_same(root, sub_root) { return true; }
-    let r = root.as_ref().unwrap();
-    is_subtree(&r.left, sub_root) || is_subtree(&r.right, sub_root)
+fn is_subtree(ri: i32, si: i32, rvals: &[i32], svals: &[i32], rleft: &[i32], rright: &[i32], sleft: &[i32], sright: &[i32]) -> bool {
+    if si < 0 { return true; }
+    if ri < 0 { return false; }
+    if is_same(ri, si, rvals, svals, rleft, rright, sleft, sright) { return true; }
+    is_subtree(rleft[ri as usize], si, rvals, svals, rleft, rright, sleft, sright)
+        || is_subtree(rright[ri as usize], si, rvals, svals, rleft, rright, sleft, sright)
 }
 
 fn main() {
@@ -70,7 +54,11 @@ fn main() {
             .map(|t| if t == "null" { nl } else { t.parse().unwrap() })
             .collect()
     };
-    let root = from_list(&parse(&root_line));
-    let sub = from_list(&parse(&sub_line));
-    write_bool(is_subtree(&root, &sub));
+    let root_vals = parse(&root_line);
+    let sub_vals = parse(&sub_line);
+    let (rleft, rright) = build_tree(&root_vals, nl);
+    let (sleft, sright) = build_tree(&sub_vals, nl);
+    let root_idx = if root_vals.is_empty() || root_vals[0] == nl { -1 } else { 0 };
+    let sub_idx = if sub_vals.is_empty() || sub_vals[0] == nl { -1 } else { 0 };
+    write_bool(is_subtree(root_idx, sub_idx, &root_vals, &sub_vals, &rleft, &rright, &sleft, &sright));
 }

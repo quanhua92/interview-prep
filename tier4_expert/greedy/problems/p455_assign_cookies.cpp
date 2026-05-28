@@ -3,11 +3,21 @@
  * https://leetcode.com/problems/assign-cookies/
  * Topics: Array, Two Pointers, Greedy, Sorting
  *
- * Hint: Sort both arrays and use two pointers to greedily assign the smallest sufficient cookie.
+ * Each child i has a greed factor g[i], and each cookie j has a size s[j].
+ * Return the maximum number of content children.
+ *
+ * Constraints:
+ *     - 1 <= g.length <= 3 * 104
+ *     - 0 <= s.length <= 3 * 104
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def findContentChildren(self, g: List[int], s: List[int]) -> int:
  */
 
 
-#include "cpptest.h"
+#include "io.h"
+#include <algorithm>
 
 int findContentChildren(std::vector<int> g, std::vector<int> s) {
     abort();

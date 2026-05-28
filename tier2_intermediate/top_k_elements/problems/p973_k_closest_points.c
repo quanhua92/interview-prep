@@ -34,17 +34,45 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
+
+typedef struct { int x, y; } Pt;
+
+static int cmp_dist(const void *a, const void *b)
+{
+    abort();
+}
+
+static int cmp_lex(const void *a, const void *b)
+{
+    abort();
+}
 
 int main(void)
 {
     int flat_len;
     int *flat = read_ints(&flat_len);
     int npoints = flat_len / 2;
+    Pt *pts = malloc(npoints * sizeof(Pt));
+    for (int i = 0; i < npoints; i++) {
+        pts[i].x = flat[2 * i];
+        pts[i].y = flat[2 * i + 1];
+    }
+    free(flat);
+
     int k_len;
     int *k_arr = read_ints(&k_len);
     int k = k_arr[0];
     free(k_arr);
-    abort();
-    free(flat);
+
+    qsort(pts, npoints, sizeof(Pt), cmp_dist);
+    qsort(pts, k, sizeof(Pt), cmp_lex);
+
+    for (int i = 0; i < k; i++) {
+        int pt[2] = {pts[i].x, pts[i].y};
+        write_ints(pt, 2);
+    }
+
+    free(pts);
     return 0;
 }

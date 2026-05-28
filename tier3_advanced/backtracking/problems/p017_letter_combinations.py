@@ -25,7 +25,7 @@ Constraints:
 Template (python3):
     class Solution:
         def letterCombinations(self, digits: str) -> List[str]:
-
+            raise NotImplementedError
 Hint: Map each digit to its letters and use backtracking to build all combinations.
 """
 
@@ -34,8 +34,6 @@ from src.wasm_libs.py.io import *
 
 def solve(digits: str) -> list[str]:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     digits = read_line()
     combos = solve(digits)

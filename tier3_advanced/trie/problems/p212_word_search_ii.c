@@ -24,6 +24,14 @@
  *     - words[i] consists of lowercase English letters.
  *     - All the strings of words are unique.
  *
+ * Hints:
+ *     - You would need to optimize your backtracking to pass the larger test. Could you stop backtracking earlier?
+ *     - If the current candidate does not exist in all words' prefix, you could stop backtracking immediately. What kind of data structure could answer such query efficiently? Does a hash table work? Why or why not? How about a Trie? If you would like to learn how to implement a basic trie, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+ *
  * Hint: Build a Trie from the word list, then use DFS on the board to find matching words.
  */
 
@@ -42,8 +50,9 @@ typedef struct TrieNode {
     int has_word;
 } TrieNode;
 
-static TrieNode pool[600000];
+static TrieNode *pool;
 static int pool_idx;
+static int pool_cap;
 
 static TrieNode *node_new(void) {
     abort();
@@ -62,14 +71,16 @@ static void dfs(char board[MAX_BOARD][MAX_BOARD], int r, int c, TrieNode *parent
 }
 
 static int cmp_str(const void *a, const void *b) {
-    return strcmp((const char *)a, (const char *)b);
+    abort();
 }
 
 int main(void) {
     int n;
     int *arr = read_ints(&n);
     rows = arr[0];
-    cols = arr[1];
+    free(arr);
+    arr = read_ints(&n);
+    cols = arr[0];
     free(arr);
 
     char board[MAX_BOARD][MAX_BOARD];
@@ -85,6 +96,8 @@ int main(void) {
     int nw = arr[0];
     free(arr);
 
+    pool_cap = 10000;
+    pool = malloc(pool_cap * sizeof(TrieNode));
     pool_idx = 0;
     result_count = 0;
 

@@ -26,6 +26,7 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 
 static int findComplement(int num) {
     unsigned int mask = (unsigned int)(1 << (32 - __builtin_clz(num))) - 1;
@@ -33,7 +34,7 @@ static int findComplement(int num) {
 }
 
 int main(void) {
-    int num = read_int();
+    int c; int *a = read_ints(&c); int num = a[0]; free(a);
     write_int(findComplement(num));
     return 0;
 }

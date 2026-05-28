@@ -4,6 +4,7 @@
 #include <vector>
 
 std::vector<int> read_ints();
+int read_int();
 std::string read_line();
 void write_int(int val);
 void write_ints(const std::vector<int> &arr);

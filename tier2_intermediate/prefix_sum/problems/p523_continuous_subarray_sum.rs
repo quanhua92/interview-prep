@@ -32,20 +32,16 @@
  *         def checkSubarraySum(self, nums: List[int], k: int) -> bool:
  */
 
+use std::collections::HashMap;
 use wasm_libs::*;
 
-impl Solution {
-    fn check_subarray_sum(nums: &[i32], k: i32) -> bool {
-        todo!()
-    }
+fn check_subarray_sum(nums: &[i32], k: i32) -> bool {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let nums = read_ints();
     let k = read_int();
-    let result = Solution::check_subarray_sum(&nums, k);
-    write_bool(result);
+    write_bool(check_subarray_sum(&nums, k));
     std::process::exit(0);
 }

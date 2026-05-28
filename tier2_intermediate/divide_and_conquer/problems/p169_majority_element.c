@@ -14,8 +14,18 @@
  *     Input: nums = [2,2,1,1,1,2,2]
  *     Output: 2
  *
+ * Constraints:
+ *     - n == nums.length
+ *     - 1 <= n <= 5 * 104
+ *     - -109 <= nums[i] <= 109
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def majorityElement(self, nums: List[int]) -> int:
+ *
  * Hint: Use Boyer-Moore voting algorithm — maintain a candidate and count.
  */
+
 
 #include "io.h"
 #include <stdlib.h>

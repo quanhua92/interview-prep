@@ -3,12 +3,13 @@
  * https://leetcode.com/problems/assign-cookies/
  * Topics: Array, Two Pointers, Greedy, Sorting
  *
- * Hint: Sort both arrays and use two pointers to greedily assign the smallest sufficient cookie.
+ * Each child i has a greed factor g[i], and each cookie j has a size s[j].
+ * Return the maximum number of content children.
  */
 
 
 fn find_content_children(mut g: Vec<i32>, mut s: Vec<i32>) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

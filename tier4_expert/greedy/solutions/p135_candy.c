@@ -28,7 +28,7 @@
  */
 
 
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 
 int candy(int *ratings, int ratingsSize) {

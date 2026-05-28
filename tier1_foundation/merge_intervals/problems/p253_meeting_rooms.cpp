@@ -17,11 +17,21 @@
  *     - 1 <= intervals.length <= 10^4
  *     - 0 <= starti < endi <= 10^6
  *
+ * Hints:
+ *     - Think about how we would approach this problem if we were given the intervals sorted by start time.
+ *     - What if we use a min-heap to track the ending times of meetings?
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def minMeetingRooms(self, intervals: List[List[int]]) -> int:
+ *
  * Hint: Sort start and end times separately, then use two pointers to count concurrent meetings.
  */
 
 
 #include "io.h"
+#include <cstdlib>
+#include <algorithm>
 #include <vector>
 
 int solve(std::vector<std::vector<int>> &intervals)

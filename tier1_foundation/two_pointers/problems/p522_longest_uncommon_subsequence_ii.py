@@ -30,7 +30,6 @@ from src.wasm_libs.py.io import *
 def solve(strs: list[str]) -> int:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     n = read_int()
     strs = [read_line() for _ in range(n)]

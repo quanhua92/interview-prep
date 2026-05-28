@@ -26,13 +26,9 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn longest_palindrome_subseq(s: &str) -> i32 {
-        todo!()
-    }
+fn longest_palindrome_subseq(s: &str) -> i32 {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let s = read_line();

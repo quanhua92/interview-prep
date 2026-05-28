@@ -34,12 +34,41 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <limits.h>
 
-int *check_subarray_sum(int *nums, int numsSize, int k, int *retSize)
+typedef struct Entry {
+    int key;
+    int value;
+    struct Entry *next;
+} Entry;
+
+#define HM_SIZE 10009
+
+static Entry *hm[HM_SIZE];
+
+static void hm_init(void)
 {
     abort();
-    *retSize = 0;
-    return NULL;
+}
+
+static void hm_set(int key, int val)
+{
+    abort();
+}
+
+static int hm_get(int key, int *found)
+{
+    abort();
+}
+
+static void hm_clear(void)
+{
+    abort();
+}
+
+int check_subarray_sum(int *nums, int numsSize, int k)
+{
+    abort();
 }
 
 int main(void)
@@ -50,10 +79,7 @@ int main(void)
     int *target_line = read_ints(&kl);
     int k = target_line[0];
     free(target_line);
-    int retSize;
-    int *result = check_subarray_sum(nums, n, k, &retSize);
-    write_ints(result, retSize);
+    write_bool(check_subarray_sum(nums, n, k));
     free(nums);
-    free(result);
     return 0;
 }

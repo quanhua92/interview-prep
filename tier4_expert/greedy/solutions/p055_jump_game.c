@@ -28,7 +28,8 @@
  */
 
 
-#include "ctest.h"
+#include "io.h"
+#include <stdlib.h>
 #include <stdbool.h>
 
 bool canJump(int *nums, int numsSize) {

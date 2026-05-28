@@ -64,7 +64,6 @@
 
 #include "io.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #define MAXKEYS 100005
@@ -152,14 +151,9 @@ static void lfu_put(int key, int value) {
     lfu_size++;
 }
 
-static int read_int_from_line(void) {
-    char *line = read_line();
-    return atoi(line);
-}
-
 int main(void) {
-    int capacity = read_int_from_line();
-    int num_ops = read_int_from_line();
+    int capacity = read_int();
+    int num_ops = read_int();
     lfu_init(capacity);
 
     for (int i = 0; i < num_ops; i++) {

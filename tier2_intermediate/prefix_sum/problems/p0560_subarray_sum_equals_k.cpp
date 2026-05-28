@@ -33,50 +33,23 @@
  *
  * Hint: Use a hash map with prefix sums to count subarrays summing to k.
  */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+
+#include "io.h"
+#include <unordered_map>
 #include <vector>
 
-int subarray_sum(const std::vector<int>& nums, int k)
+using namespace std;
+
+int subarray_sum(const vector<int>& nums, int k)
 {
     abort();
 }
 
 int main(void)
 {
-    struct {
-        const char *label;
-        std::vector<int> input;
-        int target;
-        int expected;
-    } tests[] = {
-        {"example 1",                {1, 1, 1},     2, 2},
-        {"example 2",                {1, 2, 3},     3, 2},
-        {"empty array",              {},            0, 0},
-        {"single element equals k",  {1},           1, 1},
-        {"single element not k",     {1},           2, 0},
-        {"negatives with zero sum",  {1, -1, 0},    0, 3},
-        {"all zeros",                {0, 0, 0},     0, 6},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  560. Subarray Sum Equals K\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int got = subarray_sum(tests[i].input, tests[i].target);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    vector<int> nums = read_ints();
+    vector<int> target_line = read_ints();
+    int k = target_line[0];
+    write_int(subarray_sum(nums, k));
+    return 0;
 }

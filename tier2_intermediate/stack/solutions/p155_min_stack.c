@@ -43,11 +43,11 @@ static int ms_get_min(void) { return mn_data[mn_sz - 1]; }
 
 int main(void)
 {
-    int n = read_int();
+    int cn; int *ca = read_ints(&cn); int n = ca[0]; free(ca);
     ms_init();
     for (int i = 0; i < n; i++) {
         char *op = read_line();
-        int count = read_int();
+        int cc; int *ca = read_ints(&cc); int count = ca[0]; free(ca);
         int val = 0;
         if (count > 0) {
             int dummy;

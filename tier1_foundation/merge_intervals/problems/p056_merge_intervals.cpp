@@ -29,6 +29,8 @@
 
 
 #include "io.h"
+#include <cstdlib>
+#include <algorithm>
 #include <vector>
 
 void solve(std::vector<std::vector<int>> &intervals)

@@ -1,15 +1,22 @@
 /*
  * P621b: Task Scheduler with Multiple Machines (Hard)
- * Extension of LeetCode 621 - Task Scheduler
  * https://leetcode.com/problems/task-scheduler/
  * Topics: Array, Hash Table, Greedy, Counting
  *
  * Given tasks, cooldown n, and m machines, return minimum time intervals.
+ * Tasks are space-separated letters on line 1, n on line 2, m on line 3.
+ *
+ * Constraints:
+ *     - 1 <= tasks.length <= 10^4
+ *     - 0 <= n <= 100
+ *     - 1 <= m <= 26
  */
 
 
-#include "ctest.h"
+#include "io.h"
 #include <limits.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define MAX_M 26
 #define MAX_TASKS 10000

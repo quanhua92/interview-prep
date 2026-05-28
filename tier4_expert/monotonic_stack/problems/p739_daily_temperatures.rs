@@ -35,14 +35,14 @@ use wasm_libs::*;
 
 impl Solution {
     fn daily_temperatures(temperatures: &[i32]) -> Vec<i32> {
-        todo!()
-    }
+    todo!();
+}
 }
 
 struct Solution;
 
 fn main() {
     let temperatures = read_ints();
-    write_ints(Solution::daily_temperatures(&temperatures));
+    write_ints(&Solution::daily_temperatures(&temperatures));
     std::process::exit(0);
 }

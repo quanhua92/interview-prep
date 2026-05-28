@@ -26,7 +26,7 @@ int climbStairs(int n) {
 }
 
 int main(void) {
-    int n = read_int();
+    int n = read_ints()[0];
     write_int(climbStairs(n));
     return 0;
 }

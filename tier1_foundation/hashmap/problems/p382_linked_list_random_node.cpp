@@ -76,12 +76,7 @@ static void free_list(ListNode *head) {
 }
 
 static int solve(ListNode *head) {
-    ListNode *slow = head, *fast = head;
-    while (fast && fast->next) {
-        slow = slow->next;
-        fast = fast->next->next;
-    }
-    return slow->val;
+    abort();
 }
 
 int main(void)

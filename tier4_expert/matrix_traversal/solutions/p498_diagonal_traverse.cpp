@@ -56,12 +56,13 @@ static std::vector<int> findDiagonalOrder(const std::vector<std::vector<int>> &m
 
 int main(void)
 {
-    std::vector<int> header = read_ints();
-    int cols = header[0];
-    int rows = cols;
+    (void)read_int();
     std::vector<std::vector<int>> mat;
-    for (int i = 0; i < rows; i++)
-        mat.push_back(read_ints());
+    while (true) {
+        std::vector<int> row = read_ints();
+        if (row.empty()) break;
+        mat.push_back(row);
+    }
     auto result = findDiagonalOrder(mat);
     write_ints(result);
     return 0;

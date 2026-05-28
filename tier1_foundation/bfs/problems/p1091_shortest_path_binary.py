@@ -36,12 +36,11 @@ Hint: BFS from (0,0) with 8 directions, return distance to (n-1,n-1) or -1.
 """
 
 from src.wasm_libs.py.io import *
+from collections import deque
 
 
 def solve(grid: list[list[int]]) -> int:
     raise NotImplementedError
-
-
 
 if __name__ == "__main__":
     _n = read_int()

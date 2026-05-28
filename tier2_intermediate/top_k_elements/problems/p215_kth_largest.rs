@@ -29,7 +29,7 @@
 use wasm_libs::*;
 
 fn find_kth_largest(nums: &mut Vec<i32>, k: i32) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

@@ -23,6 +23,15 @@
 
 use wasm_libs::*;
 
-fn main() {
+fn subsets_with_dup(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
     todo!()
+}
+
+fn main() {
+    let nums = read_ints();
+    let result = subsets_with_dup(nums);
+    for row in &result {
+        write_ints(row);
+    }
+    std::process::exit(0);
 }

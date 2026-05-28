@@ -49,26 +49,27 @@
  */
 
 #include "io.h"
-#include <cstdlib>
 #include <cstdio>
 #include <vector>
 
+static std::vector<int> solve(const std::vector<std::vector<int>> &rects) {
+    std::vector<int> prefix;
+    int total = 0;
+    for (const auto &r : rects) {
+        total += (r[2] - r[0] + 1) * (r[3] - r[1] + 1);
+        prefix.push_back(total);
+    }
+    return prefix;
+}
+
 int main(void)
 {
-    int total;
-    int *flat = read_ints(&total);
-    int cols = flat[0];
-    std::vector<int> result;
-    int prefix_total = 0;
+    int cols = read_int();
+    std::vector<std::vector<int>> rects;
     for (int i = 0; i < cols; i++) {
-        int x1 = flat[1 + i * 4];
-        int y1 = flat[1 + i * 4 + 1];
-        int x2 = flat[1 + i * 4 + 2];
-        int y2 = flat[1 + i * 4 + 3];
-        prefix_total += (x2 - x1 + 1) * (y2 - y1 + 1);
-        result.push_back(prefix_total);
+        rects.push_back(read_ints());
     }
-    free(flat);
-    write_ints(result.data(), result.size());
+    auto result = solve(rects);
+    write_ints(result);
     return 0;
 }

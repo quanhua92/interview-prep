@@ -1,9 +1,13 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+/*
+ * P388: Longest Absolute File Path [PREMIUM] (Medium)
+ * https://leetcode.com/problems/longest-absolute-file-path/
+ * Topics: String, Stack, Depth-First Search
+ */
 
-int main(void)
-{
+#include "io.h"
+#include <string>
+#include <vector>
+
+int main() {
     abort();
 }

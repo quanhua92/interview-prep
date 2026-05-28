@@ -38,30 +38,31 @@ Template (python3):
     class WordDictionary:
 
         def __init__(self):
-
-
+            raise NotImplementedError
         def addWord(self, word: str) -> None:
-
-
+            raise NotImplementedError
         def search(self, word: str) -> bool:
-
-
-
-    # Your WordDictionary object will be instantiated and called as such:
-    # obj = WordDictionary()
-    # obj.addWord(word)
-    # param_2 = obj.search(word)
-
+            raise NotImplementedError
 Hint: Build a Trie from the word list, then search with DFS handling '.' wildcards by trying all children.
 """
 
 from src.wasm_libs.py.io import *
 
 
+class TrieNode:
+    def __init__(self):
+        raise NotImplementedError
+class WordDictionary:
+    def __init__(self):
+        raise NotImplementedError
+    def add_word(self, word: str) -> None:
+        raise NotImplementedError
+    def search(self, word: str) -> bool:
+        raise NotImplementedError
+    def _dfs(self, node: TrieNode, word: str, index: int) -> bool:
+        raise NotImplementedError
 def solve(words: list[str], search_words: list[str]) -> list[bool]:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     n_words = read_int()
     words = [read_line() for _ in range(n_words)]

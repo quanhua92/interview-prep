@@ -26,6 +26,17 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
+
+static int is_subseq(const char *a, const char *b)
+{
+    abort();
+}
+
+static int cmp_len_desc(const void *a, const void *b)
+{
+    abort();
+}
 
 static int findLUSlength(const char **strs, int n)
 {

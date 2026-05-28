@@ -27,7 +27,7 @@ Constraints:
 Template (python3):
     class Solution:
         def splitArray(self, nums: List[int], k: int) -> int:
-
+            raise NotImplementedError
 Hint: Binary search the answer in [max(nums), sum(nums)] and check feasibility greedily.
 """
 
@@ -36,8 +36,6 @@ from src.wasm_libs.py.io import *
 
 def solve(nums: list[int], k: int) -> int:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     nums = read_ints()
     k = read_int()

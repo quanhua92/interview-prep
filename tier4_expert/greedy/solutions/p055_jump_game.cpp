@@ -28,7 +28,8 @@
  */
 
 
-#include "cpptest.h"
+#include "io.h"
+#include <vector>
 
 bool canJump(const std::vector<int> &nums) {
     int max_reach = 0;

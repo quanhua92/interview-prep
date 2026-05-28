@@ -76,8 +76,8 @@ fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
 
 impl Solution {
     fn find_bottom_left_value(root: Rc<RefCell<TreeNode>>) -> i32 {
-    todo!()
-}
+        todo!();
+    }
 }
 
 struct Solution;

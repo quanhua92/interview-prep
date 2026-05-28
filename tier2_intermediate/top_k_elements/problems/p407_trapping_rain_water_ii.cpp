@@ -27,7 +27,8 @@
  */
 
 #include "io.h"
-#include <cstdlib>
+#include <queue>
+#include <tuple>
 #include <vector>
 
 int trapRainWater(const std::vector<std::vector<int>> &heightMap)

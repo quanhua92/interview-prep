@@ -24,7 +24,7 @@
 use wasm_libs::*;
 
 fn next_greater_element(n: i32) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

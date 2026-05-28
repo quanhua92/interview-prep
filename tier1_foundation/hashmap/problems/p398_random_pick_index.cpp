@@ -39,8 +39,7 @@ public:
             idx[nums[i]].push_back(i);
     }
     int pick(int target) {
-        auto& indices = idx[target];
-        return indices[rand() % indices.size()];
+        abort();
     }
 };
 
@@ -49,6 +48,7 @@ int main(void)
     std::vector<int> nums = read_ints();
     int target = read_int();
 
+    srand(42);
     Solution sol(nums);
     write_int(sol.pick(target));
     return 0;

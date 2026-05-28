@@ -51,7 +51,7 @@ int main() {
     std::istringstream iss(line);
     double radius, x_center, y_center;
     iss >> radius >> x_center >> y_center;
-    int count = read_int();
+    int count = read_ints()[0];
 
     std::mt19937 rng(std::random_device{}());
     std::uniform_real_distribution<double> dist{-1.0, 1.0};

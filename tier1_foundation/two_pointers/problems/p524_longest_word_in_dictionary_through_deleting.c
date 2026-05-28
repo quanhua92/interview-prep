@@ -25,12 +25,26 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
+
+static int is_subseq(const char *word, const char *target) {
+    abort();
+}
 
 static char *findLongestWord(const char *s, const char **dict, int dict_size) {
-    abort();
-    char *r = malloc(1);
-    r[0] = '\0';
-    return r;
+    const char *best = "";
+    for (int i = 0; i < dict_size; i++) {
+        if (is_subseq(dict[i], s)) {
+            int wlen = (int)strlen(dict[i]);
+            int blen = (int)strlen(best);
+            if (wlen > blen || (wlen == blen && strcmp(dict[i], best) < 0)) {
+                best = dict[i];
+            }
+        }
+    }
+    char *result = malloc(strlen(best) + 1);
+    strcpy(result, best);
+    return result;
 }
 
 int main(void)

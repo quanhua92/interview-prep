@@ -10,13 +10,17 @@
  *     Input: matchsticks = [1,1,2,2,2]
  *     Output: true
  *
+ * Example 2:
+ *     Input: matchsticks = [3,3,3,3,4]
+ *     Output: false
+ *
  * Hint: Treat the matchsticks as an array. Can we split the array into 4 equal parts?
  */
 
 import { readInts, writeBool } from '../../../wasm_libs/js/io.mjs';
 
 function solve(matchsticks) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const matchsticks = readInts();

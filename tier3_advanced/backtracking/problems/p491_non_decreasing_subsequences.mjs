@@ -11,12 +11,16 @@
  * Example 2:
  *     Input: nums = [4,4,3,2,1]
  *     Output: [[4,4]]
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def findSubsequences(self, nums: List[int]) -> List[List[int]]:
  */
 
 import { readInts, writeInts } from '../../../wasm_libs/js/io.mjs';
 
 function solve(nums) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const nums = readInts();

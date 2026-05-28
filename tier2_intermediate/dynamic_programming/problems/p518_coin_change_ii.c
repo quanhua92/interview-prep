@@ -44,7 +44,7 @@ int change(int amount, int *coins, int coinsSize) {
 }
 
 int main(void) {
-    int amount = read_int();
+    int ac; int *aa = read_ints(&ac); int amount = aa[0]; free(aa);
     int coins_n;
     int *coins = read_ints(&coins_n);
     write_int(change(amount, coins, coins_n));

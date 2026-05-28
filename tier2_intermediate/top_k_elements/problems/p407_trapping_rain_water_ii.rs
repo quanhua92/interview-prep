@@ -27,9 +27,11 @@
  */
 
 use wasm_libs::*;
+use std::cmp::Reverse;
+use std::collections::BinaryHeap;
 
 fn trap_rain_water(height_map: &[Vec<i32>]) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

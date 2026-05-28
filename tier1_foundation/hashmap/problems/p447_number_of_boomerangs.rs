@@ -34,20 +34,7 @@ use wasm_libs::*;
 use std::collections::HashMap;
 
 fn number_of_boomerangs(points: &[(i32, i32)]) -> i32 {
-    let mut result = 0;
-    for i in 0..points.len() {
-        let mut dist_count: HashMap<i64, i32> = HashMap::new();
-        for j in 0..points.len() {
-            if i == j { continue; }
-            let dx = (points[i].0 - points[j].0) as i64;
-            let dy = (points[i].1 - points[j].1) as i64;
-            *dist_count.entry(dx * dx + dy * dy).or_insert(0) += 1;
-        }
-        for &count in dist_count.values() {
-            result += count * (count - 1);
-        }
-    }
-    result
+    todo!();
 }
 
 fn main() {

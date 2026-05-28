@@ -11,36 +11,60 @@
  *     Output: 2
  *
  * Example 2:
- *     Input: n = 5, edges = [[0,1],[1,2],[2,3],[3,4]]
+ *     Input: n = 5, edges = [[1,2],[2,3],[3,4]]
  *     Output: 1
- *
- * Constraints:
- *     - 1 <= n <= 2000
- *     - 1 <= edges.length <= 5000
- *     - edges[i].length == 2
- *     - 0 <= ai <= bi < n
- *     - ai != bi
- *     - There are no repeated edges.
- *
- * Template (python3):
- *     class Solution:
- *         def countComponents(self, n: int, edges: List[List[int]]) -> int:
  *
  * Hint: Use a Union-Find data structure to merge connected nodes and count components.
  */
 
+
 #include "io.h"
 #include <stdlib.h>
 
-int countComponents(int n, int edge_count, int (*edges)[2])
-{
+typedef struct {
+    int *parent;
+    int *rank;
+    int n;
+} UnionFind;
+
+static UnionFind *UF_create(int n) {
+    UnionFind *uf = malloc(sizeof(UnionFind));
+    uf->n = n;
+    uf->parent = malloc(n * sizeof(int));
+    uf->rank = calloc(n, sizeof(int));
+    for (int i = 0; i < n; i++) uf->parent[i] = i;
+    return uf;
+}
+
+static int UF_find(UnionFind *uf, int x) {
+    if (uf->parent[x] != x)
+        uf->parent[x] = UF_find(uf, uf->parent[x]);
+    return uf->parent[x];
+}
+
+static int UF_union(UnionFind *uf, int x, int y) {
+    int rx = UF_find(uf, x), ry = UF_find(uf, y);
+    if (rx == ry) return 0;
+    if (uf->rank[rx] < uf->rank[ry]) { int t = rx; rx = ry; ry = t; }
+    uf->parent[ry] = rx;
+    if (uf->rank[rx] == uf->rank[ry]) uf->rank[rx]++;
+    return 1;
+}
+
+static void UF_free(UnionFind *uf) {
+    free(uf->parent);
+    free(uf->rank);
+    free(uf);
+}
+
+int countComponents(int n, int edge_count, int (*edges)[2]) {
     abort();
 }
 
 int main(void)
 {
-    int n = read_int(NULL);
-    int m = read_int(NULL);
+    int n = read_int();
+    int m = read_int();
     int (*edges)[2] = malloc(m * 2 * sizeof(int));
     for (int i = 0; i < m; i++) {
         int *row = read_ints(NULL);

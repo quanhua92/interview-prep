@@ -39,8 +39,7 @@ class Solution {
   }
 
   pick(target) {
-    const indices = this.idx.get(target);
-    return indices[Math.floor(Math.random() * indices.length)];
+      throw new Error("NotImplementedError");
   }
 }
 

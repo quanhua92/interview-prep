@@ -64,12 +64,13 @@ static std::vector<std::vector<int>> updateMatrix(const std::vector<std::vector<
 
 int main(void)
 {
-    std::vector<int> header = read_ints();
-    int cols = header[0];
-    int rows = cols;
+    (void)read_int();
     std::vector<std::vector<int>> mat;
-    for (int i = 0; i < rows; i++)
-        mat.push_back(read_ints());
+    while (true) {
+        std::vector<int> row = read_ints();
+        if (row.empty()) break;
+        mat.push_back(row);
+    }
     auto result = updateMatrix(mat);
     for (const auto &row : result)
         write_ints(row);

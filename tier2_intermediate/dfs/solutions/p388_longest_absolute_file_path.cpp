@@ -9,7 +9,14 @@
 #include <vector>
 
 int main() {
-    std::string input = read_line();
+    std::string input;
+    std::string first = read_line();
+    input = first;
+    while (true) {
+        std::string line = read_line();
+        if (line.empty()) break;
+        input += "\n" + line;
+    }
     std::vector<int> stk = {0};
     int max_len = 0;
     int i = 0, len = input.size();

@@ -38,7 +38,6 @@ from src.wasm_libs.py.io import *
 def solve(time_series: list[int], duration: int) -> int:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     time_series = read_ints()
     duration = read_int()

@@ -34,6 +34,7 @@
 
 
 use wasm_libs::*;
+use std::io::{self, BufRead};
 
 fn spiral_order(matrix: &Vec<Vec<i32>>) -> Vec<i32>
 {
@@ -43,27 +44,27 @@ fn spiral_order(matrix: &Vec<Vec<i32>>) -> Vec<i32>
     let m = matrix.len();
     let n = matrix[0].len();
     let mut result = Vec::with_capacity(m * n);
-    let (mut top, mut bottom) = (0, m - 1);
-    let (mut left, mut right) = (0, n - 1);
+    let (mut top, mut bottom) = (0isize, (m - 1) as isize);
+    let (mut left, mut right) = (0isize, (n - 1) as isize);
 
     while top <= bottom && left <= right {
         for c in left..=right {
-            result.push(matrix[top][c]);
+            result.push(matrix[top as usize][c as usize]);
         }
         top += 1;
         for r in top..=bottom {
-            result.push(matrix[r][right]);
+            result.push(matrix[r as usize][right as usize]);
         }
-        if right > 0 { right -= 1; } else { break; }
+        right -= 1;
         if top <= bottom {
             for c in (left..=right).rev() {
-                result.push(matrix[bottom][c]);
+                result.push(matrix[bottom as usize][c as usize]);
             }
             bottom -= 1;
         }
         if left <= right {
             for r in (top..=bottom).rev() {
-                result.push(matrix[r][left]);
+                result.push(matrix[r as usize][left as usize]);
             }
             left += 1;
         }
@@ -72,13 +73,13 @@ fn spiral_order(matrix: &Vec<Vec<i32>>) -> Vec<i32>
 }
 
 fn read_int_matrix() -> Vec<Vec<i32>> {
-    let header = read_ints();
-    let cols = header[0] as usize;
-    let mut matrix = Vec::with_capacity(cols);
-    for _ in 0..cols {
-        matrix.push(read_ints());
-    }
-    matrix
+    let _cols = read_int();
+    let stdin = io::stdin();
+    let lines: Vec<String> = stdin.lock().lines().map(|l| l.unwrap()).collect();
+    lines.iter()
+        .filter(|l| !l.trim().is_empty())
+        .map(|l| l.split_whitespace().map(|s| s.parse().unwrap()).collect())
+        .collect()
 }
 
 fn main()

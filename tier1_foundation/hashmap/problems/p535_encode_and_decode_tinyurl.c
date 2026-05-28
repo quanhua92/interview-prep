@@ -52,14 +52,11 @@ typedef struct {
 } Codec;
 
 static void codec_init(Codec *c) {
-    memset(c, 0, sizeof(*c));
+    abort();
 }
 
 static void codec_free(Codec *c) {
-    for (int i = 0; i < c->count; i++) {
-        free(c->keys[i]);
-        free(c->vals[i]);
-    }
+    abort();
 }
 
 static char *codec_encode(Codec *c, const char *longUrl) {

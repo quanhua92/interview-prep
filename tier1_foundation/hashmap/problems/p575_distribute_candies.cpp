@@ -44,8 +44,7 @@
 #include <vector>
 
 static int distributeCandies(const std::vector<int> &candyType) {
-    std::unordered_set<int> types(candyType.begin(), candyType.end());
-    return std::min((int)types.size(), (int)candyType.size() / 2);
+    abort();
 }
 
 int main(void)

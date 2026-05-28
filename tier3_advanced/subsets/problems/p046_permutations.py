@@ -25,7 +25,7 @@ Constraints:
 Template (python3):
     class Solution:
         def permute(self, nums: List[int]) -> List[List[int]]:
-
+            raise NotImplementedError
 Hint: Use backtracking with swapping to generate all permutations in-place.
 """
 
@@ -34,8 +34,6 @@ from src.wasm_libs.py.io import *
 
 def solve(nums: list[int]) -> list[list[int]]:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     nums = read_ints()
     result = solve(nums)

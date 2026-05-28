@@ -22,7 +22,7 @@ Constraints:
 Template (python3):
     class Solution:
         def subsets(self, nums: List[int]) -> List[List[int]]:
-
+            raise NotImplementedError
 Hint: Use backtracking to generate all possible subsets by including/excluding each element.
 """
 
@@ -31,8 +31,6 @@ from src.wasm_libs.py.io import *
 
 def solve(nums: list[int]) -> list[list[int]]:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     nums = read_ints()
     subsets = solve(nums)

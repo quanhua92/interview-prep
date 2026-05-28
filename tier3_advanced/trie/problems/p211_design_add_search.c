@@ -34,11 +34,30 @@
  * Hints:
  *     - You should be familiar with how a Trie works. If not, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.
  *
+ * Template (python3):
+ *     class WordDictionary:
+ *
+ *         def __init__(self):
+ *
+ *
+ *         def addWord(self, word: str) -> None:
+ *
+ *
+ *         def search(self, word: str) -> bool:
+ *
+ *
+ *
+ *     # Your WordDictionary object will be instantiated and called as such:
+ *     # obj = WordDictionary()
+ *     # obj.addWord(word)
+ *     # param_2 = obj.search(word)
+ *
  * Hint: Build a Trie from the word list, then search with DFS handling '.' wildcards by trying all children.
  */
 
 #include "io.h"
 #include <string.h>
+#include <stdlib.h>
 
 #define ALPHA 26
 

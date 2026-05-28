@@ -34,6 +34,24 @@
  * Hints:
  *     - You should be familiar with how a Trie works. If not, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.
  *
+ * Template (python3):
+ *     class WordDictionary:
+ *
+ *         def __init__(self):
+ *
+ *
+ *         def addWord(self, word: str) -> None:
+ *
+ *
+ *         def search(self, word: str) -> bool:
+ *
+ *
+ *
+ *     # Your WordDictionary object will be instantiated and called as such:
+ *     # obj = WordDictionary()
+ *     # obj.addWord(word)
+ *     # param_2 = obj.search(word)
+ *
  * Hint: Build a Trie from the word list, then search with DFS handling '.' wildcards by trying all children.
  */
 
@@ -42,25 +60,31 @@
 #include <unordered_map>
 #include <vector>
 
+
 struct TrieNode {
     std::unordered_map<char, TrieNode*> children;
     bool is_end = false;
 
     ~TrieNode() {
-        for (auto &p : children) delete p.second;
-    }
+    abort();
+}
 };
 
 class WordDictionary {
     TrieNode root;
 public:
     void addWord(const std::string &word) {
-        abort();
-    }
+    abort();
+}
 
     bool search(const std::string &word) {
-        abort();
-    }
+    abort();
+}
+
+private:
+    bool dfs(TrieNode *node, const std::string &word, int idx) {
+    abort();
+}
 };
 
 int main(void) {

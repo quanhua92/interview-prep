@@ -9,8 +9,8 @@
 
 use std::collections::BinaryHeap;
 
-fn find_maximized_capital(k: i32, w: i32, profits: &[i32], capital: &[i32]) -> i32 {
-    todo!()
+fn find_maximized_capital(k: i32, mut w: i32, profits: &[i32], capital: &[i32]) -> i32 {
+    todo!();
 }
 
 fn main() {

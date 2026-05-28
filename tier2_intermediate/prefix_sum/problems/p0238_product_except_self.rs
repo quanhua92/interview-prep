@@ -36,17 +36,12 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn product_except_self(nums: &[i32]) -> Vec<i32> {
-        todo!()
-    }
+fn product_except_self(nums: &[i32]) -> Vec<i32> {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let nums = read_ints();
-    let result = Solution::product_except_self(&nums);
-    write_ints(&result);
+    write_ints(&product_except_self(&nums));
     std::process::exit(0);
 }

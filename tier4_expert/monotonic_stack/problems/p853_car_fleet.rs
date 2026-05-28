@@ -41,8 +41,8 @@ use wasm_libs::*;
 
 impl Solution {
     fn car_fleet(target: i32, position: &[i32], speed: &[i32]) -> i32 {
-        todo!()
-    }
+    todo!();
+}
 }
 
 struct Solution;

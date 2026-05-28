@@ -17,6 +17,7 @@ services:
     volumes:
       - ./progress:/app/progress
       - ./static:/app/static
+      - ./src:/app/src
       - ./tier1_foundation:/app/tier1_foundation
       - ./tier2_intermediate:/app/tier2_intermediate
       - ./tier3_advanced:/app/tier3_advanced

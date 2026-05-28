@@ -8,6 +8,9 @@
  * Example 1:
  *     Input: words = ["cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"]
  *     Output: ["catsdogcats","dogcatsdog","ratcatdogcat"]
+ *     Explanation: "catsdogcats" can be concatenated by "cats", "dog" and "cats";
+ *     "dogcatsdog" can be concatenated by "dog", "cats" and "dog";
+ *     "ratcatdogcat" can be concatenated by "rat", "cat", "dog" and "cat".
  *
  * Example 2:
  *     Input: words = ["cat","dog","catdog"]
@@ -50,16 +53,18 @@ static void trie_insert(TrieNode *root, const char *word) {
     abort();
 }
 
+static int memo[31];
+
 static int can_concatenate(TrieNode *root, const char *word, int start, int count) {
     abort();
 }
 
 static int cmp_str(const void *a, const void *b) {
-    return strcmp(*(const char **)a, *(const char **)b);
+    abort();
 }
 
 static int cmp_len(const void *a, const void *b) {
-    return strlen(*(const char **)a) - strlen(*(const char **)b);
+    abort();
 }
 
 int main(void) {
@@ -68,7 +73,7 @@ int main(void) {
     int nw = arr[0];
     free(arr);
 
-    char *words[MAX_WORDS];
+    char **words = malloc(nw * sizeof(char *));
     for (int i = 0; i < nw; i++) {
         words[i] = read_line();
     }
@@ -76,10 +81,11 @@ int main(void) {
     qsort(words, nw, sizeof(char*), cmp_len);
 
     TrieNode *root = node_new();
-    char *result[MAX_WORDS];
+    char **result = malloc(nw * sizeof(char *));
     int rc = 0;
 
     for (int i = 0; i < nw; i++) {
+        memset(memo, -1, sizeof(memo));
         if (can_concatenate(root, words[i], 0, 0))
             result[rc++] = words[i];
         trie_insert(root, words[i]);
@@ -93,6 +99,8 @@ int main(void) {
     }
 
     for (int i = 0; i < nw; i++) free(words[i]);
+    free(words);
+    free(result);
     node_free(root);
     return 0;
 }

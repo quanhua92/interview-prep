@@ -23,6 +23,7 @@
  */
 
 #include "io.h"
+#include <cctype>
 #include <string>
 
 bool detectCapitalUse(const std::string &word)

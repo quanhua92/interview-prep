@@ -35,11 +35,11 @@
 use wasm_libs::*;
 
 fn k_closest(points: &mut Vec<Vec<i32>>, k: i32) -> Vec<Vec<i32>> {
-    todo!()
+    todo!();
 }
 
 fn to_pts(flat: &[i32]) -> Vec<Vec<i32>> {
-    flat.chunks(2).map(|p| vec![p[0], p[1]]).collect()
+    todo!();
 }
 
 fn main() {

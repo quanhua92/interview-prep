@@ -1,9 +1,12 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+/*
+ * P565: Array Nesting [PREMIUM] (Medium)
+ * https://leetcode.com/problems/array-nesting/
+ * Topics: Array, Depth-First Search
+ */
 
-int main(void)
-{
+#include "io.h"
+#include <vector>
+
+int main() {
     abort();
 }

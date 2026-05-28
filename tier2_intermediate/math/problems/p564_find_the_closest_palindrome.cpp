@@ -30,15 +30,46 @@
  *         def nearestPalindromic(self, n: str) -> str:
  */
 
+
 #include "io.h"
+#include <algorithm>
+#include <set>
 #include <string>
 
-std::string nearestPalindromic(std::string n) {
-    abort();
+using namespace std;
+using ll = long long;
+
+static ll pow10(int n) { ll r = 1; for (int i = 0; i < n; i++) r *= 10; return r; }
+
+string make_pal(ll prefix, int total_len) {
+    string p = to_string(prefix);
+    string rev = p;
+    int rev_start = total_len % 2 == 0 ? (int)p.size() - 1 : (int)p.size() - 2;
+    for (int i = rev_start; i >= 0; i--) rev += p[i];
+    return rev;
+}
+
+string nearestPalindromic(string n) {
+    ll num = stoll(n);
+    int len = (int)n.size();
+    set<ll> cands;
+    int half = (len + 1) / 2;
+    ll prefix = stoll(n.substr(0, half));
+    for (ll d = -1; d <= 1; d++) cands.insert(stoll(make_pal(prefix + d, len)));
+    if (len > 1) cands.insert(pow10(len - 1) - 1);
+    cands.insert(pow10(len) + 1);
+    cands.erase(num);
+    ll best = -1, best_diff = -1;
+    for (ll c : cands) {
+        if (c < 0) continue;
+        ll diff = c > num ? c - num : num - c;
+        if (best_diff < 0 || diff < best_diff || (diff == best_diff && c < best)) {
+            best = c; best_diff = diff;
+        }
+    }
+    return to_string(best);
 }
 
 int main() {
-    std::string n = read_line();
-    write_string(nearestPalindromic(n));
-    return 0;
+    abort();
 }

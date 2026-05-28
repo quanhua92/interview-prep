@@ -33,29 +33,11 @@
 use wasm_libs::*;
 
 fn get_row(c: char) -> usize {
-    let rows = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
-    let lower = c.to_ascii_lowercase();
-    for (r, row) in rows.iter().enumerate() {
-        if row.contains(lower) {
-            return r;
-        }
-    }
-    3
+    todo!();
 }
 
 fn find_words(words: &[String]) -> Vec<String> {
-    let mut result = Vec::new();
-    for w in words {
-        if w.is_empty() {
-            continue;
-        }
-        let first_row = get_row(w.chars().next().unwrap());
-        let valid = w.chars().all(|c| get_row(c) == first_row);
-        if valid {
-            result.push(w.clone());
-        }
-    }
-    result
+    todo!();
 }
 
 fn main() {

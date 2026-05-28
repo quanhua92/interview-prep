@@ -28,7 +28,7 @@
 use wasm_libs::*;
 
 fn solve(s: &str, k: i32) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

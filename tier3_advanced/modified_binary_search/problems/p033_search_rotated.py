@@ -30,7 +30,7 @@ Constraints:
 Template (python3):
     class Solution:
         def search(self, nums: List[int], target: int) -> int:
-
+            raise NotImplementedError
 Hint: Determine which half is sorted, then check if target lies in that half.
 """
 
@@ -39,8 +39,6 @@ from src.wasm_libs.py.io import *
 
 def solve(nums: list[int], target: int) -> int:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     nums = read_ints()
     target = read_int()

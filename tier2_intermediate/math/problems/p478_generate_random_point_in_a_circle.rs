@@ -40,7 +40,8 @@
  */
 
 use wasm_libs::*;
+use std::io::{self, Write};
 
 fn main() {
-    todo!()
+    todo!();
 }

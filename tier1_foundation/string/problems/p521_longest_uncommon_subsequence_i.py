@@ -40,7 +40,6 @@ from src.wasm_libs.py.io import *
 def solve(a: str, b: str) -> int:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     a = read_line()
     b = read_line()

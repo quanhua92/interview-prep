@@ -49,11 +49,8 @@ int search(const std::vector<int> &nums, int target)
 
 int main(void)
 {
-    int n;
-    int *nums_arr = read_ints(&n);
-    std::vector<int> nums(nums_arr, nums_arr + n);
-    free(nums_arr);
-    int target = read_int();
+    std::vector<int> nums = read_ints();
+    int target = read_ints()[0];
     write_int(search(nums, target));
     return 0;
 }

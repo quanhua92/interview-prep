@@ -23,6 +23,7 @@
 
 #include "io.h"
 #include <algorithm>
+#include <functional>
 #include <string>
 #include <vector>
 

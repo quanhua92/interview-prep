@@ -30,6 +30,7 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 
 int checkRecord(int n) {
     int mod = 1000000007;
@@ -63,7 +64,7 @@ int checkRecord(int n) {
 }
 
 int main(void) {
-    int n = read_int();
+    int ic; int *ia = read_ints(&ic); int n = ia[0]; free(ia);
     write_int(checkRecord(n));
     return 0;
 }

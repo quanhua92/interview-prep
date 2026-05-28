@@ -26,6 +26,7 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 #include <string.h>
 
 int getMaxRepetitions(const char *s1, int n1, const char *s2, int n2) {
@@ -61,11 +62,12 @@ int getMaxRepetitions(const char *s1, int n1, const char *s2, int n2) {
 }
 
 int main(void) {
-    char buf1[256], buf2[256];
-    read_line(buf1, sizeof(buf1));
-    int n1 = read_int();
-    read_line(buf2, sizeof(buf2));
-    int n2 = read_int();
-    write_int(getMaxRepetitions(buf1, n1, buf2, n2));
+    char *s1 = read_line();
+    int ic1; int *ia1 = read_ints(&ic1); int n1 = ia1[0]; free(ia1);
+    char *s2 = read_line();
+    int ic2; int *ia2 = read_ints(&ic2); int n2 = ia2[0]; free(ia2);
+    int result = getMaxRepetitions(s1, n1, s2, n2);
+    free(s1); free(s2);
+    write_int(result);
     return 0;
 }

@@ -49,6 +49,7 @@ int main(void)
     std::vector<int> nums = read_ints();
     int target = read_int();
 
+    srand(42);
     Solution sol(nums);
     write_int(sol.pick(target));
     return 0;

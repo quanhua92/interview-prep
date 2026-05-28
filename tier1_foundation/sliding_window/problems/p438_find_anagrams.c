@@ -37,7 +37,31 @@
 
 static int *findAnagrams(const char *s, const char *p, int *returnSize)
 {
-    abort();
+    int slen = (int)strlen(s);
+    int plen = (int)strlen(p);
+    int *result = malloc(slen * sizeof(int));
+    *returnSize = 0;
+
+    if (plen > slen)
+        return result;
+
+    int pf[26] = {0}, sf[26] = {0};
+    for (int i = 0; i < plen; i++) {
+        pf[p[i] - 'a']++;
+        sf[s[i] - 'a']++;
+    }
+
+    if (memcmp(pf, sf, sizeof(pf)) == 0)
+        result[(*returnSize)++] = 0;
+
+    for (int i = plen; i < slen; i++) {
+        sf[s[i] - 'a']++;
+        sf[s[i - plen] - 'a']--;
+        if (memcmp(pf, sf, sizeof(pf)) == 0)
+            result[(*returnSize)++] = i - plen + 1;
+    }
+
+    return result;
 }
 
 int main(void)

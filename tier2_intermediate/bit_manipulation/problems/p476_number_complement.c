@@ -26,13 +26,14 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 
 static int findComplement(int num) {
     abort();
 }
 
 int main(void) {
-    int num = read_int();
+    int c; int *a = read_ints(&c); int num = a[0]; free(a);
     write_int(findComplement(num));
     return 0;
 }

@@ -34,13 +34,9 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn coin_change(coins: &[i32], amount: i32) -> i32 {
-        todo!()
-    }
+fn coin_change(coins: &[i32], amount: i32) -> i32 {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let coins = read_ints();

@@ -27,27 +27,23 @@
 
 #include "io.h"
 #include <algorithm>
-#include <numeric>
 #include <vector>
 
-static void backtrack(std::vector<int>& nums, int first, std::vector<std::vector<int>>& res) {
-    if (first == (int)nums.size()) {
-        res.push_back(nums);
-        return;
-    }
-    for (int i = first; i < (int)nums.size(); i++) {
-        std::swap(nums[first], nums[i]);
-        backtrack(nums, first + 1, res);
-        std::swap(nums[first], nums[i]);
-    }
-}
-
 static std::vector<std::vector<int>> permute(std::vector<int> nums) {
-    std::vector<std::vector<int>> res;
-    backtrack(nums, 0, res);
-    for (auto& t : res) std::sort(t.begin(), t.end());
-    std::sort(res.begin(), res.end());
-    return res;
+    std::vector<std::vector<int>> perms = {{}};
+    for (int num : nums) {
+        std::vector<std::vector<int>> new_perms;
+        for (const auto &p : perms) {
+            for (size_t i = 0; i <= p.size(); i++) {
+                auto np = p;
+                np.insert(np.begin() + i, num);
+                new_perms.push_back(np);
+            }
+        }
+        perms = std::move(new_perms);
+    }
+    std::sort(perms.begin(), perms.end());
+    return perms;
 }
 
 int main(void)

@@ -10,13 +10,22 @@
  *     Input: lists = [[1,4,5],[1,3,4],[2,6]]
  *     Output: [1,1,2,3,4,4,5,6]
  *
+ * Constraints:
+ *     - k == lists.length
+ *     - 0 <= k <= 104
+ *     - 0 <= lists[i].length <= 500
+ *
  * Hint: Use divide & conquer: merge pairs of lists recursively until one remains.
  */
 
 use wasm_libs::*;
 
-fn merge_k_lists(lists: &[Vec<i32>]) -> Vec<i32> {
-    todo!()
+fn merge_sorted(a: &[i32], b: &[i32]) -> Vec<i32> {
+    todo!();
+}
+
+fn divide_merge(lists: &[Vec<i32>], left: usize, right: usize) -> Vec<i32> {
+    todo!();
 }
 
 fn main() {
@@ -25,7 +34,11 @@ fn main() {
     for _ in 0..k {
         lists.push(read_ints());
     }
-    let result = merge_k_lists(&lists);
+    let result = if lists.is_empty() {
+        vec![]
+    } else {
+        divide_merge(&lists, 0, lists.len() - 1)
+    };
     write_ints(&result);
     std::process::exit(0);
 }

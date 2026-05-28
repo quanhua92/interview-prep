@@ -34,24 +34,21 @@
 
 #include "io.h"
 #include <algorithm>
-#include <cstdlib>
 #include <vector>
 
 std::vector<std::vector<int>> kClosest(std::vector<std::vector<int>> points, int k)
 {
-    abort();
+    std::sort(points.begin(), points.end(), [](const auto &a, const auto &b) {
+        int da = a[0] * a[0] + a[1] * a[1];
+        int db = b[0] * b[0] + b[1] * b[1];
+        return da < db || (da == db && (a[0] < b[0] || (a[0] == b[0] && a[1] < b[1])));
+    });
+    points.resize(k);
+    std::sort(points.begin(), points.end());
+    return points;
 }
 
 int main(void)
 {
-    std::vector<int> flat = read_ints();
-    std::vector<int> k_arr = read_ints();
-    int k = k_arr[0];
-    std::vector<std::vector<int>> points;
-    for (size_t i = 0; i < flat.size(); i += 2)
-        points.push_back({flat[i], flat[i + 1]});
-    auto result = kClosest(points, k);
-    for (const auto &p : result)
-        write_ints(p);
-    return 0;
+    abort();
 }

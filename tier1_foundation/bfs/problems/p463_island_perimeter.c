@@ -33,9 +33,9 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
 
 int solve(int **grid, int gridSize, int *gridColSize) {
-    int dr[] = {0, 0, 1, -1};
     abort();
 }
 
@@ -43,14 +43,17 @@ int main(void)
 {
     int n;
     int *size_line = read_ints(&n);
-    int rows = size_line[0];
+    int cols = size_line[0];
     free(size_line);
-    int **grid = (int **)malloc(sizeof(int *) * rows);
+    int **grid = (int **)malloc(sizeof(int *) * 100);
     int cs[100];
-    for (int i = 0; i < rows; i++) {
+    int rows = 0;
+    while (1) {
         int row_n;
-        grid[i] = read_ints(&row_n);
-        cs[i] = row_n;
+        grid[rows] = read_ints(&row_n);
+        if (row_n == 0) { free(grid[rows]); break; }
+        cs[rows] = row_n;
+        rows++;
     }
     int result = solve(grid, rows, cs);
     write_int(result);

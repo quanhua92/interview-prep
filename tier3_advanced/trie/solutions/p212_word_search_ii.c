@@ -50,10 +50,15 @@ typedef struct TrieNode {
     int has_word;
 } TrieNode;
 
-static TrieNode pool[600000];
+static TrieNode *pool;
 static int pool_idx;
+static int pool_cap;
 
 static TrieNode *node_new(void) {
+    if (pool_idx >= pool_cap) {
+        pool_cap *= 2;
+        pool = realloc(pool, pool_cap * sizeof(TrieNode));
+    }
     TrieNode *n = &pool[pool_idx++];
     memset(n, 0, sizeof(*n));
     return n;
@@ -113,7 +118,9 @@ int main(void) {
     int n;
     int *arr = read_ints(&n);
     rows = arr[0];
-    cols = arr[1];
+    free(arr);
+    arr = read_ints(&n);
+    cols = arr[0];
     free(arr);
 
     char board[MAX_BOARD][MAX_BOARD];
@@ -129,6 +136,8 @@ int main(void) {
     int nw = arr[0];
     free(arr);
 
+    pool_cap = 10000;
+    pool = malloc(pool_cap * sizeof(TrieNode));
     pool_idx = 0;
     result_count = 0;
 

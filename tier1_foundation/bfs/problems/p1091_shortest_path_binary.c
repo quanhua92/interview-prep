@@ -38,7 +38,7 @@
 #include "io.h"
 #include <stdlib.h>
 
-int solve(int **grid, int n) {
+int solve(int **grid, int rows, int cols) {
     abort();
 }
 
@@ -48,14 +48,17 @@ int main(void)
     int *size_line = read_ints(&n);
     int cols = size_line[0];
     free(size_line);
-    int **grid = (int **)malloc(sizeof(int *) * cols);
-    for (int i = 0; i < cols; i++) {
+    int **grid = (int **)malloc(sizeof(int *) * 100);
+    int rows = 0;
+    while (1) {
         int row_n;
-        grid[i] = read_ints(&row_n);
+        grid[rows] = read_ints(&row_n);
+        if (row_n == 0) { free(grid[rows]); break; }
+        rows++;
     }
-    int result = solve(grid, cols);
+    int result = solve(grid, rows, cols);
     write_int(result);
-    for (int i = 0; i < cols; i++) free(grid[i]);
+    for (int i = 0; i < rows; i++) free(grid[i]);
     free(grid);
     return 0;
 }

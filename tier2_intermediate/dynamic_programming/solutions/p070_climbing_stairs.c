@@ -13,6 +13,7 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 
 int climbStairs(int n) {
     if (n <= 2) return n;
@@ -26,7 +27,7 @@ int climbStairs(int n) {
 }
 
 int main(void) {
-    int n = read_int();
+    int c; int *a = read_ints(&c); int n = a[0]; free(a);
     write_int(climbStairs(n));
     return 0;
 }

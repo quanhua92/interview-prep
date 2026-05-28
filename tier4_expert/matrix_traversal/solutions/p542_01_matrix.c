@@ -77,15 +77,16 @@ int main(void)
     int *size_line = read_ints(&n);
     int cols = size_line[0];
     free(size_line);
-    int rows = cols;
-    int total = rows * cols;
-    int *flat = malloc(total * sizeof(int));
-    for (int i = 0; i < rows; i++) {
+    int *flat = malloc(10000 * sizeof(int));
+    int rows = 0;
+    while (1) {
         int count;
         int *row = read_ints(&count);
-        for (int j = 0; j < cols; j++)
-            flat[i * cols + j] = row[j];
+        if (count == 0) { free(row); break; }
+        for (int j = 0; j < count; j++)
+            flat[rows * cols + j] = row[j];
         free(row);
+        rows++;
     }
     int out_size = 0;
     int *result = updateMatrix(flat, rows, cols, &out_size);

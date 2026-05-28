@@ -54,13 +54,10 @@ class Solution:
         for i, v in enumerate(nums):
             self.idx[v].append(i)
 
-    def pick(self, target: int) -> int:
-        return random.choice(self.idx[target])
-
+        raise NotImplementedError
 
 def solve(nums: list[int], target: int) -> int:
-    return Solution(nums).pick(target)
-
+    raise NotImplementedError
 
 if __name__ == "__main__":
     nums = read_ints()

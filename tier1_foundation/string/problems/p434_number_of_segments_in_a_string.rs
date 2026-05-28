@@ -28,7 +28,7 @@ use wasm_libs::*;
 
 impl Solution {
     fn count_segments(s: &str) -> i32 {
-        todo!()
+        todo!();
     }
 }
 

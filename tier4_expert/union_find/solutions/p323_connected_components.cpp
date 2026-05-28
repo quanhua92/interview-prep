@@ -35,17 +35,16 @@ struct UnionFind {
 int countComponents(int n, const std::vector<std::vector<int>> &edges) {
     UnionFind uf(n);
     int components = n;
-    for (auto &[u, v] : edges) {
-        if (uf.unite(u, v)) components--;
+    for (const auto &edge : edges) {
+        if (uf.unite(edge[0], edge[1])) components--;
     }
     return components;
 }
 
 int main(void)
 {
-    std::vector<int> first = read_ints();
-    int n = first[0];
-    int m = first.size() > 1 ? first[1] : 0;
+    int n = read_int();
+    int m = read_int();
     std::vector<std::vector<int>> edges;
     for (int i = 0; i < m; i++) {
         edges.push_back(read_ints());

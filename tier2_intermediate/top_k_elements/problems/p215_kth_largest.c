@@ -28,11 +28,20 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
+
+static void swap(int *a, int *b) {
+    abort();
+}
+
+static int partition(int *a, int lo, int hi)
+{
+    abort();
+}
 
 static int findKthLargest(int *nums, int numsSize, int k)
 {
     abort();
-    return 0;
 }
 
 int main(void)
@@ -43,7 +52,8 @@ int main(void)
     int *k_arr = read_ints(&k_len);
     int k = k_arr[0];
     free(k_arr);
-    write_int(findKthLargest(nums, n, k));
+    int result = findKthLargest(nums, n, k);
+    write_int(result);
     free(nums);
     return 0;
 }

@@ -15,7 +15,7 @@
  *     Input: numCourses = 4, prerequisites = [[1,0],[2,0],[3,1],[3,2]]
  *     Output: [0,2,1,3]
  *     Explanation: There are a total of 4 courses to take. To take course 3 you should have finished both courses 1 and 2. Both courses 1 and 2 should be taken after you finished course 0.
- *     So one correct course order is [0,1,2,3]. Another correct ordering is [0,2,1,3].
+ *     So one correct course order is [0,1,2,3]. Another valid ordering is [0,2,1,3].
  *
  * Example 3:
  *     Input: numCourses = 1, prerequisites = []
@@ -43,26 +43,30 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
 
 int *findOrder(int numCourses, int (*prereqs)[2], int prereqSize, int *returnSize)
 {
     int *inDegree = calloc(numCourses, sizeof(int));
     int *queue = malloc(numCourses * sizeof(int));
     int *order = malloc(numCourses * sizeof(int));
-    int *edges = malloc(prereqSize * sizeof(int));
-    int *nxt = malloc(prereqSize * sizeof(int));
-    int *head = malloc(numCourses * sizeof(int));
+    int *adj_count = calloc(numCourses, sizeof(int));
+    int *adj_list = malloc(prereqSize * sizeof(int));
 
     for (int i = 0; i < prereqSize; i++) {
         inDegree[prereqs[i][0]]++;
+        adj_count[prereqs[i][1]]++;
     }
-    for (int i = 0; i < numCourses; i++) head[i] = -1;
+    int offset = 0;
+    int *adj_offset = malloc(numCourses * sizeof(int));
+    for (int i = 0; i < numCourses; i++) {
+        adj_offset[i] = offset;
+        offset += adj_count[i];
+    }
+    int *adj_pos = malloc(numCourses * sizeof(int));
+    memcpy(adj_pos, adj_offset, numCourses * sizeof(int));
     for (int i = 0; i < prereqSize; i++) {
-        int course = prereqs[i][0];
-        int prereq = prereqs[i][1];
-        edges[i] = course;
-        nxt[i] = head[prereq];
-        head[prereq] = i;
+        adj_list[adj_pos[prereqs[i][1]]++] = prereqs[i][0];
     }
 
     int front = 0, back = 0, count = 0;
@@ -72,16 +76,17 @@ int *findOrder(int numCourses, int (*prereqs)[2], int prereqSize, int *returnSiz
     while (front < back) {
         int node = queue[front++];
         order[count++] = node;
-        for (int e = head[node]; e != -1; e = nxt[e]) {
-            if (--inDegree[edges[e]] == 0) queue[back++] = edges[e];
+        for (int e = adj_offset[node]; e < adj_offset[node] + adj_count[node]; e++) {
+            if (--inDegree[adj_list[e]] == 0) queue[back++] = adj_list[e];
         }
     }
 
     free(inDegree);
     free(queue);
-    free(edges);
-    free(nxt);
-    free(head);
+    free(adj_count);
+    free(adj_list);
+    free(adj_offset);
+    free(adj_pos);
 
     if (count == numCourses) {
         *returnSize = numCourses;

@@ -37,13 +37,9 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn optimal_division(nums: &[i32]) -> String {
-        todo!()
-    }
+fn optimal_division(nums: &[i32]) -> String {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let nums = read_ints();

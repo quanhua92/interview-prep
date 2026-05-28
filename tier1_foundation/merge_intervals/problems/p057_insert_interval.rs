@@ -17,13 +17,30 @@
  *     Output: [[1,2],[3,10],[12,16]]
  *     Explanation: Because the new interval [4,8] overlaps with [3,5],[6,7],[8,10].
  *
+ * Constraints:
+ *     - 0 <= intervals.length <= 104
+ *     - intervals[i].length == 2
+ *     - 0 <= starti <= endi <= 105
+ *     - intervals is sorted by starti in ascending order.
+ *     - newInterval.length == 2
+ *     - 0 <= start <= end <= 105
+ *
+ * Hints:
+ *     - Intervals Array is sorted. Can you use Binary Search to find the correct position to insert the new Interval.?
+ *     - Can you try merging the overlapping intervals while inserting the new interval?
+ *     - This can be done by comparing the end of the last interval with the start of the new interval and vice versa.
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
+ *
  * Hint: Add non-overlapping before, merge overlapping, add non-overlapping after.
  */
 
 use wasm_libs::*;
 
 fn solve(intervals: &Vec<[i32; 2]>, new_interval: &mut [i32; 2]) -> Vec<[i32; 2]> {
-    todo!()
+    todo!();
 }
 
 fn main() {

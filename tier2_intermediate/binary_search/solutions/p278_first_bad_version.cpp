@@ -53,8 +53,8 @@ static int firstBadVersion(long long n, int bad)
 
 int main(void)
 {
-    long long n = read_long();
-    int bad = read_int();
+    long long n = std::stoll(read_line());
+    int bad = read_ints()[0];
     write_int(firstBadVersion(n, bad));
     return 0;
 }

@@ -57,86 +57,19 @@
 #include <unordered_map>
 #include <vector>
 
-class MT19937 {
-    static const int N = 624;
-    static const int M = 397;
-    static const unsigned int MATRIX_A = 0x9908B0DFUL;
-    static const unsigned int UPPER_MASK = 0x80000000UL;
-    static const unsigned int LOWER_MASK = 0x7FFFFFFFUL;
-    unsigned int mt[N];
-    int mti;
-
-    void initGenrand(unsigned int seed) {
-        mt[0] = seed & 0xFFFFFFFFUL;
-        for (int i = 1; i < N; i++)
-            mt[i] = (1812433253UL * (mt[i - 1] ^ (mt[i - 1] >> 30)) + i) & 0xFFFFFFFFUL;
-        mti = N;
-    }
-
-public:
-    void init(const std::vector<unsigned int> &key) {
-        initGenrand(19650218UL);
-        int i = 1, j = 0, klen = (int)key.size();
-        int k = N > klen ? N : klen;
-        for (; k; k--) {
-            mt[i] = (mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >> 30)) * 1664525UL)) + key[j] + j;
-            mt[i] &= 0xFFFFFFFFUL;
-            i++; j++;
-            if (i >= N) { mt[0] = mt[N - 1]; i = 1; }
-            if (j >= klen) j = 0;
-        }
-        for (k = N - 1; k; k--) {
-            mt[i] = (mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >> 30)) * 1566083941UL)) - i;
-            mt[i] &= 0xFFFFFFFFUL;
-            i++;
-            if (i >= N) { mt[0] = mt[N - 1]; i = 1; }
-        }
-        mt[0] = 0x80000000UL;
-        mti = N;
-    }
-
-    unsigned int genrand() {
-        static const unsigned int mag01[2] = {0x0UL, MATRIX_A};
-        if (mti >= N) {
-            int kk;
-            for (kk = 0; kk < N - M; kk++) {
-                unsigned int y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-                mt[kk] = mt[kk + M] ^ (y >> 1) ^ mag01[y & 0x1UL];
-            }
-            for (; kk < N - 1; kk++) {
-                unsigned int y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-                mt[kk] = mt[kk + (M - N)] ^ (y >> 1) ^ mag01[y & 0x1UL];
-            }
-            unsigned int y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
-            mt[N - 1] = mt[M - 1] ^ (y >> 1) ^ mag01[y & 0x1UL];
-            mti = 0;
-        }
-        unsigned int y = mt[mti++];
-        y ^= (y >> 11);
-        y ^= (y << 7) & 0x9D2C5680UL;
-        y ^= (y << 15) & 0xEFC60000UL;
-        y ^= (y >> 18);
-        return y;
-    }
-
-    int randrange(int n) {
-        if (n <= 1) return 0;
-        int k = 0, tmp = n;
-        while (tmp > 0) { k++; tmp >>= 1; }
-        for (;;) {
-            unsigned int r = genrand() >> (32 - k);
-            if ((int)r < n) return (int)r;
-        }
-    }
-};
-
 class RandomizedSet {
     std::vector<int> vals;
     std::unordered_map<int, int> idx_map;
-    MT19937 rng;
+    unsigned long long seed;
+
+    int next_rand(int n) {
+        if (n <= 1) return 0;
+        seed = seed * 6364136223846793005ULL + 1;
+        return (int)((seed >> 33) % (unsigned long long)n);
+    }
 
 public:
-    RandomizedSet(unsigned int seed) { rng.init({seed}); }
+    RandomizedSet() { seed = 42; }
 
     bool insert(int val) {
         if (idx_map.count(val)) return false;
@@ -158,7 +91,7 @@ public:
     }
 
     int getRandom() {
-        return vals[rng.randrange((int)vals.size())];
+        return vals[next_rand((int)vals.size())];
     }
 };
 
@@ -167,16 +100,24 @@ int main(void)
     std::vector<int> header = read_ints();
     int num_ops = header[0];
 
-    RandomizedSet rs(42);
+    std::vector<std::string> ops;
+    for (int i = 0; i < num_ops; i++) {
+        ops.push_back(read_line());
+    }
+    std::vector<std::vector<int>> args_list;
+    for (int i = 0; i < num_ops; i++) {
+        std::vector<int> args = read_ints();
+        args_list.push_back(args);
+    }
+
+    RandomizedSet rs;
 
     for (int i = 0; i < num_ops; i++) {
-        std::string op = read_line();
-        std::vector<int> args = read_ints();
-        if (op == "insert") {
-            write_bool(rs.insert(args[0]));
-        } else if (op == "remove") {
-            write_bool(rs.remove(args[0]));
-        } else if (op == "getRandom") {
+        if (ops[i] == "insert") {
+            write_bool(rs.insert(args_list[i][0]));
+        } else if (ops[i] == "remove") {
+            write_bool(rs.remove(args_list[i][0]));
+        } else if (ops[i] == "getRandom") {
             write_int(rs.getRandom());
         }
     }

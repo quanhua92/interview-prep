@@ -29,19 +29,7 @@
 import { readInt, readLine, writeString } from '../../wasm_libs/js/io.mjs';
 
 function solve(words) {
-  const rows = [
-    new Set("qwertyuiop".split("")),
-    new Set("asdfghjkl".split("")),
-    new Set("zxcvbnm".split("")),
-  ];
-  const result = [];
-  for (const w of words) {
-    const lower = new Set(w.toLowerCase().split(""));
-    if (rows.some(row => [...lower].every(ch => row.has(ch)))) {
-      result.push(w);
-    }
-  }
-  return result;
+    throw new Error("NotImplementedError");
 }
 
 const n = readInt();

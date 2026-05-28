@@ -6,6 +6,21 @@
  * The median is the middle value in an ordered integer list. If the size of the list is even, there is no middle value, and the median is the mean of the two middle values.
  * Implement the MedianFinder class:
  *
+ * Example 1:
+ *     Input
+ *     ["MedianFinder", "addNum", "addNum", "findMedian", "addNum", "findMedian"]
+ *     [[], [1], [2], [], [3], []]
+ *     Output
+ *     [null, null, null, 1.5, null, 2.0]
+ *
+ *     Explanation
+ *     MedianFinder medianFinder = new MedianFinder();
+ *     medianFinder.addNum(1);    // arr = [1]
+ *     medianFinder.addNum(2);    // arr = [1, 2]
+ *     medianFinder.findMedian(); // return 1.5 (i.e., (1 + 2) / 2)
+ *     medianFinder.addNum(3);    // arr[1, 2, 3]
+ *     medianFinder.findMedian(); // return 2.0
+ *
  * Constraints:
  *     - -105 <= num <= 105
  *     - There will be at least one element in the data structure before calling findMedian.
@@ -13,28 +28,54 @@
  *
  * Template (python3):
  *     class MedianFinder:
+ *
  *         def __init__(self):
+ *
+ *
  *         def addNum(self, num: int) -> None:
+ *
+ *
  *         def findMedian(self) -> float:
+ *
+ *
+ *
+ *     # Your MedianFinder object will be instantiated and called as such:
+ *     # obj = MedianFinder()
+ *     # obj.addNum(num)
+ *     # param_2 = obj.findMedian()
  *
  * Hint: Use a max-heap for the lower half and a min-heap for the upper half.
  */
 
 use wasm_libs::*;
+use std::collections::BinaryHeap;
+use std::cmp::Reverse;
+use std::io::{self, Write};
 
-impl Solution {
-    fn solve(stream: &[i32]) -> Vec<f64> {
-        todo!()
-    }
+struct MedianFinder {
+    small: BinaryHeap<i32>,
+    large: BinaryHeap<Reverse<i32>>,
 }
 
-struct Solution;
+impl MedianFinder {
+    fn new() -> Self {
+    todo!();
+}
+    fn add_num(&mut self, num: i32) {
+    todo!();
+}
+    fn find_median(&self) -> f64 {
+    todo!();
+}
+}
 
 fn main() {
     let stream = read_ints();
-    let result = Solution::solve(&stream);
-    for m in &result {
-        println!("{:.6}", m);
+    let mut mf = MedianFinder::new();
+    let mut out = io::stdout().lock();
+    for &num in &stream {
+        mf.add_num(num);
+        writeln!(out, "{:.6}", mf.find_median()).unwrap();
     }
     std::process::exit(0);
 }

@@ -36,6 +36,7 @@
  */
 
 #include "io.h"
+#include <cstdlib>
 #include <queue>
 #include <tuple>
 

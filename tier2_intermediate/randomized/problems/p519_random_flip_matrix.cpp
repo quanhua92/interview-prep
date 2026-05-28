@@ -47,8 +47,19 @@
  */
 
 #include "io.h"
+#include <unordered_map>
+#include <unordered_set>
+
+static int solve(int m, int n, int num_flips)
+{
+    abort();
+}
 
 int main(void)
 {
-    abort();
+    int m = read_ints()[0];
+    int n = read_ints()[0];
+    int num_flips = read_ints()[0];
+    write_int(solve(m, n, num_flips));
+    return 0;
 }

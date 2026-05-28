@@ -39,7 +39,14 @@
 int main(void)
 {
     std::vector<int> vals = read_ints();
-    (void)vals;
-    abort();
+    int n = (int)vals.size();
+    int slow = 0, fast = 0;
+    while (fast + 1 < n && fast + 2 < n) {
+        slow++;
+        fast += 2;
+    }
+    if (fast + 1 < n) slow++;
+    std::vector<int> result(vals.begin() + slow, vals.end());
+    write_ints(result);
     return 0;
 }

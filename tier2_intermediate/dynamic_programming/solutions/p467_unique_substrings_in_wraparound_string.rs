@@ -33,9 +33,8 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn find_substring_in_wrapround_string(s: &str) -> i32 {
-        let bytes = s.as_bytes();
+fn find_substring_in_wrapround_string(s: &str) -> i32 {
+    let bytes = s.as_bytes();
     let mut max_len = [0i32; 26];
     let mut curr = 0i32;
     for i in 0..bytes.len() {
@@ -48,10 +47,7 @@ impl Solution {
         if curr > max_len[idx] { max_len[idx] = curr; }
     }
     max_len.iter().sum()
-    }
 }
-
-struct Solution;
 
 fn main() {
     let s = read_line();

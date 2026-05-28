@@ -2,7 +2,7 @@
  * P352: Data Stream as Disjoint Intervals [PREMIUM] (Hard)
  * https://leetcode.com/problems/data-stream-as-disjoint-intervals/
  * Topics: Binary Search, Design, Ordered Set
- * 
+ *
  * Given a data stream input of non-negative integers a1, a2, ..., an, summarize the numbers seen so far as a list of disjoint intervals.
  * Implement the SummaryRanges class:
  * Example 1:
@@ -13,7 +13,7 @@
  *     [[], [1], [], [3], [], [7], [], [2], [], [6], []]
  *     Output
  *     [null, null, [[1, 1]], null, [[1, 1], [3, 3]], null, [[1, 1], [3, 3], [7, 7]], null, [[1, 3], [7, 7]], null, [[1, 3], [6, 7]]]
- * 
+ *
  *     Explanation
  *     SummaryRanges summaryRanges = new SummaryRanges();
  *     summaryRanges.addNum(1);      // arr = [1]
@@ -26,55 +26,49 @@
  *     summaryRanges.getIntervals(); // return [[1, 3], [7, 7]]
  *     summaryRanges.addNum(6);      // arr = [1, 2, 3, 6, 7]
  *     summaryRanges.getIntervals(); // return [[1, 3], [6, 7]]
- * 
+ *
  * Constraints:
  *     - 0 <= value <= 104
  *     - At most 3 * 104 calls will be made to addNum and getIntervals.
- *     - At most 102 calls will be made to getIntervals.
- * 
+ *     - At most 102 calls will be made to getIntervals.
+ *
  * Template (python3):
  *     class SummaryRanges:
- * 
+ *
  *         def __init__(self):
- * 
- * 
+ *
+ *
  *         def addNum(self, value: int) -> None:
- * 
- * 
+ *
+ *
  *         def getIntervals(self) -> List[List[int]]:
- * 
- * 
- * 
+ *
+ *
+ *
  *     # Your SummaryRanges object will be instantiated and called as such:
  *     # obj = SummaryRanges()
  *     # obj.addNum(value)
  *     # param_2 = obj.getIntervals()
  */
+
+use wasm_libs::*;
+use std::io::Write;
+
 fn solve_intervals(values: &[i32]) -> Vec<Vec<i32>> {
-    todo!()
+    todo!();
 }
 
 fn main() {
-    let tests: Vec<(&str, Vec<i32>, Vec<i32>)> = vec![
-        ("example from problem", vec![1,3,7,2,6], vec![1,3,6,7]),
-        ("adjacent values merge", vec![1,0], vec![0,1]),
-        ("single zero", vec![0], vec![0,0]),
-        ("no merges sorted output", vec![100,1,50], vec![1,1,50,50,100,100]),
-        ("empty stream", vec![], vec![]),
-    ];
-
-    let mut passed = 0;
-    println!("\n============================================================");
-    println!("  352. Data Stream as Disjoint Intervals");
-    println!("============================================================");
-    for (i, (label, values, expected_flat)) in tests.iter().enumerate() {
-        let got = solve_intervals(values);
-        let got_flat: Vec<i32> = got.iter().flat_map(|iv| iv.iter().copied()).collect();
-        let ok = got_flat == *expected_flat;
-        if ok { passed += 1; }
-        println!("  Test {} ({}): {}", i + 1, label, if ok { "PASS" } else { "FAIL" });
+    let values = read_ints();
+    let result = solve_intervals(&values);
+    let mut out = std::io::stdout().lock();
+    for (i, row) in result.iter().enumerate() {
+        if i > 0 { writeln!(out).unwrap(); }
+        for (j, v) in row.iter().enumerate() {
+            if j > 0 { write!(out, " ").unwrap(); }
+            write!(out, "{}", v).unwrap();
+        }
     }
-    println!("\n  {}/{} passed", passed, tests.len());
-    println!("============================================================\n");
-    std::process::exit(if passed == tests.len() { 0 } else { 1 });
+    writeln!(out).unwrap();
+    std::process::exit(0);
 }

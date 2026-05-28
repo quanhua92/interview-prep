@@ -28,7 +28,6 @@
 
 #include "io.h"
 #include <algorithm>
-#include <cstdlib>
 #include <vector>
 
 int findKthLargest(std::vector<int> nums, int k)

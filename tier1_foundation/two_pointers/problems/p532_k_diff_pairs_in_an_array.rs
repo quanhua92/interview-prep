@@ -36,7 +36,7 @@ use wasm_libs::*;
 
 impl Solution {
     fn find_pairs(nums: &[i32], k: i32) -> i32 {
-        todo!()
+        todo!();
     }
 }
 

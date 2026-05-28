@@ -16,7 +16,7 @@
  */
 
 
-#include "ctest.h"
+#include "io.h"
 #include <stdlib.h>
 
 typedef struct { int capital, profit; } Project;

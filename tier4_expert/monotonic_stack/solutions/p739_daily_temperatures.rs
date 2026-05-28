@@ -53,6 +53,6 @@ struct Solution;
 
 fn main() {
     let temperatures = read_ints();
-    write_ints(Solution::daily_temperatures(&temperatures));
+    write_ints(&Solution::daily_temperatures(&temperatures));
     std::process::exit(0);
 }

@@ -25,7 +25,7 @@
 import { readLine, writeBool } from '../../wasm_libs/js/io.mjs';
 
 function solve(word) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const word = readLine();

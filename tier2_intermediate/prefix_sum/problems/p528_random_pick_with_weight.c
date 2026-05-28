@@ -68,8 +68,6 @@
 int *random_pick_with_weight(int *w, int wSize, int *retSize)
 {
     abort();
-    *retSize = 0;
-    return NULL;
 }
 
 int main(void)

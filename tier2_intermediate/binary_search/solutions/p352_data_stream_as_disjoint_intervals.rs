@@ -52,6 +52,7 @@
  */
 
 use wasm_libs::*;
+use std::io::Write;
 
 fn solve_intervals(values: &[i32]) -> Vec<Vec<i32>> {
     let mut intervals: Vec<Vec<i32>> = Vec::new();
@@ -75,6 +76,14 @@ fn solve_intervals(values: &[i32]) -> Vec<Vec<i32>> {
 fn main() {
     let values = read_ints();
     let result = solve_intervals(&values);
-    write_matrix(&result);
+    let mut out = std::io::stdout().lock();
+    for (i, row) in result.iter().enumerate() {
+        if i > 0 { writeln!(out).unwrap(); }
+        for (j, v) in row.iter().enumerate() {
+            if j > 0 { write!(out, " ").unwrap(); }
+            write!(out, "{}", v).unwrap();
+        }
+    }
+    writeln!(out).unwrap();
     std::process::exit(0);
 }

@@ -34,7 +34,7 @@ _COMPILE_TIMEOUTS = {
 
 _WASM_FUEL = 5_000_000_000
 _WASM_TIMEOUT = 120
-_WASM_MAX_MEMORY = 268435456
+_WASM_MAX_MEMORY = 536870912
 
 _RSTEST_RLIB_PATH: Path | None = None
 
@@ -320,6 +320,7 @@ def run_wasm(wasm_path: Path, source_dir: Path, timeout: int = _WASM_TIMEOUT, pr
             capture_output=True,
             text=True,
             timeout=timeout + 10,
+            env={**os.environ, "WASMTIME_BACKTRACE_DETAILS": "1", "RUST_BACKTRACE": "1"},
         )
         output = result.stdout
         if result.stderr:
@@ -359,6 +360,7 @@ def run_python_wasm(source: Path, project_root: Path, timeout: int = _WASM_TIMEO
             capture_output=True,
             text=True,
             timeout=timeout + 10,
+            env={**os.environ, "WASMTIME_BACKTRACE_DETAILS": "1"},
         )
         output = result.stdout
         if result.stderr:

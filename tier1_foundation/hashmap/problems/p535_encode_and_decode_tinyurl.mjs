@@ -30,21 +30,16 @@ class Codec {
   }
 
   encode(longUrl) {
-    const key = this.nextId++;
-    this.urlMap.set(key, longUrl);
-    this.shortMap.set(key, longUrl);
-    return `http://tinyurl.com/${key}`;
+      throw new Error("NotImplementedError");
   }
 
   decode(shortUrl) {
-    const key = shortUrl.split("/").pop();
-    return this.shortMap.get(key);
+      throw new Error("NotImplementedError");
   }
 }
 
 function solve(longUrl) {
-  const codec = new Codec();
-  return codec.decode(codec.encode(longUrl));
+    throw new Error("NotImplementedError");
 }
 
 const url = readLine();

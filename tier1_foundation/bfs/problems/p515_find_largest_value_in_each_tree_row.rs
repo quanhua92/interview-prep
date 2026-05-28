@@ -76,8 +76,8 @@ fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
 
 impl Solution {
     fn largest_values(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
-    todo!()
-}
+        todo!();
+    }
 }
 
 struct Solution;

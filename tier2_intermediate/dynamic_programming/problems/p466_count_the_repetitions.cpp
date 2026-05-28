@@ -34,9 +34,9 @@ int getMaxRepetitions(const std::string &s1, int n1, const std::string &s2, int 
 
 int main(void) {
     std::string s1 = read_line();
-    int n1 = read_int();
+    int n1 = read_ints()[0];
     std::string s2 = read_line();
-    int n2 = read_int();
+    int n2 = read_ints()[0];
     write_int(getMaxRepetitions(s1, n1, s2, n2));
     return 0;
 }

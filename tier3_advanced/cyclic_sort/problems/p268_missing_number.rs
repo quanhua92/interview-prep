@@ -30,8 +30,8 @@ use wasm_libs::*;
 
 impl Solution {
     fn missing_number(nums: &mut [i32]) -> i32 {
-        todo!()
-    }
+    todo!()
+}
 }
 
 struct Solution;

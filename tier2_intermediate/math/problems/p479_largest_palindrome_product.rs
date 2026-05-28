@@ -24,7 +24,7 @@
 use wasm_libs::*;
 
 fn largest_palindrome(n: i32) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn main() {

@@ -32,9 +32,8 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn find_paths(m: i32, n: i32, max_move: i32, start_row: i32, start_column: i32) -> i32 {
-        let m = m as usize;
+fn find_paths(m: i32, n: i32, max_move: i32, start_row: i32, start_column: i32) -> i32 {
+    let m = m as usize;
     let n = n as usize;
     let mm = max_move as usize;
     let mod_val = 1_000_000_007i64;
@@ -63,10 +62,7 @@ impl Solution {
         std::mem::swap(&mut dp, &mut nxt);
     }
     result as i32
-    }
 }
-
-struct Solution;
 
 fn main() {
     let m = read_int();

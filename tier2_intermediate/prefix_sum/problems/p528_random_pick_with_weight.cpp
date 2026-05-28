@@ -61,46 +61,23 @@
  *     # obj = Solution(w)
  *     # param_1 = obj.pickIndex()
  */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+
+#include "io.h"
 #include <vector>
 
-std::vector<int> random_pick_with_weight(const std::vector<int>& w)
+using namespace std;
+
+vector<int> random_pick_with_weight(const vector<int>& w)
 {
-    abort();
+    vector<int> prefix(w.size());
+    prefix[0] = w[0];
+    for (size_t i = 1; i < w.size(); i++) {
+        prefix[i] = prefix[i - 1] + w[i];
+    }
+    return prefix;
 }
 
 int main(void)
 {
-    struct {
-        const char *label;
-        std::vector<int> input;
-        std::vector<int> expected;
-    } tests[] = {
-        {"prefix sum for [1]",            {1},                {1}},
-        {"prefix sum for [1, 3]",         {1, 3},             {1, 4}},
-        {"prefix sum for [3, 14, 1, 7]",  {3, 14, 1, 7},      {3, 17, 18, 25}},
-        {"single large weight",           {5},                {5}},
-        {"equal weights",                {10, 10, 10},       {10, 20, 30}},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  528. Random Pick with Weight\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        std::vector<int> got = random_pick_with_weight(tests[i].input);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    abort();
 }

@@ -31,21 +31,46 @@
 #include "io.h"
 #include <stdlib.h>
 
-int *find_max_length(int *nums, int numsSize, int *retSize)
+typedef struct Entry {
+    int key;
+    int value;
+    struct Entry *next;
+} Entry;
+
+#define HM_SIZE 20003
+
+static Entry *hm[HM_SIZE];
+
+static void hm_init(void)
 {
     abort();
-    *retSize = 0;
-    return NULL;
+}
+
+static void hm_set(int key, int val)
+{
+    abort();
+}
+
+static int hm_get(int key, int *found)
+{
+    abort();
+}
+
+static void hm_clear(void)
+{
+    abort();
+}
+
+int find_max_length(int *nums, int numsSize)
+{
+    abort();
 }
 
 int main(void)
 {
     int n;
     int *nums = read_ints(&n);
-    int retSize;
-    int *result = find_max_length(nums, n, &retSize);
-    write_ints(result, retSize);
+    write_int(find_max_length(nums, n));
     free(nums);
-    free(result);
     return 0;
 }

@@ -2,6 +2,7 @@
 #define IO_H
 
 int *read_ints(int *count);
+int read_int(void);
 char *read_line(void);
 void write_int(int val);
 void write_ints(int *arr, int n);

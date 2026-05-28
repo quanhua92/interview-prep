@@ -19,7 +19,9 @@
 
 #include "io.h"
 #include <algorithm>
+#include <functional>
 #include <vector>
+
 
 static std::vector<std::vector<int>> combinationSum(std::vector<int> candidates, int target) {
     std::sort(candidates.begin(), candidates.end());

@@ -45,14 +45,17 @@ int main(void)
 {
     int n;
     int *size_line = read_ints(&n);
-    int rows = size_line[0];
+    int cols = size_line[0];
     free(size_line);
-    int **grid = (int **)malloc(sizeof(int *) * rows);
-    for (int i = 0; i < rows; i++) {
+    int **grid = (int **)malloc(sizeof(int *) * 20);
+    int rows = 0;
+    while (1) {
         int row_n;
-        grid[i] = read_ints(&row_n);
+        grid[rows] = read_ints(&row_n);
+        if (row_n == 0) { free(grid[rows]); break; }
+        rows++;
     }
-    int result = solve(grid, rows, rows);
+    int result = solve(grid, rows, cols);
     write_int(result);
     for (int i = 0; i < rows; i++) free(grid[i]);
     free(grid);

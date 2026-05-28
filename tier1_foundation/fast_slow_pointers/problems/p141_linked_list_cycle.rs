@@ -46,7 +46,7 @@
 use wasm_libs::*;
 
 fn solve(vals: &[i32], pos: i32) -> bool {
-    todo!()
+    todo!();
 }
 
 fn main() {

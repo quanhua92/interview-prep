@@ -33,51 +33,43 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
 
 int solve(int **grid, int gridSize, int *gridColSize) {
     int dr[] = {0, 0, 1, -1};
     int dc[] = {1, -1, 0, 0};
-    int visited[100][100];
     int perimeter = 0;
-    int qr[10000], qc[10000];
-    int front = 0, back = 0;
-    memset(visited, 0, sizeof(visited));
     for (int r = 0; r < gridSize; r++) {
         for (int c = 0; c < gridColSize[r]; c++) {
             if (grid[r][c] == 1) {
-                qr[back] = r; qc[back] = c; back++;
-                visited[r][c] = 1;
-                while (front < back) {
-                    int cr = qr[front]; int cc = qc[front]; front++;
-                    for (int d = 0; d < 4; d++) {
-                        int nr = cr + dr[d]; int nc = cc + dc[d];
-                        if (nr < 0 || nr >= gridSize || nc < 0 || nc >= gridColSize[0] || grid[nr][nc] == 0) {
-                            perimeter++;
-                        } else if (!visited[nr][nc]) {
-                            visited[nr][nc] = 1;
-                            qr[back] = nr; qc[back] = nc; back++;
-                        }
+                for (int d = 0; d < 4; d++) {
+                    int nr = r + dr[d];
+                    int nc = c + dc[d];
+                    if (nr < 0 || nr >= gridSize || nc < 0 || nc >= gridColSize[r] || grid[nr][nc] == 0) {
+                        perimeter++;
                     }
                 }
-                return perimeter;
             }
         }
     }
-    return 0;
+    return perimeter;
 }
 
 int main(void)
 {
     int n;
     int *size_line = read_ints(&n);
-    int rows = size_line[0];
+    int cols = size_line[0];
     free(size_line);
-    int **grid = (int **)malloc(sizeof(int *) * rows);
+    int **grid = (int **)malloc(sizeof(int *) * 100);
     int cs[100];
-    for (int i = 0; i < rows; i++) {
+    int rows = 0;
+    while (1) {
         int row_n;
-        grid[i] = read_ints(&row_n);
-        cs[i] = row_n;
+        grid[rows] = read_ints(&row_n);
+        if (row_n == 0) { free(grid[rows]); break; }
+        cs[rows] = row_n;
+        rows++;
     }
     int result = solve(grid, rows, cs);
     write_int(result);

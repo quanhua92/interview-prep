@@ -35,30 +35,12 @@
 #include <stdlib.h>
 
 static int cmp_int(const void *a, const void *b) { return *(const int *)a - *(const int *)b; }
+    abort();
+}
 
 static int numberOfBoomerangs(int points[][2], int n)
 {
-    int result = 0;
-    for (int i = 0; i < n; i++) {
-        int dists[500];
-        int dn = 0;
-        for (int j = 0; j < n; j++) {
-            if (i == j) continue;
-            int dx = points[i][0] - points[j][0];
-            int dy = points[i][1] - points[j][1];
-            dists[dn++] = dx * dx + dy * dy;
-        }
-        qsort(dists, dn, sizeof(int), cmp_int);
-        int left = 0;
-        while (left < dn) {
-            int right = left;
-            while (right < dn && dists[right] == dists[left]) right++;
-            int count = right - left;
-            result += count * (count - 1);
-            left = right;
-        }
-    }
-    return result;
+    abort();
 }
 
 int main(void)

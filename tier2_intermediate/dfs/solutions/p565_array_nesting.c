@@ -5,11 +5,12 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 
 int main(void) {
     int n;
     int *nums = read_ints(&n);
-    char visited[100001] = {0};
+    static char visited[100001];
     int max_len = 0;
     for (int i = 0; i < n; i++) {
         if (!visited[i]) {

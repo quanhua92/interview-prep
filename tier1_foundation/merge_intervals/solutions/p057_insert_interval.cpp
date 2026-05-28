@@ -39,6 +39,7 @@
 
 
 #include "io.h"
+#include <cstdlib>
 #include <algorithm>
 #include <vector>
 

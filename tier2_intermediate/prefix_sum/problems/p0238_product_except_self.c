@@ -40,8 +40,6 @@
 int *product_except_self(int *nums, int numsSize, int *retSize)
 {
     abort();
-    *retSize = 0;
-    return NULL;
 }
 
 int main(void)

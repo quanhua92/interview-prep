@@ -35,6 +35,7 @@
  * Hint: Trust score array: for each [a,b], scores[a]-=1 and scores[b]+=1. Judge has score n-1.
  */
 
+
 #include "io.h"
 #include <vector>
 

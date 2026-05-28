@@ -24,7 +24,7 @@ Constraints:
 Template (python3):
     class Solution:
         def combine(self, n: int, k: int) -> List[List[int]]:
-
+            raise NotImplementedError
 Hint: Use backtracking with a start index to generate all k-length combinations from 1..n.
 """
 
@@ -33,8 +33,6 @@ from src.wasm_libs.py.io import *
 
 def solve(n: int, k: int) -> list[list[int]]:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     n = read_int()
     k = read_int()

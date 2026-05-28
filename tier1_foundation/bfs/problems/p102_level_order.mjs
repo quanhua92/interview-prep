@@ -53,7 +53,7 @@ function buildTree(arr) {
 }
 
 function solve(vals) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const n = readInt();

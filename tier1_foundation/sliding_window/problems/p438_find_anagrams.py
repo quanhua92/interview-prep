@@ -31,12 +31,12 @@ Template (python3):
 Hint: Use a sliding window with frequency counters to compare against pattern.
 """
 
+from collections import Counter
 from src.wasm_libs.py.io import *
 
 
 def solve(s: str, p: str) -> list[int]:
     raise NotImplementedError
-
 
 if __name__ == "__main__":
     s = read_line()

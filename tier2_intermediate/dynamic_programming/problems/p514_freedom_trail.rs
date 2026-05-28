@@ -32,13 +32,9 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn find_rotate_steps(ring: &str, key: &str) -> i32 {
-        todo!()
-    }
+fn find_rotate_steps(ring: &str, key: &str) -> i32 {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let ring = read_line();

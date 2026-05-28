@@ -32,6 +32,15 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
+
+static int cmp_int(const void *a, const void *b) { return *(const int *)a - *(const int *)b; }
+    abort();
+}
+
+static int abs_val(int x) { return x < 0 ? -x : x; }
+    abort();
+}
 
 int findRadius(const int *houses, int hn, const int *heaters, int heatn)
 {

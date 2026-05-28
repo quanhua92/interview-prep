@@ -17,7 +17,7 @@
  * Hint: Treat the matchsticks as an array. Can we split the array into 4 equal parts?
  */
 
-use interview_prep::{read_ints, write_bool};
+use wasm_libs::*;
 
 fn makesquare(mut matchsticks: Vec<i32>) -> bool {
     if matchsticks.is_empty() {

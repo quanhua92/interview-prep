@@ -31,34 +31,35 @@ Template (python3):
     class Trie:
 
         def __init__(self):
-
-
+            raise NotImplementedError
         def insert(self, word: str) -> None:
-
-
+            raise NotImplementedError
         def search(self, word: str) -> bool:
-
-
+            raise NotImplementedError
         def startsWith(self, prefix: str) -> bool:
-
-
-
-    # Your Trie object will be instantiated and called as such:
-    # obj = Trie()
-    # obj.insert(word)
-    # param_2 = obj.search(word)
-    # param_3 = obj.startsWith(prefix)
-
+            raise NotImplementedError
 Hint: Build a Trie class with insert, search, and starts_with methods.
 """
 
 from src.wasm_libs.py.io import *
 
 
+class TrieNode:
+    def __init__(self):
+        raise NotImplementedError
+class Trie:
+    def __init__(self):
+        raise NotImplementedError
+    def insert(self, word: str) -> None:
+        raise NotImplementedError
+    def search(self, word: str) -> bool:
+        raise NotImplementedError
+    def starts_with(self, prefix: str) -> bool:
+        raise NotImplementedError
+    def _find(self, prefix: str) -> TrieNode | None:
+        raise NotImplementedError
 def solve(operations: list[tuple[str, str]]) -> list:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     n = read_int()
     operations = []

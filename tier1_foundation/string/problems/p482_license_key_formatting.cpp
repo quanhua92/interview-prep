@@ -28,6 +28,7 @@
  */
 
 #include "io.h"
+#include <cctype>
 #include <string>
 
 std::string licenseKeyFormatting(const std::string &s, int k)

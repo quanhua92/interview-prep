@@ -28,17 +28,17 @@ Constraints:
 Template (python3):
     class Solution:
         def minEatingSpeed(self, piles: List[int], h: int) -> int:
-
+            raise NotImplementedError
 Hint: Binary search on the eating speed, computing total hours for each candidate.
 """
+
+import math
 
 from src.wasm_libs.py.io import *
 
 
 def solve(piles: list[int], h: int) -> int:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     piles = read_ints()
     h = read_int()

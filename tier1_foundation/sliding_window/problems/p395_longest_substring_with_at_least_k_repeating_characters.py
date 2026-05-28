@@ -31,7 +31,6 @@ from src.wasm_libs.py.io import *
 def solve(s: str, k: int) -> int:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     s = read_line()
     k = read_int()

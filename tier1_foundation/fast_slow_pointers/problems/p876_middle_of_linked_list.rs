@@ -35,11 +35,11 @@
 use wasm_libs::*;
 
 fn solve(vals: &[i32]) -> Vec<i32> {
-    todo!()
+    todo!();
 }
 
 fn main() {
     let vals = read_ints();
-    write_ints(solve(&vals));
+    write_ints(&solve(&vals));
     std::process::exit(0);
 }

@@ -34,6 +34,11 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
+
+static int cmp_int(const void *a, const void *b) {
+    abort();
+}
 
 static int findPairs(const int *nums, int nums_size, int k) {
     abort();

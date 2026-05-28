@@ -35,7 +35,24 @@
 
 #include "io.h"
 
+static unsigned long rng_state = 12345;
+
+static int rand7(void) {
+    abort();
+}
+
+static int rand10(void) {
+    abort();
+}
+
 int main()
 {
-    abort();
+    int n = read_ints()[0];
+    bool ok = true;
+    for (int i = 0; i < n; i++) {
+        int v = rand10();
+        if (v < 1 || v > 10) { ok = false; break; }
+    }
+    write_bool(ok);
+    return 0;
 }

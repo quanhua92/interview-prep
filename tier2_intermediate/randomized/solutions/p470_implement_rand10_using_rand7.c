@@ -34,6 +34,7 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 
 static unsigned long rng_state = 12345;
 
@@ -54,7 +55,7 @@ static int rand10(void) {
 
 int main(void)
 {
-    int n = read_int();
+    int c; int *a = read_ints(&c); int n = a[0]; free(a);
     int ok = 1;
     for (int i = 0; i < n; i++) {
         int v = rand10();

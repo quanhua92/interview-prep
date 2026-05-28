@@ -33,6 +33,10 @@
 
 use wasm_libs::*;
 
+fn feasible(nums: &[i32], max_sum: i64, k: i32) -> bool {
+    todo!()
+}
+
 fn split_array(nums: &[i32], k: i32) -> i64 {
     todo!()
 }

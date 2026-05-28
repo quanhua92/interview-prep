@@ -26,9 +26,8 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn longest_palindrome_subseq(s: &str) -> i32 {
-        let b = s.as_bytes();
+fn longest_palindrome_subseq(s: &str) -> i32 {
+    let b = s.as_bytes();
     let n = b.len();
     if n == 0 { return 0; }
     let mut dp = vec![vec![0i32; n]; n];
@@ -44,10 +43,7 @@ impl Solution {
         }
     }
     dp[0][n - 1]
-    }
 }
-
-struct Solution;
 
 fn main() {
     let s = read_line();

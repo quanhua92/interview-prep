@@ -41,12 +41,13 @@
  * Hint: Use Kahn's algorithm (topological sort with BFS) to produce a valid course order.
  */
 
+use std::collections::VecDeque;
 use wasm_libs::*;
 
 impl Solution {
     fn find_order(num_courses: usize, prerequisites: &[(i32, i32)]) -> Vec<i32> {
-        todo!()
-    }
+    todo!();
+}
 }
 
 struct Solution;

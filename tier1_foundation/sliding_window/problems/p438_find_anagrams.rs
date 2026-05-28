@@ -34,7 +34,7 @@
 use wasm_libs::*;
 
 fn solve(s: &str, p: &str) -> Vec<i32> {
-    todo!()
+    todo!();
 }
 
 fn main() {

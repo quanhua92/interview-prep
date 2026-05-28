@@ -30,13 +30,14 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 
 int checkRecord(int n) {
     abort();
 }
 
 int main(void) {
-    int n = read_int();
+    int ic; int *ia = read_ints(&ic); int n = ia[0]; free(ia);
     write_int(checkRecord(n));
     return 0;
 }

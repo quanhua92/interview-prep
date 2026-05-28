@@ -30,28 +30,38 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int env_buf[200000][2];
+static int env_count;
+
 static int cmp_env(const void *a, const void *b)
 {
-    const int *ea = (const int *)a, *eb = (const int *)b;
-    if (ea[0] != eb[0]) return ea[0] - eb[0];
-    return eb[1] - ea[1];
+    int ia = *(const int *)a, ib = *(const int *)b;
+    if (ia != ib) return ia - ib;
+    return ((int *)b)[1] - ((int *)a)[1];
 }
 
-int maxEnvelopes(int **envelopes, int envelopesSize, int *envelopesColSize)
+int main(void)
 {
-    (void)envelopesColSize;
-    if (envelopesSize <= 1) return envelopesSize;
-    int sorted[100000][2];
+    int cnt;
+    int *header = read_ints(&cnt);
+    int envelopesSize = header[0];
+    free(header);
+    env_count = 0;
     for (int i = 0; i < envelopesSize; i++) {
-        sorted[i][0] = envelopes[i][0];
-        sorted[i][1] = envelopes[i][1];
+        int rc;
+        int *row = read_ints(&rc);
+        env_buf[env_count][0] = row[0];
+        env_buf[env_count][1] = row[1];
+        env_count++;
+        free(row);
     }
-    qsort(sorted, envelopesSize, sizeof(sorted[0]), cmp_env);
+    if (envelopesSize <= 1) { write_int(envelopesSize); return 0; }
+    qsort(env_buf, envelopesSize, sizeof(env_buf[0]), cmp_env);
 
-    int *dp = (int *)malloc(envelopesSize * sizeof(int));
+    int *dp = malloc(envelopesSize * sizeof(int));
     int dlen = 0;
     for (int i = 0; i < envelopesSize; i++) {
-        int h = sorted[i][1];
+        int h = env_buf[i][1];
         int lo = 0, hi = dlen;
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
@@ -61,25 +71,7 @@ int maxEnvelopes(int **envelopes, int envelopesSize, int *envelopesColSize)
         dp[lo] = h;
         if (lo == dlen) dlen++;
     }
+    write_int(dlen);
     free(dp);
-    return dlen;
-}
-
-int main(void)
-{
-    int rows;
-    int *flat = read_ints(&rows);
-    int cols = flat[0];
-    int envelopesSize = cols;
-    int *envelopes_ptrs[100000];
-    int colSizes[100000];
-    int *envelopes_flat = flat + 1;
-    for (int i = 0; i < envelopesSize; i++) {
-        envelopes_ptrs[i] = envelopes_flat + i * 2;
-        colSizes[i] = 2;
-    }
-    int result = maxEnvelopes(envelopes_ptrs, envelopesSize, colSizes);
-    write_int(result);
-    free(flat);
     return 0;
 }

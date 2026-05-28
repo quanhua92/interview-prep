@@ -36,6 +36,7 @@
 
 use wasm_libs::*;
 use std::collections::VecDeque;
+use std::io::{self, BufRead};
 
 fn solve(grid: &mut Vec<Vec<i32>>) -> i32 {
     let rows = grid.len();
@@ -74,8 +75,13 @@ fn solve(grid: &mut Vec<Vec<i32>>) -> i32 {
 }
 
 fn main() {
-    let n = read_int();
-    let mut grid: Vec<Vec<i32>> = (0..n).map(|_| read_ints()).collect();
+    let _n = read_int();
+    let stdin = io::stdin();
+    let lines: Vec<String> = stdin.lock().lines().map(|l| l.unwrap()).collect();
+    let mut grid: Vec<Vec<i32>> = lines.iter()
+        .filter(|l| !l.trim().is_empty())
+        .map(|l| l.split_whitespace().map(|s| s.parse().unwrap()).collect())
+        .collect();
     write_int(solve(&mut grid));
     std::process::exit(0);
 }

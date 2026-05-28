@@ -55,23 +55,16 @@ impl Codec {
     }
 
     fn encode(&mut self, long_url: &str) -> String {
-        let key = self.next_id.to_string();
-        self.next_id += 1;
-        self.url_map.insert(key.clone(), long_url.to_string());
-        self.short_map.insert(key.clone(), long_url.to_string());
-        format!("http://tinyurl.com/{}", key)
+        todo!();
     }
 
     fn decode(&self, short_url: &str) -> String {
-        let key = short_url.rsplit('/').next().unwrap();
-        self.short_map.get(key).cloned().unwrap_or_default()
+        todo!();
     }
 }
 
 fn solve(long_url: &str) -> String {
-    let mut codec = Codec::new();
-    let tiny = codec.encode(long_url);
-    codec.decode(&tiny)
+    todo!();
 }
 
 fn main() {

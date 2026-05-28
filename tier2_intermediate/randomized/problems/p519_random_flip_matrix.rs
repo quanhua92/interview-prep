@@ -46,8 +46,17 @@
  *     # obj.reset()
  */
 
+use std::collections::{HashMap, HashSet};
 use wasm_libs::*;
 
+fn solve(m: i64, n: i64, num_flips: i64) -> i64 {
+    todo!();
+}
+
 fn main() {
-    todo!()
+    let m = read_int();
+    let n = read_int();
+    let num_flips = read_int();
+    let result = solve(m as i64, n as i64, num_flips as i64);
+    write_int(result as i32);
 }

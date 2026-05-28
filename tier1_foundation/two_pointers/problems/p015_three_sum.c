@@ -44,12 +44,43 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
+
+static int cmp_int(const void *a, const void *b) { return *(const int *)a - *(const int *)b; }
+    abort();
+}
 
 int *threeSum(int *nums, int n, int *return_size)
 {
-    abort();
-    *return_size = 0;
-    return NULL;
+    qsort(nums, n, sizeof(int), cmp_int);
+    int cap = 128;
+    int *result = malloc(cap * 3 * sizeof(int));
+    int count = 0;
+    for (int i = 0; i < n - 2; i++) {
+        if (i > 0 && nums[i] == nums[i - 1]) continue;
+        int left = i + 1, right = n - 1;
+        while (left < right) {
+            int total = nums[i] + nums[left] + nums[right];
+            if (total < 0) left++;
+            else if (total > 0) right--;
+            else {
+                if (count * 3 + 3 > cap * 3) {
+                    cap *= 2;
+                    result = realloc(result, cap * 3 * sizeof(int));
+                }
+                result[count * 3] = nums[i];
+                result[count * 3 + 1] = nums[left];
+                result[count * 3 + 2] = nums[right];
+                count++;
+                while (left < right && nums[left] == nums[left + 1]) left++;
+                while (left < right && nums[right] == nums[right - 1]) right--;
+                left++;
+                right--;
+            }
+        }
+    }
+    *return_size = count;
+    return result;
 }
 
 int main(void)

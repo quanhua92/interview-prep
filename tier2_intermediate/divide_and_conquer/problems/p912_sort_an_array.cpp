@@ -10,15 +10,33 @@
  *     Input: nums = [5,2,3,1]
  *     Output: [1,2,3,5]
  *
+ * Example 2:
+ *     Input: nums = [5,1,1,2,0,0]
+ *     Output: [0,0,1,1,2,5]
+ *
+ * Constraints:
+ *     - 1 <= nums.length <= 5 * 104
+ *     - -5 * 104 <= nums[i] <= 5 * 104
+ *
  * Hint: Implement merge sort — divide array in half, sort recursively, merge.
  */
+
 
 #include "io.h"
 #include <vector>
 
+static void merge_sort(std::vector<int> &arr, std::vector<int> &tmp, int l, int r)
+{
+    abort();
+}
+
 int main(void)
 {
     std::vector<int> nums = read_ints();
-    abort();
+    int n = (int)nums.size();
+    if (n <= 1) { write_ints(nums); return 0; }
+    std::vector<int> tmp(n);
+    merge_sort(nums, tmp, 0, n - 1);
+    write_ints(nums);
     return 0;
 }

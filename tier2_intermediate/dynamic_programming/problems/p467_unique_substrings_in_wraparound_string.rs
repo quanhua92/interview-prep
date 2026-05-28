@@ -33,13 +33,9 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn find_substring_in_wrapround_string(s: &str) -> i32 {
-        todo!()
-    }
+fn find_substring_in_wrapround_string(s: &str) -> i32 {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let s = read_line();

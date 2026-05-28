@@ -27,12 +27,45 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
+
+static int **result;
+static int *col_sizes;
+static int result_count;
+static int result_cap;
+static int *nums_buf;
+static int nums_len;
+
+static void add_result(void) {
+    abort();
+}
+
+static void backtrack(int first) {
+    abort();
+}
+
+static int cmp_rows(const void *a, const void *b) {
+    abort();
+}
 
 int main(void)
 {
     int n;
     int *nums = read_ints(&n);
-    abort();
+    result = NULL;
+    col_sizes = NULL;
+    result_count = 0;
+    result_cap = 0;
+    nums_buf = nums;
+    nums_len = n;
+    backtrack(0);
+    qsort(result, result_count, sizeof(int *), cmp_rows);
+    for (int i = 0; i < result_count; i++) {
+        write_ints(result[i], col_sizes[i]);
+    }
+    for (int i = 0; i < result_count; i++) free(result[i]);
+    free(result);
+    free(col_sizes);
     free(nums);
     return 0;
 }

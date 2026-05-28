@@ -1,9 +1,33 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+/*
+ * P695: Max Area of Island (Medium)
+ * https://leetcode.com/problems/max-area-of-island/
+ * Topics: Array, Depth-First Search, Breadth-First Search, Union Find, Matrix
+ */
 
-int main(void)
-{
+#include "io.h"
+#include <vector>
+#include <algorithm>
+
+static int dfs(std::vector<std::vector<int>>& grid, int r, int c, int rows, int cols) {
     abort();
+}
+
+int main() {
+    auto meta = read_ints();
+    int rows = meta[0], cols = meta[1];
+    if (rows == 0 || cols == 0) { write_int(0); return 0; }
+    std::vector<std::vector<int>> grid(rows);
+    for (int r = 0; r < rows; r++) {
+        grid[r] = read_ints();
+    }
+    int max_area = 0;
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            if (grid[r][c] == 1) {
+                max_area = std::max(max_area, dfs(grid, r, c, rows, cols));
+            }
+        }
+    }
+    write_int(max_area);
+    return 0;
 }

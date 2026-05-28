@@ -13,8 +13,10 @@
  */
 
 
-#include "ctest.h"
+#include "io.h"
 #include <limits.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define MAX_M 26
 #define MAX_TASKS 10000

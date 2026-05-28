@@ -33,11 +33,11 @@
 use wasm_libs::*;
 
 fn get_next(mut num: i32) -> i32 {
-    todo!()
+    todo!();
 }
 
 fn solve(n: i32) -> bool {
-    todo!()
+    todo!();
 }
 
 fn main() {

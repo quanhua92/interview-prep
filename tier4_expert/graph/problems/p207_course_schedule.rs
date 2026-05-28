@@ -37,12 +37,13 @@
  * Hint: Build a graph and use topological sort (Kahn's algorithm) to detect cycles.
  */
 
+use std::collections::VecDeque;
 use wasm_libs::*;
 
 impl Solution {
     fn can_finish(num_courses: usize, prerequisites: &[(i32, i32)]) -> bool {
-        todo!()
-    }
+    todo!();
+}
 }
 
 struct Solution;

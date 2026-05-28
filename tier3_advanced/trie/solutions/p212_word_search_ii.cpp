@@ -41,6 +41,7 @@
 #include <algorithm>
 #include <array>
 
+
 struct TrieNode {
     std::array<TrieNode*, 26> children{};
     std::string word;

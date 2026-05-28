@@ -25,6 +25,7 @@
 #include "io.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 static int g_cands[30];
 static int g_path[40];

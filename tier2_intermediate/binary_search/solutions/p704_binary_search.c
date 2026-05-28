@@ -51,7 +51,7 @@ int main(void)
 {
     int n;
     int *nums = read_ints(&n);
-    int target = read_int();
+    int tc; int *ta = read_ints(&tc); int target = ta[0]; free(ta);
     write_int(search(nums, n, target));
     free(nums);
     return 0;

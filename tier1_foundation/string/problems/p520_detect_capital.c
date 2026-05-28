@@ -23,7 +23,9 @@
  */
 
 #include "io.h"
+#include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 int detectCapitalUse(const char *word)
 {

@@ -28,11 +28,36 @@
 
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
+
+typedef struct { int h, r, c; } Cell;
+
+static void heap_push(Cell *heap, int *sz, Cell val)
+{
+    abort();
+}
+
+static Cell heap_pop(Cell *heap, int *sz)
+{
+    Cell top = heap[0];
+    heap[0] = heap[--(*sz)];
+    int i = 0;
+    while (1) {
+        int s = i, l = 2 * i + 1, r = 2 * i + 2;
+        if (l < *sz && heap[l].h < heap[s].h) s = l;
+        if (r < *sz && heap[r].h < heap[s].h) s = r;
+        if (s == i) break;
+        Cell tmp = heap[s];
+        heap[s] = heap[i];
+        heap[i] = tmp;
+        i = s;
+    }
+    return top;
+}
 
 static int trapRainWater(int *heightMap, int m, int n)
 {
     abort();
-    return 0;
 }
 
 int main(void)

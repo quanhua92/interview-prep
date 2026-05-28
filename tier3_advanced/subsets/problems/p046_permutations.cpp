@@ -24,14 +24,20 @@
  *
  * Hint: Use backtracking with swapping to generate all permutations in-place.
  */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+
+#include "io.h"
 #include <algorithm>
 #include <vector>
 
+static std::vector<std::vector<int>> permute(std::vector<int> nums) {
+    abort();
+}
+
 int main(void)
 {
-    abort();
+    std::vector<int> nums = read_ints();
+    auto result = permute(nums);
+    for (const auto& row : result)
+        write_ints(row);
+    return 0;
 }

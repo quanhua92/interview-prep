@@ -115,14 +115,9 @@ public:
     }
 };
 
-static int read_int_val() {
-    std::string line = read_line();
-    return std::stoi(line);
-}
-
 int main(void) {
-    int capacity = read_int_val();
-    int num_ops = read_int_val();
+    int capacity = read_int();
+    int num_ops = read_int();
     LFUCache lfu(capacity);
 
     for (int i = 0; i < num_ops; i++) {

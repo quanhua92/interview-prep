@@ -14,6 +14,24 @@
  *     Input: board = [["a","b"],["c","d"]], words = ["abcb"]
  *     Output: []
  *
+ * Constraints:
+ *     - m == board.length
+ *     - n == board[i].length
+ *     - 1 <= m, n <= 12
+ *     - board[i][j] is a lowercase English letter.
+ *     - 1 <= words.length <= 3 * 104
+ *     - 1 <= words[i].length <= 10
+ *     - words[i] consists of lowercase English letters.
+ *     - All the strings of words are unique.
+ *
+ * Hints:
+ *     - You would need to optimize your backtracking to pass the larger test. Could you stop backtracking earlier?
+ *     - If the current candidate does not exist in all words' prefix, you could stop backtracking immediately. What kind of data structure could answer such query efficiently? Does a hash table work? Why or why not? How about a Trie? If you would like to learn how to implement a basic trie, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.
+ *
+ * Template (python3):
+ *     class Solution:
+ *         def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+ *
  * Hint: Build a Trie from the word list, then use DFS on the board to find matching words.
  */
 
@@ -23,10 +41,50 @@
 #include <algorithm>
 #include <array>
 
-std::vector<std::string> findWords(std::vector<std::vector<char>> board,
-                                   std::vector<std::string> words) {
+
+struct TrieNode {
+    std::array<TrieNode*, 26> children{};
+    std::string word;
+
+    TrieNode() {
     abort();
 }
+};
+
+class WordSearchII {
+    int rows, cols;
+    std::vector<std::string> result;
+
+    void dfs(std::vector<std::vector<char>> &board, int r, int c, TrieNode *parent) {
+    abort();
+}
+
+public:
+    std::vector<std::string> findWords(std::vector<std::vector<char>> board,
+                                       std::vector<std::string> words) {
+        rows = (int)board.size();
+        cols = (int)board[0].size();
+        result.clear();
+
+        TrieNode root;
+        for (auto &w : words) {
+            TrieNode *cur = &root;
+            for (char ch : w) {
+                int idx = ch - 'a';
+                if (!cur->children[idx]) cur->children[idx] = new TrieNode();
+                cur = cur->children[idx];
+            }
+            cur->word = w;
+        }
+
+        for (int r = 0; r < rows; r++)
+            for (int c = 0; c < cols; c++)
+                dfs(board, r, c, &root);
+
+        std::sort(result.begin(), result.end());
+        return result;
+    }
+};
 
 int main(void) {
     int rows = read_int();
@@ -46,7 +104,8 @@ int main(void) {
         words[i] = read_line();
     }
 
-    auto result = findWords(board, words);
+    WordSearchII solver;
+    auto result = solver.findWords(board, words);
 
     write_int((int)result.size());
     for (auto &w : result) {

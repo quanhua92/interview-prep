@@ -31,13 +31,9 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn check_record(n: i32) -> i32 {
-        todo!()
-    }
+fn check_record(n: i32) -> i32 {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let n = read_int();

@@ -28,7 +28,6 @@ from src.wasm_libs.py.io import *
 def solve(word: str) -> bool:
     raise NotImplementedError
 
-
 if __name__ == "__main__":
     word = read_line()
     result = solve(word)

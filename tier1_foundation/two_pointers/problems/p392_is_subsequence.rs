@@ -27,7 +27,7 @@ use wasm_libs::*;
 
 impl Solution {
     fn is_subsequence(s: &str, t: &str) -> bool {
-        todo!()
+        todo!();
     }
 }
 

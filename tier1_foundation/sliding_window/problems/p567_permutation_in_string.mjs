@@ -28,8 +28,12 @@
 
 import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
 
+function mapsEqual(a, b) {
+    throw new Error("NotImplementedError");
+}
+
 function solve(s1, s2) {
-  throw new Error("NotImplementedError");
+    throw new Error("NotImplementedError");
 }
 
 const s1 = readLine();

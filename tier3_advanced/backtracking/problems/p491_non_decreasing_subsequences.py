@@ -19,6 +19,7 @@ Constraints:
 Template (python3):
     class Solution:
         def findSubsequences(self, nums: List[int]) -> List[List[int]]:
+            raise NotImplementedError
 """
 
 from src.wasm_libs.py.io import *
@@ -26,8 +27,6 @@ from src.wasm_libs.py.io import *
 
 def solve(nums: list[int]) -> list[list[int]]:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     nums = read_ints()
     subs = solve(nums)

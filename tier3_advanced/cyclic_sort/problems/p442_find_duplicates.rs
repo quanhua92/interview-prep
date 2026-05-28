@@ -31,8 +31,8 @@ use wasm_libs::*;
 
 impl Solution {
     fn find_duplicates(nums: &mut [i32]) -> Vec<i32> {
-        todo!()
-    }
+    todo!()
+}
 }
 
 struct Solution;

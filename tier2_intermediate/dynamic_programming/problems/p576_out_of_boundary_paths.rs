@@ -32,13 +32,9 @@
 
 use wasm_libs::*;
 
-impl Solution {
-    fn find_paths(m: i32, n: i32, max_move: i32, start_row: i32, start_column: i32) -> i32 {
-        todo!()
-    }
+fn find_paths(m: i32, n: i32, max_move: i32, start_row: i32, start_column: i32) -> i32 {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let m = read_int();

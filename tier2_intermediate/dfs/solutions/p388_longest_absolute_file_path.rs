@@ -5,9 +5,13 @@
  */
 
 use wasm_libs::*;
+use std::io::{self, BufRead};
 
 fn main() {
-    let input = read_line();
+    let stdin = std::io::stdin();
+    let lines: Vec<String> = stdin.lock().lines().map(|l| l.unwrap()).collect();
+    let input = lines.join("\n");
+    let input = input.trim_end_matches('\n');
     let mut stack: Vec<i32> = vec![0];
     let mut max_len = 0;
     let mut i = 0;

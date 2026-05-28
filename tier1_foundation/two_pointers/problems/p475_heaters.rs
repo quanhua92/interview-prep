@@ -34,7 +34,7 @@ use wasm_libs::*;
 
 impl Solution {
     fn find_radius(mut houses: Vec<i32>, mut heaters: Vec<i32>) -> i32 {
-        todo!()
+        todo!();
     }
 }
 

@@ -29,6 +29,7 @@
 
 #include "io.h"
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 
 bool canCross(int *stones, int stonesSize) {

@@ -28,19 +28,15 @@
  *         def findMaxLength(self, nums: List[int]) -> int:
  */
 
+use std::collections::HashMap;
 use wasm_libs::*;
 
-impl Solution {
-    fn find_max_length(nums: &[i32]) -> i32 {
-        todo!()
-    }
+fn find_max_length(nums: &[i32]) -> i32 {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let nums = read_ints();
-    let result = Solution::find_max_length(&nums);
-    write_int(result);
+    write_int(find_max_length(&nums));
     std::process::exit(0);
 }

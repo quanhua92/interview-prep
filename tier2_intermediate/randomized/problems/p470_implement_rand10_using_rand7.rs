@@ -35,6 +35,25 @@
 
 use wasm_libs::*;
 
+static mut RNG_STATE: u64 = 12345;
+
+fn rand7() -> i32 {
+    todo!();
+}
+
+fn rand10() -> i32 {
+    todo!();
+}
+
 fn main() {
-    todo!()
+    let n = read_int();
+    let mut ok = true;
+    for _ in 0..n {
+        let v = rand10();
+        if v < 1 || v > 10 {
+            ok = false;
+            break;
+        }
+    }
+    write_bool(ok);
 }

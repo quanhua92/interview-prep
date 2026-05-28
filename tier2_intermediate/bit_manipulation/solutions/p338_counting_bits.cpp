@@ -50,7 +50,7 @@ static std::vector<int> countBits(int n) {
 }
 
 int main() {
-    int n = read_int();
+    int n = read_ints()[0];
     std::vector<int> result = countBits(n);
     write_ints(result);
     return 0;

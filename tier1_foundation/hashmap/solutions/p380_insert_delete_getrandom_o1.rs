@@ -55,105 +55,21 @@
 use wasm_libs::*;
 use std::collections::HashMap;
 
-const MT_N: usize = 624;
-const MT_M: usize = 397;
-const MATRIX_A: u32 = 0x9908B0DF;
-const UPPER_MASK: u32 = 0x80000000;
-const LOWER_MASK: u32 = 0x7FFFFFFF;
-
-struct MT19937 {
-    mt: [u32; MT_N],
-    mti: usize,
-}
-
-impl MT19937 {
-    fn new() -> Self {
-        MT19937 { mt: [0u32; MT_N], mti: 0 }
-    }
-
-    fn init_genrand(&mut self, seed: u32) {
-        self.mt[0] = seed & 0xFFFFFFFF;
-        for i in 1..MT_N {
-            self.mt[i] = (1812433253u32.wrapping_mul(self.mt[i - 1] ^ (self.mt[i - 1] >> 30)).wrapping_add(i as u32)) & 0xFFFFFFFF;
-        }
-        self.mti = MT_N;
-    }
-
-    fn init_by_array(&mut self, key: &[u32]) {
-        self.init_genrand(19650218);
-        let klen = key.len();
-        let mut i = 1usize;
-        let mut j = 0usize;
-        let mut k = if MT_N > klen { MT_N } else { klen };
-        while k > 0 {
-            self.mt[i] = (self.mt[i] ^ ((self.mt[i - 1] ^ (self.mt[i - 1] >> 30)).wrapping_mul(1664525))).wrapping_add(key[j]).wrapping_add(j as u32) & 0xFFFFFFFF;
-            i += 1;
-            j += 1;
-            if i >= MT_N { self.mt[0] = self.mt[MT_N - 1]; i = 1; }
-            if j >= klen { j = 0; }
-            k -= 1;
-        }
-        k = MT_N - 1;
-        while k > 0 {
-            self.mt[i] = (self.mt[i] ^ ((self.mt[i - 1] ^ (self.mt[i - 1] >> 30)).wrapping_mul(1566083941))).wrapping_sub(i as u32) & 0xFFFFFFFF;
-            i += 1;
-            if i >= MT_N { self.mt[0] = self.mt[MT_N - 1]; i = 1; }
-            k -= 1;
-        }
-        self.mt[0] = 0x80000000;
-        self.mti = MT_N;
-    }
-
-    fn genrand(&mut self) -> u32 {
-        if self.mti >= MT_N {
-            let mag01: [u32; 2] = [0, MATRIX_A];
-            let mut kk = 0usize;
-            while kk < MT_N - MT_M {
-                let y = (self.mt[kk] & UPPER_MASK) | (self.mt[kk + 1] & LOWER_MASK);
-                self.mt[kk] = self.mt[kk + MT_M] ^ (y >> 1) ^ mag01[(y & 1) as usize];
-                kk += 1;
-            }
-            while kk < MT_N - 1 {
-                let y = (self.mt[kk] & UPPER_MASK) | (self.mt[kk + 1] & LOWER_MASK);
-                self.mt[kk] = self.mt[kk.wrapping_add(MT_M).wrapping_sub(MT_N)] ^ (y >> 1) ^ mag01[(y & 1) as usize];
-                kk += 1;
-            }
-            let y = (self.mt[MT_N - 1] & UPPER_MASK) | (self.mt[0] & LOWER_MASK);
-            self.mt[MT_N - 1] = self.mt[MT_M - 1] ^ (y >> 1) ^ mag01[(y & 1) as usize];
-            self.mti = 0;
-        }
-        let mut y = self.mt[self.mti];
-        self.mti += 1;
-        y ^= y >> 11;
-        y ^= (y << 7) & 0x9D2C5680;
-        y ^= (y << 15) & 0xEFC60000;
-        y ^= y >> 18;
-        y
-    }
-
-    fn randrange(&mut self, n: usize) -> usize {
-        if n <= 1 { return 0; }
-        let mut k = 0usize;
-        let mut tmp = n;
-        while tmp > 0 { k += 1; tmp >>= 1; }
-        loop {
-            let r = (self.genrand() >> (32 - k)) as usize;
-            if r < n { return r; }
-        }
-    }
-}
-
 struct RandomizedSet {
     vals: Vec<i32>,
     idx_map: HashMap<i32, usize>,
-    rng: MT19937,
+    seed: u64,
 }
 
 impl RandomizedSet {
-    fn new(seed: u32) -> Self {
-        let mut rng = MT19937::new();
-        rng.init_by_array(&[seed]);
-        RandomizedSet { vals: Vec::new(), idx_map: HashMap::new(), rng }
+    fn new() -> Self {
+        RandomizedSet { vals: Vec::new(), idx_map: HashMap::new(), seed: 42 }
+    }
+
+    fn next_rand(&mut self, n: usize) -> usize {
+        if n <= 1 { return 0; }
+        self.seed = self.seed.wrapping_mul(6364136223846793005).wrapping_add(1);
+        ((self.seed >> 33) as usize) % n
     }
 
     fn insert(&mut self, val: i32) -> bool {
@@ -177,7 +93,7 @@ impl RandomizedSet {
     }
 
     fn get_random(&mut self) -> i32 {
-        let idx = self.rng.randrange(self.vals.len());
+        let idx = self.next_rand(self.vals.len());
         self.vals[idx]
     }
 }
@@ -186,16 +102,28 @@ fn main() {
     let header = read_ints();
     let num_ops = header[0] as usize;
 
-    let mut rs = RandomizedSet::new(42);
-
+    let mut ops: Vec<String> = Vec::new();
     for _ in 0..num_ops {
-        let op = read_line();
-        let args = read_ints();
-        if op == "insert" {
-            write_bool(rs.insert(args[0]));
-        } else if op == "remove" {
-            write_bool(rs.remove(args[0]));
-        } else if op == "getRandom" {
+        ops.push(read_line());
+    }
+    let mut args_list: Vec<Vec<i32>> = Vec::new();
+    for _ in 0..num_ops {
+        let line = read_line();
+        if line.trim().is_empty() {
+            args_list.push(vec![]);
+        } else {
+            args_list.push(line.split_whitespace().map(|s| s.parse().unwrap()).collect());
+        }
+    }
+
+    let mut rs = RandomizedSet::new();
+
+    for i in 0..num_ops {
+        if ops[i] == "insert" {
+            write_bool(rs.insert(args_list[i][0]));
+        } else if ops[i] == "remove" {
+            write_bool(rs.remove(args_list[i][0]));
+        } else if ops[i] == "getRandom" {
             write_int(rs.get_random());
         }
     }

@@ -51,7 +51,6 @@
  *     # param_3 = obj.getRandom()
  */
 
-
 #include "io.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,99 +64,25 @@ typedef struct Entry {
     int used;
 } Entry;
 
-#define MT_N 624
-#define MT_M 397
-#define MATRIX_A 0x9908B0DFUL
-#define UPPER_MASK 0x80000000UL
-#define LOWER_MASK 0x7FFFFFFFUL
-
-typedef struct {
-    unsigned int mt[MT_N];
-    int mti;
-} MT19937;
-
-static void mt_init_genrand(MT19937 *gen, unsigned int seed) {
-    gen->mt[0] = seed & 0xFFFFFFFFUL;
-    for (int i = 1; i < MT_N; i++) {
-        gen->mt[i] = (1812433253UL * (gen->mt[i - 1] ^ (gen->mt[i - 1] >> 30)) + i) & 0xFFFFFFFFUL;
-    }
-    gen->mti = MT_N;
-}
-
-static void mt_init(MT19937 *gen, const unsigned int *init_key, int key_length) {
-    mt_init_genrand(gen, 19650218UL);
-    int i = 1, j = 0, k = MT_N > key_length ? MT_N : key_length;
-    for (; k; k--) {
-        gen->mt[i] = (gen->mt[i] ^ ((gen->mt[i - 1] ^ (gen->mt[i - 1] >> 30)) * 1664525UL)) + init_key[j] + j;
-        gen->mt[i] &= 0xFFFFFFFFUL;
-        i++;
-        j++;
-        if (i >= MT_N) { gen->mt[0] = gen->mt[MT_N - 1]; i = 1; }
-        if (j >= key_length) j = 0;
-    }
-    for (k = MT_N - 1; k; k--) {
-        gen->mt[i] = (gen->mt[i] ^ ((gen->mt[i - 1] ^ (gen->mt[i - 1] >> 30)) * 1566083941UL)) - i;
-        gen->mt[i] &= 0xFFFFFFFFUL;
-        i++;
-        if (i >= MT_N) { gen->mt[0] = gen->mt[MT_N - 1]; i = 1; }
-    }
-    gen->mt[0] = 0x80000000UL;
-    gen->mti = MT_N;
-}
-
-static unsigned int mt_genrand(MT19937 *gen) {
-    unsigned int y;
-    static const unsigned int mag01[2] = {0x0UL, MATRIX_A};
-    if (gen->mti >= MT_N) {
-        int kk;
-        for (kk = 0; kk < MT_N - MT_M; kk++) {
-            y = (gen->mt[kk] & UPPER_MASK) | (gen->mt[kk + 1] & LOWER_MASK);
-            gen->mt[kk] = gen->mt[kk + MT_M] ^ (y >> 1) ^ mag01[y & 0x1UL];
-        }
-        for (; kk < MT_N - 1; kk++) {
-            y = (gen->mt[kk] & UPPER_MASK) | (gen->mt[kk + 1] & LOWER_MASK);
-            gen->mt[kk] = gen->mt[kk + (MT_M - MT_N)] ^ (y >> 1) ^ mag01[y & 0x1UL];
-        }
-        y = (gen->mt[MT_N - 1] & UPPER_MASK) | (gen->mt[0] & LOWER_MASK);
-        gen->mt[MT_N - 1] = gen->mt[MT_M - 1] ^ (y >> 1) ^ mag01[y & 0x1UL];
-        gen->mti = 0;
-    }
-    y = gen->mt[gen->mti++];
-    y ^= (y >> 11);
-    y ^= (y << 7) & 0x9D2C5680UL;
-    y ^= (y << 15) & 0xEFC60000UL;
-    y ^= (y >> 18);
-    return y;
-}
-
-static int mt_randrange(MT19937 *gen, int n) {
-    if (n <= 1) return 0;
-    int k = 0, tmp = n;
-    while (tmp > 0) { k++; tmp >>= 1; }
-    for (;;) {
-        unsigned int r = mt_genrand(gen) >> (32 - k);
-        if ((int)r < n) return (int)r;
-    }
-}
-
 typedef struct {
     int *vals;
     int val_cap;
     int val_size;
-    Entry map[MAP_SIZE];
-    MT19937 rng;
+    Entry *map;
+    unsigned long long seed;
 } RandomizedSet;
 
-static void rs_init(RandomizedSet *rs, unsigned int seed) {
+static void rs_init(RandomizedSet *rs) {
     rs->val_cap = 64;
     rs->vals = malloc(rs->val_cap * sizeof(int));
     rs->val_size = 0;
-    memset(rs->map, 0, sizeof(rs->map));
-    mt_init(&rs->rng, &seed, 1);
+    rs->map = calloc(MAP_SIZE, sizeof(Entry));
+    rs->seed = 42;
 }
 
 static void rs_free(RandomizedSet *rs) {
     free(rs->vals);
+    free(rs->map);
 }
 
 static unsigned int rs_hash(int key) {
@@ -220,7 +145,11 @@ static int rs_remove(RandomizedSet *rs, int val) {
 }
 
 static int rs_get_random(RandomizedSet *rs) {
-    return rs->vals[mt_randrange(&rs->rng, rs->val_size)];
+    int n = rs->val_size;
+    if (n <= 1) return rs->vals[0];
+    rs->seed = rs->seed * 6364136223846793005ULL + 1;
+    unsigned long long idx = (rs->seed >> 33) % (unsigned long long)n;
+    return rs->vals[(int)idx];
 }
 
 int main(void)
@@ -231,21 +160,29 @@ int main(void)
     free(n_arr);
 
     RandomizedSet rs;
-    rs_init(&rs, 42);
+    rs_init(&rs);
 
+    char **ops = malloc(num_ops * sizeof(char *));
+    int **all_args = malloc(num_ops * sizeof(int *));
     for (int i = 0; i < num_ops; i++) {
-        char *op = read_line();
-        int *args = read_ints(&n);
-        if (strcmp(op, "insert") == 0) {
-            write_bool(rs_insert(&rs, args[0]));
-        } else if (strcmp(op, "remove") == 0) {
-            write_bool(rs_remove(&rs, args[0]));
-        } else if (strcmp(op, "getRandom") == 0) {
+        ops[i] = read_line();
+    }
+    for (int i = 0; i < num_ops; i++) {
+        all_args[i] = read_ints(&n);
+    }
+    for (int i = 0; i < num_ops; i++) {
+        if (strcmp(ops[i], "insert") == 0) {
+            write_bool(rs_insert(&rs, all_args[i][0]));
+        } else if (strcmp(ops[i], "remove") == 0) {
+            write_bool(rs_remove(&rs, all_args[i][0]));
+        } else if (strcmp(ops[i], "getRandom") == 0) {
             write_int(rs_get_random(&rs));
         }
-        free(op);
-        free(args);
+        free(ops[i]);
+        free(all_args[i]);
     }
+    free(ops);
+    free(all_args);
     rs_free(&rs);
     return 0;
 }

@@ -46,21 +46,12 @@ class Codec:
         self.url_map: dict[str, str] = {}
         self.short_map: dict[str, str] = {}
 
-    def encode(self, longUrl: str) -> str:
-        key = hashlib.md5(longUrl.encode()).hexdigest()[:6]
-        self.url_map[key] = longUrl
-        self.short_map[key] = longUrl
-        return f"http://tinyurl.com/{key}"
+        raise NotImplementedError
 
-    def decode(self, shortUrl: str) -> str:
-        key = shortUrl.split("/")[-1]
-        return self.short_map[key]
-
+        raise NotImplementedError
 
 def solve(longUrl: str) -> str:
-    codec = Codec()
-    return codec.decode(codec.encode(longUrl))
-
+    raise NotImplementedError
 
 if __name__ == "__main__":
     url = read_line()

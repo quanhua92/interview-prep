@@ -54,8 +54,8 @@ static int firstBadVersion(long long n, int bad)
 
 int main(void)
 {
-    long long n = read_long();
-    int bad = read_int();
+    long long n = atoll(read_line());
+    int c; int *a = read_ints(&c); int bad = a[0]; free(a);
     write_int(firstBadVersion(n, bad));
     return 0;
 }

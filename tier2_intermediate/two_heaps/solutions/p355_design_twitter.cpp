@@ -106,13 +106,13 @@ int main(void)
 {
     Twitter tw;
 
-    int num_ops = read_int();
+    int num_ops = read_ints()[0];
     for (int i = 0; i < num_ops; i++) {
         std::string op = read_line();
-        int arg_count = read_int();
+        int arg_count = read_ints()[0];
         std::vector<int> args(arg_count);
         for (int j = 0; j < arg_count; j++) {
-            args[j] = read_int();
+            args[j] = read_ints()[0];
         }
 
         if (op == "postTweet") {

@@ -34,20 +34,16 @@
  * Hint: Use a hash map with prefix sums to count subarrays summing to k.
  */
 
+use std::collections::HashMap;
 use wasm_libs::*;
 
-impl Solution {
-    fn subarray_sum(nums: &[i32], k: i32) -> i32 {
-        todo!()
-    }
+fn subarray_sum(nums: &[i32], k: i32) -> i32 {
+    todo!();
 }
-
-struct Solution;
 
 fn main() {
     let nums = read_ints();
     let k = read_int();
-    let result = Solution::subarray_sum(&nums, k);
-    write_int(result);
+    write_int(subarray_sum(&nums, k));
     std::process::exit(0);
 }

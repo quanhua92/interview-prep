@@ -5,89 +5,79 @@
  */
 
 use wasm_libs::*;
+use std::io::{self, Write};
 use std::collections::VecDeque;
-use std::io::Write;
 
-#[derive(Clone)]
-struct TreeNode {
-    val: i32,
-    left: Option<Box<TreeNode>>,
-    right: Option<Box<TreeNode>>,
-}
-
-fn from_list(vals: &[i32]) -> Option<Box<TreeNode>> {
-    let nl = 2147483647i32;
-    if vals.is_empty() || vals[0] == nl { return None; }
-    let root = Box::new(TreeNode { val: vals[0], left: None, right: None });
+fn build_tree(vals: &[i32], nl: i32) -> (Vec<i32>, Vec<i32>) {
+    let n = vals.len();
+    if n == 0 || vals[0] == nl { return (vec![], vec![]); }
+    let mut left = vec![-1i32; n];
+    let mut right = vec![-1i32; n];
+    let mut qi = 1usize;
     let mut queue = VecDeque::new();
-    queue.push_back(root.clone());
-    let mut vi = 1;
-    while !queue.is_empty() && vi < vals.len() {
-        let mut node = queue.pop_front().unwrap();
-        if vi < vals.len() {
-            if vals[vi] != nl {
-                let child = Box::new(TreeNode { val: vals[vi], left: None, right: None });
-                node.left = Some(child.clone());
-                queue.push_back(child);
-            }
-            vi += 1;
+    queue.push_back(0usize);
+    while let Some(i) = queue.pop_front() {
+        if qi < n {
+            left[i] = if vals[qi] == nl { -1 } else { qi as i32 };
+            if vals[qi] != nl { queue.push_back(qi); }
+            qi += 1;
         }
-        if vi < vals.len() {
-            if vals[vi] != nl {
-                let child = Box::new(TreeNode { val: vals[vi], left: None, right: None });
-                node.right = Some(child.clone());
-                queue.push_back(child);
-            }
-            vi += 1;
+        if qi < n {
+            right[i] = if vals[qi] == nl { -1 } else { qi as i32 };
+            if vals[qi] != nl { queue.push_back(qi); }
+            qi += 1;
         }
     }
-    Some(root)
-}
-
-fn reverse_inorder(node: &Option<Box<TreeNode>>, total: &mut i32) {
-    if let Some(n) = node {
-        reverse_inorder(&n.right, total);
-        *total += n.val;
-        n.val = *total;
-        reverse_inorder(&n.left, total);
-    }
+    (left, right)
 }
 
 fn main() {
     let line = read_line();
-    if line.trim().is_empty() { return; }
+    if line.trim().is_empty() {
+        writeln!(io::stdout(), "").unwrap();
+        return;
+    }
     let nl = 2147483647i32;
     let vals: Vec<i32> = line.split_whitespace()
         .map(|t| if t == "null" { nl } else { t.parse().unwrap() })
         .collect();
-    if vals.is_empty() || vals[0] == nl { return; }
-    let mut root = from_list(&vals);
-    let mut total = 0;
-    reverse_inorder(&mut root, &mut total);
-    let mut all: Vec<Option<i32>> = Vec::new();
-    let mut q = VecDeque::new();
-    q.push_back(root.as_ref().map(|n| n.val));
-    while let Some(node_opt) = q.pop_front() {
-        all.push(node_opt);
+    if vals.is_empty() || vals[0] == nl {
+        writeln!(io::stdout(), "").unwrap();
+        return;
     }
-    let root = root.unwrap();
-    let mut q = VecDeque::new();
-    q.push_back(Some(root.as_ref()));
-    while let Some(node_opt) = q.pop_front() {
-        match node_opt {
-            None => all.push(None),
-            Some(n) => {
-                all.push(n.left.as_ref().map(|l| l.val));
-                all.push(n.right.as_ref().map(|r| r.val));
-                q.push_back(n.left.as_ref());
-                q.push_back(n.right.as_ref());
-            }
+
+    let (left, right) = build_tree(&vals, nl);
+    let mut tree_vals = vals.clone();
+
+    fn reverse_inorder(idx: i32, tree_vals: &mut [i32], left: &[i32], right: &[i32], total: &mut i32) {
+        if idx < 0 { return; }
+        reverse_inorder(right[idx as usize], tree_vals, left, right, total);
+        *total += tree_vals[idx as usize];
+        tree_vals[idx as usize] = *total;
+        reverse_inorder(left[idx as usize], tree_vals, left, right, total);
+    }
+
+    let mut total = 0i32;
+    reverse_inorder(0, &mut tree_vals, &left, &right, &mut total);
+
+    let mut result: Vec<Option<i32>> = Vec::new();
+    let mut queue = VecDeque::new();
+    queue.push_back(0i32);
+    while !queue.is_empty() {
+        let idx = queue.pop_front().unwrap();
+        if idx < 0 {
+            result.push(None);
+        } else {
+            result.push(Some(tree_vals[idx as usize]));
+            queue.push_back(left[idx as usize]);
+            queue.push_back(right[idx as usize]);
         }
     }
-    while all.last() == Some(&None) && all.len() > 1 { all.pop(); }
+    while result.last() == Some(&None) && result.len() > 1 { result.pop(); }
+
     let mut out = io::stdout().lock();
     let mut first = true;
-    for v in &all {
+    for v in &result {
         if !first { write!(out, " ").unwrap(); }
         first = false;
         match v {

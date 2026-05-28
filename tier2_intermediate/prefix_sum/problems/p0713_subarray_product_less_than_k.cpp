@@ -30,50 +30,22 @@
  *
  * Hint: Use a sliding window where you shrink from the left when product >= k.
  */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "cpptest.h"
-#pragma GCC diagnostic pop
+
+#include "io.h"
 #include <vector>
 
-int num_subarray_product_less_than_k(const std::vector<int>& nums, int k)
+using namespace std;
+
+int num_subarray_product_less_than_k(const vector<int>& nums, int k)
 {
     abort();
 }
 
 int main(void)
 {
-    struct {
-        const char *label;
-        std::vector<int> input;
-        int target;
-        int expected;
-    } tests[] = {
-        {"example 1",         {10, 5, 2, 6},       100,     8},
-        {"zero k",            {1, 2, 3},           0,       0},
-        {"all ones",          {1, 1, 1},           2,       6},
-        {"k equals 0",        {1, 2, 3},           0,       0},
-        {"k equals 1",        {1, 2, 3},           1,       0},
-        {"all large numbers", {1000, 1000, 1000},  1000000, 3},
-        {"small k many singles", {10, 5, 2, 6},    8,       3},
-    };
-    int n_tests = sizeof(tests) / sizeof(tests[0]);
-
-    printf("\n============================================================\n");
-    printf("  713. Subarray Product Less Than K\n");
-    printf("============================================================\n");
-    int passed = 0;
-    for (int i = 0; i < n_tests; i++) {
-        int got = num_subarray_product_less_than_k(tests[i].input, tests[i].target);
-        if (got == tests[i].expected) {
-            passed++;
-            printf("  Test %d (%s): PASS\n", i + 1, tests[i].label);
-        } else {
-            printf("  Test %d (%s): FAIL\n", i + 1, tests[i].label);
-            printf("    Expected: %d\n    Got:      %d\n", tests[i].expected, got);
-        }
-    }
-    printf("\n  %d/%d passed\n", passed, n_tests);
-    printf("============================================================\n\n");
-    return passed == n_tests ? 0 : 1;
+    vector<int> nums = read_ints();
+    vector<int> target_line = read_ints();
+    int k = target_line[0];
+    write_int(num_subarray_product_less_than_k(nums, k));
+    return 0;
 }

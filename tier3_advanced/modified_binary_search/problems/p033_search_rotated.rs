@@ -38,8 +38,8 @@ use wasm_libs::*;
 
 impl Solution {
     fn search(nums: &[i32], target: i32) -> i32 {
-        todo!()
-    }
+    todo!()
+}
 }
 
 struct Solution;

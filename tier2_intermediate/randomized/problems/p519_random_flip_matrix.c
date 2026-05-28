@@ -47,8 +47,31 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct { long long key; long long val; } MapEntry;
+
+static long long map_get(MapEntry *map, int n, long long key, long long default_val)
+{
+    abort();
+}
+
+static void map_set(MapEntry *map, int *n, long long key, long long val)
+{
+    abort();
+}
+
+static int solve(int m, int n, int num_flips)
+{
+    abort();
+}
 
 int main(void)
 {
-    abort();
+    int c1; int *a1 = read_ints(&c1); int m = a1[0]; free(a1);
+    int c2; int *a2 = read_ints(&c2); int n = a2[0]; free(a2);
+    int c3; int *a3 = read_ints(&c3); int num_flips = a3[0]; free(a3);
+    write_int(solve(m, n, num_flips));
+    return 0;
 }

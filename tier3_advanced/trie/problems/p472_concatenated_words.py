@@ -26,6 +26,7 @@ Constraints:
 Template (python3):
     class Solution:
         def findAllConcatenatedWordsInADict(self, words: List[str]) -> List[str]:
+            raise NotImplementedError
 """
 
 from src.wasm_libs.py.io import *
@@ -33,8 +34,6 @@ from src.wasm_libs.py.io import *
 
 def solve(words: list[str]) -> list[str]:
     raise NotImplementedError
-
-
 if __name__ == "__main__":
     n_words = read_int()
     words = [read_line() for _ in range(n_words)]

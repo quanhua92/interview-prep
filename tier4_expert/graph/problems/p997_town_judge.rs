@@ -39,8 +39,8 @@ use wasm_libs::*;
 
 impl Solution {
     fn find_judge(n: i32, trust: &[(i32, i32)]) -> i32 {
-        todo!()
-    }
+    todo!();
+}
 }
 
 struct Solution;

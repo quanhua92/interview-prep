@@ -30,6 +30,11 @@
 #include "io.h"
 #include <stdlib.h>
 
+static int pair_cmp(const void *a, const void *b)
+{
+    abort();
+}
+
 void solve(int n, int intervals[][2])
 {
     abort();

@@ -32,6 +32,7 @@
  */
 
 #include "io.h"
+#include <stdlib.h>
 
 int num_subarray_product_less_than_k(int *nums, int numsSize, int k)
 {
