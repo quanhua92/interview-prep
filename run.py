@@ -15,12 +15,16 @@ Usage:
 """
 
 import importlib
-import os
 import re
-import subprocess
 import sys
 
-from tracker import ROOT, TIER_DIRS, load_tracker
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
+from tracker import ROOT, TIER_DIRS, load_tracker  # noqa: E402
 
 LANG_FLAGS = ("--lang", "-l")
 SOLUTION_FLAGS = ("--solution", "-s")
@@ -90,27 +94,35 @@ def _is_stub(path):
     return any(re.search(p, source, re.MULTILINE) for p in patterns)
 
 
-def _run_python_wasm(target, stdin_text):
-    from src.runners.wasm_runner import run_python_wasm
-    return run_python_wasm(target, ROOT, stdin_text=stdin_text)
+def _run_python(target, stdin_text):
+    from src.runners.wasm_runner import wasm_sandbox_active, run_python_wasm
+    from src.runners.native_runner import run_python_native
+
+    if wasm_sandbox_active():
+        return run_python_wasm(target, ROOT, stdin_text=stdin_text), "wasm"
+    return run_python_native(target, ROOT, stdin_text=stdin_text), "native"
 
 
-def _run_js_wasm(target, stdin_text):
-    from src.runners.wasm_runner import run_quickjs_wasm
-    return run_quickjs_wasm(target, stdin_text=stdin_text)
+def _run_js(target, stdin_text):
+    from src.runners.wasm_runner import wasm_sandbox_active, run_quickjs_wasm
+    from src.runners.native_runner import run_js_native
+
+    if wasm_sandbox_active():
+        return run_quickjs_wasm(target, stdin_text=stdin_text), "wasm"
+    return run_js_native(target, stdin_text=stdin_text), "native"
 
 
-def _run_wasm_lang(target, lang, stdin_text, work_dir):
+def _run_compiled(target, lang, stdin_text, work_dir):
     from src.runners.wasm_runner import wasm_sandbox_active, judge_compile_to_wasm, run_wasm
+    from src.runners.native_runner import run_compiled_native
 
-    if not wasm_sandbox_active():
-        return {"exit_code": -1, "output": "wasmtime not available", "timed_out": False}
-
-    try:
-        wasm_path = judge_compile_to_wasm(target, lang)
-        return run_wasm(wasm_path, work_dir, stdin_text=stdin_text)
-    except Exception as e:
-        return {"exit_code": -1, "output": str(e)[:500], "timed_out": False}
+    if wasm_sandbox_active():
+        try:
+            wasm_path = judge_compile_to_wasm(target, lang)
+            return run_wasm(wasm_path, work_dir, stdin_text=stdin_text), "wasm"
+        except Exception as e:
+            return {"exit_code": -1, "output": str(e)[:500], "timed_out": False}, "wasm"
+    return run_compiled_native(target, lang, stdin_text=stdin_text), "native"
 
 
 def _run_pattern(pattern, lang=None, solution=False):
@@ -174,6 +186,13 @@ def _run_pattern(pattern, lang=None, solution=False):
     print(f"\n  {display_name}{lang_label} ({len(files)} {mode_label}s)")
     print("  " + "-" * 50)
 
+    from src.runners.wasm_runner import wasm_sandbox_active
+    is_native = not wasm_sandbox_active()
+    if is_native:
+        print("  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        print("  >>> NATIVE RUNTIME (no WASM sandbox) <<<")
+        print("  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+
     passed = 0
     failed = 0
     skipped = 0
@@ -194,11 +213,11 @@ def _run_pattern(pattern, lang=None, solution=False):
             expected = tc.expected
 
             if effective_lang == "py":
-                result = _run_python_wasm(target, stdin)
+                result, _ = _run_python(target, stdin)
             elif effective_lang == "js":
-                result = _run_js_wasm(target, stdin)
+                result, _ = _run_js(target, stdin)
             else:
-                result = _run_wasm_lang(target, effective_lang, stdin, work_dir)
+                result, _ = _run_compiled(target, effective_lang, stdin, work_dir)
 
             if result.get("timed_out"):
                 case_failed += 1

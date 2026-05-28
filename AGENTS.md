@@ -8,23 +8,27 @@ Interview prep toolkit: 144 LeetCode coding problems across 29 patterns x 5 lang
 
 - **Runtime:** Python 3.14, uv package manager
 - **Web:** FastAPI + Uvicorn (port 8888)
-- **Sandbox:** wasmtime (WASM) — no native subprocess for code execution
-- **Languages:** Python (CPython WASM), C (wasi-sdk clang), C++ (wasi-sdk clang++), Rust (rustc wasm32-wasip1), JS (QuickJS-NG WASI)
+- **Sandbox:** wasmtime (WASM) with automatic native fallback when WASM unavailable
+- **Languages:** Python (CPython WASM / python3 native), C (wasi-sdk clang / gcc), C++ (wasi-sdk clang++ / g++), Rust (rustc wasm32-wasip1 / rustc native), JS (QuickJS-NG WASI / Node.js)
 - **Test:** pytest
 - **Lint:** ruff (Python)
 
 ## Key Commands
 
 ```bash
-# Docker (primary dev environment)
-docker exec interview-prep python run.py --all --problems      # 144 SKIP expected
-docker exec interview-prep python run.py --all --solution       # 144 PASS expected
-docker exec interview-prep python run.py dfs --problems         # single pattern
-docker exec interview-prep python run.py dfs --solution --lang c  # specific lang
+# Docker (primary dev environment — uses WASM sandbox)
+docker exec interview-prep uv run python run.py --all --problems      # 144 SKIP expected
+docker exec interview-prep uv run python run.py --all --solution       # 144 PASS expected
+docker exec interview-prep uv run python run.py dfs --problems         # single pattern
+docker exec interview-prep uv run python run.py dfs --solution --lang c  # specific lang
 
-# Local (no WASM, limited)
-uv run python run.py --all --problems
-uv run python run.py --all --solution
+# Force WASM or native in Docker
+docker exec -e WASM_SANDBOX=1 interview-prep uv run python run.py --all --solution  # force WASM
+docker exec -e WASM_SANDBOX=0 interview-prep uv run python run.py --all --solution  # force native
+
+# Local (native fallback — works without WASM toolchains)
+WASM_SANDBOX=0 uv run python run.py --all --problems
+WASM_SANDBOX=0 uv run python run.py --all --solution
 
 # Tests
 uv run pytest
@@ -36,18 +40,21 @@ uv run ruff check --fix
 ## Architecture
 
 ```
-run.py                          # CLI entry — discovers patterns, loads judges, runs WASM
+run.py                          # CLI entry — discovers patterns, loads judges, runs WASM or native
 tracker.py                     # Data layer (CRUD on progress/tracker.json)
 web.py                         # FastAPI server + HTML dashboard
 src/
-  runners/wasm_runner.py       # Compile to .wasm + execute via wasmtime
+  runners/
+    wasm_runner.py             # Compile to .wasm + execute via wasmtime
+    native_runner.py           # Native compile (gcc/g++/rustc) + execute via subprocess
   utils/judge_base.py          # JudgeBase class with IO helpers
-  wasm_libs/                   # Per-language IO libraries (linked into WASM)
+  wasm_libs/                   # Per-language IO libraries (linked into WASM or native)
     py/io.py                   # read_ints, read_line, write_int, write_bool, etc.
     c/io.h, io.c
     cpp/io.h, io.cpp
     rs/lib.rs
-    js/io.mjs
+    js/io.mjs                  # QuickJS-NG (qjs:std)
+    js/io_node.mjs             # Node.js (fs.readFileSync) — used by native fallback
 
 tier{1-4}_*/
   <pattern>/
@@ -60,9 +67,20 @@ tier{1-4}_*/
 
 1. `run.py` loads `test_runners/pXXX.py` → gets `test_cases`, `to_stdin()`, `check_stdout()`
 2. Scans problem/solution file for stub marker → SKIP if found
-3. Compiles to `.wasm` (or runs python.wasm / quickjs.wasm)
-4. For each test case: pipe `to_stdin()` → wasmtime → capture stdout → `check_stdout()`
-5. PASS/FAIL per test case
+3. **WASM path** (wasmtime available): Compiles to `.wasm` (or runs python.wasm / quickjs.wasm), executes via wasmtime with fuel/timeout/memory limits
+4. **Native path** (wasmtime unavailable or `WASM_SANDBOX=0`): Compiles with gcc/g++/rustc (or runs python3/node directly), executes via subprocess
+5. For each test case: pipe `to_stdin()` → execution → capture stdout → `check_stdout()`
+6. PASS/FAIL per test case
+
+### Runtime Selection (`WASM_SANDBOX` env var)
+
+| Value | Behavior |
+|-------|----------|
+| `auto` (default) | WASM if wasmtime available, native otherwise |
+| `1` | Force WASM (fails if toolchain missing) |
+| `0` | Force native (no sandbox) |
+
+When running natively, `run.py` prints a `>>> NATIVE RUNTIME (no WASM sandbox) <<<` banner.
 
 ### Stub Detection (before compiling)
 
@@ -166,10 +184,10 @@ These rules apply to ALL edits of problem/solution files across ALL languages. V
 ### RULE 7: RUN THE JUDGE AFTER EDITS
 
 > After editing problem files, verify with `docker exec`:
-> - `docker exec interview-prep python run.py <pattern> --problems` → all SKIP
-> - `docker exec interview-prep python run.py <pattern> --solution` → all PASS
-> - `docker exec interview-prep python run.py --all --problems` → 144 SKIP
-> - `docker exec interview-prep python run.py --all --solution` → 144 PASS
+> - `docker exec interview-prep uv run python run.py <pattern> --problems` → all SKIP
+> - `docker exec interview-prep uv run python run.py <pattern> --solution` → all PASS
+> - `docker exec interview-prep uv run python run.py --all --problems` → 144 SKIP
+> - `docker exec interview-prep uv run python run.py --all --solution` → 144 PASS
 
 ### RULE 8: NEVER CHANGE SOLUTION FILES UNLESS EXPLICITLY ASKED
 
