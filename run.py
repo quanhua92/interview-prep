@@ -91,15 +91,6 @@ def _is_stub(path):
 
 
 def _run_python(target, stdin_text):
-    from src.runners.wasm_runner import wasm_sandbox_active, run_python_wasm
-
-    if wasm_sandbox_active():
-        result = run_python_wasm(target, ROOT, stdin_text=stdin_text)
-        if result.get("timed_out"):
-            return result
-        if "error" not in result or result["exit_code"] != -1:
-            return result
-
     try:
         proc = subprocess.run(
             [sys.executable, str(target)],
