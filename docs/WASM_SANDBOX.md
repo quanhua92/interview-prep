@@ -37,7 +37,7 @@ The bwrap approach requires `--userns=host` + `seccomp=unconfined` on the outer 
 | C | 0.77s | 0.20s | 25ms |
 | C++ | 4.35s | 0.15s | 19ms |
 | Rust | 1.91s | 0.16s | 20ms |
-| JS (Javy dynamic) | 5.57s | 0.24s | 30ms |
+| JS (QuickJS-NG WASI) | 5.57s | 0.24s | 30ms |
 | Python 3.14.5 | 4.61s | 1.61s | 201ms |
 
 **Linux VPS (amd64, small instance):**
@@ -47,10 +47,10 @@ The bwrap approach requires `--userns=host` + `seccomp=unconfined` on the outer 
 | C | 1.90s | 0.22s | 27ms |
 | C++ | 16.9s | 0.21s | 26ms |
 | Rust | 2.70s | 0.25s | 32ms |
-| JS (Javy dynamic) | 6.27s | 0.44s | 55ms |
+| JS (QuickJS-NG WASI) | 6.27s | 0.44s | 55ms |
 | Python 3.14.5 | 6.79s | 3.86s | 483ms |
 
-Cold includes first-time compilation (clang/rustc/javy) and wasmtime module compilation. Warm hits the MD5 `.wasm` cache — only `wasmtime run` on pre-compiled binaries. Python is always "cold" for interpreter startup (28MB binary load per run) — it benefits from wasmtime's own compile cache but not from our file-level cache.
+Cold includes first-time compilation (clang/rustc) and wasmtime module compilation. Warm hits the MD5 `.wasm` cache — only `wasmtime run` on pre-compiled binaries. Python is always "cold" for interpreter startup (28MB binary load per run) — it benefits from wasmtime's own compile cache but not from our file-level cache.
 
 ### Compilation: user code → .wasm
 
@@ -61,7 +61,7 @@ Cold includes first-time compilation (clang/rustc/javy) and wasmtime module comp
 | C++ | p483 (97 lines, complex) | — | 0.38s | — | 624K |
 | Rust | p167 (67 lines, 2-step: rstest lib + problem) | 0.06s | 0.07s | 1.2x | 1.9M |
 | Rust | p483 (complex) | 0.11s | 0.11s | 1.0x | — |
-| JS | p003 (77 lines, via Javy dynamic) | 0s (interpreted) | ~0.5s | N/A | ~3KB |
+| JS | p003 (77 lines, via QuickJS-NG) | 0s (no compile) | 0s | N/A | 1.5MB (runtime) |
 | Python | (no compile — pre-built interpreter) | — | — | — | 28MB |
 
 ### Execution: .wasm via wasmtime
@@ -102,8 +102,7 @@ Python requires ~5B fuel for CPython 3.14 startup + import + solve a simple prob
 │  │                  → wasm_runner.run_wasm()             │
 │  │  /api/run (Rust) → wasm_runner.compile_to_wasm()      │
 │  │                  → wasm_runner.run_wasm()             │
-│  │  /api/run (JS)   → wasm_runner.compile_to_wasm()      │
-│  │                  → wasm_runner.run_wasm()             │
+│  │  /api/run (JS)   → wasm_runner.run_quickjs_wasm()    │
 │  │  /api/run (Python) → wasm_runner.run_python_wasm()   │
 │  │                                                       │
 │  No bwrap. No --userns=host. No seccomp=unconfined.      │
@@ -132,15 +131,15 @@ src/runners/wasm_runner.py
 ├── WASM_SANDBOX        → "auto" | "0" | "1"  (from env)
 ├── wasm_available()     → shutil.which(wasmtime)
 ├── wasm_sandbox_active() → is WASM sandbox actually active?
-├── _get_javy_plugin()   → javy emit-plugin (once, cached as /tmp/wasm-cache/javy-plugin.wasm)
 ├── compile_to_wasm(src, lang) → Path  (with MD5 cache)
 │   ├── _compile_c()     → clang --target=wasm32-wasip1
 │   ├── _compile_cpp()   → clang++ --target=wasm32-wasip1 -fno-exceptions
-│   ├── _compile_rust()  → rustc --target wasm32-wasip1 (with rstest rlib)
-│   └── _compile_js()    → javy build -C dynamic=y -C plugin=... (3KB) or javy build (1.2MB fallback)
-├── run_wasm(wasm_path, source_dir, preload_plugin=...) → dict
-│   └── wasmtime run --preload javy-default-plugin-v3=plugin.wasm ... (JS only)
+│   └── _compile_rust()  → rustc --target wasm32-wasip1 (with rstest rlib)
+├── run_wasm(wasm_path, source_dir) → dict
 │   └── wasmtime run --dir ... -W fuel=... -W timeout=... -W max-memory-size=...
+├── run_quickjs_wasm(source, source_dir) → dict
+│   ├── inline io.mjs (strip import, prepend content)
+│   └── wasmtime run --dir ... --module quickjs.wasm script.mjs
 └── run_python_wasm(source, project_root) → dict
     └── wasmtime run --dir ... --env PYTHONHOME=... --env PYTHONPATH=... python.wasm -- script.py
 
@@ -163,7 +162,7 @@ See [`.env.example`](../.env.example):
 | `WASI_SDK_CLANG` | `/opt/wasi-sdk/bin/clang` | wasi-sdk clang for C |
 | `WASI_SDK_CLANGPP` | `/opt/wasi-sdk/bin/clang++` | wasi-sdk clang++ for C++ |
 | `WASI_SDK_SYSROOT` | `/opt/wasi-sdk/share/wasi-sysroot` | wasi-sdk sysroot |
-| `JAVY_BIN` | `javy` | Javy binary for JS → WASM |
+| `QUICKJS_WASM` | `/opt/quickjs.wasm` | QuickJS-NG WASI binary for JS |
 | `PYTHON_WASM` | `/opt/python-wasi/python.wasm` | Python WASM interpreter binary |
 | `PYTHON_WASM_HOME` | `/opt/python-wasi` | Python WASM install dir (contains `lib/python3.14/`) |
 | `WASM_CACHE_DIR` | `/tmp/wasm-cache` | Directory for compiled `.wasm` cache |
@@ -177,7 +176,7 @@ WASM_SANDBOX=auto
 WASI_SDK_CLANG=/tmp/wasi-sdk-33.0-arm64-macos/bin/clang
 WASI_SDK_CLANGPP=/tmp/wasi-sdk-33.0-arm64-macos/bin/clang++
 WASI_SDK_SYSROOT=/tmp/wasi-sdk-33.0-arm64-macos/share/wasi-sysroot
-JAVY_BIN=/tmp/javy
+QUICKJS_WASM=/tmp/quickjs.wasm
 PYTHON_WASM=/tmp/python-wasi/python.wasm
 PYTHON_WASM_HOME=/tmp/python-wasi
 ```
@@ -228,26 +227,25 @@ The `rstest.rs` test harness (`run_tests!` macro, `TestCase` struct, `print_arr`
 
 ### JavaScript → WASM
 
-Toolchain: [Javy](https://github.com/bytecodealliance/javy) v8.1.1 (Shopify/Bytecode Alliance), **dynamic linking**
+Toolchain: [QuickJS-NG](https://github.com/quickjs-ng/quickjs) v0.15.0 (precompiled WASI binary from GitHub releases)
+
+**No compilation step** — QuickJS interprets JS directly. The `io.mjs` import is inlined at runtime (import statement stripped, content prepended to the script). Uses `qjs:std` module for stdin/stdout.
 
 ```bash
-# One-time: emit the QuickJS plugin (~870KB, cached in /tmp/wasm-cache/)
-javy emit-plugin -o /tmp/javy-plugin.wasm
-
-# Compile JS to small dynamic module (~3KB)
-javy build -C dynamic=y -C plugin=/tmp/javy-plugin.wasm -o solution.wasm source.mjs
-
-# Run via wasmtime with plugin preloaded
-wasmtime run --preload javy-default-plugin-v3=/tmp/javy-plugin.wasm solution.wasm
+# Run JS directly via QuickJS-NG WASI (no compile step)
+wasmtime run --dir /tmp /opt/quickjs.wasm --module script.mjs
 ```
 
-**Dynamic linking** (default) produces ~3KB `.wasm` files that share one QuickJS runtime plugin. All modules compiled with the same plugin are compatible. The plugin is emitted once via `javy emit-plugin` and cached in the WASM cache directory.
+**How `run_quickjs_wasm()` works:**
+1. Reads the source `.mjs` file
+2. Strips the `import { ... } from '...io.mjs'` line
+3. Prepends the content of `io.mjs` in its place
+4. Writes the combined script to a temp file
+5. Runs `wasmtime run --dir <source_dir> --module /opt/quickjs.wasm temp.mjs`
 
-Static linking (fallback, if plugin emit fails) produces ~1.2MB `.wasm` files (each bundles its own QuickJS runtime). Used as fallback only.
+`console.log()` works (maps to WASI `fd_write` via QuickJS). `qjs:std` module provides stdio: `std.in.getline()`, `std.out.puts()`, `std.in.readAsString()`. ESM supported via `--module` flag.
 
-`console.log()` works and produces stdout. `process.exit()` is stripped by `_strip_process_exit()` before compilation — it crashes in QuickJS/WASM (no `process` global). The Javy runtime wrapper may also reference `process` internally after user code returns, but `_strip_process_exit` on user code is sufficient for correct exit codes.
-
-Performance with dynamic linking (Docker, 8 JS problems): ~4s total (compile cache hit) vs ~23s with static linking.
+Runtime: 1.5MB precompiled binary, instant startup, no per-file compilation.
 
 ### Python → WASM
 
@@ -333,11 +331,9 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --de
     && /root/.cargo/bin/rustup target add wasm32-wasip1
 ENV PATH="/root/.cargo/bin:${PATH}"
 
-# Javy for JS → WASM (multi-arch)
-ARG JAVY_VERSION=8.1.1
-RUN ARCH=$(case "$(uname -m)" in x86_64) echo "x86_64" ;; aarch64|arm64) echo "arm" ;; esac) && \
-    curl -L "https://github.com/bytecodealliance/javy/releases/download/v${JAVY_VERSION}/javy-${ARCH}-linux-v${JAVY_VERSION}.gz" \
-    | gunzip > /usr/local/bin/javy && chmod +x /usr/local/bin/javy
+# QuickJS-NG for JS → WASI (precompiled, 1.5MB)
+RUN curl -L "https://github.com/quickjs-ng/quickjs/releases/download/v0.15.0/qjs-wasi.wasm" \
+    -o /opt/quickjs.wasm && chmod +x /opt/quickjs.wasm
 
 # Python WASM (CPython 3.14 for WASI via brettcannon/cpython-wasi-build)
 ARG PYTHON_WASM_VERSION=3.14.5
@@ -365,7 +361,7 @@ Key differences from the pre-WASM Dockerfile:
 - wasmtime installed via official install script, added to `PATH`
 - wasi-sdk downloaded with multi-arch detection (`x86_64` / `arm64`)
 - rustup installed (not just system `rustc`) for `wasm32-wasip1` target
-- Javy downloaded with multi-arch detection
+- QuickJS-NG precompiled WASI binary downloaded (1.5MB, no build step)
 - CPython 3.14.5 WASI build extracted to `/opt/python-wasi/` (brettcannon/cpython-wasi-build)
 - No bubblewrap, no `--privileged`, no special Docker flags
 
@@ -384,6 +380,6 @@ No `--privileged`. No Docker socket. No `--userns=host`. No `seccomp=unconfined`
 | C compile + run | ~50ms + native speed | 60ms + native speed |
 | C++ compile + run | ~50ms + native speed | 340ms + native speed |
 | Rust compile + run | ~50ms + native speed | 70ms + native speed |
-| JS run | ~10ms (node) | ~0.5s compile + ~0.05s run (dynamic linking) |
+| JS run | ~10ms (node) | ~0.03s run (QuickJS-NG WASI, no compile) |
 | Python run | ~20ms (CPython) | **~180ms** (CPython 3.14 WASM startup) |
 | Network from code | Outer Docker network | **Blocked** |

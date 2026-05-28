@@ -15,9 +15,7 @@ _WASMTIME_BIN = os.environ.get("WASMTIME_BIN", "wasmtime")
 _WASI_SDK_SYSROOT = os.environ.get("WASI_SDK_SYSROOT", "/opt/wasi-sdk/share/wasi-sysroot")
 _WASI_SDK_CLANG = os.environ.get("WASI_SDK_CLANG", "/opt/wasi-sdk/bin/clang")
 _WASI_SDK_CLANGPP = os.environ.get("WASI_SDK_CLANGPP", "/opt/wasi-sdk/bin/clang++")
-_JAVY_BIN = os.environ.get("JAVY_BIN", "javy")
-_JAVY_PLUGIN_NS = "javy-default-plugin-v3"
-_JAVY_PLUGIN_PATH: Path | None = None
+_QUICKJS_WASM = os.environ.get("QUICKJS_WASM", "/opt/quickjs.wasm")
 _PYTHON_WASM = os.environ.get("PYTHON_WASM", "/opt/python-wasi/python.wasm")
 _PYTHON_WASM_HOME = os.environ.get("PYTHON_WASM_HOME", "/opt/python-wasi")
 
@@ -29,7 +27,6 @@ _COMPILE_TIMEOUTS = {
     "c": 5,
     "cpp": 5,
     "rs": 30,
-    "js": 10,
 }
 
 _WASM_FUEL = 5_000_000_000
@@ -37,22 +34,6 @@ _WASM_TIMEOUT = 120
 _WASM_MAX_MEMORY = 536870912
 
 _RSTEST_RLIB_PATH: Path | None = None
-
-
-def _get_javy_plugin() -> Path | None:
-    global _JAVY_PLUGIN_PATH
-    if _JAVY_PLUGIN_PATH is not None and _JAVY_PLUGIN_PATH.exists():
-        return _JAVY_PLUGIN_PATH
-    plugin_path = _WASM_CACHE_DIR / "javy-plugin.wasm"
-    _WASM_CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    result = subprocess.run(
-        [_JAVY_BIN, "emit-plugin", "-o", str(plugin_path)],
-        capture_output=True, text=True, timeout=30,
-    )
-    if result.returncode != 0:
-        return None
-    _JAVY_PLUGIN_PATH = plugin_path
-    return plugin_path
 
 
 def wasm_available() -> bool:
@@ -133,26 +114,10 @@ def _compile_rust(source: Path, out: Path) -> None:
         raise RuntimeError(f"Rust compilation failed:\n{result.stderr}")
 
 
-def _compile_js(source: Path, out: Path) -> None:
-    plugin = _get_javy_plugin()
-    if plugin:
-        cmd = [_JAVY_BIN, "build", "-C", "dynamic=y", "-C", f"plugin={plugin}", "-o", str(out), str(source)]
-    else:
-        cmd = [_JAVY_BIN, "build", "-o", str(out), str(source)]
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=_COMPILE_TIMEOUTS["js"])
-    if result.returncode != 0:
-        raise RuntimeError(f"Javy compilation failed:\n{result.stderr}")
-
-
-def _strip_process_exit(source_code: str) -> str:
-    return re.sub(r"\bprocess\.exit\([^)]*\)\s*;?", "", source_code)
-
-
 _COMPILE_FUNCS = {
     "c": _compile_c,
     "cpp": _compile_cpp,
     "rs": _compile_rust,
-    "js": _compile_js,
 }
 
 # --- Judge compile functions (wasm_libs) -- used by judge-mode topics ---
@@ -220,31 +185,10 @@ def _judge_compile_rust(source: Path, out: Path) -> None:
         raise RuntimeError(f"Rust compilation failed:\n{result.stderr}")
 
 
-def _judge_compile_js(source: Path, out: Path) -> None:
-    bundled = out.with_suffix(".bundled.mjs")
-    subprocess.run(
-        [
-            "npx", "esbuild", str(source), "--bundle", "--format=esm",
-            "--platform=neutral", "--outfile", str(bundled),
-        ],
-        capture_output=True, text=True, timeout=10,
-    )
-    plugin = _get_javy_plugin()
-    if plugin:
-        cmd = [_JAVY_BIN, "build", "-C", "dynamic=y", "-C", f"plugin={plugin}", "-o", str(out), str(bundled)]
-    else:
-        cmd = [_JAVY_BIN, "build", "-o", str(out), str(bundled)]
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=_COMPILE_TIMEOUTS["js"])
-    bundled.unlink(missing_ok=True)
-    if result.returncode != 0:
-        raise RuntimeError(f"Javy compilation failed:\n{result.stderr}")
-
-
 _JUDGE_COMPILE_FUNCS = {
     "c": _judge_compile_c,
     "cpp": _judge_compile_cpp,
     "rs": _judge_compile_rust,
-    "js": _judge_compile_js,
 }
 
 
@@ -262,11 +206,7 @@ def compile_to_wasm(source: Path, lang: str) -> Path:
 
     try:
         if lang == "js":
-            modified = _strip_process_exit(source.read_text(errors="replace"))
-            tmp_src = out.with_suffix(".mjs")
-            tmp_src.write_text(modified)
-            _COMPILE_FUNCS[lang](tmp_src, out)
-            tmp_src.unlink(missing_ok=True)
+            raise ValueError("JS does not compile to WASM — use QuickJS WASI runtime instead")
         elif lang == "py":
             raise ValueError("Python does not compile to WASM — use python.wasm directly")
         else:
@@ -294,6 +234,8 @@ def judge_compile_to_wasm(source: Path, lang: str) -> Path:
     try:
         if lang == "py":
             raise ValueError("Python does not compile to WASM — use python.wasm directly")
+        elif lang == "js":
+            raise ValueError("JS does not compile to WASM — use QuickJS WASI runtime instead")
         _JUDGE_COMPILE_FUNCS[lang](source, out)
         cached.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(out, cached)
@@ -302,7 +244,7 @@ def judge_compile_to_wasm(source: Path, lang: str) -> Path:
         out.unlink(missing_ok=True)
 
 
-def run_wasm(wasm_path: Path, source_dir: Path, timeout: int = _WASM_TIMEOUT, preload_plugin: Path | None = None, stdin_text: str = "") -> dict:
+def run_wasm(wasm_path: Path, source_dir: Path, timeout: int = _WASM_TIMEOUT, stdin_text: str = "") -> dict:
     cmd = [
         _WASMTIME_BIN, "run",
         "-W", f"fuel={_WASM_FUEL}",
@@ -310,8 +252,6 @@ def run_wasm(wasm_path: Path, source_dir: Path, timeout: int = _WASM_TIMEOUT, pr
         "-W", f"max-memory-size={_WASM_MAX_MEMORY}",
         "--dir", str(source_dir),
     ]
-    if preload_plugin and preload_plugin.exists():
-        cmd.extend(["--preload", f"{_JAVY_PLUGIN_NS}={preload_plugin}"])
     cmd.append(str(wasm_path))
     try:
         result = subprocess.run(
@@ -331,7 +271,7 @@ def run_wasm(wasm_path: Path, source_dir: Path, timeout: int = _WASM_TIMEOUT, pr
             "timed_out": False,
         }
     except subprocess.TimeoutExpired:
-        return {"exit_code": -1, "output": "", "timed_out": True, "error": f"Timed out after {timeout}s"}
+        return {"exit_code": -1, "output": "", "timed_out": True}
     except FileNotFoundError:
         return {"exit_code": -1, "output": "", "timed_out": False, "error": "wasmtime not found. Install wasmtime to use the WASM sandbox."}
 
@@ -372,3 +312,49 @@ def run_python_wasm(source: Path, project_root: Path, timeout: int = _WASM_TIMEO
         }
     except subprocess.TimeoutExpired:
         return {"exit_code": -1, "output": "", "timed_out": True, "error": f"Timed out after {timeout}s"}
+
+
+def run_quickjs_wasm(source: Path, timeout: int = _WASM_TIMEOUT, stdin_text: str = "") -> dict:
+    if not Path(_QUICKJS_WASM).exists():
+        return {"exit_code": -1, "output": "", "timed_out": False, "error": f"quickjs.wasm not found at {_QUICKJS_WASM}"}
+
+    io_mjs = Path(__file__).resolve().parent.parent / "wasm_libs" / "js" / "io.mjs"
+    src_content = source.read_text(errors="replace")
+    src_content = re.sub(
+        r"""import\s*\{[^}]*\}\s*from\s*['"][^'"]*io\.mjs['"];?\s*""",
+        "", src_content,
+    )
+    combined = io_mjs.read_text(errors="replace") + "\n" + src_content
+
+    with tempfile.NamedTemporaryFile(suffix=".mjs", delete=False, mode="w", dir="/tmp") as tmp:
+        tmp.write(combined)
+        tmp_path = Path(tmp.name)
+
+    source_dir = source.parent
+    cmd = [
+        _WASMTIME_BIN, "run",
+        "-W", f"fuel={_WASM_FUEL}",
+        "-W", f"timeout={timeout}s",
+        "-W", f"max-memory-size={_WASM_MAX_MEMORY}",
+        "--dir", str(source_dir),
+        "--dir", "/tmp",
+        _QUICKJS_WASM,
+        "--module", str(tmp_path),
+    ]
+    try:
+        result = subprocess.run(
+            cmd,
+            input=stdin_text,
+            capture_output=True,
+            text=True,
+            timeout=timeout + 10,
+            env={**os.environ, "WASMTIME_BACKTRACE_DETAILS": "1", "RUST_BACKTRACE": "1"},
+        )
+        output = result.stdout
+        if result.stderr:
+            output += "\n" + result.stderr
+        return {"exit_code": result.returncode, "output": output.strip(), "timed_out": False}
+    except subprocess.TimeoutExpired:
+        return {"exit_code": -1, "output": "", "timed_out": True, "error": f"Timed out after {timeout}s"}
+    finally:
+        tmp_path.unlink(missing_ok=True)

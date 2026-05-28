@@ -135,7 +135,7 @@ The WASM sandbox is **implemented and wired end-to-end**. Code runs inside wasmt
 - `.env.example` — configurable toolchain paths (see [Configuration](#configuration))
 - `python-dotenv` — `.env` loaded at `web.py` import time, env vars inherited by `run.py` subprocess
 - `docker-compose.yml` — `WASM_SANDBOX=auto` with commented-out toolchain path overrides
-- `Dockerfile` — installs wasmtime, wasi-sdk v33, javy v8.1.1, CPython 3.14.5 WASI build
+- `Dockerfile` — installs wasmtime, wasi-sdk v33, QuickJS-NG v0.15.0, CPython 3.14.5 WASI build
 - MD5-based `.wasm` cache in `/tmp/wasm-cache/` — avoids recompiling identical source
 - `WASM_SANDBOX=auto` — enables WASM when wasmtime available, falls back to native
 - `WASM_SANDBOX=0` — disables sandbox, uses native subprocess directly
@@ -162,7 +162,7 @@ See [`.env.example`](../.env.example) for all variables:
 | `WASI_SDK_CLANG` | `/opt/wasi-sdk/bin/clang` | wasi-sdk clang for C |
 | `WASI_SDK_CLANGPP` | `/opt/wasi-sdk/bin/clang++` | wasi-sdk clang++ for C++ |
 | `WASI_SDK_SYSROOT` | `/opt/wasi-sdk/share/wasi-sysroot` | wasi-sdk sysroot |
-| `JAVY_BIN` | `javy` | Javy binary for JS → WASM |
+| `QUICKJS_WASM` | `/opt/quickjs.wasm` | QuickJS-NG WASI binary for JS |
 | `PYTHON_WASM` | `/opt/python-wasi/python.wasm` | Python WASM interpreter binary |
 | `PYTHON_WASM_HOME` | `/opt/python-wasi` | Python WASM install dir (contains `lib/python3.14/`) |
 | `WASM_CACHE_DIR` | `/tmp/wasm-cache` | Directory for compiled `.wasm` cache |
@@ -193,7 +193,7 @@ See [`.env.example`](../.env.example) for all variables:
 
 ### Dockerfile
 
-See [WASM_SANDBOX.md](./WASM_SANDBOX.md#dockerfile-wasm-toolchain) for the full Dockerfile with WASM toolchain (wasmtime, wasi-sdk, javy, python.wasm).
+See [WASM_SANDBOX.md](./WASM_SANDBOX.md#dockerfile-wasm-toolchain) for the full Dockerfile with WASM toolchain (wasmtime, wasi-sdk, QuickJS-NG, python.wasm).
 
 ### docker-compose.yml
 
@@ -254,7 +254,7 @@ Returns system health, sandbox status, and runtime availability:
   "runtimes": {
     "wasmtime": { "available": true },
     "wasi-sdk-clang": { "available": true },
-    "javy": { "available": true },
+    "quickjs-wasm": { "available": true },
     "python-wasm": { "available": true }
   }
 }

@@ -90,31 +90,25 @@ def _is_stub(path):
     return any(re.search(p, source, re.MULTILINE) for p in patterns)
 
 
-def _run_python(target, stdin_text):
-    try:
-        proc = subprocess.run(
-            [sys.executable, str(target)],
-            input=stdin_text,
-            capture_output=True,
-            text=True,
-            timeout=10,
-            env={**os.environ, "PYTHONPATH": str(ROOT)},
-        )
-        return {"exit_code": proc.returncode, "output": proc.stdout.strip(), "timed_out": False}
-    except subprocess.TimeoutExpired:
-        return {"exit_code": -1, "output": "", "timed_out": True}
+def _run_python_wasm(target, stdin_text):
+    from src.runners.wasm_runner import run_python_wasm
+    return run_python_wasm(target, ROOT, stdin_text=stdin_text)
+
+
+def _run_js_wasm(target, stdin_text):
+    from src.runners.wasm_runner import run_quickjs_wasm
+    return run_quickjs_wasm(target, stdin_text=stdin_text)
 
 
 def _run_wasm_lang(target, lang, stdin_text, work_dir):
-    from src.runners.wasm_runner import wasm_sandbox_active, judge_compile_to_wasm, run_wasm, _get_javy_plugin
+    from src.runners.wasm_runner import wasm_sandbox_active, judge_compile_to_wasm, run_wasm
 
     if not wasm_sandbox_active():
         return {"exit_code": -1, "output": "wasmtime not available", "timed_out": False}
 
     try:
         wasm_path = judge_compile_to_wasm(target, lang)
-        plugin = _get_javy_plugin() if lang == "js" else None
-        return run_wasm(wasm_path, work_dir, preload_plugin=plugin, stdin_text=stdin_text)
+        return run_wasm(wasm_path, work_dir, stdin_text=stdin_text)
     except Exception as e:
         return {"exit_code": -1, "output": str(e)[:500], "timed_out": False}
 
@@ -200,7 +194,9 @@ def _run_pattern(pattern, lang=None, solution=False):
             expected = tc.expected
 
             if effective_lang == "py":
-                result = _run_python(target, stdin)
+                result = _run_python_wasm(target, stdin)
+            elif effective_lang == "js":
+                result = _run_js_wasm(target, stdin)
             else:
                 result = _run_wasm_lang(target, effective_lang, stdin, work_dir)
 

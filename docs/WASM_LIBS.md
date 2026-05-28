@@ -466,54 +466,43 @@ macro_rules! run_tests {
 
 ### JavaScript (`wasm_libs/js/`)
 
-**Bundle mechanism:** `esbuild --bundle` before Javy compilation
+**Runtime mechanism:** `io.mjs` inlined at runtime, executed by QuickJS-NG WASI interpreter
 
-Javy uses QuickJS, which does not support native `import` statements at runtime. All imports must be resolved at build time by esbuild, which bundles everything into a single `.mjs` file.
+QuickJS-NG runs `.mjs` files directly via `wasmtime run --module`. The `io.mjs` import is resolved at runtime by `run_quickjs_wasm()` — it strips the import line, prepends the `io.mjs` content, and passes the combined script to `wasmtime`.
 
-**Current compile** (`wasm_runner.py:130-138`):
+**Current compile** (`wasm_runner.py` — `run_quickjs_wasm()`):
 ```python
-# Only compiles the single JS file
-cmd = [_JAVY_BIN, "build", "-C", "dynamic=y", "-C", f"plugin={plugin}", ...]
+# No compilation — inline io.mjs and run directly
+source_text = Path(source).read_text()
+source_text = re.sub(r"import\s+.*?from\s+['\"].*io\.mjs['\"];?", "", source_text)
+io_content = Path("src/wasm_libs/js/io.mjs").read_text()
+combined = io_content + "\n" + source_text
+tmp_script = Path(temp_dir) / "script.mjs"
+tmp_script.write_text(combined)
+
+cmd = [
+    "wasmtime", "run", "--dir", str(source_dir),
+    "--module", _QUICKJS_WASM, str(tmp_script),
+]
 ```
-
-**Updated compile** (bundle first, then Javy):
-```python
-# Step 1: esbuild bundles imports into one file
-subprocess.run([
-    "esbuild", str(source), "--bundle", "--format=esm", "--platform=neutral",
-    "--outfile", str(tmp_bundled),
-], check=True, timeout=10)
-
-# Step 2: Javy compiles to WASM
-cmd = [_JAVY_BIN, "build", "-C", "dynamic=y", "-C", f"plugin={plugin}",
-       "-o", str(out), str(tmp_bundled)]
-```
-
-**Note:** `_strip_process_exit()` still runs before bundling to remove `process.exit()` calls (QuickJS has no `process` global).
 
 **Solution file:**
 ```js
-import { TreeNode, treeFromArray } from '../../wasm_libs/js/data_structures.mjs';
+import { readInts, writeInt } from '../../wasm_libs/js/io.mjs';
 
-function levelOrder(root) {
-    if (!root) return [];
-    const result = [];
-    const queue = [root];
-    while (queue.length > 0) {
-        const size = queue.length;
-        const level = [];
-        for (let i = 0; i < size; i++) {
-            const node = queue.shift();
-            level.push(node.val);
-            if (node.left) queue.push(node.left);
-            if (node.right) queue.push(node.right);
-        }
-        result.push(level);
+function maxArea(height) {
+    let left = 0, right = height.length - 1;
+    let max = 0;
+    while (left < right) {
+        const area = Math.min(height[left], height[right]) * (right - left);
+        max = Math.max(max, area);
+        if (height[left] < height[right]) left++;
+        else right--;
     }
-    return result;
+    return max;
 }
 
-// Test runner calls levelOrder with test cases, prints results
+writeInt(maxArea(readInts()));
 ```
 
 **data_structures.mjs provides:**
@@ -574,9 +563,9 @@ export function listFromArray(vals) {
 
 **Limitations:**
 - No Node.js APIs (`fs`, `path`, `process`)
-- No native `import` at runtime (must bundle with esbuild)
-- `console.log()` works (maps to WASI fd_write)
-- `console.error()` works (maps to WASI fd_stderr)
+- `console.log()` works (maps to WASI `fd_write` via QuickJS)
+- `qjs:std` module provides stdio: `std.in.getline()`, `std.out.puts()`, `std.in.readAsString()`
+- ESM supported via `--module` flag
 
 ### Python (`wasm_libs/py/`)
 

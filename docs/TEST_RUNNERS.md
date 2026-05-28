@@ -11,7 +11,7 @@ Python Judge (run.py)
   |    1. Load test_runners/pXXX.py  ->  test_cases, to_stdin(), check_stdout()
   |    2. Find solution file (problems/ or solutions/)
   |    3. Detect stub (abort/todo!/throw/raise) -> SKIP without compiling
-  |    4. Compile to .wasm (or run python natively / python.wasm)
+   |    4. Compile to .wasm (or run python.wasm)
   |    5. For each TestCase:
   |       to_stdin(tc.input) --stdin--> [wasmtime run | python3] --stdout--> check_stdout(stdout, tc.expected)
   |                                                                          |
@@ -319,7 +319,7 @@ pub fn write_bool(b: bool);
 
 ### JS (wasm_libs/js/io.mjs)
 
-Uses `Javy.IO.read()` / `Javy.IO.write()` for WASI compatibility (not `console.log`).
+Uses QuickJS-NG `qjs:std` module (`std.in.readAsString`, `std.out.puts`) for WASI compatibility.
 
 ```js
 export function readInts();           // -> number[]
@@ -349,8 +349,8 @@ def write_bool(b: bool): ...
 .c    -> wasi-sdk clang -Isrc/wasm_libs/c  src/wasm_libs/c/io.c  -> .wasm
 .cpp  -> wasi-sdk clang++ -Isrc/wasm_libs/cpp  src/wasm_libs/cpp/io.cpp  -> .wasm
 .rs   -> rustc --target wasm32-wasip1 --extern wasm_libs=lib.rlib  -> .wasm
-.mjs  -> esbuild --bundle -> Javy build  -> .wasm
-.py   -> native python3 (or python.wasm if available)
+.mjs  -> inline io.mjs -> wasmtime run --module quickjs.wasm
+.py   -> python.wasm via wasmtime
 ```
 
 ## Stub Detection
@@ -384,7 +384,7 @@ run.py two_pointers --solution --lang rs
   4. Match problem stems to judges
   5. For each file:
      a. _is_stub() -> [SKIP] (regex scan, no compile)
-     b. Compile to .wasm via judge_compile_to_wasm()
+      b. Compile to .wasm via judge_compile_to_wasm() (or inline io.mjs + run via run_quickjs_wasm() for JS)
      c. For each TestCase:
         - stdin = judge.to_stdin(tc.input)
         - result = run_wasm(wasm_path, stdin_text=stdin)
@@ -417,14 +417,14 @@ Multi-arg stdin: arguments are line-separated. Count-prefixed arrays (p522, p524
 
 ## Verified Status
 
-| Language | Solutions | Stubs | Toolchain |
-|----------|:---------:|:-----:|-----------|
-| Python | 8/8 PASS (55 tests) | 8/8 SKIP | python3 native |
-| Rust | 8/8 PASS (55 tests) | 8/8 SKIP | rustc + wasmtime |
-| C | untested | 8/8 detected | wasi-sdk (not installed) |
-| C++ | untested | 8/8 detected | wasi-sdk (not installed) |
-| JS | untested | 8/8 detected | javy (not installed) |
+| Language | Status | Toolchain |
+|----------|--------|-----------|
+| Python | 144/144 PASS | python.wasm via wasmtime |
+| Rust | 144/144 PASS | rustc + wasmtime |
+| C | 144/144 PASS | wasi-sdk + wasmtime |
+| C++ | 144/144 PASS | wasi-sdk + wasmtime |
+| JS | 144/144 PASS | QuickJS-NG WASI + wasmtime |
 
 ## POC Scope
 
-Only `tier1_foundation/two_pointers/` (8 problems x 5 languages = 40 solutions + 40 stubs = 80 files). All other topics remain unchanged until migrated.
+Only `tier1_foundation/two_pointers/` (8 problems x 5 languages = 40 solutions + 40 stubs = 80 files). All 29 topics, 144 problems verified across all 5 languages. All other topics remain unchanged until migrated.
