@@ -50,45 +50,15 @@
  *     # obj.addNum(value)
  *     # param_2 = obj.getIntervals()
  */
-function solve(values)
-  const intervals = [];
 
-  for (const v of values)
-    let lo = v;
-    let hi = v;
-    let pos = intervals.findIndex((iv) => iv[0] >= lo);
-    if (pos === -1) pos = intervals.length;
-    if (pos > 0 && intervals[pos - 1][1] >= lo - 1)
-      pos -= 1;
-      lo = intervals[pos][0];
-    }
-    while (pos < intervals.length && intervals[pos][0] <= hi + 1)
-      hi = Math.max(hi, intervals[pos][1]);
-      intervals.splice(pos, 1);
-    }
-    intervals.splice(pos, 0, [lo, hi]);
-  }
-  return intervals; {
+import { readInts, writeInts } from '../../../wasm_libs/js/io.mjs';
+
+function solve(values) {
     throw new Error("NotImplementedError");
 }
 
-const tests = [
-  { label: "example from problem", input: [1, 3, 7, 2, 6], expected: [[1, 3], [6, 7]] },
-  { label: "adjacent values merge", input: [1, 0], expected: [[0, 1]] },
-  { label: "single zero", input: [0], expected: [[0, 0]] },
-  { label: "no merges sorted output", input: [100, 1, 50], expected: [[1, 1], [50, 50], [100, 100]] },
-  { label: "empty stream", input: [], expected: [] },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const values = readInts();
+const result = solve(values);
+for (const row of result) {
+    writeInts(row);
 }
-console.log(`\n  ${passed}/${tests.length} passed`);

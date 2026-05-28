@@ -7,15 +7,16 @@
  * Tasks are space-separated letters on one line, followed by n on the next line.
  */
 
+use wasm_libs::*;
 
 fn least_interval(tasks: &[char], n: i32) -> i32 {
     todo!();
 }
 
 fn main() {
-    let task_line = wasm_libs::read_line();
+    let task_line = read_line();
     let tasks: Vec<char> = task_line.chars().filter(|c| !c.is_whitespace()).collect();
-    let n = wasm_libs::read_int();
+    let n = read_int();
     let result = least_interval(&tasks, n);
-    wasm_libs::write_int(result);
+    write_int(result);
 }

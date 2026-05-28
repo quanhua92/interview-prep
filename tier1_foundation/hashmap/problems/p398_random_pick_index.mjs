@@ -30,12 +30,6 @@ import { readInts, readInt, writeInt } from '../../wasm_libs/js/io.mjs';
 
 class Solution {
   constructor(nums) {
-    this.idx = new Map();
-    for (let i = 0; i < nums.length; i++) {
-      const v = nums[i];
-      if (!this.idx.has(v)) this.idx.set(v, []);
-      this.idx.get(v).push(i);
-    }
   }
 
   pick(target) {

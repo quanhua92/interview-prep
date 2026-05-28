@@ -38,14 +38,7 @@
 
 std::vector<std::vector<int>> kClosest(std::vector<std::vector<int>> points, int k)
 {
-    std::sort(points.begin(), points.end(), [](const auto &a, const auto &b) {
-        int da = a[0] * a[0] + a[1] * a[1];
-        int db = b[0] * b[0] + b[1] * b[1];
-        return da < db || (da == db && (a[0] < b[0] || (a[0] == b[0] && a[1] < b[1])));
-    });
-    points.resize(k);
-    std::sort(points.begin(), points.end());
-    return points;
+    abort();
 }
 
 int main(void)

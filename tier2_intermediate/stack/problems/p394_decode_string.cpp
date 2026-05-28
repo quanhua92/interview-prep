@@ -15,29 +15,12 @@
 #include <utility>
 
 static std::string decodeString(const std::string &s) {
-    std::vector<std::pair<int, int>> stack;
-    std::string result;
-    int curr_num = 0;
-
-    for (char ch : s) {
-        if (ch >= '0' && ch <= '9') {
-            curr_num = curr_num * 10 + (ch - '0');
-        } else if (ch == '[') {
-            stack.push_back({curr_num, (int)result.size()});
-            curr_num = 0;
-        } else if (ch == ']') {
-            auto [repeat, start] = stack.back();
-            stack.pop_back();
-            std::string seg = result.substr(start);
-            for (int j = 1; j < repeat; j++) result += seg;
-        } else {
-            result += ch;
-        }
-    }
-    return result;
+    abort();
 }
 
 int main(void)
 {
-    abort();
+    std::string s = read_line();
+    write_string(decodeString(s));
+    return 0;
 }

@@ -37,22 +37,15 @@
  */
 
 use wasm_libs::*;
-use std::collections::HashMap;
 
 struct Codec {
-    url_map: HashMap<String, String>,
-    short_map: HashMap<String, String>,
-    next_id: i32,
+    _data: i32,
 }
 
 impl Codec {
     fn new() -> Self {
-        Codec {
-            url_map: HashMap::new(),
-            short_map: HashMap::new(),
-            next_id: 0,
-        }
-    }
+    todo!();
+}
 
     fn encode(&mut self, long_url: &str) -> String {
         todo!();

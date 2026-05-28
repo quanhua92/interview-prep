@@ -41,8 +41,6 @@ Template (python3):
 """
 
 import random
-from collections import defaultdict
-
 from src.wasm_libs.py.io import *
 
 random.seed(42)
@@ -50,10 +48,6 @@ random.seed(42)
 
 class Solution:
     def __init__(self, nums: list[int]):
-        self.idx = defaultdict(list)
-        for i, v in enumerate(nums):
-            self.idx[v].append(i)
-
         raise NotImplementedError
 
 def solve(nums: list[int], target: int) -> int:

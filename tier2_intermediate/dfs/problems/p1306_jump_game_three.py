@@ -29,11 +29,15 @@ Template (python3):
 Hint: DFS with a visited set; explore start+arr[start] and start-arr[start], checking bounds and visited.
 """
 
+from src.wasm_libs.py.io import read_ints, read_line, write_bool
 
 
-def main():
+def solve(arr: list[int], start: int) -> bool:
     raise NotImplementedError
 
 
 if __name__ == "__main__":
-    main()
+    arr = read_ints()
+    start = int(read_line())
+    result = solve(arr, start)
+    write_bool(result)

@@ -27,6 +27,7 @@
  * Hint: Two-pass greedy: left-to-right then right-to-left, taking the max of both passes.
  */
 
+use wasm_libs::*;
 
 fn candy(ratings: &[i32]) -> i32 {
     let n = ratings.len();
@@ -42,7 +43,7 @@ fn candy(ratings: &[i32]) -> i32 {
 }
 
 fn main() {
-    let ratings = wasm_libs::read_ints();
+    let ratings = read_ints();
     let result = candy(&ratings);
-    wasm_libs::write_int(result);
+    write_int(result);
 }

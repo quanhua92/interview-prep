@@ -70,21 +70,14 @@
 #include <list>
 
 class LFUCache {
-    struct Node {
-        int key, val, freq;
-        std::list<int>::iterator it;
-    };
-
-    int cap, minFreq;
-    std::unordered_map<int, Node> cache;
-    std::unordered_map<int, std::list<int>> freqMap;
+    int cap;
 
     void touch(int key) {
     abort();
 }
 
 public:
-    LFUCache(int capacity) : cap(capacity), minFreq(0) {}
+    LFUCache(int capacity) : cap(capacity) { abort(); }
 
     int get(int key) {
     abort();

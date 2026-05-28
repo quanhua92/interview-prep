@@ -25,49 +25,16 @@
  *     class Solution:
  *         def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
  */
-function solve(envelopes)
-  envelopes.sort((a, b) => a[0] - b[0] || b[1] - a[1]);
 
-  const heights = [];
-  for (const [, h] of envelopes)
-    let lo = 0;
-    let hi = heights.length;
-    while (lo < hi)
-      const mid = (lo + hi) >> 1;
-      if (heights[mid] < h)
-        lo = mid + 1;
-      } else
-        hi = mid;
-      }
-    }
-    if (lo === heights.length)
-      heights.push(h);
-    } else
-      heights[lo] = h;
-    }
-  }
-  return heights.length; {
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
+
+function solve(envelopes) {
     throw new Error("NotImplementedError");
 }
 
-const tests = [
-  { label: "example 1", input: [[5, 4], [6, 4], [6, 7], [2, 3]], expected: 3 },
-  { label: "example 2", input: [[1, 1], [1, 1], [1, 1]], expected: 1 },
-  { label: "single envelope", input: [[1, 1]], expected: 1 },
-  { label: "strictly increasing", input: [[1, 2], [2, 3], [3, 4]], expected: 3 },
-  { label: "width ties sorted by height desc", input: [[4, 5], [4, 6], [6, 7], [2, 3], [1, 1]], expected: 4 },
-  { label: "height breaks chain", input: [[2, 100], [3, 200], [4, 300], [5, 250]], expected: 3 },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
+const cols = readInt();
+const envelopes = [];
+for (let i = 0; i < cols; i++) {
+    envelopes.push(readInts());
 }
-console.log(`\n  ${passed}/${tests.length} passed`);
+writeInt(solve(envelopes));

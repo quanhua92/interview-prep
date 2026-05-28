@@ -67,32 +67,15 @@ class Trie {
   }
 
   insert(word) {
-    let node = this.root;
-    for (const ch of word) {
-      if (!(ch in node.children)) {
-        node.children[ch] = new TrieNode();
-      }
-      node = node.children[ch];
-    }
-    node.isEnd = true;
+    throw new Error("NotImplementedError");
   }
 
   search(word) {
-    const node = this._find(word);
-    return node !== null && node.isEnd;
+    throw new Error("NotImplementedError");
   }
 
   startsWith(prefix) {
-    return this._find(prefix) !== null;
-  }
-
-  _find(prefix) {
-    let node = this.root;
-    for (const ch of prefix) {
-      if (!(ch in node.children)) return null;
-      node = node.children[ch];
-    }
-    return node;
+    throw new Error("NotImplementedError");
   }
 }
 

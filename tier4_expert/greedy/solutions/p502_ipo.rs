@@ -35,7 +35,7 @@
  *         def findMaximizedCapital(self, k: int, w: int, profits: List[int], capital: List[int]) -> int:
  */
 
-
+use wasm_libs::*;
 use std::collections::BinaryHeap;
 
 fn find_maximized_capital(k: i32, mut w: i32, profits: &[i32], capital: &[i32]) -> i32 {
@@ -58,10 +58,10 @@ fn find_maximized_capital(k: i32, mut w: i32, profits: &[i32], capital: &[i32]) 
 }
 
 fn main() {
-    let k = wasm_libs::read_int();
-    let w = wasm_libs::read_int();
-    let profits = wasm_libs::read_ints();
-    let capital = wasm_libs::read_ints();
+    let k = read_int();
+    let w = read_int();
+    let profits = read_ints();
+    let capital = read_ints();
     let result = find_maximized_capital(k, w, &profits, &capital);
-    wasm_libs::write_int(result);
+    write_int(result);
 }

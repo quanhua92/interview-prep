@@ -36,16 +36,11 @@ Template (python3):
     # codec.decode(codec.encode(url))
 """
 
-import hashlib
-
 from src.wasm_libs.py.io import *
 
 
 class Codec:
     def __init__(self):
-        self.url_map: dict[str, str] = {}
-        self.short_map: dict[str, str] = {}
-
         raise NotImplementedError
 
         raise NotImplementedError

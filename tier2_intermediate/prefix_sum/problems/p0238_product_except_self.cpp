@@ -39,25 +39,12 @@
 
 std::vector<int> product_except_self(const std::vector<int>& nums)
 {
-    int n = nums.size();
-    std::vector<int> output(n, 1);
-
-    long long left = 1;
-    for (int i = 0; i < n; i++) {
-        output[i] = (int)left;
-        left *= nums[i];
-    }
-
-    long long right = 1;
-    for (int i = n - 1; i >= 0; i--) {
-        output[i] = (int)((long long)output[i] * right);
-        right *= nums[i];
-    }
-
-    return output;
+    abort();
 }
 
 int main(void)
 {
-    abort();
+    std::vector<int> nums = read_ints();
+    write_ints(product_except_self(nums));
+    return 0;
 }

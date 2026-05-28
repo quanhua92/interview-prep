@@ -27,21 +27,15 @@
  */
 
 use wasm_libs::*;
-use std::collections::HashMap;
 
 struct Solution {
-    idx: HashMap<i32, Vec<i32>>,
+    _nums: Vec<i32>,
 }
-
 
 impl Solution {
     fn new(nums: Vec<i32>) -> Self {
-        let mut idx = HashMap::new();
-        for (i, v) in nums.iter().enumerate() {
-            idx.entry(*v).or_insert(vec![]).push(i as i32);
-        }
-        Solution { idx }
-    }
+    todo!();
+}
 
     fn pick(&self, target: i32) -> i32 {
         todo!();

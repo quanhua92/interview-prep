@@ -30,22 +30,12 @@
 #include <stack>
 
 static bool isValid(const std::string &s) {
-    std::stack<char> st;
-    for (char ch : s) {
-        if (ch == '(' || ch == '[' || ch == '{') {
-            st.push(ch);
-        } else {
-            if (st.empty()) return false;
-            char open = st.top(); st.pop();
-            if ((ch == ')' && open != '(') ||
-                (ch == ']' && open != '[') ||
-                (ch == '}' && open != '{')) return false;
-        }
-    }
-    return st.empty();
+    abort();
 }
 
 int main(void)
 {
-    abort();
+    std::string s = read_line();
+    write_bool(isValid(s));
+    return 0;
 }

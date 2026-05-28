@@ -25,11 +25,16 @@ Template (python3):
 Hint: Use DFS to explore each island and track the maximum area found.
 """
 
+from src.wasm_libs.py.io import *
 
 
-def main():
+def solve(grid: list[list[int]]) -> int:
     raise NotImplementedError
 
 
 if __name__ == "__main__":
-    main()
+    meta = read_ints()
+    rows, cols = meta[0], meta[1]
+    grid = [read_ints() for _ in range(rows)]
+    result = solve(grid)
+    write_int(result)

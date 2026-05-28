@@ -53,36 +53,27 @@
 
 
 use wasm_libs::*;
-use std::collections::HashMap;
 
 struct RandomizedSet {
-    vals: Vec<i32>,
-    idx_map: HashMap<i32, usize>,
-    seed: u64,
+    _data: Vec<i32>,
 }
 
 impl RandomizedSet {
     fn new() -> Self {
-        RandomizedSet { vals: Vec::new(), idx_map: HashMap::new(), seed: 42 }
-    }
-
-    fn next_rand(&mut self, n: usize) -> usize {
-        if n <= 1 { return 0; }
-        self.seed = self.seed.wrapping_mul(6364136223846793005).wrapping_add(1);
-        ((self.seed >> 33) as usize) % n
-    }
+    todo!();
+}
 
     fn insert(&mut self, val: i32) -> bool {
-        todo!();
-    }
+    todo!();
+}
 
     fn remove(&mut self, val: i32) -> bool {
-        todo!();
-    }
+    todo!();
+}
 
     fn get_random(&mut self) -> i32 {
-        todo!();
-    }
+    todo!();
+}
 }
 
 fn main() {

@@ -25,11 +25,20 @@ Template (python3):
         def lengthLongestPath(self, input: str) -> int:
 """
 
+from src.wasm_libs.py.io import read_line, write_int
 
 
-def main():
+def solve(input_str: str) -> int:
     raise NotImplementedError
 
 
 if __name__ == "__main__":
-    main()
+    lines = []
+    while True:
+        line = read_line()
+        if not line:
+            break
+        lines.append(line)
+    input_str = "\n".join(lines)
+    result = solve(input_str)
+    write_int(result)

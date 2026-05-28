@@ -69,15 +69,12 @@ using namespace std;
 
 vector<int> random_pick_with_weight(const vector<int>& w)
 {
-    vector<int> prefix(w.size());
-    prefix[0] = w[0];
-    for (size_t i = 1; i < w.size(); i++) {
-        prefix[i] = prefix[i - 1] + w[i];
-    }
-    return prefix;
+    abort();
 }
 
 int main(void)
 {
-    abort();
+    vector<int> w = read_ints();
+    write_ints(random_pick_with_weight(w));
+    return 0;
 }

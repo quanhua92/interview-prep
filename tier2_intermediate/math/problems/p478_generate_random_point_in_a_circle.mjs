@@ -39,7 +39,7 @@
  *     # param_1 = obj.randPoint()
  */
 
-import { readLine, readInt } from '../../wasm_libs/js/io.mjs';
+import { readLine, readInt, writeString } from '../../wasm_libs/js/io.mjs';
 
 function solve(radius, xCenter, yCenter, count) {
   throw new Error("NotImplementedError");
@@ -52,8 +52,4 @@ const yCenter = params[2];
 const count = readInt();
 const points = solve(radius, xCenter, yCenter, count);
 const lines = points.map(p => `${p[0]} ${p[1]}`);
-if (typeof Javy !== "undefined" && Javy.IO && Javy.IO.write) {
-  Javy.IO.write(lines.join("\n") + "\n");
-} else {
-  console.log(lines.join("\n"));
-}
+writeString(lines.join("\n"));

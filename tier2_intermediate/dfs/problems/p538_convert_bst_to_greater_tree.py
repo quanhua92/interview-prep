@@ -22,11 +22,15 @@ Template (python3):
         def convertBST(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
 """
 
+from src.wasm_libs.py.io import *
 
 
-def main():
+def solve(tree_vals: list) -> str:
     raise NotImplementedError
 
 
 if __name__ == "__main__":
-    main()
+    line = read_line()
+    tree_vals = [None if x == "null" else int(x) for x in line.split()] if line.strip() else []
+    result = solve(tree_vals)
+    print(result)

@@ -35,6 +35,7 @@
  * Hint: The idle slots are determined by the most frequent task. Formula: max((maxFreq - 1) * (n + 1) + countMaxFreq, len(tasks)).
  */
 
+use wasm_libs::*;
 
 fn least_interval(tasks: &[char], n: i32) -> i32 {
     let mut freq = [0i32; 26];
@@ -46,9 +47,9 @@ fn least_interval(tasks: &[char], n: i32) -> i32 {
 }
 
 fn main() {
-    let task_line = wasm_libs::read_line();
+    let task_line = read_line();
     let tasks: Vec<char> = task_line.chars().filter(|c| !c.is_whitespace()).collect();
-    let n = wasm_libs::read_int();
+    let n = read_int();
     let result = least_interval(&tasks, n);
-    wasm_libs::write_int(result);
+    write_int(result);
 }

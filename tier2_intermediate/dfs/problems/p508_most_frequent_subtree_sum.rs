@@ -27,12 +27,7 @@ fn main() {
     let mut freq: HashMap<i32, i32> = HashMap::new();
 
     fn subtree_sum(idx: i32, vals: &[i32], left: &[i32], right: &[i32], freq: &mut HashMap<i32, i32>) -> i32 {
-        if idx < 0 { return 0; }
-        let s = vals[idx as usize]
-            + subtree_sum(left[idx as usize], vals, left, right, freq)
-            + subtree_sum(right[idx as usize], vals, left, right, freq);
-        *freq.entry(s).or_insert(0) += 1;
-        s
+        todo!();
     }
 
     subtree_sum(0, &vals, &left, &right, &mut freq);

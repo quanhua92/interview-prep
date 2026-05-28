@@ -35,8 +35,7 @@ class Solution {
     std::unordered_map<int, std::vector<int>> idx;
 public:
     Solution(std::vector<int>& nums) {
-        for (int i = 0; i < (int)nums.size(); i++)
-            idx[nums[i]].push_back(i);
+        abort();
     }
     int pick(int target) {
         abort();

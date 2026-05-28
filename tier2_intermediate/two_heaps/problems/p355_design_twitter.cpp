@@ -75,26 +75,7 @@ public:
 }
 
     std::vector<int> getNewsFeed(int userId) {
-        using E = std::tuple<int, int, int>;
-        std::priority_queue<E, std::vector<E>, std::less<E>> pq;
-        std::vector<int> users;
-        users.push_back(userId);
-        for (int u = 1; u < 505; u++) {
-            if (following[userId].count(u)) users.push_back(u);
-        }
-        std::vector<int> iters(users.size());
-        for (size_t i = 0; i < users.size(); i++) {
-            iters[i] = head[users[i]];
-            if (iters[i] != -1) pq.push({pool[iters[i]].time, pool[iters[i]].tweet_id, iters[i]});
-        }
-        std::vector<int> res;
-        while (!pq.empty() && (int)res.size() < 10) {
-            auto [time, tid, idx] = pq.top(); pq.pop();
-            res.push_back(tid);
-            int next = pool[idx].next;
-            if (next != -1) pq.push({pool[next].time, pool[next].tweet_id, next});
-        }
-        return res;
+        abort();
     }
 
     void follow(int followerId, int followeeId) {

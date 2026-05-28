@@ -28,7 +28,7 @@
  *         def findMinArrowShots(self, points: List[List[int]]) -> int:
  */
 
-
+use wasm_libs::*;
 use std::io::{self, BufRead};
 
 fn find_min_arrow_shots(points: &mut [(i64, i64)]) -> i32 {
@@ -59,5 +59,5 @@ fn main() {
         }
     }
     let result = find_min_arrow_shots(&mut points);
-    wasm_libs::write_int(result);
+    write_int(result);
 }

@@ -44,6 +44,7 @@ from src.wasm_libs.py.io import *
 
 def solve(radius: float, x_center: float, y_center: float, count: int) -> list[list[float]]:
     import random
+    random.seed(42)
 
     points = []
     for _ in range(count):

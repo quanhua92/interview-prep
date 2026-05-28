@@ -40,7 +40,7 @@ int main(void)
 {
     std::vector<int> vals = read_ints();
     abort();
-    // TODO: find the middle node using slow/fast pointer technique
+    // TODO: implement solve()
     std::vector<int> result;
     write_ints(result);
     return 0;

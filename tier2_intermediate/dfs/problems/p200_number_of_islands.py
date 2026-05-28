@@ -37,11 +37,16 @@ Template (python3):
 Hint: Use DFS to mark visited land cells, counting each new island.
 """
 
+from src.wasm_libs.py.io import read_ints, read_line, write_int
 
 
-def main():
+def solve(grid: list[list[str]]) -> int:
     raise NotImplementedError
 
 
 if __name__ == "__main__":
-    main()
+    meta = read_ints()
+    rows, cols = meta[0], meta[1]
+    grid = [list(read_line()) for _ in range(rows)]
+    result = solve(grid)
+    write_int(result)

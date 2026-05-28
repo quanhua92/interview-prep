@@ -31,11 +31,7 @@ fn main() {
     let mut tree_vals = vals.clone();
 
     fn reverse_inorder(idx: i32, tree_vals: &mut [i32], left: &[i32], right: &[i32], total: &mut i32) {
-        if idx < 0 { return; }
-        reverse_inorder(right[idx as usize], tree_vals, left, right, total);
-        *total += tree_vals[idx as usize];
-        tree_vals[idx as usize] = *total;
-        reverse_inorder(left[idx as usize], tree_vals, left, right, total);
+        todo!();
     }
 
     let mut total = 0i32;

@@ -5,7 +5,6 @@ Topics: Math, Rejection Sampling, Randomized, Probability and Statistics
 
 Given the API rand7() that generates a uniform random integer in the range [1, 7], write a function rand10() that generates a uniform random integer in the range [1, 10]. You can only call the API rand7(), and you shouldn't call any other API. Please do not use a language's built-in random API.
 Each test case will have one internal argument n, the number of times that your implemented function rand10() will be called while testing. Note that this is not an argument passed to rand10().
-Follow up:
 Example 1:
     Input: n = 1
     Output: [2]
@@ -36,11 +35,11 @@ Template (python3):
 from src.wasm_libs.py.io import *
 
 
-def solve(n: int) -> bool:
+def solve(n: int) -> list[int]:
     raise NotImplementedError
 
 
 if __name__ == "__main__":
     n = read_int()
     result = solve(n)
-    write_bool(result)
+    write_ints(result)

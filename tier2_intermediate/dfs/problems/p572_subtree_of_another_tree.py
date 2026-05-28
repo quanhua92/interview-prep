@@ -22,11 +22,17 @@ Template (python3):
         def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
 """
 
+from src.wasm_libs.py.io import *
 
 
-def main():
+def solve(root_vals: list, sub_vals: list) -> bool:
     raise NotImplementedError
 
 
 if __name__ == "__main__":
-    main()
+    root_line = read_line()
+    sub_line = read_line()
+    root_vals = [None if x == "null" else int(x) for x in root_line.split()]
+    sub_vals = [None if x == "null" else int(x) for x in sub_line.split()]
+    result = solve(root_vals, sub_vals)
+    write_bool(result)

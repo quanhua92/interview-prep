@@ -23,11 +23,14 @@ Template (python3):
         def deserialize(self, s: str) -> NestedInteger:
 """
 
+from src.wasm_libs.py.io import read_line, write_string
 
 
-def main():
+def solve(s: str) -> str:
     raise NotImplementedError
 
 
 if __name__ == "__main__":
-    main()
+    s = read_line()
+    result = solve(s)
+    write_string(result)

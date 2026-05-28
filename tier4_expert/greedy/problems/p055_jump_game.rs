@@ -27,13 +27,14 @@
  * Hint: Track the farthest reachable index; if you pass it, the end is unreachable.
  */
 
+use wasm_libs::*;
 
 fn can_jump(nums: &[i32]) -> bool {
     todo!();
 }
 
 fn main() {
-    let nums = wasm_libs::read_ints();
+    let nums = read_ints();
     let result = can_jump(&nums);
-    wasm_libs::write_bool(result);
+    write_bool(result);
 }

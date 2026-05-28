@@ -28,57 +28,12 @@
  *     class Solution:
  *         def smallestGoodBase(self, n: str) -> str:
  */
-function solve(n)
-  const num = BigInt(n);
 
-  const calc = (k, m) =>
-    let total = 0n;
-    for (let i = 0; i < m; i++)
-      total = total * k + 1n;
-      if (total > num) return total;
-    }
-    return total;
-  };
+import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
 
-  const maxM = Number(num.toString(2).length);
-  let result = String(num - 1n);
-
-  for (let m = maxM; m >= 2; m--)
-    let lo = 2n;
-    let hi = num - 1n;
-    while (lo <= hi)
-      const mid = (lo + hi) / 2n;
-      const s = calc(mid, m);
-      if (s === num) return String(mid);
-      if (s < num)
-        lo = mid + 1n;
-      } else
-        hi = mid - 1n;
-      }
-    }
-  }
-  return result; {
+function solve(n) {
     throw new Error("NotImplementedError");
 }
 
-const tests = [
-  { label: "example 1", input: "13", expected: "3" },
-  { label: "example 2", input: "4681", expected: "8" },
-  { label: "example 3", input: "1000000000000000000", expected: "999999999999999999" },
-  { label: "smallest n equals 11 base 2", input: "3", expected: "2" },
-  { label: "111 base 2", input: "7", expected: "2" },
-  { label: "11111 base 2", input: "31", expected: "2" },
-];
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
+const n = readLine();
+writeString(solve(n));

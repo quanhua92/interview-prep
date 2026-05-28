@@ -26,11 +26,17 @@ Template (python3):
         def deleteNode(self, root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
 """
 
+from src.wasm_libs.py.io import read_line
 
 
-def main():
+def solve(tree_vals: list, key: int) -> str:
     raise NotImplementedError
 
 
 if __name__ == "__main__":
-    main()
+    tree_line = read_line()
+    key = int(read_line())
+    parts = tree_line.split()
+    tree_vals = [None if x == "null" else int(x) for x in parts]
+    result = solve(tree_vals, key)
+    print(result)

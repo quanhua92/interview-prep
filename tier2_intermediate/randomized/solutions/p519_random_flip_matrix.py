@@ -51,6 +51,7 @@ from src.wasm_libs.py.io import *
 
 def solve(m: int, n: int, num_flips: int) -> int:
     import random
+    random.seed(42)
 
     total = m * n
     mapping: dict[int, int] = {}

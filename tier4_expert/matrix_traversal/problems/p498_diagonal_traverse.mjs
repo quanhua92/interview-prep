@@ -26,50 +26,24 @@
  * 
  * Hint: Group by i+j diagonal index. If d is even, reverse to simulate up-right direction.
  */
-function solve(mat)
-  if (!mat || !mat[0]) return [];
-  const m = mat.length, n = mat[0].length;
-  const result = [];
-  const diagonals = new Map();
-  for (let i = 0; i < m; i++)
-    for (let j = 0; j < n; j++)
-      const d = i + j;
-      if (!diagonals.has(d)) diagonals.set(d, []);
-      diagonals.get(d).push(mat[i][j]);
-    }
+
+import { readInts, readInt, writeInts } from '../../../wasm_libs/js/io.mjs';
+
+function readIntMatrix() {
+  readInt();
+  const matrix = [];
+  while (true) {
+    const row = readInts();
+    if (row.length === 0) break;
+    matrix.push(row);
   }
-  for (let d = 0; d < m + n - 1; d++)
-    const diag = diagonals.get(d);
-    if (d % 2 === 0)
-      result.push(...diag.reverse());
-    } else
-      result.push(...diag);
-    }
-  }
-  return result; {
+  return matrix;
+}
+
+function solve(mat) {
     throw new Error("NotImplementedError");
 }
 
-const tests = [
-  { input: [[1,2,3],[4,5,6],[7,8,9]], expected: [1,2,4,7,5,3,6,8,9], label: "example 1" },
-  { input: [[1,2],[3,4],[5,6]], expected: [1,2,3,5,4,6], label: "example 2" },
-  { input: [[1]], expected: [1], label: "single element" },
-  { input: [[1,2,3,4]], expected: [1,2,3,4], label: "single row" },
-  { input: [[1],[2],[3],[4]], expected: [1,2,3,4], label: "single column" },
-  { input: [[1,2,3,4],[5,6,7,8]], expected: [1,2,5,6,3,4,7,8], label: "2x4 rectangular" },
-  { input: [[-1,-2],[3,4]], expected: [-1,-2,3,4], label: "negative values 2x2" },
-];
-
-let passed = 0;
-for (let i = 0; i < tests.length; i++) {
-  const t = tests[i];
-  const got = solve(t.input);
-  if (JSON.stringify(got) === JSON.stringify(t.expected)) {
-    passed++;
-    console.log(`  Test ${i + 1} (${t.label}): PASS`);
-  } else {
-    console.log(`  Test ${i + 1} (${t.label}): FAIL`);
-    console.log(`    Expected: ${JSON.stringify(t.expected)}\n    Got:      ${JSON.stringify(got)}`);
-  }
-}
-console.log(`\n  ${passed}/${tests.length} passed`);
+const mat = readIntMatrix();
+const result = solve(mat);
+writeInts(result);

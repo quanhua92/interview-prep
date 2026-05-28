@@ -59,9 +59,6 @@ from src.wasm_libs.py.io import *
 class RandomizedSet:
     def __init__(self):
         random.seed(42)
-        self.vals: list[int] = []
-        self.idx_map: dict[int, int] = {}
-
         raise NotImplementedError
 
         raise NotImplementedError

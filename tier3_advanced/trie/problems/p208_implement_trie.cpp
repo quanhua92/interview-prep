@@ -100,11 +100,12 @@ int main(void) {
             trie.insert(val);
             write_string("null");
         } else if (op == "search") {
-    abort();
-}
+            write_bool(trie.search(val));
+        } else {
             write_bool(trie.startsWith(val));
         }
     }
+    abort();
 
     return 0;
 }

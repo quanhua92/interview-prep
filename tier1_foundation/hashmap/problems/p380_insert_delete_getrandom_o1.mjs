@@ -34,8 +34,6 @@ import { readInts, readLine, readInt, writeInt, writeBool } from '../../wasm_lib
 
 class RandomizedSet {
   constructor() {
-    this.vals = [];
-    this.idxMap = new Map();
   }
 
   insert(val) {

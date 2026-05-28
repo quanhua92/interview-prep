@@ -28,6 +28,7 @@
  * Hint: Track total_surplus and current_surplus. If current_surplus < 0, reset start to next station.
  */
 
+use wasm_libs::*;
 
 fn can_complete_circuit(gas: &[i32], cost: &[i32]) -> i32 {
     let mut total_surplus = 0i32;
@@ -46,8 +47,8 @@ fn can_complete_circuit(gas: &[i32], cost: &[i32]) -> i32 {
 }
 
 fn main() {
-    let gas = wasm_libs::read_ints();
-    let cost = wasm_libs::read_ints();
+    let gas = read_ints();
+    let cost = read_ints();
     let result = can_complete_circuit(&gas, &cost);
-    wasm_libs::write_int(result);
+    write_int(result);
 }

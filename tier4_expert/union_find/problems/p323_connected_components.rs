@@ -25,26 +25,11 @@ impl UnionFind {
     }
 
     fn find(&mut self, x: i32) -> i32 {
-        if self.parent[x as usize] != x {
-            let root = self.find(self.parent[x as usize]);
-            self.parent[x as usize] = root;
-            return root;
-        }
-        x
+        todo!();
     }
 
     fn union(&mut self, x: i32, y: i32) -> bool {
-        let mut rx = self.find(x);
-        let mut ry = self.find(y);
-        if rx == ry { return false; }
-        if self.rank_[rx as usize] < self.rank_[ry as usize] {
-            std::mem::swap(&mut rx, &mut ry);
-        }
-        self.parent[ry as usize] = rx;
-        if self.rank_[rx as usize] == self.rank_[ry as usize] {
-            self.rank_[rx as usize] += 1;
-        }
-        true
+        todo!();
     }
 }
 

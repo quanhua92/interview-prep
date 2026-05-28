@@ -13,8 +13,7 @@
 use wasm_libs::*;
 
 struct MinStack {
-    st: Vec<i32>,
-    mn: Vec<i32>,
+    _data: Vec<i32>,
 }
 
 impl MinStack {

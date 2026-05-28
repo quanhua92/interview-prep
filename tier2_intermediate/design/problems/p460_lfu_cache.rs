@@ -63,26 +63,15 @@
  */
 
 use wasm_libs::*;
-use std::collections::{HashMap, VecDeque};
-
-struct Node {
-    val: i32,
-    freq: usize,
-}
+use std::collections::HashMap;
 
 struct LFUCache {
-    cap: usize,
-    min_freq: usize,
-    cache: HashMap<i32, Node>,
-    freq_map: HashMap<usize, VecDeque<i32>>,
+    _cap: i32,
+    _cache: HashMap<i32, i32>,
 }
 
 impl LFUCache {
     fn new(capacity: i32) -> Self {
-    todo!();
-}
-
-    fn update_freq(&mut self, key: i32) {
     todo!();
 }
 

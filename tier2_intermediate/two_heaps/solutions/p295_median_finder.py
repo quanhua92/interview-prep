@@ -1,7 +1,7 @@
 """
 P295: Find Median from Data Stream (Hard)
 https://leetcode.com/problems/find-median-from-data-stream/
-Topics: Two Pointers, Design, Sorting, Heap (Priority Queue), Data Stream
+Topics: Two Heaps, Design, Sorting, Heap (Priority Queue), Data Stream
 
 The median is the middle value in an ordered integer list. If the size of the list is even, there is no middle value, and the median is the mean of the two middle values.
 Implement the MedianFinder class:

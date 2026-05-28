@@ -23,11 +23,14 @@ Template (python3):
         def arrayNesting(self, nums: List[int]) -> int:
 """
 
+from src.wasm_libs.py.io import *
 
 
-def main():
+def solve(nums: list[int]) -> int:
     raise NotImplementedError
 
 
 if __name__ == "__main__":
-    main()
+    nums = read_ints()
+    result = solve(nums)
+    write_int(result)

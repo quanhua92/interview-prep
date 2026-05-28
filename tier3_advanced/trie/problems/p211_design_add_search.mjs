@@ -52,31 +52,11 @@ class WordDictionary {
   }
 
   addWord(word) {
-    let node = this.root;
-    for (const ch of word) {
-      if (!(ch in node.children)) {
-        node.children[ch] = new TrieNode();
-      }
-      node = node.children[ch];
-    }
-    node.isEnd = true;
+    throw new Error("NotImplementedError");
   }
 
   search(word) {
-    return this._dfs(this.root, word, 0);
-  }
-
-  _dfs(node, word, index) {
-    if (index === word.length) return node.isEnd;
-    const ch = word[index];
-    if (ch === ".") {
-      for (const child of Object.values(node.children)) {
-        if (this._dfs(child, word, index + 1)) return true;
-      }
-      return false;
-    }
-    if (!(ch in node.children)) return false;
-    return this._dfs(node.children[ch], word, index + 1);
+    throw new Error("NotImplementedError");
   }
 }
 

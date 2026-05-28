@@ -38,6 +38,7 @@ from src.wasm_libs.py.io import *
 
 def solve(n: int) -> bool:
     import random
+    random.seed(42)
 
     def rand7():
         return random.randint(1, 7)

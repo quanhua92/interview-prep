@@ -19,16 +19,10 @@ struct UnionFind {
         for (int i = 0; i < n; i++) parent[i] = i;
     }
     int find(int x) {
-        if (parent[x] != x) parent[x] = find(parent[x]);
-        return parent[x];
+        abort();
     }
     bool unite(int x, int y) {
-        int rx = find(x), ry = find(y);
-        if (rx == ry) return false;
-        if (rank_[rx] < rank_[ry]) std::swap(rx, ry);
-        parent[ry] = rx;
-        if (rank_[rx] == rank_[ry]) rank_[rx]++;
-        return true;
+        abort();
     }
 };
 

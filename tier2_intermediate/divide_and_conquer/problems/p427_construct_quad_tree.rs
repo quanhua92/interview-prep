@@ -37,22 +37,8 @@ fn main() {
     }
 
     let mut flat: Vec<i32> = Vec::new();
-    fn build_flat(grid: &[Vec<i32>], row: usize, col: usize, size: usize, flat: &mut Vec<i32>) -> usize {
-        if all_same(grid, row, col, size) {
-            flat.push(1);
-            flat.push(grid[row][col]);
-            flat.len() - 2
-        } else {
-            let half = size / 2;
-            let idx = flat.len();
-            flat.push(0);
-            flat.push(1);
-            build_flat(grid, row, col, half, flat);
-            build_flat(grid, row, col + half, half, flat);
-            build_flat(grid, row + half, col, half, flat);
-            build_flat(grid, row + half, col + half, half, flat);
-            idx
-        }
+    fn build_flat(_grid: &[Vec<i32>], _row: usize, _col: usize, _size: usize, _flat: &mut Vec<i32>) -> usize {
+        todo!();
     }
     build_flat(&grid, 0, 0, cols, &mut flat);
 

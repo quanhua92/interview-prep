@@ -24,9 +24,6 @@ import { readLine, writeString } from '../../wasm_libs/js/io.mjs';
 
 class Codec {
   constructor() {
-    this.urlMap = new Map();
-    this.shortMap = new Map();
-    this.nextId = 0;
   }
 
   encode(longUrl) {

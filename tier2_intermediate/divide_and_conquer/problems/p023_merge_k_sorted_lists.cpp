@@ -24,29 +24,22 @@
 
 static std::vector<int> merge_two(const std::vector<int> &a, const std::vector<int> &b)
 {
-    std::vector<int> r;
-    r.reserve(a.size() + b.size());
-    size_t i = 0, j = 0;
-    while (i < a.size() && j < b.size()) {
-        if (a[i] <= b[j]) r.push_back(a[i++]);
-        else r.push_back(b[j++]);
-    }
-    while (i < a.size()) r.push_back(a[i++]);
-    while (j < b.size()) r.push_back(b[j++]);
-    return r;
+    abort();
 }
 
 static std::vector<int> divide_merge(const std::vector<std::vector<int>> &lists, int left, int right)
 {
-    if (left > right) return {};
-    if (left == right) return lists[left];
-    int mid = left + (right - left) / 2;
-    auto lh = divide_merge(lists, left, mid);
-    auto rh = divide_merge(lists, mid + 1, right);
-    return merge_two(lh, rh);
+    abort();
 }
 
 int main(void)
 {
-    abort();
+    int k = read_ints()[0];
+    std::vector<std::vector<int>> lists(k);
+    for (int i = 0; i < k; i++) {
+        lists[i] = read_ints();
+    }
+    auto result = divide_merge(lists, 0, (int)lists.size() - 1);
+    write_ints(result);
+    return 0;
 }
