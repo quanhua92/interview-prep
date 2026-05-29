@@ -1,5 +1,7 @@
 import sys
 
+_PREFIX = "[OUT] "
+
 
 def read_line() -> str:
     return sys.stdin.readline().rstrip('\n')
@@ -17,21 +19,21 @@ def read_int() -> int:
 
 
 def write_int(val: int):
-    print(val)
+    print(f"{_PREFIX}{val}")
 
 
 def write_ints(arr: list[int]):
-    print(" ".join(map(str, arr)))
+    print(f"{_PREFIX}{' '.join(map(str, arr))}")
 
 
 def write_string(s: str):
-    print(s)
+    print(f"{_PREFIX}{s}")
 
 
 def write_bool(b: bool):
-    print("true" if b else "false")
+    print(f"{_PREFIX}{'true' if b else 'false'}")
 
 
 def write_matrix(mat: list[list[int]]):
     for row in mat:
-        print(" ".join(map(str, row)))
+        print(f"{_PREFIX}{' '.join(map(str, row))}")

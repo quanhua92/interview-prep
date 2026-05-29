@@ -41,11 +41,12 @@ std::vector<int> read_ints()
 
 void write_int(int val)
 {
-    std::printf("%d\n", val);
+    std::printf("[OUT] %d\n", val);
 }
 
 void write_ints(const std::vector<int> &arr)
 {
+    std::printf("[OUT] ");
     for (int i = 0; i < (int)arr.size(); i++) {
         if (i > 0) std::putchar(' ');
         std::printf("%d", arr[i]);
@@ -55,10 +56,10 @@ void write_ints(const std::vector<int> &arr)
 
 void write_string(const std::string &s)
 {
-    std::printf("%s\n", s.c_str());
+    std::printf("[OUT] %s\n", s.c_str());
 }
 
 void write_bool(bool b)
 {
-    std::printf("%s\n", b ? "true" : "false");
+    std::printf("[OUT] %s\n", b ? "true" : "false");
 }

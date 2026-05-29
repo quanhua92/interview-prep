@@ -4,6 +4,8 @@ import sys
 from dataclasses import dataclass
 from typing import Any
 
+_OUT_PREFIX = "[OUT] "
+
 _REGISTRY: dict[str, type] = {}
 
 
@@ -21,6 +23,15 @@ def get_judge(name: str):
 
 def list_judges():
     return {cls.name: cls for cls in _REGISTRY.values() if hasattr(cls, "name")}
+
+
+def strip_output_prefix(stdout: str) -> str:
+    out_lines = []
+    for line in stdout.split("\n"):
+        stripped = line.strip()
+        if stripped.startswith(_OUT_PREFIX):
+            out_lines.append(stripped[len(_OUT_PREFIX):])
+    return "\n".join(out_lines)
 
 
 @dataclass

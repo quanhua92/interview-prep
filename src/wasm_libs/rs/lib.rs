@@ -21,11 +21,12 @@ pub fn read_int() -> i32 {
 
 pub fn write_int(val: i32) {
     let mut out = io::stdout().lock();
-    writeln!(out, "{}", val).unwrap();
+    writeln!(out, "[OUT] {}", val).unwrap();
 }
 
 pub fn write_ints(arr: &[i32]) {
     let mut out = io::stdout().lock();
+    write!(out, "[OUT] ").unwrap();
     for (i, v) in arr.iter().enumerate() {
         if i > 0 {
             write!(out, " ").unwrap();
@@ -37,10 +38,10 @@ pub fn write_ints(arr: &[i32]) {
 
 pub fn write_string(s: &str) {
     let mut out = io::stdout().lock();
-    writeln!(out, "{}", s).unwrap();
+    writeln!(out, "[OUT] {}", s).unwrap();
 }
 
 pub fn write_bool(b: bool) {
     let mut out = io::stdout().lock();
-    writeln!(out, "{}", b).unwrap();
+    writeln!(out, "[OUT] {}", b).unwrap();
 }

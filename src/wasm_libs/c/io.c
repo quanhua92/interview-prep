@@ -53,11 +53,12 @@ char *read_line(void)
 
 void write_int(int val)
 {
-    printf("%d\n", val);
+    printf("[OUT] %d\n", val);
 }
 
 void write_ints(int *arr, int n)
 {
+    printf("[OUT] ");
     for (int i = 0; i < n; i++) {
         if (i > 0) printf(" ");
         printf("%d", arr[i]);
@@ -67,10 +68,10 @@ void write_ints(int *arr, int n)
 
 void write_string(const char *s)
 {
-    printf("%s\n", s);
+    printf("[OUT] %s\n", s);
 }
 
 void write_bool(int b)
 {
-    printf("%s\n", b ? "true" : "false");
+    printf("[OUT] %s\n", b ? "true" : "false");
 }

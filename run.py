@@ -25,6 +25,7 @@ except ImportError:
     pass
 
 from tracker import ROOT, TIER_DIRS, load_tracker  # noqa: E402
+from src.utils.judge_base import strip_output_prefix  # noqa: E402
 
 LANG_FLAGS = ("--lang", "-l")
 SOLUTION_FLAGS = ("--solution", "-s")
@@ -236,11 +237,38 @@ def _run_pattern(pattern, lang=None, solution=False):
                         case_details.append(f"      {line}")
                 continue
 
-            if judge.check_stdout(result["output"], expected):
+            clean = strip_output_prefix(result["output"])
+            if judge.check_stdout(clean, expected):
                 case_passed += 1
             else:
                 case_failed += 1
-                case_details.append(f"    {tc.label}: expected={expected!r}, got={result['output'].strip()!r}")
+                got_clean = clean.strip()
+                got_display = got_clean
+                if isinstance(expected, bool):
+                    got_display = got_clean.lower() == "true"
+                elif isinstance(expected, int):
+                    try:
+                        got_display = int(got_clean.split("\n")[0].strip())
+                    except ValueError:
+                        pass
+                elif isinstance(expected, str):
+                    got_display = got_clean
+                elif isinstance(expected, list) and got_clean:
+                    try:
+                        parsed = [int(x) for x in got_clean.split()]
+                        if expected and isinstance(expected[0], list):
+                            lines = [l.strip() for l in got_clean.split("\n") if l.strip()]
+                            got_display = [[int(x) for x in l.split()] for l in lines]
+                        else:
+                            got_display = parsed
+                    except ValueError:
+                        pass
+                case_details.append(f"    {tc.label}: expected={expected!r}, got={got_display!r}")
+                raw_lines = [l for l in result["output"].strip().split("\n") if l.strip()]
+                dbg = [l for l in raw_lines if not l.strip().startswith("[OUT]")]
+                if dbg:
+                    for l in dbg:
+                        case_details.append(f"    [DEBUG] {l}")
 
         total = len(judge.test_cases)
         if case_passed == 0 and case_failed == 0:
@@ -252,7 +280,7 @@ def _run_pattern(pattern, lang=None, solution=False):
         else:
             failed += 1
             print(f"    [FAIL] {target.name} ({case_passed}/{total} tests)")
-            for detail in case_details[:8]:
+            for detail in case_details:
                 print(detail)
 
     return passed, failed, skipped

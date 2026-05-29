@@ -29,17 +29,17 @@ export function readInt() {
 }
 
 export function writeInt(val) {
-  process.stdout.write(String(val) + "\n");
+  process.stdout.write("[OUT] " + String(val) + "\n");
 }
 
 export function writeInts(arr) {
-  process.stdout.write(arr.join(" ") + "\n");
+  process.stdout.write("[OUT] " + arr.join(" ") + "\n");
 }
 
 export function writeString(s) {
-  process.stdout.write(String(s) + "\n");
+  process.stdout.write("[OUT] " + String(s) + "\n");
 }
 
 export function writeBool(b) {
-  process.stdout.write(b ? "true\n" : "false\n");
+  process.stdout.write("[OUT] " + (b ? "true\n" : "false\n"));
 }

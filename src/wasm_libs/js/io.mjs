@@ -33,17 +33,17 @@ export function readInt() {
 }
 
 export function writeInt(val) {
-  _writeStdout(String(val) + "\n");
+  _writeStdout("[OUT] " + String(val) + "\n");
 }
 
 export function writeInts(arr) {
-  _writeStdout(arr.join(" ") + "\n");
+  _writeStdout("[OUT] " + arr.join(" ") + "\n");
 }
 
 export function writeString(s) {
-  _writeStdout(String(s) + "\n");
+  _writeStdout("[OUT] " + String(s) + "\n");
 }
 
 export function writeBool(b) {
-  _writeStdout(b ? "true\n" : "false\n");
+  _writeStdout("[OUT] " + (b ? "true\n" : "false\n"));
 }
