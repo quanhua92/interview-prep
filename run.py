@@ -15,6 +15,7 @@ Usage:
 """
 
 import importlib
+import json
 import re
 import sys
 
@@ -39,6 +40,8 @@ _STUB_PATTERNS = {
     ".mjs": [r'throw\s+new\s+Error\("NotImplementedError"\)'],
     ".py": [r"raise NotImplementedError"],
 }
+
+_CACHE_PATH = ROOT / "progress" / "run_cache.json"
 
 
 def _parse_args(args):
@@ -95,6 +98,20 @@ def _is_stub(path):
     return any(re.search(p, source, re.MULTILINE) for p in patterns)
 
 
+def _load_cache():
+    if _CACHE_PATH.exists():
+        try:
+            return json.loads(_CACHE_PATH.read_text())
+        except (json.JSONDecodeError, OSError):
+            pass
+    return {}
+
+
+def _save_cache(cache):
+    _CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    _CACHE_PATH.write_text(json.dumps(cache, indent=2))
+
+
 def _run_python(target, stdin_text):
     from src.runners.wasm_runner import wasm_sandbox_active, run_python_wasm
     from src.runners.native_runner import run_python_native
@@ -126,7 +143,7 @@ def _run_compiled(target, lang, stdin_text, work_dir):
     return run_compiled_native(target, lang, stdin_text=stdin_text), "native"
 
 
-def _run_pattern(pattern, lang=None, solution=False):
+def _run_pattern(pattern, lang=None, solution=False, cache=None):
     from src.utils.judge_base import JudgeBase
 
     name = pattern["name"]
@@ -199,7 +216,20 @@ def _run_pattern(pattern, lang=None, solution=False):
     skipped = 0
 
     for target, stem, judge_cls in files:
+        cache_key = str(target.resolve())
+        if cache is not None:
+            cached = cache.get(cache_key)
+            if cached is not None:
+                try:
+                    if target.stat().st_mtime <= cached["mtime"]:
+                        passed += 1
+                        print(f"    {cached['summary']}")
+                        continue
+                except OSError:
+                    pass
         if _is_stub(target):
+            if cache is not None:
+                cache.pop(cache_key, None)
             skipped += 1
             print(f"    [SKIP] {target.name}")
             continue
@@ -274,14 +304,21 @@ def _run_pattern(pattern, lang=None, solution=False):
         if case_passed == 0 and case_failed == 0:
             skipped += 1
             print(f"    [SKIP] {target.name}")
+            if cache is not None:
+                cache.pop(cache_key, None)
         elif case_failed == 0:
             passed += 1
-            print(f"    [PASS] {target.name} ({case_passed}/{total} tests)")
+            line = f"[PASS] {target.name} ({case_passed}/{total} tests)"
+            print(f"    {line}")
+            if cache is not None:
+                cache[cache_key] = {"mtime": target.stat().st_mtime, "summary": line}
         else:
             failed += 1
             print(f"    [FAIL] {target.name} ({case_passed}/{total} tests)")
             for detail in case_details:
                 print(detail)
+            if cache is not None:
+                cache.pop(cache_key, None)
 
     return passed, failed, skipped
 
@@ -290,6 +327,8 @@ def main():
     args = sys.argv[1:]
     lang, solution, rest = _parse_args(args)
     patterns = _get_patterns(rest)
+
+    cache = _load_cache()
 
     lang_label = f" ({lang})" if lang else ""
     mode_label = "solution" if solution else "problem"
@@ -303,10 +342,12 @@ def main():
     total_skipped = 0
 
     for p in patterns:
-        p_ok, p_fail, p_skipped = _run_pattern(p, lang=lang, solution=solution)
+        p_ok, p_fail, p_skipped = _run_pattern(p, lang=lang, solution=solution, cache=cache)
         total_passed += p_ok
         total_failed += p_fail
         total_skipped += p_skipped
+
+    _save_cache(cache)
 
     print()
     print("  " + "-" * 50)

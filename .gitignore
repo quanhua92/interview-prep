@@ -12,6 +12,7 @@ wheels/
 # Progress tracking
 progress/tracker.json
 progress/report.html
+progress/run_cache.json
 
 # IDE
 .idea/
