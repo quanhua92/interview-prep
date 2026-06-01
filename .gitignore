@@ -34,4 +34,10 @@ Thumbs.db
 # Notes
 TODO-*.md
 
+# CV build artifacts
+cv_*.aux
+cv_*.log
+cv_*.pdf
+*.tex
+
 .env
