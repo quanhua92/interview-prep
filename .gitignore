@@ -13,6 +13,7 @@ wheels/
 progress/tracker.json
 progress/report.html
 progress/run_cache.json
+progress/*.md
 
 # IDE
 .idea/
