@@ -26,12 +26,12 @@ Example 1:
 Constraints:
     - 1 <= rects.length <= 100
     - rects[i].length == 4
-    - -109 <= ai < xi <= 109
-    - -109 <= bi < yi <= 109
+    - -10^9 <= ai < xi <= 10^9
+    - -10^9 <= bi < yi <= 10^9
     - xi - ai <= 2000
     - yi - bi <= 2000
     - All the rectangles do not overlap.
-    - At most 104 calls will be made to pick.
+    - At most 10^4 calls will be made to pick.
 
 Template (python3):
     class Solution:

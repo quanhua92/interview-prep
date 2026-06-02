@@ -21,10 +21,10 @@
  *     a. An integer containing value 789
  *
  * Constraints:
- *     - 1 <= s.length <= 5 * 104
+ *     - 1 <= s.length <= 5 * 10^4
  *     - s consists of digits, square brackets "[]", negative sign '-', and commas ','.
  *     - s is the serialization of valid NestedInteger.
- *     - All the values in the input are in the range [-106, 106].
+ *     - All the values in the input are in the range [-10^6, 10^6].
  *
  * Template (python3):
  *     # '''

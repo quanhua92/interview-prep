@@ -16,9 +16,9 @@ Example 2:
     Explanation: The longest substring is "ababb", as 'a' is repeated 2 times and 'b' is repeated 3 times.
 
 Constraints:
-    - 1 <= s.length <= 104
+    - 1 <= s.length <= 10^4
     - s consists of only lowercase English letters.
-    - 1 <= k <= 105
+    - 1 <= k <= 10^5
 
 Template (python3):
     class Solution:

@@ -17,8 +17,8 @@
  *
  * Constraints:
  *     - n == gas.length == cost.length
- *     - 1 <= n <= 105
- *     - 0 <= gas[i], cost[i] <= 104
+ *     - 1 <= n <= 10^5
+ *     - 0 <= gas[i], cost[i] <= 10^4
  *     - The input is generated such that the answer is unique.
  *
  * Template (python3):

@@ -17,8 +17,8 @@ Example 2:
     Explanation: Note that the values of nums are not necessarily unique.
 
 Constraints:
-    - 1 <= nums.length <= 5 * 104
-    - -5 * 104 <= nums[i] <= 5 * 104
+    - 1 <= nums.length <= 5 * 10^4
+    - -5 * 10^4 <= nums[i] <= 5 * 10^4
 
 Template (python3):
     class Solution:

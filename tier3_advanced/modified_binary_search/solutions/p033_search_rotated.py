@@ -22,10 +22,10 @@ Example 3:
 
 Constraints:
     - 1 <= nums.length <= 5000
-    - -104 <= nums[i] <= 104
+    - -10^4 <= nums[i] <= 10^4
     - All values of nums are unique.
     - nums is an ascending array that is possibly rotated.
-    - -104 <= target <= 104
+    - -10^4 <= target <= 10^4
 
 Template (python3):
     class Solution:

@@ -16,8 +16,8 @@ Example 2:
     Output: 4
 
 Constraints:
-    - 1 <= heights.length <= 105
-    - 0 <= heights[i] <= 104
+    - 1 <= heights.length <= 10^5
+    - 0 <= heights[i] <= 10^4
 
 Template (python3):
     class Solution:

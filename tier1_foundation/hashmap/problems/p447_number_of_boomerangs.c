@@ -22,7 +22,7 @@
  *     - n == points.length
  *     - 1 <= n <= 500
  *     - points[i].length == 2
- *     - -104 <= xi, yi <= 104
+ *     - -10^4 <= xi, yi <= 10^4
  *     - All the points are unique.
  *
  * Template (python3):

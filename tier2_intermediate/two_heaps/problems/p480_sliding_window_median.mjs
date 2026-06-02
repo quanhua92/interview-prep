@@ -7,8 +7,8 @@
  * Return the median array for each window.
  *
  * Constraints:
- *     - 1 <= k <= nums.length <= 105
- *     - -231 <= nums[i] <= 231 - 1
+ *     - 1 <= k <= nums.length <= 10^5
+ *     - -2^31 <= nums[i] <= 2^31 - 1
  *
  * Hint: Use a max-heap for the small half and a min-heap for the large half with lazy deletion.
  */

@@ -17,11 +17,11 @@
  *     Output: ["catdog"]
  *
  * Constraints:
- *     - 1 <= words.length <= 104
+ *     - 1 <= words.length <= 10^4
  *     - 1 <= words[i].length <= 30
  *     - words[i] consists of only lowercase English letters.
  *     - All the strings of words are unique.
- *     - 1 <= sum(words[i].length) <= 105
+ *     - 1 <= sum(words[i].length) <= 10^5
  *
  * Template (python3):
  *     class Solution:

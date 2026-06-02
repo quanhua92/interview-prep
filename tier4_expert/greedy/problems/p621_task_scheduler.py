@@ -6,7 +6,7 @@ Topics: Array, Hash Table, Greedy, Sorting, Heap, Counting
 Given tasks and cooldown n, return minimum CPU intervals.
 
 Constraints:
-    - 1 <= tasks.length <= 104
+    - 1 <= tasks.length <= 10^4
     - tasks[i] is an uppercase English letter.
     - 0 <= n <= 100
 

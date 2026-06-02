@@ -8,9 +8,9 @@
  *
  * Constraints:
  *     - 1 <= userId, followerId, followeeId <= 500
- *     - 0 <= tweetId <= 104
+ *     - 0 <= tweetId <= 10^4
  *     - All the tweets have unique IDs.
- *     - At most 3 * 104 calls will be made to postTweet, getNewsFeed, follow, and unfollow.
+ *     - At most 3 * 10^4 calls will be made to postTweet, getNewsFeed, follow, and unfollow.
  *     - A user cannot follow himself.
  */
 

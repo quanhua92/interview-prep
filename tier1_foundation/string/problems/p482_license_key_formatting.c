@@ -18,9 +18,9 @@
  *     Explanation: The string s has been split into three parts, each part has 2 characters except the first part as it could be shorter as mentioned above.
  *
  * Constraints:
- *     - 1 <= s.length <= 105
+ *     - 1 <= s.length <= 10^5
  *     - s consists of English letters, digits, and dashes '-'.
- *     - 1 <= k <= 104
+ *     - 1 <= k <= 10^4
  *
  * Template (python3):
  *     class Solution:

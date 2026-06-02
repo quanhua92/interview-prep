@@ -21,7 +21,7 @@
  *     Explanation: There are six substrings ("z", "a", "b", "za", "ab", and "zab") of s in base.
  *
  * Constraints:
- *     - 1 <= s.length <= 105
+ *     - 1 <= s.length <= 10^5
  *     - s consists of lowercase English letters.
  *
  * Hint: One possible solution might be to consider allocating an array size of 26 for each character in the alphabet. (Credits to @r2ysxu)

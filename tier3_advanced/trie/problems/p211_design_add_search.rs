@@ -29,7 +29,7 @@
  *     - word in addWord consists of lowercase English letters.
  *     - word in search consist of '.' or lowercase English letters.
  *     - There will be at most 2 dots in word for search queries.
- *     - At most 104 calls will be made to addWord and search.
+ *     - At most 10^4 calls will be made to addWord and search.
  *
  * Hints:
  *     - You should be familiar with how a Trie works. If not, please work on this problem: <a href="https://leetcode.com/problems/implement-trie-prefix-tree/">Implement Trie (Prefix Tree)</a> first.

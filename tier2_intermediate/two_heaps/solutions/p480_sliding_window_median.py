@@ -25,8 +25,8 @@ Example 2:
     Output: [2.00000,3.00000,3.00000,3.00000,2.00000,3.00000,2.00000]
 
 Constraints:
-    - 1 <= k <= nums.length <= 105
-    - -231 <= nums[i] <= 231 - 1
+    - 1 <= k <= nums.length <= 10^5
+    - -2^31 <= nums[i] <= 2^31 - 1
 
 Hints:
     - The simplest of solutions comes from the basic idea of finding the median given a set of numbers. We know that by definition, a median is the center element (or an average of the two center elements). Given an unsorted list of numbers, how do we find the median element? If you know the answer to this question, can we extend this idea to every sliding window that we come across in the array?

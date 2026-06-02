@@ -19,7 +19,7 @@
  *     Output: false
  *
  * Constraints:
- *     - 1 <= s.length <= 104
+ *     - 1 <= s.length <= 10^4
  *     - s consists of parentheses only '()[]{}'.
  *
  * Hint: Use a stack to match opening and closing brackets.

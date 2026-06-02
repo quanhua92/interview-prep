@@ -24,9 +24,9 @@
  *     // getRandom() should return either 1, 2, or 3 randomly. Each element should have equal probability of returning.
  *
  * Constraints:
- *     - The number of nodes in the linked list will be in the range [1, 104].
- *     - -104 <= Node.val <= 104
- *     - At most 104 calls will be made to getRandom.
+ *     - The number of nodes in the linked list will be in the range [1, 10^4].
+ *     - -10^4 <= Node.val <= 10^4
+ *     - At most 10^4 calls will be made to getRandom.
  */
 
 import { readLine, readInts, writeInt } from '../../wasm_libs/js/io.mjs';

@@ -19,7 +19,7 @@
  *     Output: 1
  *
  * Constraints:
- *     - 1 <= nums.length <= 105
+ *     - 1 <= nums.length <= 10^5
  *     - 0 <= nums[i] < nums.length
  *     - All the values of nums are unique.
  *

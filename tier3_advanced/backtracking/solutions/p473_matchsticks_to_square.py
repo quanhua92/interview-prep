@@ -17,7 +17,7 @@ Example 2:
 
 Constraints:
     - 1 <= matchsticks.length <= 15
-    - 1 <= matchsticks[i] <= 108
+    - 1 <= matchsticks[i] <= 10^8
 
 Hint: Treat the matchsticks as an array. Can we split the array into 4 equal parts?
 Hint: Every matchstick can belong to either of the 4 sides. We don't know which one. Maybe try out all options!

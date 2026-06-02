@@ -38,10 +38,10 @@ Example 1:
     // cache=[4,3], cnt(4)=2, cnt(3)=3
 
 Constraints:
-    - 1 <= capacity <= 104
-    - 0 <= key <= 105
-    - 0 <= value <= 109
-    - At most 2 * 105 calls will be made to get and put.
+    - 1 <= capacity <= 10^4
+    - 0 <= key <= 10^5
+    - 0 <= value <= 10^9
+    - At most 2 * 10^5 calls will be made to get and put.
 
 Template (python3):
     class LFUCache:

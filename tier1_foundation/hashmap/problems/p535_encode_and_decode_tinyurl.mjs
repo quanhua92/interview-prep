@@ -16,7 +16,7 @@
  *     string ans = obj.decode(tiny); // returns the original url after decoding it.
  *
  * Constraints:
- *     - 1 <= url.length <= 104
+ *     - 1 <= url.length <= 10^4
  *     - url is guranteed to be a valid URL.
  */
 

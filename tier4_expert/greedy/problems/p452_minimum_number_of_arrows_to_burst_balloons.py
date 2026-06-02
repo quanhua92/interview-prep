@@ -6,9 +6,9 @@ Topics: Array, Greedy, Sorting
 Given the array points, return the minimum number of arrows that must be shot to burst all balloons.
 
 Constraints:
-    - 1 <= points.length <= 105
+    - 1 <= points.length <= 10^5
     - points[i].length == 2
-    - -231 <= xstart < xend <= 231 - 1
+    - -2^31 <= xstart < xend <= 2^31 - 1
 """
 
 import sys

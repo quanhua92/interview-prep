@@ -17,9 +17,9 @@ Example 2:
     Output: 0
 
 Constraints:
-    - 1 <= nums.length <= 3 * 104
+    - 1 <= nums.length <= 3 * 10^4
     - 1 <= nums[i] <= 1000
-    - 0 <= k <= 106
+    - 0 <= k <= 10^6
 
 Hints:
     - For each j, let opt(j) be the smallest i so that nums[i] * nums[i+1] * ... * nums[j] is less than k.  opt is an increasing function.

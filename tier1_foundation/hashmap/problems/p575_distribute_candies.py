@@ -23,9 +23,9 @@ Example 3:
 
 Constraints:
     - n == candyType.length
-    - 2 <= n <= 104
+    - 2 <= n <= 10^4
     - n is even.
-    - -105 <= candyType[i] <= 105
+    - -10^5 <= candyType[i] <= 10^5
 
 Hint: To maximize the number of kinds of candies, we should try to distribute candies such that Alice will gain all kinds.
 Hint: What is the upper limit of the number of kinds of candies Alice will gain? Remember candies are to distributed equally.

@@ -5,7 +5,7 @@ Topics: Dynamic Programming
 
 An attendance record for a student can be represented as a string where each character signifies whether the student was absent, late, or present on that day. The record only contains the following three characters:
 Any student is eligible for an attendance award if they meet both of the following criteria:
-Given an integer n, return the number of possible attendance records of length n that make a student eligible for an attendance award. The answer may be very large, so return it modulo 109 + 7.
+Given an integer n, return the number of possible attendance records of length n that make a student eligible for an attendance award. The answer may be very large, so return it modulo 10^9 + 7.
 Example 1:
     Input: n = 2
     Output: 8
@@ -22,7 +22,7 @@ Example 3:
     Output: 183236316
 
 Constraints:
-    - 1 <= n <= 105
+    - 1 <= n <= 10^5
 
 Template (python3):
     class Solution:

@@ -15,7 +15,7 @@
  *
  * Constraints:
  *     - n == nums.length
- *     - 1 <= n <= 105
+ *     - 1 <= n <= 10^5
  *     - 1 <= nums[i] <= n
  *
  * Hint: Negate the value at index abs(n)-1 for each number. Indices with positive values are missing.

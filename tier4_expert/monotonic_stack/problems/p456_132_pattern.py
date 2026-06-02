@@ -22,8 +22,8 @@ Example 3:
 
 Constraints:
     - n == nums.length
-    - 1 <= n <= 2 * 105
-    - -109 <= nums[i] <= 109
+    - 1 <= n <= 2 * 10^5
+    - -10^9 <= nums[i] <= 10^9
 
 Template (python3):
     class Solution:

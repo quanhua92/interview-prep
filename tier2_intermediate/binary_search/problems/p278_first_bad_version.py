@@ -21,7 +21,7 @@ Example 2:
     Output: 1
 
 Constraints:
-    - 1 <= bad <= n <= 231 - 1
+    - 1 <= bad <= n <= 2^31 - 1
 
 Template (python3):
     # The isBadVersion API is already defined for you.

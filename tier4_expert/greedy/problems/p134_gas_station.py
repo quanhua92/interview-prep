@@ -7,8 +7,8 @@ Given two integer arrays gas and cost, return the starting gas station's index i
 
 Constraints:
     - n == gas.length == cost.length
-    - 1 <= n <= 105
-    - 0 <= gas[i], cost[i] <= 104
+    - 1 <= n <= 10^5
+    - 0 <= gas[i], cost[i] <= 10^4
 
 Hint: Track total_surplus and current_surplus. If current_surplus < 0, reset start to next station.
 """

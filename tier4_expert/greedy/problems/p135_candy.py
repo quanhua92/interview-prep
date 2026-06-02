@@ -8,8 +8,8 @@ Return the minimum number of candies you need to have to distribute the candies 
 
 Constraints:
     - n == ratings.length
-    - 1 <= n <= 2 * 104
-    - 0 <= ratings[i] <= 2 * 104
+    - 1 <= n <= 2 * 10^4
+    - 0 <= ratings[i] <= 2 * 10^4
 
 Hint: Two-pass greedy: left-to-right then right-to-left, taking the max of both passes.
 """

@@ -16,9 +16,9 @@ Example 1:
     [null,null,null,null,-3,null,0,-2]
 
 Constraints:
-    - -231 <= val <= 231 - 1
+    - -2^31 <= val <= 2^31 - 1
     - Methods pop, top and getMin operations will always be called on non-empty stacks.
-    - At most 3 * 104 calls will be made to push, pop, top, and getMin.
+    - At most 3 * 10^4 calls will be made to push, pop, top, and getMin.
 
 Hints:
     - Consider each node in the stack having a minimum value. (Credits to @aakarshmadhavan)

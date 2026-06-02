@@ -19,7 +19,7 @@
  *     - m == heightMap.length
  *     - n == heightMap[i].length
  *     - 1 <= m, n <= 200
- *     - 0 <= heightMap[i][j] <= 2 * 104
+ *     - 0 <= heightMap[i][j] <= 2 * 10^4
  */
 
 import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';

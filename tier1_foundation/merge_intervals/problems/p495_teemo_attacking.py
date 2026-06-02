@@ -23,8 +23,8 @@ Example 2:
     Ashe is poisoned for seconds 1, 2, and 3, which is 3 seconds in total.
 
 Constraints:
-    - 1 <= timeSeries.length <= 104
-    - 0 <= timeSeries[i], duration <= 107
+    - 1 <= timeSeries.length <= 10^4
+    - 0 <= timeSeries[i], duration <= 10^7
     - timeSeries is sorted in non-decreasing order.
 
 Template (python3):

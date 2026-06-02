@@ -22,8 +22,8 @@
  *     Explanation: The answer [[-2,4],[3,3]] would also be accepted.
  *
  * Constraints:
- *     - 1 <= k <= points.length <= 104
- *     - -104 <= xi, yi <= 104
+ *     - 1 <= k <= points.length <= 10^4
+ *     - -10^4 <= xi, yi <= 10^4
  *
  * Hint: Use a max-heap of size k keyed by negative distance squared.
  */

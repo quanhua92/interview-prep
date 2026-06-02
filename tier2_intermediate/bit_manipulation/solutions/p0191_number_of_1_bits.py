@@ -24,7 +24,7 @@ Example 3:
     The input binary string 1111111111111111111111111111101 has a total of thirty set bits.
 
 Constraints:
-    - 1 <= n <= 231 - 1
+    - 1 <= n <= 2^31 - 1
 
 Template (python3):
     class Solution:

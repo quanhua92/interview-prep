@@ -20,10 +20,10 @@
  *     solution.pick(3); // It should return either index 2, 3, or 4 randomly. Each index should have equal probability of returning.
  *
  * Constraints:
- *     - 1 <= nums.length <= 2 * 104
- *     - -231 <= nums[i] <= 231 - 1
+ *     - 1 <= nums.length <= 2 * 10^4
+ *     - -2^31 <= nums[i] <= 2^31 - 1
  *     - target is an integer from nums.
- *     - At most 104 calls will be made to pick.
+ *     - At most 10^4 calls will be made to pick.
  */
 
 import { readInts, readInt, writeInt } from '../../wasm_libs/js/io.mjs';

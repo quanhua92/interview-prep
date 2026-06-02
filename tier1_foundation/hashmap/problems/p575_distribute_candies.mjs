@@ -23,9 +23,9 @@
  *
  * Constraints:
  *     - n == candyType.length
- *     - 2 <= n <= 104
+ *     - 2 <= n <= 10^4
  *     - n is even.
- *     - -105 <= candyType[i] <= 105
+ *     - -10^5 <= candyType[i] <= 10^5
  */
 
 import { readInts, writeInt } from '../../wasm_libs/js/io.mjs';

@@ -17,8 +17,8 @@ Example 2:
     Output: [2,3,4,-1,4]
 
 Constraints:
-    - 1 <= nums.length <= 104
-    - -109 <= nums[i] <= 109
+    - 1 <= nums.length <= 10^4
+    - -10^9 <= nums[i] <= 10^9
 
 Template (python3):
     class Solution:

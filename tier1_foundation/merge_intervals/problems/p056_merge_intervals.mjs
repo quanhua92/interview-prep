@@ -16,9 +16,9 @@
  *     Explanation: Intervals [1,4] and [4,5] are considered overlapping.
  *
  * Constraints:
- *     - 1 <= intervals.length <= 104
+ *     - 1 <= intervals.length <= 10^4
  *     - intervals[i].length == 2
- *     - 0 <= starti <= endi <= 104
+ *     - 0 <= starti <= endi <= 10^4
  *
  * Hint: Sort intervals by start time, then merge overlapping ones.
  */

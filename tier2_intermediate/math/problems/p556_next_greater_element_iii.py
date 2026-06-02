@@ -14,7 +14,7 @@ Example 2:
     Output: -1
 
 Constraints:
-    - 1 <= n <= 231 - 1
+    - 1 <= n <= 2^31 - 1
 
 Template (python3):
     class Solution:

@@ -25,8 +25,8 @@
  *     Output: [2.00000,3.00000,3.00000,3.00000,2.00000,3.00000,2.00000]
  *
  * Constraints:
- *     - 1 <= k <= nums.length <= 105
- *     - -231 <= nums[i] <= 231 - 1
+ *     - 1 <= k <= nums.length <= 10^5
+ *     - -2^31 <= nums[i] <= 2^31 - 1
  *
  * Hints:
  *     - The simplest of solutions comes from the basic idea of finding the median given a set of numbers.

@@ -7,7 +7,7 @@
  * Tasks are space-separated letters on one line, followed by n on the next line.
  *
  * Constraints:
- *     - 1 <= tasks.length <= 104
+ *     - 1 <= tasks.length <= 10^4
  *     - tasks[i] is an uppercase English letter.
  *     - 0 <= n <= 100
  *

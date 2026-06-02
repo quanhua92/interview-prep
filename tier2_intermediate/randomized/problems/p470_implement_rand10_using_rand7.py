@@ -18,7 +18,7 @@ Example 3:
     Output: [3,8,10]
 
 Constraints:
-    - 1 <= n <= 105
+    - 1 <= n <= 10^5
 
 Template (python3):
     # The rand7() API is already defined for you.

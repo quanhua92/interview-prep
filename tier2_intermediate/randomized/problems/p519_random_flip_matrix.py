@@ -23,7 +23,7 @@ Example 1:
     solution.flip();  // return [2, 0], [0,0], [1,0], and [2,0] should be equally likely to be returned.
 
 Constraints:
-    - 1 <= m, n <= 104
+    - 1 <= m, n <= 10^4
     - There will be at least one free cell for each call to flip.
     - At most 1000 calls will be made to flip and reset.
 

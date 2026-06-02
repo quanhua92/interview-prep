@@ -6,9 +6,9 @@ Topics: Array, Greedy, Sorting, Heap (Priority Queue)
 Given k, w, profits[], capital[], return maximized capital after at most k projects.
 
 Constraints:
-    - 1 <= k <= 105
-    - 0 <= w <= 109
-    - 1 <= n <= 105
+    - 1 <= k <= 10^5
+    - 0 <= w <= 10^9
+    - 1 <= n <= 10^5
 """
 
 from src.wasm_libs.py.io import *

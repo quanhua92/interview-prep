@@ -22,9 +22,9 @@ Example 1:
     medianFinder.findMedian(); // return 2.0
 
 Constraints:
-    - -105 <= num <= 105
+    - -10^5 <= num <= 10^5
     - There will be at least one element in the data structure before calling findMedian.
-    - At most 5 * 104 calls will be made to addNum and findMedian.
+    - At most 5 * 10^4 calls will be made to addNum and findMedian.
 
 Template (python3):
     class MedianFinder:

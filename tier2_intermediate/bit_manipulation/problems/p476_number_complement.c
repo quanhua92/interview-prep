@@ -18,7 +18,7 @@
  *     Explanation: The binary representation of 1 is 1 (no leading zero bits), and its complement is 0. So you need to output 0.
  *
  * Constraints:
- *     - 1 <= num < 231
+ *     - 1 <= num < 2^31
  *
  * Template (python3):
  *     class Solution:

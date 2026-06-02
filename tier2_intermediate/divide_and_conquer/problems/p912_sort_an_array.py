@@ -15,8 +15,8 @@ Example 2:
     Output: [0,0,1,1,2,5]
 
 Constraints:
-    - 1 <= nums.length <= 5 * 104
-    - -5 * 104 <= nums[i] <= 5 * 104
+    - 1 <= nums.length <= 5 * 10^4
+    - -5 * 10^4 <= nums[i] <= 5 * 10^4
 
 Hint: Implement merge sort — divide array in half, sort recursively, merge.
 """

@@ -18,7 +18,7 @@ Example 2:
 
 Constraints:
     - 2 <= stones.length <= 2000
-    - 0 <= stones[i] <= 231 - 1
+    - 0 <= stones[i] <= 2^31 - 1
     - stones[0] == 0
     - stones is sorted in a strictly increasing order.
 

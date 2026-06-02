@@ -15,8 +15,8 @@ Example 2:
     Output: 3
 
 Constraints:
-    - 1 <= nums.length <= 5 * 104
-    - -231 <= nums[i] <= 231 - 1
+    - 1 <= nums.length <= 5 * 10^4
+    - -2^31 <= nums[i] <= 2^31 - 1
 
 Hint: Use the merge-sort technique.
 Hint: Divide the array into two parts and sort them.

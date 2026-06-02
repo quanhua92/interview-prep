@@ -7,8 +7,8 @@ Each child i has a greed factor g[i], and each cookie j has a size s[j].
 Return the maximum number of content children.
 
 Constraints:
-    - 1 <= g.length <= 3 * 104
-    - 0 <= s.length <= 3 * 104
+    - 1 <= g.length <= 3 * 10^4
+    - 0 <= s.length <= 3 * 10^4
 
 Hint: Sort both arrays and use two pointers to greedily assign the smallest sufficient cookie.
 """

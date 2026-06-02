@@ -22,10 +22,10 @@ Example 3:
     Output: false
 
 Constraints:
-    - 1 <= nums.length <= 105
-    - 0 <= nums[i] <= 109
-    - 0 <= sum(nums[i]) <= 231 - 1
-    - 1 <= k <= 231 - 1
+    - 1 <= nums.length <= 10^5
+    - 0 <= nums[i] <= 10^9
+    - 0 <= sum(nums[i]) <= 2^31 - 1
+    - 1 <= k <= 2^31 - 1
 
 Template (python3):
     class Solution:

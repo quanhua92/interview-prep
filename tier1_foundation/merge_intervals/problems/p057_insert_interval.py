@@ -18,12 +18,12 @@ Example 2:
     Explanation: Because the new interval [4,8] overlaps with [3,5],[6,7],[8,10].
 
 Constraints:
-    - 0 <= intervals.length <= 104
+    - 0 <= intervals.length <= 10^4
     - intervals[i].length == 2
-    - 0 <= starti <= endi <= 105
+    - 0 <= starti <= endi <= 10^5
     - intervals is sorted by starti in ascending order.
     - newInterval.length == 2
-    - 0 <= start <= end <= 105
+    - 0 <= start <= end <= 10^5
 
 Hints:
     - Intervals Array is sorted. Can you use Binary Search to find the correct position to insert the new Interval.?

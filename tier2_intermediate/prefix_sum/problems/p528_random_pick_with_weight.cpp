@@ -43,9 +43,9 @@
  *     and so on.
  *
  * Constraints:
- *     - 1 <= w.length <= 104
- *     - 1 <= w[i] <= 105
- *     - pickIndex will be called at most 104 times.
+ *     - 1 <= w.length <= 10^4
+ *     - 1 <= w[i] <= 10^5
+ *     - pickIndex will be called at most 10^4 times.
  *
  * Template (python3):
  *     class Solution:

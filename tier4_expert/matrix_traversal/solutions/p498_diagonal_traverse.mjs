@@ -16,9 +16,9 @@
  * Constraints:
  *     - m == mat.length
  *     - n == mat[i].length
- *     - 1 <= m, n <= 104
- *     - 1 <= m * n <= 104
- *     - -105 <= mat[i][j] <= 105
+ *     - 1 <= m, n <= 10^4
+ *     - 1 <= m * n <= 10^4
+ *     - -10^5 <= mat[i][j] <= 10^5
  *
  * Hint: Group by i+j diagonal index. If d is even, reverse to simulate up-right direction.
  */

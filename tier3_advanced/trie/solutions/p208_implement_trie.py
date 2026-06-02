@@ -25,7 +25,7 @@ Example 1:
 Constraints:
     - 1 <= word.length, prefix.length <= 2000
     - word and prefix consist only of lowercase English letters.
-    - At most 3 * 104 calls in total will be made to insert, search, and startsWith.
+    - At most 3 * 10^4 calls in total will be made to insert, search, and startsWith.
 
 Template (python3):
     class Trie:

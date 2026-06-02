@@ -28,9 +28,9 @@ Example 1:
     summaryRanges.getIntervals(); // return [[1, 3], [6, 7]]
 
 Constraints:
-    - 0 <= value <= 104
-    - At most 3 * 104 calls will be made to addNum and getIntervals.
-    - At most 102 calls will be made to getIntervals.
+    - 0 <= value <= 10^4
+    - At most 3 * 10^4 calls will be made to addNum and getIntervals.
+    - At most 10^2 calls will be made to getIntervals.
 
 Template (python3):
     class SummaryRanges:

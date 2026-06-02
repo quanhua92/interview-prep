@@ -20,9 +20,9 @@
  *     solution.randPoint(); // return [0.36572, 0.17248]
  *
  * Constraints:
- *     - 0 < radius <= 108
- *     - -107 <= x_center, y_center <= 107
- *     - At most 3 * 104 calls will be made to randPoint.
+ *     - 0 < radius <= 10^8
+ *     - -10^7 <= x_center, y_center <= 10^7
+ *     - At most 3 * 10^4 calls will be made to randPoint.
  *
  * Template (python3):
  *     class Solution:

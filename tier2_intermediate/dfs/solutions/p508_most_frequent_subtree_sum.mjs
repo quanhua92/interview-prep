@@ -14,8 +14,8 @@
  *     Output: [2]
  *
  * Constraints:
- *     - The number of nodes in the tree is in the range [1, 104].
- *     - -105 <= Node.val <= 105
+ *     - The number of nodes in the tree is in the range [1, 10^4].
+ *     - -10^5 <= Node.val <= 10^5
  */
 
 import { readLine, writeInts } from '../../../wasm_libs/js/io.mjs';

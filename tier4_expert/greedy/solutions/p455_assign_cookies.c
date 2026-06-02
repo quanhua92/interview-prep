@@ -7,8 +7,8 @@
  * Return the maximum number of content children.
  *
  * Constraints:
- *     - 1 <= g.length <= 3 * 104
- *     - 0 <= s.length <= 3 * 104
+ *     - 1 <= g.length <= 3 * 10^4
+ *     - 0 <= s.length <= 3 * 10^4
  *
  * Template (python3):
  *     class Solution:

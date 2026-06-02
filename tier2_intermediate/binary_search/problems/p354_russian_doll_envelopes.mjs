@@ -17,9 +17,9 @@
  *     Output: 1
  * 
  * Constraints:
- *     - 1 <= envelopes.length <= 105
+ *     - 1 <= envelopes.length <= 10^5
  *     - envelopes[i].length == 2
- *     - 1 <= wi, hi <= 105
+ *     - 1 <= wi, hi <= 10^5
  * 
  * Template (python3):
  *     class Solution:

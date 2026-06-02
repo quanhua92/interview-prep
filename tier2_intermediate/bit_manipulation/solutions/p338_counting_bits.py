@@ -25,7 +25,7 @@ Example 2:
     5 --> 101
 
 Constraints:
-    - 0 <= n <= 105
+    - 0 <= n <= 10^5
 
 Hints:
     - You should make use of what you have produced already.

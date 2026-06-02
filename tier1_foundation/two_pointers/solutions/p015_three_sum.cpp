@@ -28,7 +28,7 @@
  *
  * Constraints:
  *     - 3 <= nums.length <= 3000
- *     - -105 <= nums[i] <= 105
+ *     - -10^5 <= nums[i] <= 10^5
  *
  * Hints:
  *     - So, we essentially need to find three numbers x, y, and z such that they add up to the given value. If we fix one of the numbers say x, we are left with the two-sum problem at hand!

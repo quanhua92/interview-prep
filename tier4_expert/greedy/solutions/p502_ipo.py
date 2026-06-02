@@ -22,13 +22,13 @@ Example 2:
     Output: 6
 
 Constraints:
-    - 1 <= k <= 105
-    - 0 <= w <= 109
+    - 1 <= k <= 10^5
+    - 0 <= w <= 10^9
     - n == profits.length
     - n == capital.length
-    - 1 <= n <= 105
-    - 0 <= profits[i] <= 104
-    - 0 <= capital[i] <= 109
+    - 1 <= n <= 10^5
+    - 0 <= profits[i] <= 10^4
+    - 0 <= capital[i] <= 10^9
 
 Template (python3):
     class Solution:

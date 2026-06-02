@@ -14,8 +14,8 @@
  *     Output: 4
  *
  * Constraints:
- *     - 1 <= heights.length <= 105
- *     - 0 <= heights[i] <= 104
+ *     - 1 <= heights.length <= 10^5
+ *     - 0 <= heights[i] <= 10^4
  *
  * Hint: Use a monotonic increasing stack with a sentinel to compute max rectangle area.
  */

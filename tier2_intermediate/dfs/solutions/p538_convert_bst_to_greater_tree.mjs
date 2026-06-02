@@ -15,8 +15,8 @@
  *     Output: [1,null,1]
  *
  * Constraints:
- *     - The number of nodes in the tree is in the range [0, 104].
- *     - -104 <= Node.val <= 104
+ *     - The number of nodes in the tree is in the range [0, 10^4].
+ *     - -10^4 <= Node.val <= 10^4
  *     - All the values in the tree are unique.
  *     - root is guaranteed to be a valid binary search tree.
  */

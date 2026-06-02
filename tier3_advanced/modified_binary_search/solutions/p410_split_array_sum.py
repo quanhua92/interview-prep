@@ -21,7 +21,7 @@ Example 2:
 
 Constraints:
     - 1 <= nums.length <= 1000
-    - 0 <= nums[i] <= 106
+    - 0 <= nums[i] <= 10^6
     - 1 <= k <= min(50, nums.length)
 
 Template (python3):

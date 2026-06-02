@@ -22,8 +22,8 @@
  *     Output: 3
  * 
  * Constraints:
- *     - 1 <= houses.length, heaters.length <= 3 * 104
- *     - 1 <= houses[i], heaters[i] <= 109
+ *     - 1 <= houses.length, heaters.length <= 3 * 10^4
+ *     - 1 <= houses[i], heaters[i] <= 10^9
  */
 
 import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';

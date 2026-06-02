@@ -7,9 +7,9 @@
  * there is no middle value, and the median is the mean of the two middle values.
  *
  * Constraints:
- *     - -105 <= num <= 105
+ *     - -10^5 <= num <= 10^5
  *     - There will be at least one element in the data structure before calling findMedian.
- *     - At most 5 * 104 calls will be made to addNum and findMedian.
+ *     - At most 5 * 10^4 calls will be made to addNum and findMedian.
  *
  * Hint: Use a max-heap for the lower half and a min-heap for the upper half.
  */

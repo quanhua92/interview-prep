@@ -21,10 +21,10 @@
  *     Explanation: Because two of the rectangles overlap with each other.
  *
  * Constraints:
- *     - 1 <= rectangles.length <= 2 * 104
+ *     - 1 <= rectangles.length <= 2 * 10^4
  *     - rectangles[i].length == 4
- *     - -105 <= xi < ai <= 105
- *     - -105 <= yi < bi <= 105
+ *     - -10^5 <= xi < ai <= 10^5
+ *     - -10^5 <= yi < bi <= 10^5
  *
  * Template (python3):
  *     class Solution:

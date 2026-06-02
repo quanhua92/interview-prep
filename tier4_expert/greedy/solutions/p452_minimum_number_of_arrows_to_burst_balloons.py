@@ -26,9 +26,9 @@ Example 3:
     - Shoot an arrow at x = 4, bursting the balloons [3,4] and [4,5].
 
 Constraints:
-    - 1 <= points.length <= 105
+    - 1 <= points.length <= 10^5
     - points[i].length == 2
-    - -231 <= xstart < xend <= 231 - 1
+    - -2^31 <= xstart < xend <= 2^31 - 1
 
 Template (python3):
     class Solution:
