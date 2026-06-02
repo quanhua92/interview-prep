@@ -18,7 +18,7 @@ Constraints:
     - 1 <= n.length <= 18
     - n consists of only digits.
     - n does not have leading zeros.
-    - n is representing an integer in the range [1, 1018 - 1].
+    - n is representing an integer in the range [1, 10^18 - 1].
 
 Hint: Will brute force work for this problem? Think of something else.
 Hint: Take some examples like 1234, 999,1000, etc and check their closest palindromes. How many different cases are possible?

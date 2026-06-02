@@ -21,7 +21,7 @@
  *     Explanation: 1000000000000000000 base 999999999999999999 is 11.
  *
  * Constraints:
- *     - n is an integer in the range [3, 1018].
+ *     - n is an integer in the range [3, 10^18].
  *     - n does not contain any leading zeros.
  *
  * Template (python3):
