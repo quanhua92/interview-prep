@@ -37,11 +37,9 @@ from src.wasm_libs.py.io import *
 
 def solve(vals: list[int]) -> list[int]:
     slow, fast = 0, 0
-    while fast + 1 < len(vals) and fast + 2 < len(vals):
+    while fast < len(vals) and fast + 1 < len(vals):
         slow += 1
         fast += 2
-    if fast + 1 < len(vals):
-        slow += 1
     return vals[slow:]
 
 

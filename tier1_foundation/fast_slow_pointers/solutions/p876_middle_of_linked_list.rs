@@ -38,12 +38,9 @@ fn solve(vals: &[i32]) -> Vec<i32> {
     let n = vals.len();
     let mut slow = 0usize;
     let mut fast = 0usize;
-    while fast + 1 < n && fast + 2 < n {
+    while fast < n && fast + 1 < n {
         slow += 1;
         fast += 2;
-    }
-    if fast + 1 < n {
-        slow += 1;
     }
     vals[slow..].to_vec()
 }

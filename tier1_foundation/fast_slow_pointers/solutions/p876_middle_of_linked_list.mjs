@@ -36,11 +36,10 @@ import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBoo
 
 function solve(vals) {
   let slow = 0, fast = 0;
-  while (fast + 1 < vals.length && fast + 2 < vals.length) {
+  while (fast < vals.length && fast + 1 < vals.length) {
     slow++;
     fast += 2;
   }
-  if (fast + 1 < vals.length) slow++;
   return vals.slice(slow);
 }
 

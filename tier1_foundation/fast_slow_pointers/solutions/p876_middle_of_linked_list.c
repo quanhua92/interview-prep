@@ -41,11 +41,10 @@ int main(void)
     int *vals = read_ints(&n);
     (void)n;
     int slow = 0, fast = 0;
-    while (fast + 1 < n && fast + 2 < n) {
+    while (fast < n && fast + 1 < n) {
         slow++;
         fast += 2;
     }
-    if (fast + 1 < n) slow++;
     write_ints(vals + slow, n - slow);
     free(vals);
     return 0;
