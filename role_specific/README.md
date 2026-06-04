@@ -15,6 +15,7 @@ Focused preparation for common engineering roles, covering core competencies and
 | [ML/AI Engineer](ml_ai_engineer/) | ML fundamentals, deployment, evaluation |
 | [DevOps/SRE](devops_sre/) | CI/CD, containers, monitoring, reliability |
 | [Full-Stack Engineer](full_stack_engineer/) | Frontend + backend breadth, system integration |
+| [Senior AI Engineer](senior_ai_engineer/) | Production GenAI systems, RAG, agents, evaluation, deployment |
 
 ## How to Practice
 
