@@ -40,6 +40,11 @@ class P391PerfectRectangle(JudgeBase):
             expected=False,
             label="overlapping rectangles",
         ),
+        TestCase(
+            input=[[0, 0, 2, 3], [2, 0, 3, 2], [1, 2, 2, 3]],
+            expected=False,
+            label="area-check fooler (vertex set catches gap)",
+        ),
     ]
 
     def to_stdin(self, tc_input) -> str:
