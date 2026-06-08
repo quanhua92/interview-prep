@@ -41,8 +41,12 @@ from src.wasm_libs.py.io import *
 
 class Codec:
     def __init__(self):
+        pass
+
+    def encode(self, longUrl: str) -> str:
         raise NotImplementedError
 
+    def decode(self, shortUrl: str) -> str:
         raise NotImplementedError
 
 def solve(longUrl: str) -> str:

@@ -32,7 +32,7 @@ Template (python3):
         def convertBST(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
 """
 
-from src.wasm_libs.py.io import read_line
+from src.wasm_libs.py.io import read_line, write_string
 
 NL = 2147483647
 
@@ -87,18 +87,18 @@ def reverse_inorder(node, total):
 def main():
     line = read_line()
     if not line.strip():
-        print()
+        write_string("")
         return
     parts = line.split()
     vals = [None if x == "null" else int(x) for x in parts]
     if not vals or vals[0] is None:
-        print()
+        write_string("")
         return
     root = build_tree(vals)
     reverse_inorder(root, 0)
     result = tree_to_bfs(root)
     output = " ".join("null" if v is None else str(v) for v in result)
-    print(output)
+    write_string(output)
 
 
 if __name__ == "__main__":

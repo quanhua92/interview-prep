@@ -43,12 +43,15 @@
 #include <string.h>
 
 #define MAP_SIZE 1024
+#define BASE62_CHARS "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 typedef struct {
-    char *keys[MAP_SIZE];
-    char *vals[MAP_SIZE];
-    int count;
-    int next_id;
+    char *codes[MAP_SIZE];
+    char *urls[MAP_SIZE];
+    char *url_codes[MAP_SIZE];
+    int code_count;
+    int url_count;
+    int counter;
 } Codec;
 
 static void codec_init(Codec *c) {
@@ -56,31 +59,64 @@ static void codec_init(Codec *c) {
 }
 
 static void codec_free(Codec *c) {
-    for (int i = 0; i < c->count; i++) {
-        free(c->keys[i]);
-        free(c->vals[i]);
+    for (int i = 0; i < c->code_count; i++) {
+        free(c->codes[i]);
+        free(c->urls[i]);
+    }
+    for (int i = 0; i < c->url_count; i++) {
+        free(c->url_codes[i]);
     }
 }
 
+static void codec_get_base62(char *out, int num) {
+    char buf[16];
+    int len = 0;
+    if (num == 0) {
+        buf[len++] = BASE62_CHARS[0];
+    } else {
+        while (num > 0) {
+            buf[len++] = BASE62_CHARS[num % 62];
+            num /= 62;
+        }
+    }
+    int pad = 6 - len;
+    for (int i = 0; i < pad; i++) out[i] = BASE62_CHARS[0];
+    for (int i = 0; i < len; i++) out[pad + i] = buf[len - 1 - i];
+    out[6] = '\0';
+}
+
 static char *codec_encode(Codec *c, const char *longUrl) {
-    char key[16];
-    sprintf(key, "%d", c->next_id++);
-    char *kcopy = strdup(key);
-    char *vcopy = strdup(longUrl);
-    c->keys[c->count] = kcopy;
-    c->vals[c->count] = vcopy;
-    c->count++;
-    char *result = malloc(strlen(key) + 22);
-    sprintf(result, "http://tinyurl.com/%s", key);
+    for (int i = 0; i < c->url_count; i++) {
+        if (strcmp(c->url_codes[i], longUrl) == 0) {
+            char *result = malloc(30);
+            sprintf(result, "http://tinyurl.com/%s", c->codes[i]);
+            return result;
+        }
+    }
+    char code[7];
+    codec_get_base62(code, c->counter++);
+
+    if (c->code_count < MAP_SIZE) {
+        c->codes[c->code_count] = strdup(code);
+        c->urls[c->code_count] = strdup(longUrl);
+        c->code_count++;
+    }
+    if (c->url_count < MAP_SIZE) {
+        c->url_codes[c->url_count] = strdup(longUrl);
+        c->url_count++;
+    }
+
+    char *result = malloc(30);
+    sprintf(result, "http://tinyurl.com/%s", code);
     return result;
 }
 
 static char *codec_decode(Codec *c, const char *shortUrl) {
-    const char *key = strrchr(shortUrl, '/');
-    key = key ? key + 1 : shortUrl;
-    for (int i = 0; i < c->count; i++) {
-        if (strcmp(c->keys[i], key) == 0) {
-            return strdup(c->vals[i]);
+    const char *code = strrchr(shortUrl, '/');
+    code = code ? code + 1 : shortUrl;
+    for (int i = 0; i < c->code_count; i++) {
+        if (strcmp(c->codes[i], code) == 0) {
+            return strdup(c->urls[i]);
         }
     }
     return strdup("");

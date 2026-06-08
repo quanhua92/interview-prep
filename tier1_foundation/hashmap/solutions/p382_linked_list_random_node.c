@@ -79,16 +79,22 @@ static void free_list(ListNode *head) {
 }
 
 static int solve(ListNode *head) {
-    ListNode *slow = head, *fast = head;
-    while (fast && fast->next) {
-        slow = slow->next;
-        fast = fast->next->next;
+    int res = head->val;
+    ListNode *cur = head->next;
+    int i = 2;
+    while (cur) {
+        if (rand() % i == 0) {
+            res = cur->val;
+        }
+        cur = cur->next;
+        i++;
     }
-    return slow->val;
+    return res;
 }
 
 int main(void)
 {
+    srand(42);
     int n;
     int *arr = read_ints(&n);
     ListNode *head = build_list(arr, n);

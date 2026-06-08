@@ -81,18 +81,16 @@ def solve(grid: list[list[int]]) -> list:
         return [0, 1, tl, tr, bl, br]
 
     tree = build(0, 0, len(grid))
-    result = []
     queue = deque([tree])
     while queue:
         node = queue.popleft()
         if node is None:
-            print("null")
+            write_string("null")
             continue
-        print(f"{node[0]} {node[1]}")
+        write_ints([node[0], node[1]])
         if node[0] == 0:
             for child in node[2:]:
                 queue.append(child)
-    return result
 
 
 if __name__ == "__main__":

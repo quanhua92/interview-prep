@@ -22,23 +22,40 @@
 
 import { readLine, writeString } from '../../wasm_libs/js/io.mjs';
 
+const BASE62_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 class Codec {
   constructor() {
+    this.codeMap = new Map();
     this.urlMap = new Map();
-    this.shortMap = new Map();
-    this.nextId = 0;
+    this.counter = 0;
+  }
+
+  _getBase62(num) {
+    if (num === 0) return BASE62_CHARS[0].repeat(6);
+    let code = "";
+    let n = num;
+    while (n > 0) {
+      code += BASE62_CHARS[n % 62];
+      n = Math.floor(n / 62);
+    }
+    code = code.split("").reverse().join("");
+    return BASE62_CHARS[0].repeat(6 - code.length) + code;
   }
 
   encode(longUrl) {
-    const key = this.nextId++;
-    this.urlMap.set(key, longUrl);
-    this.shortMap.set(key, longUrl);
-    return `http://tinyurl.com/${key}`;
+    if (this.urlMap.has(longUrl)) {
+      return `http://tinyurl.com/${this.urlMap.get(longUrl)}`;
+    }
+    const code = this._getBase62(this.counter++);
+    this.codeMap.set(code, longUrl);
+    this.urlMap.set(longUrl, code);
+    return `http://tinyurl.com/${code}`;
   }
 
   decode(shortUrl) {
-    const key = parseInt(shortUrl.split("/").pop(), 10);
-    return this.shortMap.get(key);
+    const code = shortUrl.split("/").pop();
+    return this.codeMap.get(code);
   }
 }
 

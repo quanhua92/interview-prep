@@ -38,17 +38,11 @@
 
 
 #include "io.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define MAP_SIZE 1024
-
 typedef struct {
-    char *keys[MAP_SIZE];
-    char *vals[MAP_SIZE];
-    int count;
-    int next_id;
+    int _unused;
 } Codec;
 
 static void codec_init(Codec *c) {
@@ -60,27 +54,11 @@ static void codec_free(Codec *c) {
 }
 
 static char *codec_encode(Codec *c, const char *longUrl) {
-    char key[16];
-    sprintf(key, "%d", c->next_id++);
-    char *kcopy = strdup(key);
-    char *vcopy = strdup(longUrl);
-    c->keys[c->count] = kcopy;
-    c->vals[c->count] = vcopy;
-    c->count++;
-    char *result = malloc(strlen(key) + 22);
-    sprintf(result, "http://tinyurl.com/%s", key);
-    return result;
+    abort();
 }
 
 static char *codec_decode(Codec *c, const char *shortUrl) {
-    const char *key = strrchr(shortUrl, '/');
-    key = key ? key + 1 : shortUrl;
-    for (int i = 0; i < c->count; i++) {
-        if (strcmp(c->keys[i], key) == 0) {
-            return strdup(c->vals[i]);
-        }
-    }
-    return strdup("");
+    abort();
 }
 
 static char *solve(const char *longUrl) {

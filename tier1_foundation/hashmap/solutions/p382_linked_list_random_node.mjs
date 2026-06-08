@@ -44,13 +44,17 @@ function buildList(arr) {
 
 function solve(arr) {
   let head = buildList(arr);
-  let slow = head;
-  let fast = head;
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
+  let res = head.val;
+  let cur = head.next;
+  let i = 2;
+  while (cur) {
+    if (Math.floor(Math.random() * i) === 0) {
+      res = cur.val;
+    }
+    cur = cur.next;
+    i++;
   }
-  return slow.val;
+  return res;
 }
 
 const arr = readInts();

@@ -64,13 +64,20 @@ fn build_list(arr: &[i32]) -> Option<Box<ListNode>> {
 }
 
 fn solve(head: &Option<Box<ListNode>>) -> i32 {
-    let mut slow = head.as_ref();
-    let mut fast = head.as_ref();
-    while fast.is_some() && fast.unwrap().next.is_some() {
-        slow = slow.unwrap().next.as_ref();
-        fast = fast.unwrap().next.as_ref().unwrap().next.as_ref();
+    let mut rng: u64 = 42;
+    let mut res = head.as_ref().unwrap().val;
+    let mut cur = head.as_ref().unwrap().next.as_ref();
+    let mut i = 2u32;
+    while let Some(node) = cur {
+        rng = rng.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+        let r = (rng >> 33) as u32;
+        if r % i == 0 {
+            res = node.val;
+        }
+        cur = node.next.as_ref();
+        i += 1;
     }
-    slow.unwrap().val
+    res
 }
 
 fn main() {

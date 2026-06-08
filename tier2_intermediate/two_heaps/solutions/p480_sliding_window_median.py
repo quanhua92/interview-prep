@@ -127,4 +127,4 @@ if __name__ == "__main__":
     k = read_int()
     result = solve(nums, k)
     for m in result:
-        print(m)
+        write_string(str(m))

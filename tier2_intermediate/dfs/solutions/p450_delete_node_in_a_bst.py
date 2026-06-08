@@ -48,7 +48,7 @@ find the leftmost node in the right subtree (inorder successor), attach the left
 subtree to it, and return the right subtree as the new root.
 """
 
-from src.wasm_libs.py.io import read_line
+from src.wasm_libs.py.io import read_line, write_string
 
 NL = 2147483647
 
@@ -122,7 +122,7 @@ def main():
     root = delete_node(root, key)
     result = tree_to_bfs(root)
     output = " ".join("null" if v is None else str(v) for v in result) if result else "null"
-    print(output)
+    write_string(output)
 
 
 if __name__ == "__main__":

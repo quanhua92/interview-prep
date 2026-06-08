@@ -38,27 +38,46 @@
 
 
 #include "io.h"
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 
 struct Codec {
+    std::unordered_map<std::string, std::string> code_map;
     std::unordered_map<std::string, std::string> url_map;
-    std::unordered_map<std::string, std::string> short_map;
-    int next_id = 0;
+    int counter = 0;
+    static const char* chars;
+
+    std::string get_base62(int num) {
+        if (num == 0) return std::string(6, chars[0]);
+        std::string code;
+        int n = num;
+        while (n > 0) {
+            code += chars[n % 62];
+            n /= 62;
+        }
+        std::reverse(code.begin(), code.end());
+        return std::string(6 - code.size(), chars[0]) + code;
+    }
 
     std::string encode(const std::string &longUrl) {
-        std::string key = std::to_string(next_id++);
-        url_map[key] = longUrl;
-        short_map[key] = longUrl;
-        return "http://tinyurl.com/" + key;
+        if (url_map.count(longUrl)) {
+            return "http://tinyurl.com/" + url_map[longUrl];
+        }
+        std::string code = get_base62(counter++);
+        code_map[code] = longUrl;
+        url_map[longUrl] = code;
+        return "http://tinyurl.com/" + code;
     }
 
     std::string decode(const std::string &shortUrl) {
         size_t pos = shortUrl.rfind('/');
-        std::string key = shortUrl.substr(pos + 1);
-        return short_map[key];
+        std::string code = shortUrl.substr(pos + 1);
+        return code_map[code];
     }
 };
+
+const char* Codec::chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 static std::string solve(const std::string &longUrl) {
     Codec codec;

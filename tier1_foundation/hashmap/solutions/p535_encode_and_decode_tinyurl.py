@@ -36,25 +36,37 @@ Template (python3):
     # codec.decode(codec.encode(url))
 """
 
-import hashlib
-
 from src.wasm_libs.py.io import *
 
 
 class Codec:
     def __init__(self):
+        self.code_map: dict[str, str] = {}
         self.url_map: dict[str, str] = {}
-        self.short_map: dict[str, str] = {}
+        self.chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        self.counter = 0
+
+    def _get_base62(self, num: int) -> str:
+        if num == 0:
+            return self.chars[0]
+        code = []
+        while num > 0:
+            code.append(self.chars[num % 62])
+            num //= 62
+        return "".join(reversed(code)).zfill(6)
 
     def encode(self, longUrl: str) -> str:
-        key = hashlib.md5(longUrl.encode()).hexdigest()[:6]
-        self.url_map[key] = longUrl
-        self.short_map[key] = longUrl
-        return f"http://tinyurl.com/{key}"
+        if longUrl in self.url_map:
+            return f"http://tinyurl.com/{self.url_map[longUrl]}"
+        short_code = self._get_base62(self.counter)
+        self.counter += 1
+        self.code_map[short_code] = longUrl
+        self.url_map[longUrl] = short_code
+        return f"http://tinyurl.com/{short_code}"
 
     def decode(self, shortUrl: str) -> str:
-        key = shortUrl.split("/")[-1]
-        return self.short_map[key]
+        short_code = shortUrl.split("/")[-1]
+        return self.code_map[short_code]
 
 
 def solve(longUrl: str) -> str:

@@ -40,31 +40,55 @@ use wasm_libs::*;
 use std::collections::HashMap;
 
 struct Codec {
+    code_map: HashMap<String, String>,
     url_map: HashMap<String, String>,
-    short_map: HashMap<String, String>,
-    next_id: i32,
+    counter: i32,
 }
 
 impl Codec {
     fn new() -> Self {
         Codec {
+            code_map: HashMap::new(),
             url_map: HashMap::new(),
-            short_map: HashMap::new(),
-            next_id: 0,
+            counter: 0,
         }
     }
 
+    fn get_base62(&self, mut num: i32) -> String {
+        let chars: Vec<char> = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".chars().collect();
+        if num == 0 {
+            return chars[0].to_string().repeat(6);
+        }
+        let mut code: Vec<char> = Vec::new();
+        while num > 0 {
+            code.push(chars[(num % 62) as usize]);
+            num /= 62;
+        }
+        code.reverse();
+        let mut result: String = String::new();
+        for _ in 0..(6 - code.len()) {
+            result.push(chars[0]);
+        }
+        for c in code {
+            result.push(c);
+        }
+        result
+    }
+
     fn encode(&mut self, long_url: &str) -> String {
-        let key = self.next_id.to_string();
-        self.next_id += 1;
-        self.url_map.insert(key.clone(), long_url.to_string());
-        self.short_map.insert(key.clone(), long_url.to_string());
-        format!("http://tinyurl.com/{}", key)
+        if let Some(code) = self.url_map.get(long_url) {
+            return format!("http://tinyurl.com/{}", code);
+        }
+        let code = self.get_base62(self.counter);
+        self.counter += 1;
+        self.code_map.insert(code.clone(), long_url.to_string());
+        self.url_map.insert(long_url.to_string(), code.clone());
+        format!("http://tinyurl.com/{}", code)
     }
 
     fn decode(&self, short_url: &str) -> String {
-        let key = short_url.rsplit('/').next().unwrap();
-        self.short_map.get(key).cloned().unwrap_or_default()
+        let code = short_url.rsplit('/').next().unwrap();
+        self.code_map.get(code).cloned().unwrap_or_default()
     }
 }
 

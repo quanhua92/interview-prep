@@ -65,4 +65,4 @@ if __name__ == "__main__":
     count = read_int()
     points = solve(radius, x_center, y_center, count)
     for p in points:
-        print(f"{p[0]} {p[1]}")
+        write_string(f"{p[0]} {p[1]}")

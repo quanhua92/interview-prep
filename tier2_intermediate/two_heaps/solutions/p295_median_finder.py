@@ -75,4 +75,4 @@ if __name__ == "__main__":
     stream = read_ints()
     result = solve(stream)
     for m in result:
-        print(m)
+        write_string(str(m))

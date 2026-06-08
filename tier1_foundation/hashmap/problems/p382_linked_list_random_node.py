@@ -48,6 +48,8 @@ Template (python3):
     # param_1 = obj.getRandom()
 """
 
+import random
+
 from src.wasm_libs.py.io import *
 
 
@@ -58,12 +60,20 @@ class ListNode:
 
 
 def build_list(arr):
-    raise NotImplementedError
+    dummy = ListNode()
+    cur = dummy
+    for v in arr:
+        cur.next = ListNode(v)
+        cur = cur.next
+    return dummy.next
+
 
 def solve(head: ListNode) -> int:
     raise NotImplementedError
 
+
 if __name__ == "__main__":
+    random.seed(42)
     arr = read_ints()
     head = build_list(arr)
     write_int(solve(head))

@@ -39,12 +39,8 @@
 
 #include "io.h"
 #include <string>
-#include <unordered_map>
 
 struct Codec {
-    std::unordered_map<std::string, std::string> url_map;
-    std::unordered_map<std::string, std::string> short_map;
-    int next_id = 0;
 
     std::string encode(const std::string &longUrl) {
         abort();
