@@ -149,9 +149,9 @@ Each has `discussion.md` + `checklist.md` (or `README.md` + `TIPS.md` for ai_ass
 - `ai_assisted/` (6 scenarios)
 - `data_analytics/` (9 topics)
 - `low_level_design/` (12 topics)
-- `production_engineering/` (10 topics)
+- `production_engineering/` (11 topics)
 
-**Total tracked items: 29 coding patterns (144 problems) + 116 non-coding topics = 145 topics.**
+**Total tracked items: 29 coding patterns (144 problems) + 117 non-coding topics = 146 topics.**
 
 ---
 
