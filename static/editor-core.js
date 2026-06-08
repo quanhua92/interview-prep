@@ -554,7 +554,7 @@ function _renderCachedFiles() {
 		html += `<div class="tree-group">${label}</div>`;
 		for (const name of names) {
 			const key = _fileKey(item, name);
-			html += `<div class="tree-item" data-file="${key}" onclick="loadFile('${item}','${name}')">${name}</div>`;
+			html += `<div class="tree-item" data-file="${key}" onclick="loadFile('${item}','${name}')" title="${name}">${name}</div>`;
 		}
 	}
 
