@@ -60,20 +60,20 @@ struct RandomizedSet {
 
 impl RandomizedSet {
     fn new() -> Self {
-    todo!();
-}
+        todo!();
+    }
 
     fn insert(&mut self, val: i32) -> bool {
-    todo!();
-}
+        todo!();
+    }
 
     fn remove(&mut self, val: i32) -> bool {
-    todo!();
-}
+        todo!();
+    }
 
     fn get_random(&mut self) -> i32 {
-    todo!();
-}
+        todo!();
+    }
 }
 
 fn main() {

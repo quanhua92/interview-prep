@@ -34,6 +34,7 @@ import { readInts, readLine, readInt, writeInt, writeBool } from '../../wasm_lib
 
 class RandomizedSet {
   constructor() {
+      throw new Error("NotImplementedError");
   }
 
   insert(val) {
@@ -50,7 +51,18 @@ class RandomizedSet {
 }
 
 function solve(ops, args) {
-    throw new Error("NotImplementedError");
+    const rs = new RandomizedSet();
+    const results = [];
+    for (let i = 0; i < ops.length; i++) {
+        if (ops[i] === "insert") {
+            results.push(rs.insert(args[i][0]));
+        } else if (ops[i] === "remove") {
+            results.push(rs.remove(args[i][0]));
+        } else if (ops[i] === "getRandom") {
+            results.push(rs.getRandom());
+        }
+    }
+    return results;
 }
 
 const n = readInt();

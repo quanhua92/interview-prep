@@ -61,12 +61,26 @@ class RandomizedSet:
         random.seed(42)
         raise NotImplementedError
 
+    def insert(self, val: int) -> bool:
         raise NotImplementedError
 
+    def remove(self, val: int) -> bool:
+        raise NotImplementedError
+
+    def getRandom(self) -> int:
         raise NotImplementedError
 
 def solve(ops: list[str], args: list) -> list:
-    raise NotImplementedError
+    rs = RandomizedSet()
+    results = []
+    for op, arg in zip(ops, args):
+        if op == "insert":
+            results.append(rs.insert(arg[0]))
+        elif op == "remove":
+            results.append(rs.remove(arg[0]))
+        elif op == "getRandom":
+            results.append(rs.getRandom())
+    return results
 
 if __name__ == "__main__":
     n = read_int()
