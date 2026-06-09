@@ -56,6 +56,28 @@ int longestSubstring(const std::string &s, int k)
     return max_len;
 }
 
+// Divide and Conquer approach (added for reference — not used by judge)
+int longestSubstringDC(const std::string &s, int k, int start, int end)
+{
+    if (end - start < k) return 0;
+    int freq[26] = {};
+    for (int i = start; i < end; i++) freq[s[i] - 'a']++;
+    int bad = -1;
+    for (int i = 0; i < 26; i++) {
+        if (freq[i] > 0 && freq[i] < k) { bad = 'a' + i; break; }
+    }
+    if (bad == -1) return end - start;
+    int max_len = 0, seg_start = start;
+    for (int i = start; i <= end; i++) {
+        if (i == end || s[i] == bad) {
+            int seg_len = longestSubstringDC(s, k, seg_start, i);
+            if (seg_len > max_len) max_len = seg_len;
+            seg_start = i + 1;
+        }
+    }
+    return max_len;
+}
+
 int main(void)
 {
     std::string s = read_line();

@@ -54,6 +54,19 @@ function solve(s, k) {
   return maxLen;
 }
 
+// Divide and Conquer approach (added for reference — not used by judge)
+function longestSubstringDC(s, k) {
+  if (s.length < k) return 0;
+  const freq = {};
+  for (const ch of s) freq[ch] = (freq[ch] || 0) + 1;
+  for (const [char, count] of Object.entries(freq)) {
+    if (count < k) {
+      return Math.max(...s.split(char).map(sub => longestSubstringDC(sub, k)));
+    }
+  }
+  return s.length;
+}
+
 const s = readLine();
 const k = readInt();
 writeInt(solve(s, k));

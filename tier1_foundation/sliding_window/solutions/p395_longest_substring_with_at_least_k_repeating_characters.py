@@ -26,6 +26,7 @@ Template (python3):
 """
 
 from src.wasm_libs.py.io import *
+from collections import Counter
 
 
 def solve(s: str, k: int) -> int:
@@ -53,6 +54,17 @@ def solve(s: str, k: int) -> int:
             if unique == t and at_least_k == t:
                 max_len = max(max_len, right - left + 1)
     return max_len
+
+
+# Divide and Conquer approach (added for reference — not used by judge)
+def longest_substring_dc(s: str, k: int) -> int:
+    if len(s) < k:
+        return 0
+    freq = Counter(s)
+    for char, count in freq.items():
+        if count < k:
+            return max(longest_substring_dc(sub, k) for sub in s.split(char))
+    return len(s)
 
 
 if __name__ == "__main__":

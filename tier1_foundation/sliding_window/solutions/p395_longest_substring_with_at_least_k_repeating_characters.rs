@@ -68,6 +68,28 @@ fn solve(s: &str, k: i32) -> i32 {
     max_len as i32
 }
 
+// Divide and Conquer approach (added for reference — not used by judge)
+fn longest_substring_dc(s: &[u8], k: usize) -> usize {
+    if s.len() < k {
+        return 0;
+    }
+    let mut freq = [0usize; 26];
+    for &b in s {
+        freq[(b - b'a') as usize] += 1;
+    }
+    for i in 0..26 {
+        if freq[i] > 0 && freq[i] < k {
+            let bad = b'a' + i as u8;
+            return s
+                .split(|&c| c == bad)
+                .map(|seg| longest_substring_dc(seg, k))
+                .max()
+                .unwrap_or(0);
+        }
+    }
+    s.len()
+}
+
 fn main() {
     let s = read_line();
     let k = read_int();
