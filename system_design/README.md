@@ -20,6 +20,8 @@ Topic-based practice for system design interviews. Each topic has:
 | [Web Crawler](web_crawler/) | URL frontier, politeness, dedup, BFS |
 | [Ticket Booking](ticket_booking/) | Concurrency, locks, idempotency, oversell |
 | [Recommender System](recommender_system/) | Two-tower retrieval, multi-stage ranking, ANN, re-ranking |
+| [RAG System](rag_system/) | Retrieval architecture, chunking, embedding, reranking, evaluation |
+| [AI Agent Platform](ai_agent_platform/) | Agent orchestration, state management, sandboxing, MCP, multi-tenancy, observability |
 
 ## How to Practice
 

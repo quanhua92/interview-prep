@@ -16,6 +16,7 @@ Focused preparation for common engineering roles, covering core competencies and
 | [DevOps/SRE](devops_sre/) | CI/CD, containers, monitoring, reliability |
 | [Full-Stack Engineer](full_stack_engineer/) | Frontend + backend breadth, system integration |
 | [Senior AI Engineer](senior_ai_engineer/) | Production GenAI systems, RAG, agents, evaluation, deployment |
+| [Screening & Hiring AI Engineers](screening_hiring_ai_engineers/) | Interview process design, take-home assignments, scoring rubrics, red/green flags, builders vs. talkers |
 
 ## How to Practice
 
