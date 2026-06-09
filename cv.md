@@ -11,7 +11,7 @@ Senior AI Engineer with 10+ years building production AI systems — from 3D bod
 
 ### Experience
 
-**Oct 2025 – Present: AIPriceAction - Founder & Lead Engineer**
+**Oct 2025 – Present: AIPriceAction - Creator & Lead Engineer**
 
 *Website: [aipriceaction.com](https://aipriceaction.com)*
 *GitHub: [github.com/quanhua92/aipriceaction](https://github.com/quanhua92/aipriceaction)*
