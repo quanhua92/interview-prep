@@ -39,17 +39,16 @@ static int checkInclusion(const char *s1, const char *s2)
     int n1 = (int)strlen(s1), n2 = (int)strlen(s2);
     if (n1 > n2) return 0;
 
-    int f1[26] = {0}, f2[26] = {0};
-    for (int i = 0; i < n1; i++) {
-        f1[s1[i] - 'a']++;
-        f2[s2[i] - 'a']++;
-    }
-    if (memcmp(f1, f2, sizeof(f1)) == 0) return 1;
+    int target[26] = {0}, current[26] = {0};
+    for (int i = 0; i < n1; i++)
+        target[s1[i] - 'a']++;
 
-    for (int i = n1; i < n2; i++) {
-        f2[s2[i] - 'a']++;
-        f2[s2[i - n1] - 'a']--;
-        if (memcmp(f1, f2, sizeof(f1)) == 0) return 1;
+    for (int right = 0; right < n2; right++) {
+        current[s2[right] - 'a']++;
+        if (right >= n1)
+            current[s2[right - n1] - 'a']--;
+        if (memcmp(target, current, sizeof(target)) == 0)
+            return 1;
     }
     return 0;
 }

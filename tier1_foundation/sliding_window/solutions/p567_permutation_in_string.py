@@ -30,26 +30,21 @@ Template (python3):
         def checkInclusion(self, s1: str, s2: str) -> bool:
 """
 
-from collections import Counter
 from src.wasm_libs.py.io import *
 
 
 def solve(s1: str, s2: str) -> bool:
-    n1, n2 = len(s1), len(s2)
-    if n1 > n2:
+    if len(s1) > len(s2):
         return False
-    target = Counter(s1)
-    window = Counter(s2[:n1])
-    if window == target:
-        return True
-    for i in range(n1, n2):
-        left_ch = s2[i - n1]
-        if window[left_ch] == 1:
-            del window[left_ch]
-        else:
-            window[left_ch] -= 1
-        window[s2[i]] = window.get(s2[i], 0) + 1
-        if window == target:
+    target = [0] * 26
+    for ch in s1:
+        target[ord(ch) - ord('a')] += 1
+    current = [0] * 26
+    for right in range(len(s2)):
+        current[ord(s2[right]) - ord('a')] += 1
+        if right >= len(s1):
+            current[ord(s2[right - len(s1)]) - ord('a')] -= 1
+        if current == target:
             return True
     return False
 

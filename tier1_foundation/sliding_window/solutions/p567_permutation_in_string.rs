@@ -40,19 +40,17 @@ fn solve(s1: &str, s2: &str) -> bool {
     if n1 > n2 {
         return false;
     }
-    let mut f1 = [0i32; 26];
-    let mut f2 = [0i32; 26];
-    for i in 0..n1 {
-        f1[(b1[i] - b'a') as usize] += 1;
-        f2[(b2[i] - b'a') as usize] += 1;
+    let mut target = [0i32; 26];
+    for &b in b1 {
+        target[(b - b'a') as usize] += 1;
     }
-    if f1 == f2 {
-        return true;
-    }
-    for i in n1..n2 {
-        f2[(b2[i] - b'a') as usize] += 1;
-        f2[(b2[i - n1] - b'a') as usize] -= 1;
-        if f1 == f2 {
+    let mut current = [0i32; 26];
+    for right in 0..n2 {
+        current[(b2[right] - b'a') as usize] += 1;
+        if right >= n1 {
+            current[(b2[right - n1] - b'a') as usize] -= 1;
+        }
+        if current == target {
             return true;
         }
     }

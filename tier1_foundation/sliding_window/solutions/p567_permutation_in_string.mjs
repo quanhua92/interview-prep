@@ -28,10 +28,9 @@
 
 import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
 
-function mapsEqual(a, b) {
-  if (a.size !== b.size) return false;
-  for (const [k, v] of a) {
-    if (b.get(k) !== v) return false;
+function arraysEqual(a, b) {
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
   }
   return true;
 }
@@ -40,28 +39,17 @@ function solve(s1, s2) {
   const n1 = s1.length, n2 = s2.length;
   if (n1 > n2) return false;
 
-  const target = new Map();
-  for (const ch of s1) {
-    target.set(ch, (target.get(ch) || 0) + 1);
-  }
+  const target = new Array(26).fill(0);
+  for (let i = 0; i < n1; i++)
+    target[s1.charCodeAt(i) - 97]++;
 
-  const window = new Map();
-  for (let i = 0; i < n1; i++) {
-    const ch = s2[i];
-    window.set(ch, (window.get(ch) || 0) + 1);
-  }
-
-  if (mapsEqual(window, target)) return true;
-
-  for (let i = n1; i < n2; i++) {
-    const leftCh = s2[i - n1];
-    if (window.get(leftCh) === 1) {
-      window.delete(leftCh);
-    } else {
-      window.set(leftCh, window.get(leftCh) - 1);
-    }
-    window.set(s2[i], (window.get(s2[i]) || 0) + 1);
-    if (mapsEqual(window, target)) return true;
+  const current = new Array(26).fill(0);
+  for (let right = 0; right < n2; right++) {
+    current[s2.charCodeAt(right) - 97]++;
+    if (right >= n1)
+      current[s2.charCodeAt(right - n1) - 97]--;
+    if (arraysEqual(current, target))
+      return true;
   }
   return false;
 }

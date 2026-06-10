@@ -39,17 +39,16 @@ static bool checkInclusion(const std::string &s1, const std::string &s2)
     int n1 = (int)s1.size(), n2 = (int)s2.size();
     if (n1 > n2) return false;
 
-    std::array<int, 26> f1{}, f2{};
-    for (int i = 0; i < n1; i++) {
-        f1[s1[i] - 'a']++;
-        f2[s2[i] - 'a']++;
-    }
-    if (f1 == f2) return true;
+    std::array<int, 26> target{}, current{};
+    for (int i = 0; i < n1; i++)
+        target[s1[i] - 'a']++;
 
-    for (int i = n1; i < n2; i++) {
-        f2[s2[i] - 'a']++;
-        f2[s2[i - n1] - 'a']--;
-        if (f1 == f2) return true;
+    for (int right = 0; right < n2; right++) {
+        current[s2[right] - 'a']++;
+        if (right >= n1)
+            current[s2[right - n1] - 'a']--;
+        if (target == current)
+            return true;
     }
     return false;
 }
