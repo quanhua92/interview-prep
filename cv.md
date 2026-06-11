@@ -41,12 +41,11 @@ Senior AI Engineer with 10+ years building production AI systems — from 3D bod
   * Led a team of 6 AI engineers building the deep learning brain for Maya Personal Robot — CES 2015 TechCrunch Hardware Battlefield finalist, $161K+ raised on Kickstarter.
   * Integrated and deployed deep learning models for computer vision, facial recognition, emotion detection, and NLP as ROS components with real-time inference on edge hardware.
   * Owned the ML pipeline from data collection to production inference via TensorFlow Serving and Flask across multiple product lines.
-  * Developed prototypes for Smart Recycle Bin and Smart Receptionist, accelerating concept-to-demo cycles.
 
-**02/2014 – 03/2014: Research Internship**
-**Japan Advanced Institute of Science and Technology, Ishikawa, Japan**
 
-  * Developed and tested a facial pose estimation algorithm using computer vision techniques on the BU-3DFE dataset, achieving competitive accuracy under varying head orientations.
+### Patents
+
+Co-inventor. "Systems and Methods for Generating a Refined 3D Model Using Radar and Optical Camera Data." [US20190295319A1](https://patents.google.com/patent/US20190295319A1), filed March 14, 2019.
 
 ### Education
 
