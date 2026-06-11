@@ -16,6 +16,8 @@ Concept-focused preparation for computer science fundamentals interviews. Each t
 | [Distributed Systems](distributed_systems/) | CAP, consensus, replication, fault tolerance |
 | [Data Structures & Algos](data_structures_algos/) | Arrays, trees, graphs, hash tables, complexity |
 | [System Security](system_security/) | OWASP, auth, encryption, secure design |
+| [API Security](api_security/) | API auth (OAuth2, JWT, mTLS), authorization (RBAC, ABAC, BOLA), LLM API key management, rate limiting, OWASP API Top 10, CORS, CSRF, security headers, secrets management |
+| [Data Pipelines](data_pipelines/) | ETL/ELT, streaming, orchestration, feature stores, lakehouse formats, AI/ML pipelines |
 
 ## How to Practice
 
