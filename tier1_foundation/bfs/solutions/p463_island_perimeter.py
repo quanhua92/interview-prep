@@ -58,6 +58,26 @@ def solve(grid: list[list[int]]) -> int:
     return 0
 
 
+# Alternative Solution: O(1) Space
+# Instead of BFS with a visited set, count contributions per land cell.
+# Each land cell contributes 4 to the perimeter, minus 2 for each shared edge
+# with the cell to its right or below (avoids double-counting).
+def solve_o1(grid: list[list[int]]) -> int:
+    perimeter = 0
+    rows, cols = len(grid), len(grid[0])
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 0:
+                continue
+            base_perimeter = 4
+            if c + 1 < cols and grid[r][c + 1] == 1:
+                base_perimeter -= 2
+            if r + 1 < rows and grid[r + 1][c] == 1:
+                base_perimeter -= 2
+            perimeter += base_perimeter
+    return perimeter
+
+
 if __name__ == "__main__":
     _cols = read_int()
     grid = []

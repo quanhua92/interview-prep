@@ -55,6 +55,27 @@ int solve(int **grid, int gridSize, int *gridColSize) {
     return perimeter;
 }
 
+/* Alternative Solution: O(1) Space
+ * Instead of checking all 4 neighbors, count contributions per land cell.
+ * Each land cell contributes 4 to the perimeter, minus 2 for each shared
+ * edge with the cell to its right or below (avoids double-counting). */
+int solve_o1(int **grid, int gridSize, int *gridColSize) {
+    int perimeter = 0;
+    int cols = gridColSize[0];
+    for (int r = 0; r < gridSize; r++) {
+        for (int c = 0; c < gridColSize[r]; c++) {
+            if (grid[r][c] == 0) continue;
+            int base_perimeter = 4;
+            if (c + 1 < cols && grid[r][c + 1] == 1)
+                base_perimeter -= 2;
+            if (r + 1 < gridSize && grid[r + 1][c] == 1)
+                base_perimeter -= 2;
+            perimeter += base_perimeter;
+        }
+    }
+    return perimeter;
+}
+
 int main(void)
 {
     int n;

@@ -52,6 +52,28 @@ function solve(grid) {
   return 0;
 }
 
+// Alternative Solution: O(1) Space
+// Instead of BFS with a visited set, count contributions per land cell.
+// Each land cell contributes 4 to the perimeter, minus 2 for each shared edge
+// with the cell to its right or below (avoids double-counting).
+function solve_o1(grid) {
+  const rows = grid.length;
+  const cols = grid[0].length;
+  let perimeter = 0;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (grid[r][c] === 0) continue;
+      let basePerimeter = 4;
+      if (c + 1 < cols && grid[r][c + 1] === 1)
+        basePerimeter -= 2;
+      if (r + 1 < rows && grid[r + 1][c] === 1)
+        basePerimeter -= 2;
+      perimeter += basePerimeter;
+    }
+  }
+  return perimeter;
+}
+
 const _cols = readInt();
 const grid = [];
 while (true) {

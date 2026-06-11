@@ -72,6 +72,28 @@ static int solve(vector<vector<int>> &grid) {
     return 0;
 }
 
+// Alternative Solution: O(1) Space
+// Instead of BFS with a visited matrix, count contributions per land cell.
+// Each land cell contributes 4 to the perimeter, minus 2 for each shared edge
+// with the cell to its right or below (avoids double-counting).
+static int solve_o1(vector<vector<int>> &grid) {
+    int rows = (int)grid.size();
+    int cols = (int)grid[0].size();
+    int perimeter = 0;
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            if (grid[r][c] == 0) continue;
+            int base_perimeter = 4;
+            if (c + 1 < cols && grid[r][c + 1] == 1)
+                base_perimeter -= 2;
+            if (r + 1 < rows && grid[r + 1][c] == 1)
+                base_perimeter -= 2;
+            perimeter += base_perimeter;
+        }
+    }
+    return perimeter;
+}
+
 int main(void)
 {
     (void)read_int();

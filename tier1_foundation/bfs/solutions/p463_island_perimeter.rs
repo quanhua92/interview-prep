@@ -66,6 +66,32 @@ fn solve(grid: &[Vec<i32>]) -> i32 {
     0
 }
 
+// Alternative Solution: O(1) Space
+// Instead of BFS with a visited matrix, count contributions per land cell.
+// Each land cell contributes 4 to the perimeter, minus 2 for each shared edge
+// with the cell to its right or below (avoids double-counting).
+fn solve_o1(grid: &[Vec<i32>]) -> i32 {
+    let rows = grid.len();
+    let cols = grid[0].len();
+    let mut perimeter = 0;
+    for r in 0..rows {
+        for c in 0..cols {
+            if grid[r][c] == 0 {
+                continue;
+            }
+            let mut base_perimeter = 4;
+            if c + 1 < cols && grid[r][c + 1] == 1 {
+                base_perimeter -= 2;
+            }
+            if r + 1 < rows && grid[r + 1][c] == 1 {
+                base_perimeter -= 2;
+            }
+            perimeter += base_perimeter;
+        }
+    }
+    perimeter
+}
+
 fn main() {
     let _n = read_int();
     let stdin = io::stdin();
