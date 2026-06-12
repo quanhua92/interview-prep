@@ -58,9 +58,13 @@ const RUST_KEYWORDS = [
 CodeMirror.registerHelper("hint", "rust", (cm) => {
 	const cursor = cm.getCursor();
 	const token = cm.getTokenAt(cursor);
-	const start = token.start;
-	const end = cursor.ch;
-	const currentWord = token.string;
+	const wordMatch = token.string.match(/[\w$]+/);
+	if (!wordMatch) return null;
+	const wordIdx = token.string.indexOf(wordMatch[0]);
+	const start = token.start + wordIdx;
+	const end = token.start + wordIdx + wordMatch[0].length;
+	const currentWord = wordMatch[0];
 	const list = RUST_KEYWORDS.filter((item) => item.lastIndexOf(currentWord, 0) === 0);
+	if (list.length === 0) return null;
 	return { list, from: CodeMirror.Pos(cursor.line, start), to: CodeMirror.Pos(cursor.line, end) };
 });
