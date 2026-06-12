@@ -54,11 +54,67 @@ use std::rc::Rc;
 
 const NULL_VAL: i32 = i32::MIN;
 
+/* =====================================================================
+ * Core Data Structure
+ * ===================================================================== */
+
 struct TreeNode {
     val: i32,
     left: Option<Rc<RefCell<TreeNode>>>,
     right: Option<Rc<RefCell<TreeNode>>>,
 }
+
+impl TreeNode {
+    fn new(val: i32) -> Rc<RefCell<TreeNode>> {
+        Rc::new(RefCell::new(TreeNode { val, left: None, right: None }))
+    }
+}
+
+/* =====================================================================
+ * Codec (Using Compact BST Boundaries)
+ * ===================================================================== */
+
+struct Codec;
+
+impl Codec {
+    fn serialize(root: &Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        let mut vals = Vec::new();
+        Self::pre_order(root, &mut vals);
+        vals
+    }
+
+    fn pre_order(node: &Option<Rc<RefCell<TreeNode>>>, vals: &mut Vec<i32>) {
+        if let Some(n) = node {
+            vals.push(n.borrow().val);
+            let left = n.borrow().left.clone();
+            let right = n.borrow().right.clone();
+            Self::pre_order(&left, vals);
+            Self::pre_order(&right, vals);
+        }
+    }
+
+    fn deserialize(data: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
+        if data.is_empty() { return None; }
+        let mut idx: usize = 0;
+        Self::build_bst(data, &mut idx, i64::MIN, i64::MAX)
+    }
+
+    fn build_bst(data: &[i32], idx: &mut usize, lo: i64, hi: i64) -> Option<Rc<RefCell<TreeNode>>> {
+        if *idx >= data.len() { return None; }
+        let v = data[*idx] as i64;
+        if v < lo || v > hi { return None; }
+        let val = data[*idx];
+        *idx += 1;
+        let root = TreeNode::new(val);
+        root.borrow_mut().left = Self::build_bst(data, idx, lo, v);
+        root.borrow_mut().right = Self::build_bst(data, idx, v, hi);
+        Some(root)
+    }
+}
+
+/* =====================================================================
+ * Environment Utilities
+ * ===================================================================== */
 
 fn parse_tree_line(line: &str) -> Vec<i32> {
     line.split_whitespace()
@@ -66,26 +122,26 @@ fn parse_tree_line(line: &str) -> Vec<i32> {
         .collect()
 }
 
-fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
+fn build_tree_from_list(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
     if vals.is_empty() || vals[0] == NULL_VAL { return None; }
-    let root = Rc::new(RefCell::new(TreeNode { val: vals[0], left: None, right: None }));
+    let root = TreeNode::new(vals[0]);
     let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
-    queue.push_back(Rc::clone(&root));
+    queue.push_back(root.clone());
     let mut i = 1;
     while !queue.is_empty() && i < vals.len() {
         let node = queue.pop_front().unwrap();
         if i < vals.len() {
             if vals[i] != NULL_VAL {
-                let child = Rc::new(RefCell::new(TreeNode { val: vals[i], left: None, right: None }));
-                node.borrow_mut().left = Some(Rc::clone(&child));
+                let child = TreeNode::new(vals[i]);
+                node.borrow_mut().left = Some(child.clone());
                 queue.push_back(child);
             }
             i += 1;
         }
         if i < vals.len() {
             if vals[i] != NULL_VAL {
-                let child = Rc::new(RefCell::new(TreeNode { val: vals[i], left: None, right: None }));
-                node.borrow_mut().right = Some(Rc::clone(&child));
+                let child = TreeNode::new(vals[i]);
+                node.borrow_mut().right = Some(child.clone());
                 queue.push_back(child);
             }
             i += 1;
@@ -94,44 +150,58 @@ fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
     Some(root)
 }
 
-impl Solution {
-    fn solve(vals: &[i32]) -> Vec<i32> {
-        if vals.is_empty() || vals[0] == NULL_VAL { return vec![]; }
-        let root = build_tree(vals).unwrap();
-        let mut result = Vec::new();
-        let mut queue: VecDeque<Option<Rc<RefCell<TreeNode>>>> = VecDeque::new();
-        queue.push_back(Some(Rc::clone(&root)));
-        while !queue.is_empty() {
-            let node = queue.pop_front().unwrap();
-            match node {
-                Some(n) => {
-                    let n_ref = n.borrow();
-                    result.push(n_ref.val);
-                    let left = n_ref.left.clone();
-                    let right = n_ref.right.clone();
-                    drop(n_ref);
-                    if left.is_some() || right.is_some() {
+fn convert_tree_to_list(root: &Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    match root {
+        None => vec![],
+        Some(r) => {
+            let mut result = Vec::new();
+            let mut queue: VecDeque<Option<Rc<RefCell<TreeNode>>>> = VecDeque::new();
+            queue.push_back(Some(r.clone()));
+            while !queue.is_empty() {
+                let node = queue.pop_front().unwrap();
+                match node {
+                    Some(n) => {
+                        let n_ref = n.borrow();
+                        result.push(n_ref.val);
+                        let left = n_ref.left.clone();
+                        let right = n_ref.right.clone();
+                        drop(n_ref);
                         queue.push_back(left);
                         queue.push_back(right);
                     }
+                    None => { result.push(NULL_VAL); }
                 }
-                None => { result.push(NULL_VAL); }
             }
+            while result.last().map_or(false, |&v| v == NULL_VAL) { result.pop(); }
+            result
         }
-        while !result.is_empty() && *result.last().unwrap() == NULL_VAL { result.pop(); }
-        result
     }
 }
 
-struct Solution;
+/* =====================================================================
+ * Solve
+ * ===================================================================== */
+
+fn solve(root: &Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
+    let data = Codec::serialize(root);
+    Codec::deserialize(&data)
+}
+
+/* =====================================================================
+ * Main
+ * ===================================================================== */
 
 fn main() {
     let n = read_int();
     if n == 0 { return; }
     let line = read_line();
     let vals = parse_tree_line(&line);
-    let result = Solution::solve(&vals);
-    let parts: Vec<String> = result.iter().map(|&v| if v == NULL_VAL { "null".to_string() } else { v.to_string() }).collect();
+    let tree = build_tree_from_list(&vals);
+    let result = solve(&tree);
+    let result_list = convert_tree_to_list(&result);
+    let parts: Vec<String> = result_list.iter()
+        .map(|&v| if v == NULL_VAL { "null".to_string() } else { v.to_string() })
+        .collect();
     write_string(&parts.join(" "));
     std::process::exit(0);
 }

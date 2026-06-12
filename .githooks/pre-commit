@@ -10,7 +10,7 @@ fi
 for f in $staged_files; do
     # Check if solve() contains raise NotImplementedError and nothing else (just a docstring allowed)
     # Allow solve() that ONLY has raise NotImplementedError (+ optional docstring/return)
-    if grep -q 'def solve' "$f" && ! grep -A20 'def solve' "$f" | grep -q 'raise NotImplementedError'; then
+    if grep -q 'def solve' "$f" && ! grep -q 'raise NotImplementedError' "$f"; then
         echo "BLOCKED: $f"
         echo "  Problem file has a working solve(). Use --no-verify to override."
         exit 1

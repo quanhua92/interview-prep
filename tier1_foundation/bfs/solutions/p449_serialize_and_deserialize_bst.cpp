@@ -53,8 +53,16 @@
 #include <climits>
 #include <string>
 #include <sstream>
+#include <vector>
+#include <functional>
 
 using namespace std;
+
+const int NULL_VAL = INT_MIN;
+
+/* =====================================================================
+ * Core Data Structure
+ * ===================================================================== */
 
 struct TreeNode {
     int val;
@@ -62,7 +70,43 @@ struct TreeNode {
     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
 };
 
-static const int NULL_VAL = INT_MIN;
+/* =====================================================================
+ * Codec Class (Using Compact BST Boundaries)
+ * ===================================================================== */
+
+class Codec {
+public:
+    vector<int> serialize(TreeNode *root) {
+        vector<int> vals;
+        function<void(TreeNode*)> pre_order = [&](TreeNode *node) {
+            if (!node) return;
+            vals.push_back(node->val);
+            pre_order(node->left);
+            pre_order(node->right);
+        };
+        pre_order(root);
+        return vals;
+    }
+
+    TreeNode *deserialize(const vector<int> &data) {
+        if (data.empty()) return nullptr;
+        int idx = 0;
+        function<TreeNode*(long long, long long)> build = [&](long long lo, long long hi) -> TreeNode* {
+            if (idx >= (int)data.size()) return nullptr;
+            long long v = (long long)data[idx];
+            if (v < lo || v > hi) return nullptr;
+            auto *root = new TreeNode(data[idx++]);
+            root->left = build(lo, v);
+            root->right = build(v, hi);
+            return root;
+        };
+        return build(LLONG_MIN, LLONG_MAX);
+    }
+};
+
+/* =====================================================================
+ * Environment Utilities
+ * ===================================================================== */
 
 static void free_tree(TreeNode *root) {
     if (!root) return;
@@ -71,48 +115,58 @@ static void free_tree(TreeNode *root) {
     delete root;
 }
 
-static string solve(const vector<int> &vals) {
-    if (vals.empty() || vals[0] == NULL_VAL) return "";
+static TreeNode *build_tree_from_list(const vector<int> &vals) {
+    if (vals.empty() || vals[0] == NULL_VAL) return nullptr;
     TreeNode *root = new TreeNode(vals[0]);
-    queue<TreeNode *> bq;
-    bq.push(root);
+    queue<TreeNode*> q;
+    q.push(root);
     size_t i = 1;
-    while (!bq.empty() && i < vals.size()) {
-        TreeNode *node = bq.front(); bq.pop();
+    while (!q.empty() && i < vals.size()) {
+        TreeNode *node = q.front(); q.pop();
         if (i < vals.size()) {
-            if (vals[i] != NULL_VAL) { node->left = new TreeNode(vals[i]); bq.push(node->left); }
+            if (vals[i] != NULL_VAL) { node->left = new TreeNode(vals[i]); q.push(node->left); }
             i++;
         }
         if (i < vals.size()) {
-            if (vals[i] != NULL_VAL) { node->right = new TreeNode(vals[i]); bq.push(node->right); }
+            if (vals[i] != NULL_VAL) { node->right = new TreeNode(vals[i]); q.push(node->right); }
             i++;
         }
     }
+    return root;
+}
+
+static vector<int> convert_tree_to_list(TreeNode *root) {
+    if (!root) return {};
     vector<int> result;
-    queue<TreeNode *> sq;
-    sq.push(root);
-    while (!sq.empty()) {
-        TreeNode *node = sq.front(); sq.pop();
+    queue<TreeNode*> q;
+    q.push(root);
+    while (!q.empty()) {
+        TreeNode *node = q.front(); q.pop();
         if (node) {
             result.push_back(node->val);
-            if (node->left || node->right) {
-                sq.push(node->left);
-                sq.push(node->right);
-            }
+            q.push(node->left);
+            q.push(node->right);
         } else {
             result.push_back(NULL_VAL);
         }
     }
     while (!result.empty() && result.back() == NULL_VAL) result.pop_back();
-    free_tree(root);
-    ostringstream oss;
-    for (size_t j = 0; j < result.size(); j++) {
-        if (j > 0) oss << " ";
-        if (result[j] == NULL_VAL) oss << "null";
-        else oss << result[j];
-    }
-    return oss.str();
+    return result;
 }
+
+/* =====================================================================
+ * Solve
+ * ===================================================================== */
+
+static TreeNode *solve(TreeNode *root) {
+    Codec codec;
+    auto data = codec.serialize(root);
+    return codec.deserialize(data);
+}
+
+/* =====================================================================
+ * Main
+ * ===================================================================== */
 
 int main(void)
 {
@@ -127,7 +181,20 @@ int main(void)
         if (tok == "null") vals.push_back(NULL_VAL);
         else vals.push_back(stoi(tok));
     }
-    string result = solve(vals);
-    write_string(result);
+
+    TreeNode *tree = build_tree_from_list(vals);
+    TreeNode *result = solve(tree);
+    vector<int> out = convert_tree_to_list(result);
+
+    ostringstream oss;
+    for (size_t j = 0; j < out.size(); j++) {
+        if (j > 0) oss << " ";
+        if (out[j] == NULL_VAL) oss << "null";
+        else oss << out[j];
+    }
+    write_string(oss.str());
+
+    free_tree(tree);
+    free_tree(result);
     return 0;
 }
