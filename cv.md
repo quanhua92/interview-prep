@@ -7,7 +7,7 @@ Ho Chi Minh City, Vietnam | quanhua92@gmail.com\
 
 ### Professional Summary
 
-Senior AI Engineer with 10+ years building production AI systems — from 3D body scanning at BodiData to autonomous robotics at Autonomous Inc. Most recently founded AIPriceAction, a full-stack AI financial analysis platform with a Rust backend, multi-agent research pipeline, and React SPA. Specialized in end-to-end ML from model design to deployment on edge devices and cloud.
+Senior AI Engineer (10+ years) specializing in Computer Vision, deep learning, and production ML systems. Built production pipelines for 3D body measurement at BodiData (patent holder, 3 scanner generations) and autonomous robotics (CES 2015 TechCrunch Hardware Battlefield finalist). Founded AIPriceAction — Rust backend with 22 workers syncing 574 global tickers across stocks, crypto, and commodities. End-to-end ownership from model design to cloud/edge deployment.
 
 ### Experience
 
@@ -16,7 +16,7 @@ Senior AI Engineer with 10+ years building production AI systems — from 3D bod
 *Website: [aipriceaction.com](https://aipriceaction.com)*
 *GitHub: [github.com/quanhua92/aipriceaction](https://github.com/quanhua92/aipriceaction)*
 
-  * Built a Rust backend (Axum + PostgreSQL + Redis) with 22 workers syncing 574 tickers across Vietnamese stocks, crypto, and global markets.
+  * Engineered Rust backend (Axum, PostgreSQL, Redis) with 22 workers, syncing 574 global tickers across Vietnamese stocks, crypto, and global markets, enhancing market data coverage.
   * Designed a multi-agent research pipeline in Python (Supervisor → Workers → Aggregator → Reviewer) with automated quality gates.
   * Published 3 installable AI Agent Skills for Claude Code, Gemini CLI, Cursor, and OpenCode.
   * Shipped a React 19 + TypeScript SPA (17 routes, 47K+ lines) with TradingView-style charts and backtesting playground.
@@ -28,17 +28,17 @@ Senior AI Engineer with 10+ years building production AI systems — from 3D bod
 3D body measurement and size-matching solutions to reduce clothing returns. Led the CV engine across 3 generations of the Kora® 3D Body Scanner.
 
   * **Kora V1 (Surface + RealSense):** Designed the CV pipeline from scratch — integrated ORB-SLAM 3 for real-time camera positioning, implemented the C++ application in Qt. Collaborated with a PhD researcher on the radar algorithm.
-  * **Kora V2 (RealSense D415):** Ported to far-range camera. Reduced measurement error to ~1 inch by improving 3D model fitting against fused point cloud data.
+  * **Kora V2 (RealSense D415):** Ported to far-range camera. Decreased 3D measurement error by ~1 inch through enhanced model fitting against fused point cloud data, improving product accuracy.
   * **Kora V3 (iPad + ESP32 → AWS Lambda):** Rewrote ESP32 firmware to multi-threaded ESP-IDF with BLE to iPad and Vayyar radar integration for depth fusion.
   * **Kora V3 Cloud:** Refactored Qt C++ processing pipeline into a CLI binary and built a Python Lambda to orchestrate S3 downloads, processing, and uploads.
-  * Rewrote a Node.js SSE streaming server in Rust (Axum + Tokio), eliminating OOM crashes and delivering 10x throughput on smaller ECS instances.
+  * Re-engineered Node.js SSE streaming server in Rust (Axum, Tokio), eliminating OOM crashes and boosting throughput 10x on smaller ECS instances.
 
 \newpage
 
 **2014 – 2017: Autonomous, Inc. - <https://autonomous.ai/>**
 **Artificial Intelligence Engineer**
 
-  * Led a team of 6 AI engineers building the deep learning brain for Maya Personal Robot — CES 2015 TechCrunch Hardware Battlefield finalist, $161K+ raised on Kickstarter.
+  * Directed 6 AI engineers to build deep learning brain for Maya Personal Robot (CES 2015 TechCrunch Hardware Battlefield finalist), contributing to $161K+ raised on Kickstarter.
   * Integrated and deployed deep learning models for computer vision, facial recognition, emotion detection, and NLP as ROS components with real-time inference on edge hardware.
   * Owned the ML pipeline from data collection to production inference via TensorFlow Serving and Flask across multiple product lines.
 
@@ -64,7 +64,7 @@ Honor Programs - University of Science Ho Chi Minh City. GPA: 8.7 / 10
 
 **UKYS: Great Fitting Shirts with Phone Measuring (Jun 2015 – Jan 2016)**
 
-Designed the core body measurement algorithm using Computer Vision, geometry, and camera models to enable iPhone/iPad users to measure their body in minutes for custom tailored shirts. **Won First Prize in "The Ambassador's Entrepreneurship Challenge"** — presented by US Ambassador to Vietnam.
+Developed core CV body measurement algorithm for iPhone/iPad, enabling minute-long custom shirt sizing; won First Prize in The Ambassador's Entrepreneurship Challenge — presented by US Ambassador to Vietnam.
 
 ### Publications
 
