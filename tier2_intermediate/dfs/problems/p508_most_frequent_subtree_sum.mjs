@@ -21,10 +21,46 @@
  *     function findFrequentTreeSum(root: TreeNode | null): number[]
  */
 
-import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+import { readLine, writeInts } from '../../../wasm_libs/js/io.mjs';
 
-function solve() {
-  throw new Error("NotImplementedError");
+class TreeNode {
+    constructor(val) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-solve();
+function buildTreeFromList(arr) {
+    if (!arr || arr.length === 0 || arr[0] === null) return null;
+    const root = new TreeNode(arr[0]);
+    const queue = [root];
+    let i = 1;
+    while (queue.length > 0 && i < arr.length) {
+        const node = queue.shift();
+        if (i < arr.length) {
+            if (arr[i] !== null) {
+                node.left = new TreeNode(arr[i]);
+                queue.push(node.left);
+            }
+            i++;
+        }
+        if (i < arr.length) {
+            if (arr[i] !== null) {
+                node.right = new TreeNode(arr[i]);
+                queue.push(node.right);
+            }
+            i++;
+        }
+    }
+    return root;
+}
+
+function solve(root) {
+    throw new Error("NotImplementedError");
+}
+
+const line = readLine();
+const vals = line.split(' ').map(x => x === 'null' ? null : parseInt(x, 10));
+const root = buildTreeFromList(vals);
+writeInts(solve(root));

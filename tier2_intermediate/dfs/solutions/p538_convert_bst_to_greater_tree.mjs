@@ -24,56 +24,79 @@
 import { readLine, writeString } from '../../../wasm_libs/js/io.mjs';
 
 class TreeNode {
-  constructor(val) { this.val = val; this.left = null; this.right = null; }
-  static buildTree(arr) {
-    if (!arr || arr.length === 0) return null;
+    constructor(val) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+function buildTreeFromList(arr) {
+    if (!arr || arr.length === 0 || arr[0] === null) return null;
     const root = new TreeNode(arr[0]);
     const queue = [root];
     let i = 1;
-    while (i < arr.length && queue.length > 0) {
-      const node = queue.shift();
-      if (i < arr.length && arr[i] !== null) { node.left = new TreeNode(arr[i]); queue.push(node.left); }
-      i++;
-      if (i < arr.length && arr[i] !== null) { node.right = new TreeNode(arr[i]); queue.push(node.right); }
-      i++;
+    while (queue.length > 0 && i < arr.length) {
+        const node = queue.shift();
+        if (i < arr.length) {
+            if (arr[i] !== null) {
+                node.left = new TreeNode(arr[i]);
+                queue.push(node.left);
+            }
+            i++;
+        }
+        if (i < arr.length) {
+            if (arr[i] !== null) {
+                node.right = new TreeNode(arr[i]);
+                queue.push(node.right);
+            }
+            i++;
+        }
     }
     return root;
-  }
-  toList() {
+}
+
+function treeToList(root) {
+    if (!root) return [];
     const result = [];
-    const queue = [this];
+    const queue = [root];
     while (queue.length > 0) {
-      const node = queue.shift();
-      result.push(node ? node.val : null);
-      if (node) { queue.push(node.left); queue.push(node.right); }
+        const node = queue.shift();
+        if (node) {
+            result.push(node.val);
+            queue.push(node.left);
+            queue.push(node.right);
+        } else {
+            result.push(null);
+        }
     }
-    while (result.length > 0 && result[result.length - 1] === null) result.pop();
+    while (result.length > 0 && result[result.length - 1] === null) {
+        result.pop();
+    }
     return result;
-  }
 }
 
 function solve(root) {
-  let total = 0;
-  function reverseInorder(node) {
-    if (!node) return;
-    reverseInorder(node.right);
-    total += node.val;
-    node.val = total;
-    reverseInorder(node.left);
-  }
-  reverseInorder(root);
-  return root;
+    let total = 0;
+    function reverseInorder(node) {
+        if (!node) return;
+        reverseInorder(node.right);
+        total += node.val;
+        node.val = total;
+        reverseInorder(node.left);
+    }
+    reverseInorder(root);
+    return root;
 }
 
 const line = readLine();
 if (!line.trim()) {
-  // empty tree - nothing to output
 } else {
-  const vals = line.split(' ').map(x => x === 'null' ? null : parseInt(x, 10));
-  const root = TreeNode.buildTree(vals);
-  const result = solve(root);
-  if (result) {
-    const list = result.toList();
-    writeString(list.map(v => v === null ? 'null' : String(v)).join(' '));
-  }
+    const vals = line.split(' ').map(x => x === 'null' ? null : parseInt(x, 10));
+    const root = buildTreeFromList(vals);
+    const result = solve(root);
+    if (result) {
+        const list = treeToList(result);
+        writeString(list.map(v => v === null ? 'null' : String(v)).join(' '));
+    }
 }

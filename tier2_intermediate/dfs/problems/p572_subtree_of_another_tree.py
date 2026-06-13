@@ -22,10 +22,29 @@ Template (python3):
         def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
 """
 
-from src.wasm_libs.py.io import *
+from src.wasm_libs.py.io import read_line, write_bool
 
 
-def solve(root_vals: list, sub_vals: list) -> bool:
+def build_tree(vals):
+    if not vals or vals[0] is None:
+        return None
+    root = {"val": vals[0], "left": None, "right": None}
+    queue = [root]
+    i = 1
+    while queue and i < len(vals):
+        node = queue.pop(0)
+        if i < len(vals) and vals[i] is not None:
+            node["left"] = {"val": vals[i], "left": None, "right": None}
+            queue.append(node["left"])
+        i += 1
+        if i < len(vals) and vals[i] is not None:
+            node["right"] = {"val": vals[i], "left": None, "right": None}
+            queue.append(node["right"])
+        i += 1
+    return root
+
+
+def solve(root, sub_root) -> bool:
     raise NotImplementedError
 
 
@@ -34,5 +53,7 @@ if __name__ == "__main__":
     sub_line = read_line()
     root_vals = [None if x == "null" else int(x) for x in root_line.split()]
     sub_vals = [None if x == "null" else int(x) for x in sub_line.split()]
-    result = solve(root_vals, sub_vals)
+    root = build_tree(root_vals)
+    sub_root = build_tree(sub_vals)
+    result = solve(root, sub_root)
     write_bool(result)

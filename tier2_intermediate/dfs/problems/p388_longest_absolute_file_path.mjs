@@ -24,10 +24,17 @@
  *     function solve(input: string): number
  */
 
-import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+import { readLine, writeInt } from '../../../wasm_libs/js/io.mjs';
 
-function solve() {
+function solve(input) {
   throw new Error("NotImplementedError");
 }
 
-solve();
+const lines = [];
+while (true) {
+  const line = readLine();
+  if (!line) break;
+  lines.push(line);
+}
+const input = lines.join("\n");
+writeInt(solve(input));

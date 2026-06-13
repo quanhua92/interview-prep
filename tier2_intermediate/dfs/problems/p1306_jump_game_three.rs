@@ -6,6 +6,13 @@
 
 use wasm_libs::*;
 
+fn solve(arr: &[i32], start: usize) -> bool {
+    todo!()
+}
+
 fn main() {
-    todo!();
+    let arr = read_ints();
+    let start: usize = read_line().trim().parse().unwrap();
+    let result = solve(&arr, start);
+    write_bool(result);
 }

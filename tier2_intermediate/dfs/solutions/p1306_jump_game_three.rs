@@ -44,9 +44,7 @@
 
 use wasm_libs::*;
 
-fn main() {
-    let arr = read_ints();
-    let start: usize = read_line().trim().parse().unwrap();
+fn solve(arr: &[i32], start: usize) -> bool {
     let n = arr.len();
     let mut visited = vec![false; n];
 
@@ -62,5 +60,12 @@ fn main() {
         dfs(arr, i + jump as i32, visited, n) || dfs(arr, i - jump as i32, visited, n)
     }
 
-    write_bool(dfs(&arr, start as i32, &mut visited, n));
+    dfs(arr, start as i32, &mut visited, n)
+}
+
+fn main() {
+    let arr = read_ints();
+    let start: usize = read_line().trim().parse().unwrap();
+    let result = solve(&arr, start);
+    write_bool(result);
 }

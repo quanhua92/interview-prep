@@ -79,18 +79,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void print_nested(const char *s, int len) {
-    printf("%.*s", len, s);
-}
-
-int main(void) {
-    char *s = read_line();
-    int len = (int)strlen(s);
+static void solve(const char *s, int len) {
     if (s[0] != '[') {
         write_int(atoi(s));
     } else {
         write_string(s);
     }
+}
+
+int main(void) {
+    char *s = read_line();
+    int len = (int)strlen(s);
+    solve(s, len);
     free(s);
     return 0;
 }

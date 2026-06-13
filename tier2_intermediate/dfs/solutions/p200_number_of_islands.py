@@ -40,13 +40,11 @@ Hint: Use DFS to mark visited land cells, counting each new island.
 from src.wasm_libs.py.io import read_line, read_ints, write_int
 
 
-def main():
-    meta = read_ints()
-    rows, cols = meta[0], meta[1]
-    if rows == 0 or cols == 0:
-        write_int(0)
-        return
-    grid = [list(read_line()) for _ in range(rows)]
+def solve(grid: list[list[str]]) -> int:
+    if not grid or not grid[0]:
+        return 0
+    rows = len(grid)
+    cols = len(grid[0])
     count = 0
 
     def dfs(r, c):
@@ -63,8 +61,12 @@ def main():
             if grid[r][c] == "1":
                 count += 1
                 dfs(r, c)
-    write_int(count)
+    return count
 
 
 if __name__ == "__main__":
-    main()
+    meta = read_ints()
+    rows, cols = meta[0], meta[1]
+    grid = [list(read_line()) for _ in range(rows)]
+    result = solve(grid)
+    write_int(result)

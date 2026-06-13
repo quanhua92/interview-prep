@@ -20,43 +20,55 @@
 
 import { readLine, writeInts } from '../../../wasm_libs/js/io.mjs';
 
-function buildTree(arr) {
-  if (arr === null || arr.length === 0) return null;
-  const root = { val: arr[0], left: null, right: null };
-  const queue = [root];
-  let i = 1;
-  while (i < arr.length && queue.length > 0) {
-    const node = queue.shift();
-    if (i < arr.length && arr[i] !== null) {
-      node.left = { val: arr[i], left: null, right: null };
-      queue.push(node.left);
+class TreeNode {
+    constructor(val) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
     }
-    i++;
-    if (i < arr.length && arr[i] !== null) {
-      node.right = { val: arr[i], left: null, right: null };
-      queue.push(node.right);
+}
+
+function buildTreeFromList(arr) {
+    if (!arr || arr.length === 0 || arr[0] === null) return null;
+    const root = new TreeNode(arr[0]);
+    const queue = [root];
+    let i = 1;
+    while (queue.length > 0 && i < arr.length) {
+        const node = queue.shift();
+        if (i < arr.length) {
+            if (arr[i] !== null) {
+                node.left = new TreeNode(arr[i]);
+                queue.push(node.left);
+            }
+            i++;
+        }
+        if (i < arr.length) {
+            if (arr[i] !== null) {
+                node.right = new TreeNode(arr[i]);
+                queue.push(node.right);
+            }
+            i++;
+        }
     }
-    i++;
-  }
-  return root;
+    return root;
 }
 
 function solve(root) {
-  const freq = new Map();
-  function subtreeSum(node) {
-    const s = node.val + (node.left ? subtreeSum(node.left) : 0) + (node.right ? subtreeSum(node.right) : 0);
-    freq.set(s, (freq.get(s) || 0) + 1);
-    return s;
-  }
-  subtreeSum(root);
-  let maxCount = 0;
-  for (const count of freq.values()) { if (count > maxCount) maxCount = count; }
-  const result = [];
-  for (const [s, c] of freq) { if (c === maxCount) result.push(s); }
-  return result.sort((a, b) => a - b);
+    const freq = new Map();
+    function subtreeSum(node) {
+        const s = node.val + (node.left ? subtreeSum(node.left) : 0) + (node.right ? subtreeSum(node.right) : 0);
+        freq.set(s, (freq.get(s) || 0) + 1);
+        return s;
+    }
+    subtreeSum(root);
+    let maxCount = 0;
+    for (const count of freq.values()) { if (count > maxCount) maxCount = count; }
+    const result = [];
+    for (const [s, c] of freq) { if (c === maxCount) result.push(s); }
+    return result.sort((a, b) => a - b);
 }
 
 const line = readLine();
 const vals = line.split(' ').map(x => x === 'null' ? null : parseInt(x, 10));
-const root = buildTree(vals);
+const root = buildTreeFromList(vals);
 writeInts(solve(root));

@@ -49,40 +49,28 @@ subtree to it, and return the right subtree as the new root.
 """
 
 from src.wasm_libs.py.io import read_line, write_string
-
-NL = 2147483647
-
-
-def build_tree(vals):
-    if not vals or vals[0] is None:
-        return None
-    root = {"val": vals[0], "left": None, "right": None}
-    queue = [root]
-    i = 1
-    while queue and i < len(vals):
-        node = queue.pop(0)
-        if i < len(vals) and vals[i] is not None:
-            node["left"] = {"val": vals[i], "left": None, "right": None}
-            queue.append(node["left"])
-        i += 1
-        if i < len(vals) and vals[i] is not None:
-            node["right"] = {"val": vals[i], "left": None, "right": None}
-            queue.append(node["right"])
-        i += 1
-    return root
+from collections import deque
+from typing import Optional, List
 
 
-def tree_to_bfs(root):
+class TreeNode:
+    def __init__(self, val: int = 0):
+        self.val = val
+        self.left: Optional[TreeNode] = None
+        self.right: Optional[TreeNode] = None
+
+
+def tree_to_list(root: Optional[TreeNode]) -> List[Optional[int]]:
     if not root:
         return []
     result = []
-    queue = [root]
+    queue = deque([root])
     while queue:
-        node = queue.pop(0)
+        node = queue.popleft()
         if node:
-            result.append(node["val"])
-            queue.append(node.get("left"))
-            queue.append(node.get("right"))
+            result.append(node.val)
+            queue.append(node.left)
+            queue.append(node.right)
         else:
             result.append(None)
     while len(result) > 1 and result[-1] is None:
@@ -90,40 +78,57 @@ def tree_to_bfs(root):
     return result
 
 
-def delete_node(root, key):
-    if not root:
+def build_tree_from_list(vals: List[Optional[int]]) -> Optional[TreeNode]:
+    if not vals or vals[0] is None:
         return None
-    if key < root["val"]:
-        root["left"] = delete_node(root["left"], key)
-    elif key > root["val"]:
-        root["right"] = delete_node(root["right"], key)
-    else:
-        if not root["left"]:
-            return root["right"]
-        if not root["right"]:
-            return root["left"]
-        min_node = root["right"]
-        while min_node["left"]:
-            min_node = min_node["left"]
-        root["val"] = min_node["val"]
-        root["right"] = delete_node(root["right"], min_node["val"])
+    root = TreeNode(vals[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(vals):
+        node = queue.popleft()
+        if i < len(vals):
+            if vals[i] is not None:
+                node.left = TreeNode(vals[i])
+                queue.append(node.left)
+            i += 1
+        if i < len(vals):
+            if vals[i] is not None:
+                node.right = TreeNode(vals[i])
+                queue.append(node.right)
+            i += 1
     return root
 
 
-def main():
+def solve(root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
+    if not root:
+        return None
+    if key < root.val:
+        root.left = solve(root.left, key)
+    elif key > root.val:
+        root.right = solve(root.right, key)
+    else:
+        if not root.left:
+            return root.right
+        if not root.right:
+            return root.left
+        min_node = root.right
+        while min_node.left:
+            min_node = min_node.left
+        root.val = min_node.val
+        root.right = solve(root.right, min_node.val)
+    return root
+
+
+if __name__ == "__main__":
     tree_line = read_line()
     key = int(read_line())
     parts = tree_line.split()
     vals = [None if x == "null" else int(x) for x in parts]
-    if not vals or vals[0] is None:
-        root = None
+    root = build_tree_from_list(vals)
+    root = solve(root, key)
+    result = tree_to_list(root)
+    if not result:
+        write_string("null")
     else:
-        root = build_tree(vals)
-    root = delete_node(root, key)
-    result = tree_to_bfs(root)
-    output = " ".join("null" if v is None else str(v) for v in result) if result else "null"
-    write_string(output)
-
-
-if __name__ == "__main__":
-    main()
+        output = " ".join("null" if v is None else str(v) for v in result)
+        write_string(output)

@@ -24,10 +24,21 @@
  * Hint: Use DFS to explore each island and track the maximum area found.
  */
 
-import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+import { readInts, writeInt } from '../../../wasm_libs/js/io.mjs';
 
-function solve() {
+function solve(grid) {
   throw new Error("NotImplementedError");
 }
 
-solve();
+const meta = readInts();
+const rows = meta[0];
+const cols = meta.length > 1 ? meta[1] : 0;
+if (rows === 0 || cols === 0) {
+  writeInt(0);
+} else {
+  const grid = [];
+  for (let i = 0; i < rows; i++) {
+    grid.push(readInts());
+  }
+  writeInt(solve(grid));
+}

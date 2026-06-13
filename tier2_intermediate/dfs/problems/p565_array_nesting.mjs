@@ -22,10 +22,11 @@
  *     function arrayNesting(nums: number[]): number
  */
 
-import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+import { readInts, writeInt } from '../../../wasm_libs/js/io.mjs';
 
-function solve() {
+function solve(nums) {
   throw new Error("NotImplementedError");
 }
 
-solve();
+const nums = readInts();
+writeInt(solve(nums));

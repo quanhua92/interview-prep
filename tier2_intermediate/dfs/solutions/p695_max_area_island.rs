@@ -31,6 +31,33 @@
 
 use wasm_libs::*;
 
+fn solve(grid: &mut Vec<Vec<i32>>) -> i32 {
+    if grid.is_empty() || grid[0].is_empty() {
+        return 0;
+    }
+    let rows = grid.len();
+    let cols = grid[0].len();
+    let mut max_area = 0;
+
+    fn dfs(grid: &mut [Vec<i32>], r: i32, c: i32, rows: usize, cols: usize) -> i32 {
+        if r < 0 || r as usize >= rows || c < 0 || c as usize >= cols || grid[r as usize][c as usize] != 1 {
+            return 0;
+        }
+        grid[r as usize][c as usize] = 0;
+        1 + dfs(grid, r + 1, c, rows, cols) + dfs(grid, r - 1, c, rows, cols)
+            + dfs(grid, r, c + 1, rows, cols) + dfs(grid, r, c - 1, rows, cols)
+    }
+
+    for r in 0..rows {
+        for c in 0..cols {
+            if grid[r][c] == 1 {
+                max_area = max_area.max(dfs(grid, r as i32, c as i32, rows, cols));
+            }
+        }
+    }
+    max_area
+}
+
 fn main() {
     let meta = read_ints();
     let rows = meta[0] as usize;
@@ -43,23 +70,6 @@ fn main() {
     for _ in 0..rows {
         grid.push(read_ints());
     }
-
-    fn dfs(grid: &mut [Vec<i32>], r: i32, c: i32, rows: usize, cols: usize) -> i32 {
-        if r < 0 || r as usize >= rows || c < 0 || c as usize >= cols || grid[r as usize][c as usize] != 1 {
-            return 0;
-        }
-        grid[r as usize][c as usize] = 0;
-        1 + dfs(grid, r + 1, c, rows, cols) + dfs(grid, r - 1, c, rows, cols)
-            + dfs(grid, r, c + 1, rows, cols) + dfs(grid, r, c - 1, rows, cols)
-    }
-
-    let mut max_area = 0;
-    for r in 0..rows {
-        for c in 0..cols {
-            if grid[r][c] == 1 {
-                max_area = max_area.max(dfs(&mut grid, r as i32, c as i32, rows, cols));
-            }
-        }
-    }
-    write_int(max_area);
+    let result = solve(&mut grid);
+    write_int(result);
 }

@@ -105,7 +105,7 @@ class NestedInteger:
         return self._list if self._list is not None else None
 
 
-def deserialize(s: str) -> NestedInteger:
+def _deserialize(s: str) -> NestedInteger:
     if not s.startswith("["):
         return NestedInteger(int(s))
     stack: list[NestedInteger] = []
@@ -138,14 +138,15 @@ def deserialize(s: str) -> NestedInteger:
     return current
 
 
-def main():
-    s = read_line()
-    result = deserialize(s)
+def solve(s: str) -> str:
+    result = _deserialize(s)
     if result.isInteger():
-        write_string(str(result.getInteger()))
+        return str(result.getInteger())
     else:
-        write_string(json.dumps(result._to_python()))
+        return json.dumps(result._to_python())
 
 
 if __name__ == "__main__":
-    main()
+    s = read_line()
+    result = solve(s)
+    write_string(result)

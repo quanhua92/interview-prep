@@ -26,10 +26,58 @@ Template (python3):
         def deleteNode(self, root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
 """
 
-from src.wasm_libs.py.io import read_line
+from src.wasm_libs.py.io import read_line, write_string
+from collections import deque
+from typing import Optional, List
 
 
-def solve(tree_vals: list, key: int) -> str:
+class TreeNode:
+    def __init__(self, val: int = 0):
+        self.val = val
+        self.left: Optional[TreeNode] = None
+        self.right: Optional[TreeNode] = None
+
+
+def tree_to_list(root: Optional[TreeNode]) -> List[Optional[int]]:
+    if not root:
+        return []
+    result = []
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()
+        if node:
+            result.append(node.val)
+            queue.append(node.left)
+            queue.append(node.right)
+        else:
+            result.append(None)
+    while len(result) > 1 and result[-1] is None:
+        result.pop()
+    return result
+
+
+def build_tree_from_list(vals: List[Optional[int]]) -> Optional[TreeNode]:
+    if not vals or vals[0] is None:
+        return None
+    root = TreeNode(vals[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(vals):
+        node = queue.popleft()
+        if i < len(vals):
+            if vals[i] is not None:
+                node.left = TreeNode(vals[i])
+                queue.append(node.left)
+            i += 1
+        if i < len(vals):
+            if vals[i] is not None:
+                node.right = TreeNode(vals[i])
+                queue.append(node.right)
+            i += 1
+    return root
+
+
+def solve(root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
     raise NotImplementedError
 
 
@@ -37,6 +85,12 @@ if __name__ == "__main__":
     tree_line = read_line()
     key = int(read_line())
     parts = tree_line.split()
-    tree_vals = [None if x == "null" else int(x) for x in parts]
-    result = solve(tree_vals, key)
-    print(result)
+    vals = [None if x == "null" else int(x) for x in parts]
+    root = build_tree_from_list(vals)
+    root = solve(root, key)
+    result = tree_to_list(root)
+    if not result:
+        write_string("null")
+    else:
+        output = " ".join("null" if v is None else str(v) for v in result)
+        write_string(output)

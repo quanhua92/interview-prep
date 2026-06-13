@@ -38,8 +38,6 @@ Template (python3):
 
 from src.wasm_libs.py.io import read_line, write_bool
 
-NL = 2147483647
-
 
 def build_tree(vals):
     if not vals or vals[0] is None:
@@ -84,15 +82,16 @@ def is_subtree(root, sub_root):
     )
 
 
-def main():
+def solve(root, sub_root) -> bool:
+    return is_subtree(root, sub_root)
+
+
+if __name__ == "__main__":
     root_line = read_line()
     sub_line = read_line()
     root_vals = [None if x == "null" else int(x) for x in root_line.split()]
     sub_vals = [None if x == "null" else int(x) for x in sub_line.split()]
     root = build_tree(root_vals)
     sub_root = build_tree(sub_vals)
-    write_bool(is_subtree(root, sub_root))
-
-
-if __name__ == "__main__":
-    main()
+    result = solve(root, sub_root)
+    write_bool(result)

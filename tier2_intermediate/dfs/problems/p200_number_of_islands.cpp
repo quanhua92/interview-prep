@@ -12,6 +12,10 @@ static void dfs(std::vector<std::vector<char>>& grid, int r, int c, int rows, in
     abort();
 }
 
+static int solve(std::vector<std::vector<char>>& grid, int rows, int cols) {
+    abort();
+}
+
 int main() {
     auto meta = read_ints();
     int rows = meta[0], cols = meta[1];
@@ -21,15 +25,6 @@ int main() {
         std::string line = read_line();
         grid[r] = std::vector<char>(line.begin(), line.end());
     }
-    int count = 0;
-    for (int r = 0; r < rows; r++) {
-        for (int c = 0; c < cols; c++) {
-            if (grid[r][c] == '1') {
-                count++;
-                dfs(grid, r, c, rows, cols);
-            }
-        }
-    }
-    write_int(count);
+    write_int(solve(grid, rows, cols));
     return 0;
 }

@@ -28,10 +28,12 @@
  * Hint: DFS with a visited set; explore start+arr[start] and start-arr[start], checking bounds and visited.
  */
 
-import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+import { readInts, readLine, writeBool } from '../../../wasm_libs/js/io.mjs';
 
-function solve() {
+function solve(arr, start) {
   throw new Error("NotImplementedError");
 }
 
-solve();
+const arr = readInts();
+const start = parseInt(readLine(), 10);
+writeBool(solve(arr, start));

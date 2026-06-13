@@ -45,9 +45,7 @@ Hint: DFS with a visited set; explore start+arr[start] and start-arr[start], che
 from src.wasm_libs.py.io import read_ints, read_line, write_bool
 
 
-def main():
-    arr = read_ints()
-    start = int(read_line())
+def solve(arr: list[int], start: int) -> bool:
     n = len(arr)
     visited: set[int] = set()
 
@@ -60,8 +58,11 @@ def main():
         jump = arr[i]
         return dfs(i + jump) or dfs(i - jump)
 
-    write_bool(dfs(start))
+    return dfs(start)
 
 
 if __name__ == "__main__":
-    main()
+    arr = read_ints()
+    start = int(read_line())
+    result = solve(arr, start)
+    write_bool(result)

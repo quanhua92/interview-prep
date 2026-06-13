@@ -29,9 +29,17 @@
 
 import { readLine, writeInt, writeString } from '../../../wasm_libs/js/io.mjs';
 
+function solve(s) {
+  if (!s.startsWith('[')) {
+    return parseInt(s, 10);
+  } else {
+    return s;
+  }
+}
+
 const s = readLine();
 if (!s.startsWith('[')) {
-  writeInt(parseInt(s, 10));
+  writeInt(solve(s));
 } else {
-  writeString(s);
+  writeString(solve(s));
 }

@@ -5,7 +5,6 @@ Topics: Tree, Depth-First Search, Binary Search Tree, Binary Tree
 
 Given the root of a Binary Search Tree (BST), convert it to a Greater Tree such that every key of the original BST is changed to the original key plus the sum of all keys greater than the original key in BST.
 As a reminder, a binary search tree is a tree that satisfies these constraints:
-Example 2:
 Note: This question is the same as 1038: https://leetcode.com/problems/binary-search-tree-to-greater-sum-tree/
 Example 1:
     Input: root = [4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
@@ -32,41 +31,29 @@ Template (python3):
         def convertBST(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
 """
 
-from src.wasm_libs.py.io import read_line, write_string
-
-NL = 2147483647
-
-
-def build_tree(vals):
-    if not vals or vals[0] is None:
-        return None
-    root = {"val": vals[0], "left": None, "right": None}
-    queue = [root]
-    i = 1
-    while queue and i < len(vals):
-        node = queue.pop(0)
-        if i < len(vals) and vals[i] is not None:
-            node["left"] = {"val": vals[i], "left": None, "right": None}
-            queue.append(node["left"])
-        i += 1
-        if i < len(vals) and vals[i] is not None:
-            node["right"] = {"val": vals[i], "left": None, "right": None}
-            queue.append(node["right"])
-        i += 1
-    return root
+from src.wasm_libs.py.io import *
+from collections import deque
+from typing import Optional, List
 
 
-def tree_to_bfs(root):
+class TreeNode:
+    def __init__(self, val: int = 0):
+        self.val = val
+        self.left: Optional[TreeNode] = None
+        self.right: Optional[TreeNode] = None
+
+
+def tree_to_list(root: Optional[TreeNode]) -> List[Optional[int]]:
     if not root:
         return []
     result = []
-    queue = [root]
+    queue = deque([root])
     while queue:
-        node = queue.pop(0)
+        node = queue.popleft()
         if node:
-            result.append(node["val"])
-            queue.append(node.get("left"))
-            queue.append(node.get("right"))
+            result.append(node.val)
+            queue.append(node.left)
+            queue.append(node.right)
         else:
             result.append(None)
     while len(result) > 1 and result[-1] is None:
@@ -74,32 +61,52 @@ def tree_to_bfs(root):
     return result
 
 
-def reverse_inorder(node, total):
-    if not node:
-        return total
-    total = reverse_inorder(node.get("right"), total)
-    total += node["val"]
-    node["val"] = total
-    total = reverse_inorder(node.get("left"), total)
-    return total
-
-
-def main():
-    line = read_line()
-    if not line.strip():
-        write_string("")
-        return
-    parts = line.split()
-    vals = [None if x == "null" else int(x) for x in parts]
+def build_tree_from_list(vals: List[Optional[int]]) -> Optional[TreeNode]:
     if not vals or vals[0] is None:
-        write_string("")
-        return
-    root = build_tree(vals)
-    reverse_inorder(root, 0)
-    result = tree_to_bfs(root)
-    output = " ".join("null" if v is None else str(v) for v in result)
-    write_string(output)
+        return None
+    root = TreeNode(vals[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(vals):
+        node = queue.popleft()
+        if i < len(vals):
+            if vals[i] is not None:
+                node.left = TreeNode(vals[i])
+                queue.append(node.left)
+            i += 1
+        if i < len(vals):
+            if vals[i] is not None:
+                node.right = TreeNode(vals[i])
+                queue.append(node.right)
+            i += 1
+    return root
+
+
+def solve(root: Optional[TreeNode]) -> Optional[TreeNode]:
+    total = 0
+
+    def reverse_inorder(node):
+        nonlocal total
+        if not node:
+            return
+        reverse_inorder(node.right)
+        total += node.val
+        node.val = total
+        reverse_inorder(node.left)
+
+    reverse_inorder(root)
+    return root
 
 
 if __name__ == "__main__":
-    main()
+    line = read_line()
+    if not line.strip():
+        write_string("")
+    else:
+        parts = line.split()
+        vals = [None if x == "null" else int(x) for x in parts]
+        root = build_tree_from_list(vals)
+        root = solve(root)
+        result = tree_to_list(root)
+        output = " ".join("null" if v is None else str(v) for v in result)
+        write_string(output)

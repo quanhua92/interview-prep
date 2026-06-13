@@ -23,14 +23,46 @@ Template (python3):
 """
 
 from src.wasm_libs.py.io import *
+from collections import deque
+from typing import Optional, List
 
 
-def solve(tree_vals: list) -> list[int]:
+class TreeNode:
+    def __init__(self, val: int = 0):
+        self.val = val
+        self.left: Optional[TreeNode] = None
+        self.right: Optional[TreeNode] = None
+
+
+def build_tree_from_list(vals: List[Optional[int]]) -> Optional[TreeNode]:
+    if not vals or vals[0] is None:
+        return None
+    root = TreeNode(vals[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(vals):
+        node = queue.popleft()
+        if i < len(vals):
+            if vals[i] is not None:
+                node.left = TreeNode(vals[i])
+                queue.append(node.left)
+            i += 1
+        if i < len(vals):
+            if vals[i] is not None:
+                node.right = TreeNode(vals[i])
+                queue.append(node.right)
+            i += 1
+    return root
+
+
+def solve(root: TreeNode) -> List[int]:
     raise NotImplementedError
 
 
 if __name__ == "__main__":
     line = read_line()
-    tree_vals = [None if x == "null" else int(x) for x in line.split()]
-    result = solve(tree_vals)
+    parts = line.split()
+    vals = [None if x == "null" else int(x) for x in parts]
+    root = build_tree_from_list(vals)
+    result = solve(root)
     write_ints(result)

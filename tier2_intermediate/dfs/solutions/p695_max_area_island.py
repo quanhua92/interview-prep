@@ -32,13 +32,11 @@ Hint: Use DFS to explore each island and track the maximum area found.
 from src.wasm_libs.py.io import read_ints, write_int
 
 
-def main():
-    meta = read_ints()
-    rows, cols = meta[0], meta[1]
-    if rows == 0 or cols == 0:
-        write_int(0)
-        return
-    grid = [read_ints() for _ in range(rows)]
+def solve(grid: list[list[int]]) -> int:
+    if not grid or not grid[0]:
+        return 0
+    rows = len(grid)
+    cols = len(grid[0])
     max_area = 0
 
     def dfs(r, c):
@@ -51,8 +49,12 @@ def main():
         for c in range(cols):
             if grid[r][c] == 1:
                 max_area = max(max_area, dfs(r, c))
-    write_int(max_area)
+    return max_area
 
 
 if __name__ == "__main__":
-    main()
+    meta = read_ints()
+    rows, cols = meta[0], meta[1]
+    grid = [read_ints() for _ in range(rows)]
+    result = solve(grid)
+    write_int(result)

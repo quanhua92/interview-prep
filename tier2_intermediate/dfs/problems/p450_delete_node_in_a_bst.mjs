@@ -25,10 +25,68 @@
  *     function deleteNode(root: TreeNode | null, key: number): TreeNode | null
  */
 
-import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+import { readLine, writeString } from '../../../wasm_libs/js/io.mjs';
 
-function solve() {
-  throw new Error("NotImplementedError");
+class TreeNode {
+    constructor(val) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-solve();
+function buildTreeFromList(arr) {
+    if (!arr || arr.length === 0 || arr[0] === null) return null;
+    const root = new TreeNode(arr[0]);
+    const queue = [root];
+    let i = 1;
+    while (queue.length > 0 && i < arr.length) {
+        const node = queue.shift();
+        if (i < arr.length) {
+            if (arr[i] !== null) {
+                node.left = new TreeNode(arr[i]);
+                queue.push(node.left);
+            }
+            i++;
+        }
+        if (i < arr.length) {
+            if (arr[i] !== null) {
+                node.right = new TreeNode(arr[i]);
+                queue.push(node.right);
+            }
+            i++;
+        }
+    }
+    return root;
+}
+
+function treeToList(root) {
+    if (!root) return [];
+    const result = [];
+    const queue = [root];
+    while (queue.length > 0) {
+        const node = queue.shift();
+        if (node) {
+            result.push(node.val);
+            queue.push(node.left);
+            queue.push(node.right);
+        } else {
+            result.push(null);
+        }
+    }
+    while (result.length > 0 && result[result.length - 1] === null) {
+        result.pop();
+    }
+    return result;
+}
+
+function solve(root, key) {
+    throw new Error("NotImplementedError");
+}
+
+const treeLine = readLine();
+const key = parseInt(readLine(), 10);
+const vals = treeLine.split(' ').map(x => x === 'null' ? null : parseInt(x, 10));
+const root = buildTreeFromList(vals);
+const result = treeToList(solve(root, key));
+writeString(result.length === 0 ? 'null' : result.map(v => v === null ? 'null' : String(v)).join(' '));

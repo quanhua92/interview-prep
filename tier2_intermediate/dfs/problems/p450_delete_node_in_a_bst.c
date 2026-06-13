@@ -25,18 +25,7 @@ static TreeNode *insert(TreeNode *root, int val) {
 }
 
 static TreeNode *deleteNode(TreeNode *root, int key) {
-    if (!root) return NULL;
-    if (key < root->val) root->left = deleteNode(root->left, key);
-    else if (key > root->val) root->right = deleteNode(root->right, key);
-    else {
-        if (!root->left) { TreeNode *t = root->right; free(root); return t; }
-        if (!root->right) { TreeNode *t = root->left; free(root); return t; }
-        TreeNode *mn = root->right;
-        while (mn->left) mn = mn->left;
-        root->val = mn->val;
-        root->right = deleteNode(root->right, mn->val);
-    }
-    return root;
+    abort();
 }
 
 #define NL 2147483647

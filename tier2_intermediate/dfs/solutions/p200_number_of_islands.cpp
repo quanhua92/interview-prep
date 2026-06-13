@@ -50,15 +50,7 @@ static void dfs(std::vector<std::vector<char>>& grid, int r, int c, int rows, in
     dfs(grid, r, c - 1, rows, cols);
 }
 
-int main() {
-    auto meta = read_ints();
-    int rows = meta[0], cols = meta[1];
-    if (rows == 0) { write_int(0); return 0; }
-    std::vector<std::vector<char>> grid(rows);
-    for (int r = 0; r < rows; r++) {
-        std::string line = read_line();
-        grid[r] = std::vector<char>(line.begin(), line.end());
-    }
+static int solve(std::vector<std::vector<char>>& grid, int rows, int cols) {
     int count = 0;
     for (int r = 0; r < rows; r++) {
         for (int c = 0; c < cols; c++) {
@@ -68,6 +60,18 @@ int main() {
             }
         }
     }
-    write_int(count);
+    return count;
+}
+
+int main() {
+    auto meta = read_ints();
+    int rows = meta[0], cols = meta[1];
+    if (rows == 0) { write_int(0); return 0; }
+    std::vector<std::vector<char>> grid(rows);
+    for (int r = 0; r < rows; r++) {
+        std::string line = read_line();
+        grid[r] = std::vector<char>(line.begin(), line.end());
+    }
+    write_int(solve(grid, rows, cols));
     return 0;
 }

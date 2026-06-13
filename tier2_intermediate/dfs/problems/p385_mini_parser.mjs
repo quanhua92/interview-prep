@@ -22,10 +22,15 @@
  *     function solve(s: string): NestedInteger
  */
 
-import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+import { readLine, writeInt, writeString } from '../../../wasm_libs/js/io.mjs';
 
-function solve() {
+function solve(s) {
   throw new Error("NotImplementedError");
 }
 
-solve();
+const s = readLine();
+if (!s.startsWith('[')) {
+  writeInt(solve(s));
+} else {
+  writeString(solve(s));
+}
