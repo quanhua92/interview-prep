@@ -40,31 +40,24 @@ Hint: Use a queue to process nodes level by level.
 from src.wasm_libs.py.io import *
 import sys
 from collections import deque
-
-NULL_VAL = -2147483648
-
-
-def build_tree(vals: list[int]) -> list | None:
-    if not vals or vals[0] is None:
-        return None
-    root = {"val": vals[0], "left": None, "right": None}
-    queue = deque([root])
-    i = 1
-    while queue and i < len(vals):
-        node = queue.popleft()
-        if i < len(vals) and vals[i] is not None:
-            node["left"] = {"val": vals[i], "left": None, "right": None}
-            queue.append(node["left"])
-        i += 1
-        if i < len(vals) and vals[i] is not None:
-            node["right"] = {"val": vals[i], "left": None, "right": None}
-            queue.append(node["right"])
-        i += 1
-    return root
+from typing import Optional, List
 
 
-def solve(vals: list[int]) -> list[list[int]]:
-    root = build_tree(vals)
+# =====================================================================
+# 1. CORE DATA STRUCTURE
+# =====================================================================
+class TreeNode:
+    def __init__(self, val: int = 0):
+        self.val = val
+        self.left: Optional[TreeNode] = None
+        self.right: Optional[TreeNode] = None
+
+
+# =====================================================================
+# 2. LEETCODE SOLUTION
+# =====================================================================
+
+def solve(root: Optional[TreeNode]) -> List[List[int]]:
     if not root:
         return []
     result = []
@@ -74,14 +67,49 @@ def solve(vals: list[int]) -> list[list[int]]:
         level = []
         for _ in range(level_size):
             node = queue.popleft()
-            level.append(node["val"])
-            if node["left"]:
-                queue.append(node["left"])
-            if node["right"]:
-                queue.append(node["right"])
+            level.append(node.val)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
         result.append(level)
     return result
 
+
+# =====================================================================
+# 3. ENVIRONMENT UTILITIES (Level-Order parsing used by LeetCode platform)
+# =====================================================================
+
+def build_tree_from_list(vals: List[Optional[int]]) -> Optional[TreeNode]:
+    """Reconstructs a real TreeNode binary tree from a level-order array."""
+    if not vals or vals[0] is None:
+        return None
+
+    root = TreeNode(vals[0])
+    queue = deque([root])
+    i = 1
+
+    while queue and i < len(vals):
+        node = queue.popleft()
+
+        if i < len(vals):
+            if vals[i] is not None:
+                node.left = TreeNode(vals[i])
+                queue.append(node.left)
+            i += 1
+
+        if i < len(vals):
+            if vals[i] is not None:
+                node.right = TreeNode(vals[i])
+                queue.append(node.right)
+            i += 1
+
+    return root
+
+
+# =====================================================================
+# 4. RUNTIME SYSTEM EXECUTION BLOCK
+# =====================================================================
 
 if __name__ == "__main__":
     n = read_int()
@@ -95,6 +123,8 @@ if __name__ == "__main__":
                 vals.append(None)
             else:
                 vals.append(int(t))
-        result = solve(vals)
+
+        initial_tree = build_tree_from_list(vals)
+        result = solve(initial_tree)
         for row in result:
             write_ints(row)

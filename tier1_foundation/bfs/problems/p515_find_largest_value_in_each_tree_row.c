@@ -32,7 +32,7 @@
 #include <string.h>
 #include <limits.h>
 
-
+#define MAX_NODES 10001
 #define NULL_VAL INT_MIN
 
 typedef struct TreeNode {
@@ -47,9 +47,49 @@ static TreeNode *make_node(int val) {
     return n;
 }
 
-static void solve(const int *vals, int vals_n) {
+/* =====================================================================
+ * Environment Utilities
+ * ===================================================================== */
+
+static TreeNode *build_tree_from_list(const int *vals, int n) {
+    if (n == 0 || vals[0] == NULL_VAL) return NULL;
+    TreeNode *root = make_node(vals[0]);
+    TreeNode *queue[MAX_NODES];
+    int front = 0, back = 0;
+    queue[back++] = root;
+    int i = 1;
+    while (front < back && i < n) {
+        TreeNode *node = queue[front++];
+        if (i < n) {
+            if (vals[i] != NULL_VAL) { node->left = make_node(vals[i]); queue[back++] = node->left; }
+            i++;
+        }
+        if (i < n) {
+            if (vals[i] != NULL_VAL) { node->right = make_node(vals[i]); queue[back++] = node->right; }
+            i++;
+        }
+    }
+    return root;
+}
+
+static void free_tree(TreeNode *root) {
+    if (!root) return;
+    free_tree(root->left);
+    free_tree(root->right);
+    free(root);
+}
+
+/* =====================================================================
+ * LeetCode Solution
+ * ===================================================================== */
+
+static void solve(TreeNode *root) {
     abort();
 }
+
+/* =====================================================================
+ * Main
+ * ===================================================================== */
 
 int main(void)
 {
@@ -64,7 +104,11 @@ int main(void)
         tok = strtok(NULL, " ");
     }
     free(line);
-    solve(vals, n);
+
+    TreeNode *tree = build_tree_from_list(vals, n);
+    solve(tree);
+
     free(vals);
+    free_tree(tree);
     return 0;
 }

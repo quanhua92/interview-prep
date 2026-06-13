@@ -38,9 +38,25 @@
  */
 
 use wasm_libs::*;
+use std::cell::RefCell;
 use std::collections::VecDeque;
+use std::rc::Rc;
 
 const NULL_VAL: i32 = i32::MIN;
+
+/* =====================================================================
+ * Core Data Structure
+ * ===================================================================== */
+
+struct TreeNode {
+    val: i32,
+    left: Option<Rc<RefCell<TreeNode>>>,
+    right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+/* =====================================================================
+ * Environment Utilities
+ * ===================================================================== */
 
 fn parse_tree_line(line: &str) -> Vec<i32> {
     line.split_whitespace()
@@ -48,7 +64,7 @@ fn parse_tree_line(line: &str) -> Vec<i32> {
         .collect()
 }
 
-fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
+fn build_tree_from_list(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
     if vals.is_empty() || vals[0] == NULL_VAL { return None; }
     let root = Rc::new(RefCell::new(TreeNode { val: vals[0], left: None, right: None }));
     let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
@@ -76,49 +92,44 @@ fn build_tree(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
     Some(root)
 }
 
-struct TreeNode {
-    val: i32,
-    left: Option<Rc<RefCell<TreeNode>>>,
-    right: Option<Rc<RefCell<TreeNode>>>,
-}
+/* =====================================================================
+ * LeetCode Solution
+ * ===================================================================== */
 
-use std::cell::RefCell;
-use std::rc::Rc;
-
-impl Solution {
-    fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
-        let mut result = Vec::new();
-        let root = match root { Some(r) => r, None => return result };
-        let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
-        queue.push_back(root);
-        while !queue.is_empty() {
-            let sz = queue.len();
-            let mut level = Vec::new();
-            for _ in 0..sz {
-                let node = queue.pop_front().unwrap();
-                let n = node.borrow();
-                level.push(n.val);
-                let left = n.left.clone();
-                let right = n.right.clone();
-                drop(n);
-                if let Some(l) = left { queue.push_back(l); }
-                if let Some(r) = right { queue.push_back(r); }
-            }
-            result.push(level);
+fn solve(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
+    let mut result = Vec::new();
+    let root = match root { Some(r) => r, None => return result };
+    let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
+    queue.push_back(root);
+    while !queue.is_empty() {
+        let sz = queue.len();
+        let mut level = Vec::new();
+        for _ in 0..sz {
+            let node = queue.pop_front().unwrap();
+            let n = node.borrow();
+            level.push(n.val);
+            let left = n.left.clone();
+            let right = n.right.clone();
+            drop(n);
+            if let Some(l) = left { queue.push_back(l); }
+            if let Some(r) = right { queue.push_back(r); }
         }
-        result
+        result.push(level);
     }
+    result
 }
 
-struct Solution;
+/* =====================================================================
+ * Runtime System Execution Block
+ * ===================================================================== */
 
 fn main() {
     let n = read_int();
     if n == 0 { return; }
     let line = read_line();
     let vals = parse_tree_line(&line);
-    let root = build_tree(&vals);
-    let result = Solution::level_order(root);
+    let root = build_tree_from_list(&vals);
+    let result = solve(root);
     for row in &result { write_ints(row); }
     std::process::exit(0);
 }
