@@ -69,7 +69,7 @@ static TreeNode *make_node(int val) {
 }
 
 /* =====================================================================
- * Codec: Serialize (pre-order, compact — no null markers)
+ * CodecDFS: Pre-order Serialize (compact — no null markers)
  * ===================================================================== */
 
 static int g_ser[MAX_NODES];
@@ -83,7 +83,7 @@ static void preorder_collect(TreeNode *root) {
 }
 
 /* =====================================================================
- * Codec: Deserialize (BST bounds reconstruction)
+ * CodecDFS: Deserialize (BST bounds reconstruction)
  * ===================================================================== */
 
 static int g_ser_pos;
@@ -96,6 +96,99 @@ static TreeNode *build_bst(long long lo, long long hi) {
     TreeNode *root = make_node((int)v);
     root->left = build_bst(lo, v);
     root->right = build_bst(v, hi);
+    return root;
+}
+
+/* =====================================================================
+ * Codec: BFS Level-Order Serialize (with null markers)
+ * ===================================================================== */
+
+#define MAX_BFS_BUF 200000
+
+static void codec_bfs_serialize(TreeNode *root, char *buf) {
+    if (!root) { buf[0] = '\0'; return; }
+    TreeNode *queue[MAX_NODES];
+    int front = 0, back = 0;
+    queue[back++] = root;
+    int pos = 0;
+    int first = 1;
+    while (front < back) {
+        TreeNode *node = queue[front++];
+        if (node) {
+            if (!first) buf[pos++] = ' ';
+            first = 0;
+            pos += sprintf(buf + pos, "%d", node->val);
+            queue[back++] = node->left;
+            queue[back++] = node->right;
+        } else {
+            if (!first) buf[pos++] = ' ';
+            first = 0;
+            strcpy(buf + pos, "null");
+            pos += 4;
+        }
+    }
+    /* trim trailing nulls */
+    while (pos > 0) {
+        if (pos >= 4 && strncmp(buf + pos - 4, "null", 4) == 0 &&
+            (pos == 4 || buf[pos - 5] == ' ')) {
+            pos -= 4;
+            if (pos > 0) pos--; /* remove space */
+        } else {
+            break;
+        }
+    }
+    buf[pos] = '\0';
+}
+
+/* =====================================================================
+ * Codec: BFS Level-Order Deserialize (with null markers)
+ * ===================================================================== */
+
+static int g_bfs_vals[MAX_NODES];
+static int g_bfs_null[MAX_NODES];
+static int g_bfs_count;
+
+static void parse_bfs_data(const char *data) {
+    g_bfs_count = 0;
+    if (!data || data[0] == '\0') return;
+    const char *p = data;
+    while (*p) {
+        while (*p == ' ') p++;
+        if (!*p) break;
+        if (strncmp(p, "null", 4) == 0) {
+            g_bfs_vals[g_bfs_count] = 0;
+            g_bfs_null[g_bfs_count] = 1;
+            p += 4;
+        } else {
+            g_bfs_vals[g_bfs_count] = atoi(p);
+            g_bfs_null[g_bfs_count] = 0;
+            while (*p && *p != ' ') p++;
+        }
+        g_bfs_count++;
+    }
+}
+
+static TreeNode *codec_bfs_deserialize(void) {
+    if (g_bfs_count == 0) return NULL;
+    if (g_bfs_null[0]) return NULL;
+    TreeNode *root = make_node(g_bfs_vals[0]);
+    TreeNode *queue[MAX_NODES];
+    int front = 0, back = 0;
+    queue[back++] = root;
+    int i = 1;
+    while (front < back && i < g_bfs_count) {
+        TreeNode *node = queue[front++];
+        if (i < g_bfs_count && !g_bfs_null[i]) {
+            node->left = make_node(g_bfs_vals[i]);
+            queue[back++] = node->left;
+        }
+        i++;
+        if (i < g_bfs_count && !g_bfs_null[i]) {
+            node->right = make_node(g_bfs_vals[i]);
+            queue[back++] = node->right;
+        }
+        i++;
+    }
     return root;
 }
 
@@ -157,11 +250,10 @@ static int convert_tree_to_list(TreeNode *root) {
  * ===================================================================== */
 
 static TreeNode *solve(TreeNode *root) {
-    if (!root) return NULL;
-    g_ser_len = 0;
-    preorder_collect(root);
-    g_ser_pos = 0;
-    return build_bst(INT_MIN - 1LL, INT_MAX + 1LL);
+    char buf[MAX_BFS_BUF];
+    codec_bfs_serialize(root, buf);
+    parse_bfs_data(buf);
+    return codec_bfs_deserialize();
 }
 
 /* =====================================================================

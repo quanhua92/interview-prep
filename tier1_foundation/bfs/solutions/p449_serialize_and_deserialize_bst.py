@@ -64,22 +64,22 @@ class TreeNode:
 
 
 # =====================================================================
-# 2. LEETCODE SOLUTION: CODEC CLASS (Using Compact BST Boundaries)
+# 2A. LEETCODE SOLUTION: CODEC CLASS (Using Compact BST Boundaries - DFS Pre-order)
 # =====================================================================
-class Codec:
+class CodecDFS:
     def serialize(self, root: Optional[TreeNode]) -> str:
         """Encodes a tree to a single string using Pre-order traversal.
         Completely omits 'null' markers to ensure it is as compact as possible.
         """
         vals = []
-        
+
         def pre_order(node: Optional[TreeNode]):
             if not node:
                 return
             vals.append(str(node.val))
             pre_order(node.left)
             pre_order(node.right)
-            
+
         pre_order(root)
         return " ".join(vals)
 
@@ -89,26 +89,73 @@ class Codec:
         """
         if not data:
             return None
-        
+
         queue = deque(int(x) for x in data.split())
-        
+
         def build(lower: float, upper: float) -> Optional[TreeNode]:
             if not queue:
                 return None
-            
+
             next_val = queue[0]
             if next_val < lower or next_val > upper:
                 return None
-            
+
             queue.popleft()
             root = TreeNode(next_val)
-            
+
             root.left = build(lower, next_val)
             root.right = build(next_val, upper)
-            
+
             return root
-            
+
         return build(float('-inf'), float('inf'))
+
+
+# =====================================================================
+# 2B. LEETCODE SOLUTION: CODEC CLASS (Using BFS Level-Order with null markers)
+# =====================================================================
+class Codec:
+    def serialize(self, root: Optional[TreeNode]) -> str:
+        """Encodes a tree to a single string using BFS level-order traversal.
+        Includes 'null' markers to preserve tree structure.
+        """
+        if not root:
+            return ""
+        queue = deque([root])
+        out = []
+        while queue:
+            node = queue.popleft()
+            if node:
+                out.append(str(node.val))
+                queue.append(node.left)
+                queue.append(node.right)
+            else:
+                out.append("null")
+        while out and out[-1] == "null":
+            out.pop()
+        return " ".join(out)
+
+    def deserialize(self, data: str) -> Optional[TreeNode]:
+        """Decodes your encoded data to tree using level-order reconstruction."""
+        if not data:
+            return None
+        values = data.split()
+        if values[0] == "null":
+            return None
+        root = TreeNode(int(values[0]))
+        queue = deque([root])
+        i = 1
+        while queue:
+            node = queue.popleft()
+            if i < len(values) and values[i] != "null":
+                node.left = TreeNode(int(values[i]))
+                queue.append(node.left)
+            i += 1
+            if i < len(values) and values[i] != "null":
+                node.right = TreeNode(int(values[i]))
+                queue.append(node.right)
+            i += 1
+        return root
 
 
 # =====================================================================

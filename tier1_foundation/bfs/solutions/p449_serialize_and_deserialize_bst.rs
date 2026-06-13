@@ -71,12 +71,12 @@ impl TreeNode {
 }
 
 /* =====================================================================
- * Codec (Using Compact BST Boundaries)
+ * CodecDFS (Using Compact BST Bounds — Pre-order)
  * ===================================================================== */
 
-struct Codec;
+struct CodecDFS;
 
-impl Codec {
+impl CodecDFS {
     fn serialize(root: &Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
         let mut vals = Vec::new();
         Self::pre_order(root, &mut vals);
@@ -108,6 +108,64 @@ impl Codec {
         let root = TreeNode::new(val);
         root.borrow_mut().left = Self::build_bst(data, idx, lo, v);
         root.borrow_mut().right = Self::build_bst(data, idx, v, hi);
+        Some(root)
+    }
+}
+
+/* =====================================================================
+ * CodecBFS (BFS Level-Order with null markers)
+ * ===================================================================== */
+
+struct CodecBFS;
+
+impl CodecBFS {
+    fn serialize(root: &Option<Rc<RefCell<TreeNode>>>) -> String {
+        match root {
+            None => String::new(),
+            Some(r) => {
+                let mut queue: VecDeque<Option<Rc<RefCell<TreeNode>>>> = VecDeque::new();
+                queue.push_back(Some(r.clone()));
+                let mut out: Vec<String> = Vec::new();
+                while !queue.is_empty() {
+                    let node = queue.pop_front().unwrap();
+                    match node {
+                        Some(n) => {
+                            out.push(n.borrow().val.to_string());
+                            queue.push_back(n.borrow().left.clone());
+                            queue.push_back(n.borrow().right.clone());
+                        }
+                        None => { out.push("null".to_string()); }
+                    }
+                }
+                while out.last().map_or(false, |s| s == "null") { out.pop(); }
+                out.join(" ")
+            }
+        }
+    }
+
+    fn deserialize(data: &str) -> Option<Rc<RefCell<TreeNode>>> {
+        if data.is_empty() { return None; }
+        let tokens: Vec<&str> = data.split_whitespace().collect();
+        if tokens[0] == "null" { return None; }
+        let root = TreeNode::new(tokens[0].parse().unwrap());
+        let mut queue: VecDeque<Rc<RefCell<TreeNode>>> = VecDeque::new();
+        queue.push_back(root.clone());
+        let mut i = 1;
+        while !queue.is_empty() && i < tokens.len() {
+            let node = queue.pop_front().unwrap();
+            if i < tokens.len() && tokens[i] != "null" {
+                let child = TreeNode::new(tokens[i].parse().unwrap());
+                node.borrow_mut().left = Some(child.clone());
+                queue.push_back(child);
+            }
+            i += 1;
+            if i < tokens.len() && tokens[i] != "null" {
+                let child = TreeNode::new(tokens[i].parse().unwrap());
+                node.borrow_mut().right = Some(child.clone());
+                queue.push_back(child);
+            }
+            i += 1;
+        }
         Some(root)
     }
 }
@@ -183,8 +241,8 @@ fn convert_tree_to_list(root: &Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
  * ===================================================================== */
 
 fn solve(root: &Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
-    let data = Codec::serialize(root);
-    Codec::deserialize(&data)
+    let data = CodecBFS::serialize(root);
+    CodecBFS::deserialize(&data)
 }
 
 /* =====================================================================

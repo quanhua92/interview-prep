@@ -71,10 +71,10 @@ struct TreeNode {
 };
 
 /* =====================================================================
- * Codec Class (Using Compact BST Boundaries)
+ * CodecDFS Class (Using Compact BST Bounds)
  * ===================================================================== */
 
-class Codec {
+class CodecDFS {
 public:
     vector<int> serialize(TreeNode *root) {
         vector<int> vals;
@@ -101,6 +101,64 @@ public:
             return root;
         };
         return build(LLONG_MIN, LLONG_MAX);
+    }
+};
+
+/* =====================================================================
+ * Codec Class (BFS Level-Order with null markers)
+ * ===================================================================== */
+
+class Codec {
+public:
+    string serialize(TreeNode *root) {
+        if (!root) return "";
+        queue<TreeNode*> q;
+        q.push(root);
+        vector<string> out;
+        while (!q.empty()) {
+            TreeNode *node = q.front(); q.pop();
+            if (node) {
+                out.push_back(to_string(node->val));
+                q.push(node->left);
+                q.push(node->right);
+            } else {
+                out.push_back("null");
+            }
+        }
+        while (!out.empty() && out.back() == "null") out.pop_back();
+        string result;
+        for (size_t i = 0; i < out.size(); i++) {
+            if (i > 0) result += " ";
+            result += out[i];
+        }
+        return result;
+    }
+
+    TreeNode *deserialize(const string &data) {
+        if (data.empty()) return nullptr;
+        istringstream iss(data);
+        string tok;
+        vector<string> tokens;
+        while (iss >> tok) tokens.push_back(tok);
+        if (tokens[0] == "null") return nullptr;
+        TreeNode *root = new TreeNode(stoi(tokens[0]));
+        queue<TreeNode*> q;
+        q.push(root);
+        size_t i = 1;
+        while (!q.empty() && i < tokens.size()) {
+            TreeNode *node = q.front(); q.pop();
+            if (i < tokens.size() && tokens[i] != "null") {
+                node->left = new TreeNode(stoi(tokens[i]));
+                q.push(node->left);
+            }
+            i++;
+            if (i < tokens.size() && tokens[i] != "null") {
+                node->right = new TreeNode(stoi(tokens[i]));
+                q.push(node->right);
+            }
+            i++;
+        }
+        return root;
     }
 };
 

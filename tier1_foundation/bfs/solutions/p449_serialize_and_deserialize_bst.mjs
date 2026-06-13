@@ -30,10 +30,10 @@ class TreeNode {
 }
 
 /* =====================================================================
- * Codec Class (Using Compact BST Boundaries)
+ * CodecDFS Class (Using Compact BST Bounds)
  * ===================================================================== */
 
-class Codec {
+class CodecDFS {
     serialize(root) {
         const vals = [];
         function preOrder(node) {
@@ -60,6 +60,55 @@ class Codec {
             return root;
         }
         return build(-Infinity, Infinity);
+    }
+}
+
+/* =====================================================================
+ * Codec Class (BFS Level-Order with null markers)
+ * ===================================================================== */
+
+class Codec {
+    serialize(root) {
+        if (!root) return '';
+        const queue = [root];
+        const out = [];
+        while (queue.length > 0) {
+            const node = queue.shift();
+            if (node) {
+                out.push(String(node.val));
+                queue.push(node.left);
+                queue.push(node.right);
+            } else {
+                out.push('null');
+            }
+        }
+        while (out.length > 0 && out[out.length - 1] === 'null') {
+            out.pop();
+        }
+        return out.join(' ');
+    }
+
+    deserialize(data) {
+        if (!data || data.length === 0) return null;
+        const tokens = data.split(' ');
+        if (tokens[0] === 'null') return null;
+        const root = new TreeNode(parseInt(tokens[0], 10));
+        const queue = [root];
+        let i = 1;
+        while (queue.length > 0 && i < tokens.length) {
+            const node = queue.shift();
+            if (i < tokens.length && tokens[i] !== 'null') {
+                node.left = new TreeNode(parseInt(tokens[i], 10));
+                queue.push(node.left);
+            }
+            i++;
+            if (i < tokens.length && tokens[i] !== 'null') {
+                node.right = new TreeNode(parseInt(tokens[i], 10));
+                queue.push(node.right);
+            }
+            i++;
+        }
+        return root;
     }
 }
 
