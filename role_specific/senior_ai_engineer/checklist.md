@@ -13,6 +13,11 @@ Use this checklist to track preparation for a Senior AI Engineer interview focus
 - [ ] **Agent Design & Orchestration**: Design production agents with tool error contracts, loop detection, and HITL approval gates. Practice LangGraph state machines with typed state, reducers, and checkpointing. Prepare to discuss trade-offs between Multi-Agent Swarms vs. Single LLM with tools (e.g., context dilution, isolating failures).
 - [ ] **State & Memory Management**: Design long-term vs short-term memory mechanisms across multiple agentic turns to prevent context overflow while maintaining conversational context.
 - [ ] **Async Programming**: Review Python asyncio patterns for AI systems — concurrent LLM calls with `asyncio.gather`, streaming with async generators, backpressure via semaphores, connection pooling with aiohttp.
+- [ ] **Azure AI Foundry & Azure AI Search**: Understand Foundry as unified AI platform (model catalog, Prompt Flow, agent framework, evaluations, tracing). Know Azure AI Search hybrid search (BM25 + vector + RRF), semantic ranking, index schema design (vector/searchable/filterable/retrievable fields), and document-level RBAC. Be ready to design an end-to-end RAG pipeline on this stack.
+- [ ] **Vector Database Architecture**: Compare Pinecone, Qdrant, Weaviate, Azure AI Search, pgvector, ChromaDB. Understand HNSW vs IVF indexing, PQ/BQ quantization, metadata pre-filtering, per-query vs allocation-based pricing. Choose the right vector DB by workload.
+- [ ] **Redshift as AI Data Source**: Design NL2SQL pipelines (schema catalog → LLM → SQL validation → execution → result synthesis). Know Redshift Spectrum for S3-based data, Redshift ML for in-warehouse embeddings, and the dual retrieval pattern (Redshift + vector DB).
+- [ ] **Unstructured Data Pipelines**: Design ingestion pipelines for PDFs with tables, specs, and factory manuals. Know Azure Document Intelligence, semantic chunking (section/table boundaries), table extraction, metadata enrichment, and data quality validation before indexing.
+- [ ] **Microsoft Copilot Integration**: Know Copilot Studio + Azure AI Foundry integration patterns (HTTP Request, MCP Connector, Foundry models as primary model). Understand the progressive maturity model and when to use each platform alone vs together.
 - [ ] **Retrieval & Generation Evaluation**: Design complete evaluation pipelines with RAGAS, golden sets, LLM-as-judge with debiasing, and offline-to-online evaluation bridges. Practice implementing golden-set CI.
 
 ### Round 2: Hands-on & System Design
@@ -24,6 +29,9 @@ Use this checklist to track preparation for a Senior AI Engineer interview focus
 - [ ] **Deployment Strategy**: Compare serverless vs Kubernetes for LLM serving by workload pattern. Practice GPU cluster sizing (weights + KV cache math). Know vLLM, continuous batching, and quantization trade-offs. Address system scalability and cost optimization (latency vs. API costs) in iterative agentic calls.
 - [ ] **LangGraph**: Build LangGraph workflows with ReAct pattern, reducers for state aggregation, conditional edges, checkpointing, and HITL integration. Practice subgraph composition to prevent deadlocks in multi-agent workflows.
 - [ ] **Observability & Tracing**: Design observability stacks with OpenTelemetry + OpenInference. Practice implementing distributed tracing across retrieval, generation, and tool execution. Track agentic-specific metrics like success rate, tool usage distribution, and step-by-step latency.
+- [ ] **Azure AI Foundry Deployment**: Design and deploy a complete RAG pipeline on Azure AI Foundry. Configure Prompt Flow (DAG-based prompt orchestration), Azure AI Search index with hybrid search, Semantic Kernel agent orchestration, and Foundry evaluations. Know Managed Identity auth, index schema design, and scaling patterns.
+- [ ] **Redshift + AI Integration**: Design NL2SQL pipelines with schema catalog management, SQL validation (whitelist, LIMIT, no DDL), timeout budgets, and result caching. Configure Redshift Spectrum for S3-based data bridging. Track NL2SQL query costs separately from warehouse queries.
+- [ ] **Copilot Studio + Foundry Integration**: Architect the three integration patterns (HTTP Request, MCP Connector, Foundry Model as Primary). Design a progressive deployment: Copilot Studio prototype → Foundry backend for RAG/multi-agent → fine-tuned models. Know cost models for both platforms.
 
 ### Round 3: Leadership / Managerial
 
@@ -51,6 +59,10 @@ Use this checklist to track preparation for a Senior AI Engineer interview focus
 10. Design the complete evaluation pipeline (offline + online) for a production RAG system. What gates a deployment?
 11. Compare a Multi-Agent Swarm architecture to a single LLM with multiple tools. What are the key trade-offs in terms of context dilution and failure isolation?
 12. How do you implement a "Human-in-the-Loop" (HITL) mechanism in a reasoning-planning-acting-observing loop without creating significant latency bottlenecks?
+13. Design a RAG pipeline on Azure AI Foundry + Azure AI Search for a manufacturing company. Walk through PDF ingestion, index design, hybrid search configuration, and Copilot Studio delivery.
+14. Compare Pinecone, Qdrant, Weaviate, and Azure AI Search as vector databases. Which would you choose for: (a) a startup with 1M vectors, (b) an enterprise with 50M vectors + RBAC, (c) a team already on Postgres?
+15. Design a dual retrieval system: the AI agent queries Redshift for structured production data and Azure AI Search for factory spec PDFs. How do you route, execute, and synthesize results?
+16. Design an ingestion pipeline for factory PDF manuals containing tables, diagrams, and safety procedures. How do you handle table extraction and ensure chunk quality?
 
 ### Round 2 Questions
 
@@ -66,6 +78,10 @@ Use this checklist to track preparation for a Senior AI Engineer interview focus
 10. Design a canary deployment for a new prompt template. What automated checks gate the rollout?
 11. How do you implement multi-layered content filtering (input filtering, output moderation, deterministic rules) to ensure production safety for an agentic system?
 12. What specific metrics and observability patterns would you implement for an agentic workflow to monitor success rates, tool usage distribution, and step-by-step latency?
+13. Design a Prompt Flow in Azure AI Foundry for a RAG pipeline with parallel retrieval from Azure AI Search and Redshift, conditional branching based on query type, and result synthesis.
+14. Your Azure AI Search index has 50M vectors and hybrid queries are taking 800ms. Walk through your optimization strategy — index restructuring, quantization, caching, or architecture change.
+15. Design an NL2SQL pipeline for Redshift. How do you handle schema management, SQL validation, injection prevention, ambiguous column names, and timeout budgets?
+16. Walk through deploying a Copilot Studio + Azure AI Foundry integration. What integration pattern do you use? How do you handle failures when the Foundry backend is down?
 
 ### Round 3 Questions
 
@@ -87,6 +103,8 @@ Use this checklist to track preparation for a Senior AI Engineer interview focus
 - [ ] Study [Notification Service](../../system_design/notification_service/) for event-driven architecture and async pipeline patterns.
 - [ ] Map RAG evaluation requirements to [production_engineering/](../../production_engineering/) monitoring and deployment practices.
 - [ ] Connect LLM serving decisions to [cs_fundamentals/](../../cs_fundamentals/) for networking (HTTP/2, SSE), concurrency (async I/O), and OS concepts (memory management, GPU scheduling).
+- [ ] Study Azure AI Search hybrid search architecture for integration with [system_design/distributed_cache/](../../system_design/distributed_cache/) caching patterns (semantic caching for vector search results).
+- [ ] Review Redshift architecture and NL2SQL patterns as bridge between [cs_fundamentals/databases/](../../cs_fundamentals/) SQL knowledge and AI system design.
 
 ## Practice Log
 

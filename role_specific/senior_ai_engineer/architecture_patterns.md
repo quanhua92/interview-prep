@@ -156,3 +156,131 @@ This document covers production-grade architectural patterns you should be prepa
 - Not modeling peak-to-average ratios. Production sees 3-5x peak-to-average. Budget on peak, not average.
 
 **Interview Approach:** Break the answer into layers, state assumptions explicitly (query volume, model choice, context size), and walk through the token math with real pricing. Stakeholders want to see you understand *what drives cost* and can make trade-off decisions — not just a single number. Show the model selection impact: "If we use Haiku instead of Sonnet, generation drops from $4K to $1.3K/month. For this use case, Haiku quality is sufficient, so I recommend starting there and upgrading only if evaluation shows quality gaps."
+
+## 5. Azure AI Foundry RAG Pipeline
+
+**The Challenge:** Building an enterprise RAG system on Azure where structured data lives in Redshift and unstructured data (PDFs, specs, factory manuals) must be retrieved, synthesized, and served through Microsoft Copilot.
+
+**Architecture Flow:**
+
+```
+Unstructured Sources              Structured Sources
+(PDFs, specs, manuals)           (Redshift data warehouse)
+        |                                 |
+   [Azure Document            [NL2SQL Pipeline]
+    Intelligence]                    |
+        |                            |
+   [Chunking + Embedding]      [SQL → Results]
+        |                            |
+   [Azure AI Search              |
+    Hybrid Index]                  |
+   (vector + BM25 +               |
+    semantic ranking)              |
+        |                            |
+        └──────────┬─────────────────┘
+                   |
+            [Query Router]
+            (classifier decides:
+             vector search, SQL, or both)
+                   |
+            [Azure AI Foundry Agent]
+            (Semantic Kernel orchestration)
+                   |
+           [LLM Synthesis]
+           (grounded response
+            with citations)
+                   |
+            [Copilot Studio]
+            (conversational UI,
+             Microsoft 365 integration)
+```
+
+**Key Design Decisions:**
+
+| Decision | Option A | Option B | When to Choose A |
+|----------|----------|----------|-----------------|
+| Retrieval Engine | Azure AI Search (hybrid) | Pinecone / Qdrant (vector-only) | Already on Azure; need keyword + vector; need RBAC at index level |
+| Orchestration | Azure AI Foundry + Semantic Kernel | LangGraph (open-source) | Microsoft ecosystem; need evaluations/tracing/A/B built-in |
+| Frontend | Copilot Studio | Custom FastAPI app | Need low-code conversational AI; M365 integration; rapid prototyping |
+| Prompt Orchestration | Prompt Flow (DAG) | Code-only pipeline | Non-developers need to iterate; need visual debugging; version control |
+
+**Azure AI Search Index Design:**
+- **Vector field**: `content_vector` (1536-dim for text-embedding-3-small, or 3072-dim for large)
+- **Searchable fields**: `content` (chunked text), `title`, `section`
+- **Filterable fields**: `tenant_id`, `document_type` (spec, manual, report), `department`, `date`
+- **Retrievable fields**: `content`, `source_url`, `page_number`
+- **Hybrid search**: `searchMode=hybrid` combines BM25 + vector, merged via RRF
+- **Semantic ranking**: Optional layer on top of hybrid for improved relevance (adds latency + cost)
+
+**Unstructured Data Ingestion Pipeline:**
+
+1. **Document Intelligence (Azure):** OCR, layout detection, table extraction from PDFs
+2. **Semantic Chunking:** Split at section/table boundaries (not naive fixed-size)
+3. **Metadata Enrichment:** Tag with source type, department, date, language
+4. **Embedding Generation:** Azure OpenAI text-embedding-3-small via batch API
+5. **Indexing:** Push to Azure AI Search with pre-filtering fields
+6. **Quality Validation:** Spot-check extracted tables, verify chunk coherence
+
+**Copilot Studio Integration (3 patterns):**
+
+1. **HTTP Request:** Copilot Studio calls Foundry agent endpoint via HTTP. Simplest pattern.
+2. **MCP Connector:** Copilot Studio uses Model Context Protocol to connect to Foundry tools. Standardized, extensible.
+3. **Foundry Model as Primary:** Copilot Studio uses a Foundry fine-tuned model directly. Best for domain-specific language.
+
+**Interview Approach:** Start with the user's question ("What production data does factory X have?"), walk through query routing (structured → NL2SQL on Redshift; unstructured → Azure AI Search hybrid), explain the dual-retrieval synthesis, and show the Copilot Studio delivery layer. Emphasize why Azure AI Search hybrid beats pure vector search for enterprise specs (exact matches on part numbers, spec codes).
+
+## 6. Redshift + AI Dual Retrieval Pattern
+
+**The Challenge:** An AI agent needs to answer questions that span structured operational data (production metrics in Redshift) and unstructured knowledge (factory manuals, safety specs in vector DB). Neither backend alone is sufficient.
+
+**Architecture Flow:**
+
+1. **Query Classification:** LLM classifies the user question:
+   - Type A: Pure structured (e.g., "What was the average yield for line 3 last quarter?") → NL2SQL → Redshift
+   - Type B: Pure unstructured (e.g., "What is the shutdown procedure for pump X?") → Vector Search → Azure AI Search
+   - Type C: Hybrid (e.g., "Why did line 3 yield drop compared to spec?") → Both backends → Synthesis
+
+2. **NL2SQL Pipeline (for Type A/C):**
+   - Schema catalog: Maintain up-to-date table/column descriptions in a structured format
+   - Prompt template: Include relevant schema subset + user question → LLM generates SQL
+   - SQL validation: Parse + sanitize (prevent injection), check against allowed tables list
+   - Execution: Execute on Redshift with timeout budget (< 5s)
+   - Result formatting: Convert query results to natural language summary table
+
+3. **Vector Retrieval (for Type B/C):**
+   - Azure AI Search hybrid query: BM25 + vector, filtered by `factory_id` and `document_type`
+   - Return top-5 chunks with source citations
+
+4. **Synthesis (for Type C):**
+   - LLM receives: user question + Redshift result summary + retrieved document chunks
+   - Produces grounded answer with citations from both sources
+
+**Key Design Decisions:**
+
+| Decision | Recommendation | Rationale |
+|----------|----------------|-----------|
+| NL2SQL model | GPT-4o or Claude Sonnet | Requires strong reasoning for complex joins and aggregations |
+| SQL safety | Whitelist of allowed tables + columns | Never allow arbitrary SQL against production Redshift |
+| Result limits | LIMIT 100 on SQL queries; summarize with LLM | Prevent massive result sets from blowing token budget |
+| Cache strategy | Semantic cache for Redshift results (same question structure = reuse) | Redshift queries are expensive; cache hit = skip query entirely |
+| Schema freshness | Cron job every 6h refreshing schema catalog | Stale schemas → wrong SQL generation → wrong answers |
+
+**Interview Approach:** Walk through a concrete example: "Show me the defect rate for product X compared to its safety spec." Explain: (1) Query classified as Type C, (2) NL2SQL queries Redshift for defect_rate, (3) Vector search retrieves the safety spec PDF chunk, (4) LLM synthesizes comparison with both sources cited. Highlight the schema catalog and SQL safety mechanisms.
+
+## 7. Vector Database Selection Guide
+
+**The Challenge:** Choosing the right vector database for a production RAG system. The interview tests whether you understand the trade-offs between managed, self-hosted, and embedded solutions.
+
+**Decision Matrix:**
+
+| Vector DB | Scaling Model | Best For | Key Trade-off |
+|-----------|--------------|----------|---------------|
+| **Azure AI Search** | Managed, vCore allocation | Azure-native RAG, hybrid search, enterprise RBAC | Tied to Azure ecosystem; higher cost than self-hosted at scale |
+| **Pinecone Serverless** | Managed, per-RU billing | Quick setup, variable query volume, serverless-first | Per-query cost at scale: 50GB namespace = 50 RUs/query. At 50K queries/day → $40/mo read costs alone |
+| **Qdrant Cloud** | Managed, RAM/vCPU allocation | Consistent performance, predictable cost, medium-high scale | Zero per-query billing. $96/mo handles 10-20M vectors |
+| **Weaviate Cloud** | Managed, per-dimension billing | Semantic search, GraphQL API, auto-scaling | Expensive at scale: 10M × 1536-dim ≈ $1,459/mo without compression; $45-365/mo with PQ/BQ |
+| **Self-hosted Qdrant** | DIY, single node or cluster | Cost control at high volume, full control | $20-96/mo Droplet; requires ops expertise; no HA without cluster |
+| **pgvector** | Embedded (Postgres extension) | <5M vectors, already running Postgres, need SQL joins | No separate infra cost; limited to Postgres scaling; HNSW only |
+| **ChromaDB** | Embedded/local | Prototyping, local dev, small-scale | Not production-ready at scale; no built-in RBAC |
+
+**Interview Approach:** Start with requirements (scale, cost, latency, RBAC, ecosystem), narrow down using the matrix, and justify. For Azure-heavy clients, default to Azure AI Search. For cost-sensitive startups, self-hosted Qdrant or pgvector. For hybrid search requirements, Azure AI Search or Weaviate (both do BM25 + vector natively).
