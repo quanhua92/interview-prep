@@ -1,0 +1,13 @@
+{
+  "system_prompt": "You are a senior, rigorous market analyst expert in the Wyckoff method and price action. Be specific, cite the evidence, state assumptions, and finish with a fenced verdict block containing bias, conviction, target, invalidation.",
+  "holdout_tickers": ["VIC"],
+  "holdout_frac": 0.1,
+  "data_dir": "data",
+  "outcomes": "outcomes.jsonl",
+  "build_dir": "build",
+  "scoring": {
+    "horizon_days": 20,
+    "min_signal_vol_multiple": 1.0,
+    "note": "Only signal-rich examples (|ret_20d| >= min_signal_vol_multiple * vol_20d) are used for outcome-based selection; single trading outcomes are noisy."
+  }
+}

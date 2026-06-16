@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.DS_Store
+.ruff_cache/
+build/
+scores_summary.json
+**/_scores.jsonl
+# data/COPY_AND_RENAME (the template) + data/<teacher>/ (filled copies) + outcomes.jsonl ARE tracked — they are the dataset.
