@@ -48,21 +48,41 @@ Template (python3):
     # param_1 = obj.pick()
 """
 
+import random
+
 from src.wasm_libs.py.io import *
+
+random.seed(42)
+
+
+class Solution:
+    def __init__(self, rects: list[list[int]]):
+        self.rects = rects
+        self.prefix = []
+        total = 0
+        for x1, y1, x2, y2 in rects:
+            total += (x2 - x1 + 1) * (y2 - y1 + 1)
+            self.prefix.append(total)
+        self.total = total
+
+    def pick(self) -> list[int]:
+        t = random.randint(1, self.total)
+        lo, hi = 0, len(self.prefix) - 1
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if self.prefix[mid] >= t:
+                hi = mid
+            else:
+                lo = mid + 1
+        x1, y1, x2, y2 = self.rects[lo]
+        return [random.randint(x1, x2), random.randint(y1, y2)]
 
 
 def solve(rects: list[list[int]]) -> list[int]:
-    prefix = []
-    total = 0
-    for x1, y1, x2, y2 in rects:
-        area = (x2 - x1 + 1) * (y2 - y1 + 1)
-        total += area
-        prefix.append(total)
-    return prefix
+    return Solution(rects).pick()
 
 
 if __name__ == "__main__":
-    cols = read_int()
-    rects = [read_ints() for _ in range(cols)]
-    result = solve(rects)
-    write_ints(result)
+    n = read_int()
+    rects = [read_ints() for _ in range(n)]
+    write_ints(solve(rects))

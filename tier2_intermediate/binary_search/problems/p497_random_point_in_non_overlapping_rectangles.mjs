@@ -48,16 +48,25 @@
  *     # param_1 = obj.pick()
  */
 
-import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
+import { readInts, readInt, writeInts } from '../../../wasm_libs/js/io.mjs';
+
+class Solution {
+  constructor(rects) {
+    throw new Error("NotImplementedError");
+  }
+
+  pick() {
+    throw new Error("NotImplementedError");
+  }
+}
 
 function solve(rects) {
-    throw new Error("NotImplementedError");
+  return new Solution(rects).pick();
 }
 
-const cols = readInt();
+const n = readInt();
 const rects = [];
-for (let i = 0; i < cols; i++) {
-    rects.push(readInts());
+for (let i = 0; i < n; i++) {
+  rects.push(readInts());
 }
-const result = solve(rects);
-writeInts(result);
+writeInts(solve(rects));

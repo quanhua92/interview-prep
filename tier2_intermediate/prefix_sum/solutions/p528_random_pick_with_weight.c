@@ -65,25 +65,42 @@
 #include "io.h"
 #include <stdlib.h>
 
-int *random_pick_with_weight(int *w, int wSize, int *retSize)
-{
-    int *prefix = (int *)malloc(wSize * sizeof(int));
-    prefix[0] = w[0];
-    for (int i = 1; i < wSize; i++) {
-        prefix[i] = prefix[i - 1] + w[i];
+typedef struct {
+    int n;       /* number of weights */
+    int *prefix; /* cumulative weights, length n */
+    int total;   /* grand total */
+} Solution;
+
+static void solution_init(Solution *sol, int *w, int n) {
+    sol->n = n;
+    sol->prefix = (int *)malloc(n * sizeof(int));
+    int total = 0;
+    for (int i = 0; i < n; i++) {
+        total += w[i];
+        sol->prefix[i] = total;
     }
-    *retSize = wSize;
-    return prefix;
+    sol->total = total;
+}
+
+static int solution_pickIndex(Solution *sol) {
+    int t = rand() % sol->total;
+    int lo = 0, hi = sol->n - 1;
+    while (lo < hi) {
+        int mid = (lo + hi) / 2;
+        if (sol->prefix[mid] > t) hi = mid;
+        else lo = mid + 1;
+    }
+    return lo;
 }
 
 int main(void)
 {
+    srand(42);
     int n;
     int *w = read_ints(&n);
-    int retSize;
-    int *result = random_pick_with_weight(w, n, &retSize);
-    write_ints(result, retSize);
+    Solution sol;
+    solution_init(&sol, w, n);
+    write_int(solution_pickIndex(&sol));
     free(w);
-    free(result);
     return 0;
 }

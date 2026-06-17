@@ -51,23 +51,61 @@
 #include "io.h"
 #include <stdlib.h>
 
+typedef struct {
+    int n;       /* number of rectangles */
+    int *rects;  /* flattened: 4*n ints (x1,y1,x2,y2 per rect) */
+    int *prefix; /* cumulative point counts, length n */
+    int total;   /* grand total point count */
+} Solution;
+
+static void solution_init(Solution *sol, int *rects, int n) {
+    sol->n = n;
+    sol->rects = rects;
+    sol->prefix = (int *)malloc(n * sizeof(int));
+    int total = 0;
+    for (int i = 0; i < n; i++) {
+        int x1 = rects[4 * i], y1 = rects[4 * i + 1];
+        int x2 = rects[4 * i + 2], y2 = rects[4 * i + 3];
+        total += (x2 - x1 + 1) * (y2 - y1 + 1);
+        sol->prefix[i] = total;
+    }
+    sol->total = total;
+}
+
+static void solution_pick(Solution *sol, int *out_x, int *out_y) {
+    int t = rand() % sol->total;
+    int lo = 0, hi = sol->n - 1;
+    while (lo < hi) {
+        int mid = (lo + hi) / 2;
+        if (sol->prefix[mid] > t) hi = mid;
+        else lo = mid + 1;
+    }
+    int x1 = sol->rects[4 * lo], y1 = sol->rects[4 * lo + 1];
+    int x2 = sol->rects[4 * lo + 2], y2 = sol->rects[4 * lo + 3];
+    *out_x = x1 + rand() % (x2 - x1 + 1);
+    *out_y = y1 + rand() % (y2 - y1 + 1);
+}
+
 int main(void)
 {
-    int cnt;
-    int *header = read_ints(&cnt);
-    int num_rects = header[0];
-    free(header);
-    int *result = (int *)malloc(num_rects * sizeof(int));
-    int prefix_total = 0;
-    for (int i = 0; i < num_rects; i++) {
+    srand(42);
+    int n = read_int();
+    int *rects = (int *)malloc(4 * n * sizeof(int));
+    for (int i = 0; i < n; i++) {
         int rc;
         int *row = read_ints(&rc);
-        int x1 = row[0], y1 = row[1], x2 = row[2], y2 = row[3];
-        prefix_total += (x2 - x1 + 1) * (y2 - y1 + 1);
-        result[i] = prefix_total;
+        rects[4 * i]     = row[0];
+        rects[4 * i + 1] = row[1];
+        rects[4 * i + 2] = row[2];
+        rects[4 * i + 3] = row[3];
         free(row);
     }
-    write_ints(result, num_rects);
-    free(result);
+    Solution sol;
+    solution_init(&sol, rects, n);
+    int x, y;
+    solution_pick(&sol, &x, &y);
+    int pt[2] = {x, y};
+    write_ints(pt, 2);
+    free(rects);
     return 0;
 }

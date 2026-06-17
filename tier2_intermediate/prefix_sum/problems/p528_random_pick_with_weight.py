@@ -62,14 +62,25 @@ Template (python3):
     # param_1 = obj.pickIndex()
 """
 
+import random
+
 from src.wasm_libs.py.io import *
 
+random.seed(42)
 
-def solve(w: list[int]) -> list[int]:
-    raise NotImplementedError
+
+class Solution:
+    def __init__(self, w: list[int]):
+        raise NotImplementedError
+
+    def pickIndex(self) -> int:
+        raise NotImplementedError
+
+
+def solve(w: list[int]) -> int:
+    return Solution(w).pickIndex()
 
 
 if __name__ == "__main__":
     w = read_ints()
-    result = solve(w)
-    write_ints(result)
+    write_int(solve(w))

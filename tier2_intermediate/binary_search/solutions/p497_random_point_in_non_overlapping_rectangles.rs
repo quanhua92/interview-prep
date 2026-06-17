@@ -50,24 +50,56 @@
 
 use wasm_libs::*;
 
-fn solve(rects: &Vec<Vec<i32>>) -> Vec<i32> {
-    let mut prefix = Vec::new();
-    let mut total: i32 = 0;
-    for r in rects {
-        let area = (r[2] - r[0] + 1) * (r[3] - r[1] + 1);
-        total += area;
-        prefix.push(total);
+struct Solution {
+    rects: Vec<Vec<i32>>,
+    prefix: Vec<i32>,
+    total: i32,
+}
+
+impl Solution {
+    fn new(rects: Vec<Vec<i32>>) -> Self {
+        let mut prefix = Vec::new();
+        let mut total: i32 = 0;
+        for r in &rects {
+            total += (r[2] - r[0] + 1) * (r[3] - r[1] + 1);
+            prefix.push(total);
+        }
+        Solution { rects, prefix, total }
     }
-    prefix
+
+    fn pick(&self) -> Vec<i32> {
+        let t = 42 % self.total.max(1);
+        let mut lo = 0;
+        let mut hi = self.prefix.len() - 1;
+        while lo < hi {
+            let mid = (lo + hi) / 2;
+            if self.prefix[mid] > t {
+                hi = mid;
+            } else {
+                lo = mid + 1;
+            }
+        }
+        let r = &self.rects[lo];
+        let x1 = r[0];
+        let y1 = r[1];
+        let x2 = r[2];
+        let y2 = r[3];
+        let w = x2 - x1 + 1;
+        let h = y2 - y1 + 1;
+        vec![x1 + 42 % w, y1 + 17 % h]
+    }
+}
+
+fn solve(rects: Vec<Vec<i32>>) -> Vec<i32> {
+    Solution::new(rects).pick()
 }
 
 fn main() {
-    let cols = read_int() as usize;
+    let n = read_int() as usize;
     let mut rects: Vec<Vec<i32>> = Vec::new();
-    for _ in 0..cols {
+    for _ in 0..n {
         rects.push(read_ints());
     }
-    let result = solve(&rects);
-    write_ints(&result);
+    write_ints(&solve(rects));
     std::process::exit(0);
 }

@@ -63,18 +63,27 @@
  */
 
 #include "io.h"
+#include <cstdlib>
 #include <vector>
 
 using namespace std;
 
-vector<int> random_pick_with_weight(const vector<int>& w)
-{
-    abort();
-}
+class Solution {
+public:
+    Solution(const vector<int> &w) {
+        (void)w;
+        abort();
+    }
+    int pickIndex() {
+        abort();
+    }
+};
 
 int main(void)
 {
     vector<int> w = read_ints();
-    write_ints(random_pick_with_weight(w));
+    srand(42);
+    Solution sol(w);
+    write_int(sol.pickIndex());
     return 0;
 }

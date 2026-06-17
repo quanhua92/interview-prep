@@ -65,19 +65,30 @@
 #include "io.h"
 #include <stdlib.h>
 
-int *random_pick_with_weight(int *w, int wSize, int *retSize)
-{
+typedef struct {
+    int n;       /* number of weights */
+    int *prefix; /* cumulative weights, length n */
+    int total;   /* grand total */
+} Solution;
+
+static void solution_init(Solution *sol, int *w, int n) {
+    (void)sol; (void)w; (void)n;
+    abort();
+}
+
+static int solution_pickIndex(Solution *sol) {
+    (void)sol;
     abort();
 }
 
 int main(void)
 {
+    srand(42);
     int n;
     int *w = read_ints(&n);
-    int retSize;
-    int *result = random_pick_with_weight(w, n, &retSize);
-    write_ints(result, retSize);
+    Solution sol;
+    solution_init(&sol, w, n);
+    write_int(solution_pickIndex(&sol));
     free(w);
-    free(result);
     return 0;
 }

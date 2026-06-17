@@ -62,11 +62,21 @@
  *     # param_1 = obj.pickIndex()
  */
 
-import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+import { readInts, writeInt } from '../../wasm_libs/js/io.mjs';
+
+class Solution {
+  constructor(w) {
+    throw new Error("NotImplementedError");
+  }
+
+  pickIndex() {
+    throw new Error("NotImplementedError");
+  }
+}
 
 function solve(w) {
-  throw new Error("NotImplementedError");
+  return new Solution(w).pickIndex();
 }
 
 const w = readInts();
-writeInts(solve(w));
+writeInt(solve(w));

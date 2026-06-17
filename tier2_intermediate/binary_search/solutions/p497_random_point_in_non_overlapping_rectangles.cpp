@@ -49,27 +49,49 @@
  */
 
 #include "io.h"
-#include <cstdio>
+#include <cstdlib>
 #include <vector>
 
-static std::vector<int> solve(const std::vector<std::vector<int>> &rects) {
-    std::vector<int> prefix;
-    int total = 0;
-    for (const auto &r : rects) {
-        total += (r[2] - r[0] + 1) * (r[3] - r[1] + 1);
-        prefix.push_back(total);
+class Solution {
+    std::vector<std::vector<int>> rects_;
+    std::vector<int> prefix_;
+    int total_;
+public:
+    Solution(const std::vector<std::vector<int>> &rects) {
+        rects_ = rects;
+        int total = 0;
+        for (const auto &r : rects_) {
+            total += (r[2] - r[0] + 1) * (r[3] - r[1] + 1);
+            prefix_.push_back(total);
+        }
+        total_ = total;
     }
-    return prefix;
-}
+    std::vector<int> pick() {
+        int t = rand() % total_;
+        int lo = 0, hi = (int)prefix_.size() - 1;
+        while (lo < hi) {
+            int mid = (lo + hi) / 2;
+            if (prefix_[mid] > t) hi = mid;
+            else lo = mid + 1;
+        }
+        int x1 = rects_[lo][0], y1 = rects_[lo][1];
+        int x2 = rects_[lo][2], y2 = rects_[lo][3];
+        std::vector<int> pt;
+        pt.push_back(x1 + rand() % (x2 - x1 + 1));
+        pt.push_back(y1 + rand() % (y2 - y1 + 1));
+        return pt;
+    }
+};
 
 int main(void)
 {
-    int cols = read_int();
+    int n = read_int();
     std::vector<std::vector<int>> rects;
-    for (int i = 0; i < cols; i++) {
+    for (int i = 0; i < n; i++) {
         rects.push_back(read_ints());
     }
-    auto result = solve(rects);
-    write_ints(result);
+    srand(42);
+    Solution sol(rects);
+    write_ints(sol.pick());
     return 0;
 }

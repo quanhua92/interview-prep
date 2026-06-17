@@ -48,15 +48,26 @@ Template (python3):
     # param_1 = obj.pick()
 """
 
+import random
+
 from src.wasm_libs.py.io import *
+
+random.seed(42)
+
+
+class Solution:
+    def __init__(self, rects: list[list[int]]):
+        raise NotImplementedError
+
+    def pick(self) -> list[int]:
+        raise NotImplementedError
 
 
 def solve(rects: list[list[int]]) -> list[int]:
-    raise NotImplementedError
+    return Solution(rects).pick()
 
 
 if __name__ == "__main__":
-    cols = read_int()
-    rects = [read_ints() for _ in range(cols)]
-    result = solve(rects)
-    write_ints(result)
+    n = read_int()
+    rects = [read_ints() for _ in range(n)]
+    write_ints(solve(rects))

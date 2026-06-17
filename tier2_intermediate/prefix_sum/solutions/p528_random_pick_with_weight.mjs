@@ -62,16 +62,34 @@
  *     # param_1 = obj.pickIndex()
  */
 
-import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../wasm_libs/js/io.mjs';
+import { readInts, writeInt } from '../../wasm_libs/js/io.mjs';
+
+class Solution {
+  constructor(w) {
+    this.prefix = [];
+    let total = 0;
+    for (const x of w) {
+      total += x;
+      this.prefix.push(total);
+    }
+    this.total = total;
+  }
+
+  pickIndex() {
+    const t = Math.floor(Math.random() * this.total);
+    let lo = 0, hi = this.prefix.length - 1;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (this.prefix[mid] > t) hi = mid;
+      else lo = mid + 1;
+    }
+    return lo;
+  }
+}
 
 function solve(w) {
-  const prefix = new Array(w.length);
-  prefix[0] = w[0];
-  for (let i = 1; i < w.length; i++) {
-    prefix[i] = prefix[i - 1] + w[i];
-  }
-  return prefix;
+  return new Solution(w).pickIndex();
 }
 
 const w = readInts();
-writeInts(solve(w));
+writeInt(solve(w));

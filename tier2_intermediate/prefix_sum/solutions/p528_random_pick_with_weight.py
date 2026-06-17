@@ -62,18 +62,38 @@ Template (python3):
     # param_1 = obj.pickIndex()
 """
 
+import random
+
 from src.wasm_libs.py.io import *
 
+random.seed(42)
 
-def solve(w: list[int]) -> list[int]:
-    prefix = [0] * len(w)
-    prefix[0] = w[0]
-    for i in range(1, len(w)):
-        prefix[i] = prefix[i - 1] + w[i]
-    return prefix
+
+class Solution:
+    def __init__(self, w: list[int]):
+        self.prefix = []
+        total = 0
+        for x in w:
+            total += x
+            self.prefix.append(total)
+        self.total = total
+
+    def pickIndex(self) -> int:
+        t = random.randint(1, self.total)
+        lo, hi = 0, len(self.prefix) - 1
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if self.prefix[mid] >= t:
+                hi = mid
+            else:
+                lo = mid + 1
+        return lo
+
+
+def solve(w: list[int]) -> int:
+    return Solution(w).pickIndex()
 
 
 if __name__ == "__main__":
     w = read_ints()
-    result = solve(w)
-    write_ints(result)
+    write_int(solve(w))

@@ -49,21 +49,29 @@
  */
 
 #include "io.h"
-#include <cstdio>
+#include <cstdlib>
 #include <vector>
 
-static std::vector<int> solve(const std::vector<std::vector<int>> &rects) {
-    abort();
-}
+class Solution {
+public:
+    Solution(const std::vector<std::vector<int>> &rects) {
+        (void)rects;
+        abort();
+    }
+    std::vector<int> pick() {
+        abort();
+    }
+};
 
 int main(void)
 {
-    int cols = read_int();
+    int n = read_int();
     std::vector<std::vector<int>> rects;
-    for (int i = 0; i < cols; i++) {
+    for (int i = 0; i < n; i++) {
         rects.push_back(read_ints());
     }
-    auto result = solve(rects);
-    write_ints(result);
+    srand(42);
+    Solution sol(rects);
+    write_ints(sol.pick());
     return 0;
 }

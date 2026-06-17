@@ -51,7 +51,43 @@
 #include "io.h"
 #include <stdlib.h>
 
+typedef struct {
+    int n;       /* number of rectangles */
+    int *rects;  /* flattened: 4*n ints (x1,y1,x2,y2 per rect) */
+    int *prefix; /* cumulative point counts, length n */
+    int total;   /* grand total point count */
+} Solution;
+
+static void solution_init(Solution *sol, int *rects, int n) {
+    (void)sol; (void)rects; (void)n;
+    abort();
+}
+
+static void solution_pick(Solution *sol, int *out_x, int *out_y) {
+    (void)sol; (void)out_x; (void)out_y;
+    abort();
+}
+
 int main(void)
 {
-    abort();
+    srand(42);
+    int n = read_int();
+    int *rects = (int *)malloc(4 * n * sizeof(int));
+    for (int i = 0; i < n; i++) {
+        int rc;
+        int *row = read_ints(&rc);
+        rects[4 * i]     = row[0];
+        rects[4 * i + 1] = row[1];
+        rects[4 * i + 2] = row[2];
+        rects[4 * i + 3] = row[3];
+        free(row);
+    }
+    Solution sol;
+    solution_init(&sol, rects, n);
+    int x, y;
+    solution_pick(&sol, &x, &y);
+    int pt[2] = {x, y};
+    write_ints(pt, 2);
+    free(rects);
+    return 0;
 }

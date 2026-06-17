@@ -50,17 +50,32 @@
 
 use wasm_libs::*;
 
-fn solve(rects: &Vec<Vec<i32>>) -> Vec<i32> {
-    todo!();
+struct Solution {
+    rects: Vec<Vec<i32>>,
+    prefix: Vec<i32>,
+    total: i32,
+}
+
+impl Solution {
+    fn new(rects: Vec<Vec<i32>>) -> Self {
+        todo!();
+    }
+
+    fn pick(&self) -> Vec<i32> {
+        todo!();
+    }
+}
+
+fn solve(rects: Vec<Vec<i32>>) -> Vec<i32> {
+    Solution::new(rects).pick()
 }
 
 fn main() {
-    let cols = read_int() as usize;
+    let n = read_int() as usize;
     let mut rects: Vec<Vec<i32>> = Vec::new();
-    for _ in 0..cols {
+    for _ in 0..n {
         rects.push(read_ints());
     }
-    let result = solve(&rects);
-    write_ints(&result);
+    write_ints(&solve(rects));
     std::process::exit(0);
 }

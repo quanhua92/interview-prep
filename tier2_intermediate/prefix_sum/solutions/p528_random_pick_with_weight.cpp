@@ -63,23 +63,40 @@
  */
 
 #include "io.h"
+#include <cstdlib>
 #include <vector>
 
 using namespace std;
 
-vector<int> random_pick_with_weight(const vector<int>& w)
-{
-    vector<int> prefix(w.size());
-    prefix[0] = w[0];
-    for (size_t i = 1; i < w.size(); i++) {
-        prefix[i] = prefix[i - 1] + w[i];
+class Solution {
+    vector<int> prefix_;
+    int total_;
+public:
+    Solution(const vector<int> &w) {
+        int total = 0;
+        for (int x : w) {
+            total += x;
+            prefix_.push_back(total);
+        }
+        total_ = total;
     }
-    return prefix;
-}
+    int pickIndex() {
+        int t = rand() % total_;
+        int lo = 0, hi = (int)prefix_.size() - 1;
+        while (lo < hi) {
+            int mid = (lo + hi) / 2;
+            if (prefix_[mid] > t) hi = mid;
+            else lo = mid + 1;
+        }
+        return lo;
+    }
+};
 
 int main(void)
 {
     vector<int> w = read_ints();
-    write_ints(random_pick_with_weight(w));
+    srand(42);
+    Solution sol(w);
+    write_int(sol.pickIndex());
     return 0;
 }
