@@ -41,3 +41,6 @@ cv_*.pdf
 *.tex
 
 .env
+
+/.quarto/
+**/*.quarto_ipynb

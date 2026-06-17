@@ -1,0 +1,18 @@
+project:
+  type: default
+
+format:
+  pdf:
+    papersize: a4
+    geometry:
+      - margin=2cm
+    code-block-bg: "#FFFFFF"
+    code-block-border-left: "#FFFFFF"
+    include-in-header:
+      text: |
+        \definecolor{shadecolor}{RGB}{255,255,255}
+        \definecolor{codebgcolor}{RGB}{255,255,255}
+        \usepackage{scrlayer-scrpage}
+        \clearpairofpagestyles
+        \cfoot{\pagemark}
+        \ohead{\href{https://github.com/quanhua92/interview-prep}{https://github.com/quanhua92/interview-prep}}

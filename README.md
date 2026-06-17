@@ -2,6 +2,8 @@
 
 A comprehensive interview preparation toolkit covering coding patterns, system design, behavioral interviews, CS fundamentals, salary negotiation, resume/career prep, role-specific topics, AI-assisted interview scenarios, data analytics, low-level design, and production engineering. Track progress across 144 coding problems and 145 topics with a unified CLI dashboard. Solutions available in **Python, C, C++, Rust, and JavaScript**.
 
+> **[DSA Cheatsheet](DSA_CHEATSHEET.md)** — a single-page reference for all 29 coding patterns across 4 tiers: a signal-to-pattern selection table, per-topic mindset + algorithm skeleton + complexity + the #1 gotcha, every problem mapped, and cross-cutting disambiguation (greedy vs DP, BFS vs topo-sort vs union-find, etc.).
+
 **Features:**
 - **WASM sandbox** — user code runs safely inside wasmtime with fuel-based CPU limits, memory caps, wall-clock timeout, and no network/filesystem access
 - Progress ring, stats cards, and per-section breakdowns
