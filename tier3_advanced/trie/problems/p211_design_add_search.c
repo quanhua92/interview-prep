@@ -87,28 +87,20 @@ static int wd_search(TrieNode *root, const char *word) {
 }
 
 int main(void) {
-    int n;
-    int *arr = read_ints(&n);
-    int n_words = arr[0];
-    free(arr);
-
+    int num_ops = read_int();
     TrieNode *root = node_new();
-    for (int i = 0; i < n_words; i++) {
-        char *w = read_line();
-        wd_insert(root, w);
-        free(w);
+    for (int i = 0; i < num_ops; i++) {
+        char *op = read_line();
+        char *val = read_line();
+        if (strcmp(op, "add_word") == 0) {
+            wd_insert(root, val);
+            write_string("null");
+        } else if (strcmp(op, "search") == 0) {
+            write_bool(wd_search(root, val));
+        }
+        free(op);
+        free(val);
     }
-
-    arr = read_ints(&n);
-    int n_searches = arr[0];
-    free(arr);
-
-    for (int i = 0; i < n_searches; i++) {
-        char *s = read_line();
-        write_bool(wd_search(root, s));
-        free(s);
-    }
-
     node_free(root);
     return 0;
 }

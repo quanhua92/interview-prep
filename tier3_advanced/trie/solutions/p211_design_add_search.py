@@ -93,18 +93,28 @@ class WordDictionary:
         return self._dfs(node.children[ch], word, index + 1)
 
 
-def solve(words: list[str], search_words: list[str]) -> list[bool]:
+def solve(operations: list[tuple[str, str]]) -> list:
     wd = WordDictionary()
-    for w in words:
-        wd.add_word(w)
-    return [wd.search(sw) for sw in search_words]
+    results = []
+    for op, val in operations:
+        if op == "add_word":
+            wd.add_word(val)
+            results.append(None)
+        elif op == "search":
+            results.append(wd.search(val))
+    return results
 
 
 if __name__ == "__main__":
-    n_words = read_int()
-    words = [read_line() for _ in range(n_words)]
-    n_searches = read_int()
-    search_words = [read_line() for _ in range(n_searches)]
-    results = solve(words, search_words)
+    n = read_int()
+    operations = []
+    for _ in range(n):
+        op = read_line()
+        val = read_line()
+        operations.append((op, val))
+    results = solve(operations)
     for r in results:
-        write_bool(r)
+        if r is None:
+            write_string("null")
+        else:
+            write_bool(r)

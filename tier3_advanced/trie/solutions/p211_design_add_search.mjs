@@ -80,25 +80,15 @@ class WordDictionary {
   }
 }
 
-function solve(words, searchWords) {
-  const wd = new WordDictionary();
-  for (const w of words) {
-    wd.addWord(w);
+const numOps = readInt();
+const wd = new WordDictionary();
+for (let i = 0; i < numOps; i++) {
+  const op = readLine();
+  const val = readLine();
+  if (op === "add_word") {
+    wd.addWord(val);
+    writeString("null");
+  } else if (op === "search") {
+    writeBool(wd.search(val));
   }
-  return searchWords.map((sw) => wd.search(sw));
-}
-
-const nWords = readInt();
-const words = [];
-for (let i = 0; i < nWords; i++) {
-  words.push(readLine());
-}
-const nSearches = readInt();
-const searchWords = [];
-for (let i = 0; i < nSearches; i++) {
-  searchWords.push(readLine());
-}
-const results = solve(words, searchWords);
-for (const r of results) {
-  writeBool(r);
 }

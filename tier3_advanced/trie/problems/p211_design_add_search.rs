@@ -92,17 +92,17 @@ impl WordDictionary {
 }
 
 fn main() {
-    let n_words = read_int() as usize;
+    let num_ops = read_int() as usize;
     let mut wd = WordDictionary::new();
-    for _ in 0..n_words {
-        let w = read_line();
-        wd.add_word(&w);
-    }
-
-    let n_searches = read_int() as usize;
-    for _ in 0..n_searches {
-        let s = read_line();
-        write_bool(wd.search(&s));
+    for _ in 0..num_ops {
+        let op = read_line();
+        let val = read_line();
+        if op == "add_word" {
+            wd.add_word(&val);
+            write_string("null");
+        } else if op == "search" {
+            write_bool(wd.search(&val));
+        }
     }
 
     std::process::exit(0);

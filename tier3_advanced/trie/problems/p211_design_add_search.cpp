@@ -88,18 +88,17 @@ private:
 };
 
 int main(void) {
-    int n_words = read_int();
+    int num_ops = read_int();
     WordDictionary wd;
-    for (int i = 0; i < n_words; i++) {
-        std::string w = read_line();
-        wd.addWord(w);
+    for (int i = 0; i < num_ops; i++) {
+        std::string op = read_line();
+        std::string val = read_line();
+        if (op == "add_word") {
+            wd.addWord(val);
+            write_string("null");
+        } else if (op == "search") {
+            write_bool(wd.search(val));
+        }
     }
-
-    int n_searches = read_int();
-    for (int i = 0; i < n_searches; i++) {
-        std::string s = read_line();
-        write_bool(wd.search(s));
-    }
-
     return 0;
 }

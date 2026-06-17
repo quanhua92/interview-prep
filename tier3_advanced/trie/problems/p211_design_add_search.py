@@ -52,22 +52,44 @@ from src.wasm_libs.py.io import *
 class TrieNode:
     def __init__(self):
         raise NotImplementedError
+
+
 class WordDictionary:
     def __init__(self):
         raise NotImplementedError
+
     def add_word(self, word: str) -> None:
         raise NotImplementedError
+
     def search(self, word: str) -> bool:
         raise NotImplementedError
+
     def _dfs(self, node: TrieNode, word: str, index: int) -> bool:
         raise NotImplementedError
-def solve(words: list[str], search_words: list[str]) -> list[bool]:
-    raise NotImplementedError
+
+
+def solve(operations: list[tuple[str, str]]) -> list:
+    wd = WordDictionary()
+    results = []
+    for op, val in operations:
+        if op == "add_word":
+            wd.add_word(val)
+            results.append(None)
+        elif op == "search":
+            results.append(wd.search(val))
+    return results
+
+
 if __name__ == "__main__":
-    n_words = read_int()
-    words = [read_line() for _ in range(n_words)]
-    n_searches = read_int()
-    search_words = [read_line() for _ in range(n_searches)]
-    results = solve(words, search_words)
+    n = read_int()
+    operations = []
+    for _ in range(n):
+        op = read_line()
+        val = read_line()
+        operations.append((op, val))
+    results = solve(operations)
     for r in results:
-        write_bool(r)
+        if r is None:
+            write_string("null")
+        else:
+            write_bool(r)

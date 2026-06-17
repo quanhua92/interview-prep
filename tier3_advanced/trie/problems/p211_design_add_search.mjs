@@ -37,7 +37,7 @@
  * Hint: Build a Trie from the word list, then search with DFS handling '.' wildcards by trying all children.
  */
 
-import { readLine, readInts, readInt, writeInt, writeInts, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
+import { readLine, readInt, writeString, writeBool } from '../../../wasm_libs/js/io.mjs';
 
 class TrieNode {
   constructor() {
@@ -60,21 +60,15 @@ class WordDictionary {
   }
 }
 
-function solve(words, searchWords) {
-    throw new Error("NotImplementedError");
-}
-
-const nWords = readInt();
-const words = [];
-for (let i = 0; i < nWords; i++) {
-  words.push(readLine());
-}
-const nSearches = readInt();
-const searchWords = [];
-for (let i = 0; i < nSearches; i++) {
-  searchWords.push(readLine());
-}
-const results = solve(words, searchWords);
-for (const r of results) {
-  writeBool(r);
+const numOps = readInt();
+const wd = new WordDictionary();
+for (let i = 0; i < numOps; i++) {
+  const op = readLine();
+  const val = readLine();
+  if (op === "add_word") {
+    wd.addWord(val);
+    writeString("null");
+  } else if (op === "search") {
+    writeBool(wd.search(val));
+  }
 }
