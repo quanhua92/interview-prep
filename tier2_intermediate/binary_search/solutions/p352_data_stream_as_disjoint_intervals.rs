@@ -52,38 +52,55 @@
  */
 
 use wasm_libs::*;
-use std::io::Write;
 
-fn solve_intervals(values: &[i32]) -> Vec<Vec<i32>> {
-    let mut intervals: Vec<Vec<i32>> = Vec::new();
-    for &v in values {
-        let mut lo = v;
-        let mut hi = v;
-        let mut pos = intervals.iter().position(|iv| iv[0] >= lo).unwrap_or(intervals.len());
-        if pos > 0 && intervals[pos - 1][1] >= lo - 1 {
-            pos -= 1;
-            lo = intervals[pos][0];
-        }
-        while pos < intervals.len() && intervals[pos][0] <= hi + 1 {
-            hi = hi.max(intervals[pos][1]);
-            intervals.remove(pos);
-        }
-        intervals.insert(pos, vec![lo, hi]);
+struct SummaryRanges {
+    intervals: Vec<(i32, i32)>,
+}
+
+impl SummaryRanges {
+    fn new() -> Self {
+        SummaryRanges { intervals: Vec::new() }
     }
-    intervals
+
+    fn add_num(&mut self, value: i32) {
+        let mut lo = value;
+        let mut hi = value;
+        let mut pos = self.intervals.partition_point(|&(s, _)| s < lo);
+        if pos > 0 && self.intervals[pos - 1].1 >= lo - 1 {
+            pos -= 1;
+            lo = self.intervals[pos].0;
+        }
+        while pos < self.intervals.len() && self.intervals[pos].0 <= hi + 1 {
+            hi = hi.max(self.intervals[pos].1);
+            self.intervals.remove(pos);
+        }
+        self.intervals.insert(pos, (lo, hi));
+    }
+
+    fn get_intervals(&self) -> Vec<Vec<i32>> {
+        self.intervals.iter().map(|&(s, e)| vec![s, e]).collect()
+    }
+}
+
+fn solve(num_ops: i32) {
+    let mut sr = SummaryRanges::new();
+    for _ in 0..num_ops {
+        let op = read_line();
+        let argc = read_int();
+        let args = if argc > 0 { read_ints() } else { Vec::new() };
+        if op == "getIntervals" {
+            let iv = sr.get_intervals();
+            write_int(iv.len() as i32);
+            for row in iv {
+                write_ints(&row);
+            }
+        } else if op == "addNum" {
+            sr.add_num(args[0]);
+        }
+    }
 }
 
 fn main() {
-    let values = read_ints();
-    let result = solve_intervals(&values);
-    let mut out = std::io::stdout().lock();
-    for (i, row) in result.iter().enumerate() {
-        if i > 0 { writeln!(out).unwrap(); }
-        for (j, v) in row.iter().enumerate() {
-            if j > 0 { write!(out, " ").unwrap(); }
-            write!(out, "{}", v).unwrap();
-        }
-    }
-    writeln!(out).unwrap();
+    solve(read_int());
     std::process::exit(0);
 }

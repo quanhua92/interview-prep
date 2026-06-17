@@ -52,37 +52,57 @@
  */
 
 #include "io.h"
-#include <algorithm>
-#include <cstdio>
+#include <map>
+#include <string>
 #include <vector>
 
-std::vector<std::vector<int>> solve_intervals(const std::vector<int> &values)
-{
-    std::vector<std::vector<int>> intervals;
-    for (int v : values) {
-        int lo = v, hi = v;
-        auto pos = std::lower_bound(intervals.begin(), intervals.end(), std::vector<int>{lo, hi});
-        if (pos != intervals.begin() && (pos - 1)->at(1) >= lo - 1) {
-            pos--;
-            lo = pos->at(0);
+class SummaryRanges {
+    std::map<int, int> intervals;  // start -> end
+public:
+    SummaryRanges() {}
+    void addNum(int value) {
+        int start = value, end = value;
+        auto it = intervals.upper_bound(value);
+        if (it != intervals.begin()) {
+            auto prev = std::prev(it);
+            if (prev->second >= value - 1) {
+                start = prev->first;
+                end = std::max(end, prev->second);
+                intervals.erase(prev);
+            }
         }
-        while (pos != intervals.end() && pos->at(0) <= hi + 1) {
-            if (pos->at(1) > hi) hi = pos->at(1);
-            pos = intervals.erase(pos);
+        while (it != intervals.end() && it->first <= end + 1) {
+            end = std::max(end, it->second);
+            it = intervals.erase(it);
         }
-        pos = intervals.insert(pos, {lo, hi});
+        intervals[start] = end;
     }
-    return intervals;
-}
+    std::vector<std::vector<int>> getIntervals() {
+        std::vector<std::vector<int>> res;
+        for (auto &p : intervals) {
+            res.push_back({p.first, p.second});
+        }
+        return res;
+    }
+};
 
 int main(void)
 {
-    std::vector<int> values = read_ints();
-    auto result = solve_intervals(values);
-    for (size_t i = 0; i < result.size(); i++) {
-        if (i > 0) std::printf("\n");
-        std::printf("%d %d", result[i][0], result[i][1]);
+    int num_ops = read_int();
+    SummaryRanges sr;
+    for (int i = 0; i < num_ops; i++) {
+        std::string op = read_line();
+        int argc = read_int();
+        std::vector<int> args = (argc > 0) ? read_ints() : std::vector<int>();
+        if (op == "getIntervals") {
+            std::vector<std::vector<int>> iv = sr.getIntervals();
+            write_int((int)iv.size());
+            for (auto &p : iv) {
+                write_ints(p);
+            }
+        } else if (op == "addNum") {
+            sr.addNum(args[0]);
+        }
     }
-    std::printf("\n");
     return 0;
 }

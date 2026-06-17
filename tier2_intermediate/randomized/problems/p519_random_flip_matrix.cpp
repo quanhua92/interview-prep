@@ -47,19 +47,33 @@
  */
 
 #include "io.h"
-#include <unordered_map>
-#include <unordered_set>
+#include <cstdlib>
+#include <vector>
 
-static int solve(int m, int n, int num_flips)
-{
-    abort();
-}
+class Solution {
+public:
+    Solution(int m, int n) {
+        (void)m; (void)n;
+        abort();
+    }
+    std::vector<int> flip() {
+        abort();
+    }
+    void reset() {
+        abort();
+    }
+};
 
 int main(void)
 {
-    int m = read_ints()[0];
-    int n = read_ints()[0];
-    int num_flips = read_ints()[0];
-    write_int(solve(m, n, num_flips));
+    srand(42);
+    int m = read_int();
+    int n = read_int();
+    int num_flips = read_int();
+    Solution sol(m, n);
+    for (int i = 0; i < num_flips; i++) {
+        std::vector<int> pt = sol.flip();
+        write_ints(pt);
+    }
     return 0;
 }

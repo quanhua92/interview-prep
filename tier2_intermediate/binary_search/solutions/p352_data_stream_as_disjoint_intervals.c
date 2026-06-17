@@ -52,65 +52,79 @@
  */
 
 #include "io.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct { int lo, hi; } Interval;
+typedef struct {
+    int *lo;
+    int *hi;
+    int n;
+    int cap;
+} SummaryRanges;
 
-static Interval *solve_intervals(const int *values, int n, int *ret_size)
-{
-    Interval *intervals = NULL;
-    int cap = 0, len = 0;
+static void solution_init(SummaryRanges *s) {
+    s->cap = 16;
+    s->n = 0;
+    s->lo = (int *)malloc(s->cap * sizeof(int));
+    s->hi = (int *)malloc(s->cap * sizeof(int));
+}
 
-    for (int vi = 0; vi < n; vi++) {
-        int v = values[vi];
-        int lo = v, hi = v;
-
-        int pos = 0;
-        while (pos < len && intervals[pos].lo < lo) pos++;
-
-        if (pos > 0 && intervals[pos - 1].hi >= lo - 1) {
-            pos--;
-            lo = intervals[pos].lo;
-        }
-
-        int j = pos;
-        while (j < len && intervals[j].lo <= hi + 1) {
-            if (intervals[j].hi > hi) hi = intervals[j].hi;
-            j++;
-        }
-
-        int new_len = pos + 1 + (len - j);
-        if (new_len > cap) {
-            cap = new_len * 2;
-            intervals = (Interval *)realloc(intervals, cap * sizeof(Interval));
-        }
-
-        if (len - j > 0)
-            memmove(&intervals[pos + 1], &intervals[j], (len - j) * sizeof(Interval));
-
-        intervals[pos].lo = lo;
-        intervals[pos].hi = hi;
-        len = new_len;
+static void solution_addNum(SummaryRanges *s, int value) {
+    int lo = value, hi = value;
+    int pos = 0;
+    while (pos < s->n && s->lo[pos] < lo) pos++;
+    if (pos > 0 && s->hi[pos - 1] >= lo - 1) {
+        pos--;
+        lo = s->lo[pos];
     }
+    while (pos < s->n && s->lo[pos] <= hi + 1) {
+        if (s->hi[pos] > hi) hi = s->hi[pos];
+        memmove(&s->lo[pos], &s->lo[pos + 1], (s->n - pos - 1) * sizeof(int));
+        memmove(&s->hi[pos], &s->hi[pos + 1], (s->n - pos - 1) * sizeof(int));
+        s->n--;
+    }
+    if (s->n >= s->cap) {
+        s->cap *= 2;
+        s->lo = (int *)realloc(s->lo, s->cap * sizeof(int));
+        s->hi = (int *)realloc(s->hi, s->cap * sizeof(int));
+    }
+    memmove(&s->lo[pos + 1], &s->lo[pos], (s->n - pos) * sizeof(int));
+    memmove(&s->hi[pos + 1], &s->hi[pos], (s->n - pos) * sizeof(int));
+    s->lo[pos] = lo;
+    s->hi[pos] = hi;
+    s->n++;
+}
 
-    *ret_size = len;
-    return intervals;
+static void solution_getIntervals(SummaryRanges *s) {
+    write_int(s->n);
+    for (int k = 0; k < s->n; k++) {
+        int row[2] = {s->lo[k], s->hi[k]};
+        write_ints(row, 2);
+    }
 }
 
 int main(void)
 {
-    int n;
-    int *values = read_ints(&n);
-    int ret_size = 0;
-    Interval *result = solve_intervals(values, n, &ret_size);
-    for (int i = 0; i < ret_size; i++) {
-        if (i > 0) printf("\n");
-        printf("%d %d", result[i].lo, result[i].hi);
+    int num_ops = read_int();
+    SummaryRanges sr;
+    solution_init(&sr);
+    for (int i = 0; i < num_ops; i++) {
+        char *op = read_line();
+        int argc = read_int();
+        int *args = NULL;
+        if (argc > 0) {
+            int rc;
+            args = read_ints(&rc);
+        }
+        if (strcmp(op, "getIntervals") == 0) {
+            solution_getIntervals(&sr);
+        } else if (strcmp(op, "addNum") == 0) {
+            solution_addNum(&sr, args[0]);
+        }
+        free(op);
+        free(args);
     }
-    printf("\n");
-    free(values);
-    free(result);
+    free(sr.lo);
+    free(sr.hi);
     return 0;
 }

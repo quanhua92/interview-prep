@@ -48,60 +48,102 @@
 
 #include "io.h"
 #include <stdlib.h>
-#include <string.h>
 
-typedef struct { long long key; long long val; } MapEntry;
+typedef struct {
+    int m, n, total;
+    int cap, count;
+    int *keys;  /* -1 = empty slot */
+    int *vals;
+} Solution;
 
-static long long map_get(MapEntry *map, int n, long long key, long long default_val)
-{
-    for (int i = 0; i < n; i++)
-        if (map[i].key == key) return map[i].val;
-    return default_val;
+static int map_get(Solution *s, int key, int def) {
+    if (s->cap == 0) return def;
+    int mask = s->cap - 1;
+    int i = (unsigned)key * 2654435761u & mask;
+    while (s->keys[i] != -1) {
+        if (s->keys[i] == key) return s->vals[i];
+        i = (i + 1) & mask;
+    }
+    return def;
 }
 
-static void map_set(MapEntry *map, int *n, long long key, long long val)
-{
-    for (int i = 0; i < *n; i++) {
-        if (map[i].key == key) { map[i].val = val; return; }
+static void map_set(Solution *s, int key, int val) {
+    if (s->cap == 0 || s->count * 4 >= s->cap * 3) {
+        int newcap = s->cap == 0 ? 16 : s->cap * 2;
+        int *oldk = s->keys, *oldv = s->vals;
+        int oldcap = s->cap;
+        s->cap = newcap;
+        s->keys = (int *)malloc(newcap * sizeof(int));
+        s->vals = (int *)malloc(newcap * sizeof(int));
+        for (int i = 0; i < newcap; i++) s->keys[i] = -1;
+        s->count = 0;
+        for (int i = 0; i < oldcap; i++) {
+            if (oldk[i] != -1) {
+                int mask = newcap - 1;
+                int j = (unsigned)oldk[i] * 2654435761u & mask;
+                while (s->keys[j] != -1) j = (j + 1) & mask;
+                s->keys[j] = oldk[i];
+                s->vals[j] = oldv[i];
+                s->count++;
+            }
+        }
+        free(oldk);
+        free(oldv);
     }
-    map[*n].key = key;
-    map[*n].val = val;
-    (*n)++;
+    int mask = s->cap - 1;
+    int i = (unsigned)key * 2654435761u & mask;
+    while (s->keys[i] != -1 && s->keys[i] != key) {
+        i = (i + 1) & mask;
+    }
+    if (s->keys[i] == -1) {
+        s->count++;
+        s->keys[i] = key;
+    }
+    s->vals[i] = val;
 }
 
-static int solve(int m, int n, int num_flips)
-{
-    long long total = (long long)m * n;
-    static MapEntry mapping[10001];
-    int map_n = 0;
-    static long long results[10001];
-    int result_n = 0;
+static void solution_init(Solution *s, int m, int n) {
+    s->m = m;
+    s->n = n;
+    s->total = m * n;
+    s->cap = 0;
+    s->count = 0;
+    s->keys = NULL;
+    s->vals = NULL;
+}
 
-    for (int f = 0; f < num_flips; f++) {
-        int r = f;
-        total--;
-        long long idx = map_get(mapping, map_n, r, r);
-        long long last_val = map_get(mapping, map_n, total, total);
-        map_set(mapping, &map_n, r, last_val);
-        map_set(mapping, &map_n, total, last_val);
-        results[result_n++] = idx;
-    }
+static void solution_flip(Solution *s, int *out_r, int *out_c) {
+    int r = rand() % s->total;
+    int x = map_get(s, r, r);
+    int last = s->total - 1;
+    int last_val = map_get(s, last, last);
+    map_set(s, r, last_val);
+    s->total--;
+    *out_r = x / s->n;
+    *out_c = x % s->n;
+}
 
-    int unique = 0;
-    for (int i = 0; i < result_n; i++) {
-        int is_dup = 0;
-        for (int j = 0; j < i; j++)
-            if (results[j] == results[i]) { is_dup = 1; break; }
-        if (!is_dup) unique++;
+static void solution_reset(Solution *s) {
+    s->total = s->m * s->n;
+    if (s->keys) {
+        for (int i = 0; i < s->cap; i++) s->keys[i] = -1;
     }
-    return unique;
+    s->count = 0;
 }
 
 int main(void)
 {
-    int c1; int *a1 = read_ints(&c1); int m = a1[0]; free(a1);
-    int c2; int *a2 = read_ints(&c2); int n = a2[0]; free(a2);
-    int c3; int *a3 = read_ints(&c3); int num_flips = a3[0]; free(a3);
-    write_int(solve(m, n, num_flips));
+    srand(42);
+    int m = read_int();
+    int n = read_int();
+    int num_flips = read_int();
+    Solution sol;
+    solution_init(&sol, m, n);
+    for (int i = 0; i < num_flips; i++) {
+        int r, c;
+        solution_flip(&sol, &r, &c);
+        int pt[2] = {r, c};
+        write_ints(pt, 2);
+    }
     return 0;
 }

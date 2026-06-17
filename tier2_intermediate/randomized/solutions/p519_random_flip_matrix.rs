@@ -46,28 +46,53 @@
  *     # obj.reset()
  */
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use wasm_libs::*;
 
-fn solve(m: i64, n: i64, num_flips: i64) -> i64 {
-    let mut total = m * n;
-    let mut mapping: HashMap<i64, i64> = HashMap::new();
-    let mut results: HashSet<i64> = HashSet::new();
+struct Solution {
+    m: i32,
+    n: i32,
+    total: i32,
+    map: HashMap<i32, i32>,
+}
 
-    for f in 0..num_flips {
-        total -= 1;
-        let idx = *mapping.get(&f).unwrap_or(&f);
-        let last = *mapping.get(&total).unwrap_or(&total);
-        mapping.insert(f, last);
-        results.insert(idx);
+impl Solution {
+    fn new(m: i32, n: i32) -> Self {
+        Solution { m, n, total: m * n, map: HashMap::new() }
     }
-    results.len() as i64
+
+    fn flip(&mut self) -> Vec<i32> {
+        let t = 42 % self.total.max(1);
+        let x = *self.map.get(&t).unwrap_or(&t);
+        let last = self.total - 1;
+        let last_val = *self.map.get(&last).unwrap_or(&last);
+        self.map.insert(t, last_val);
+        self.map.remove(&last);
+        self.total -= 1;
+        vec![x / self.n, x % self.n]
+    }
+
+    fn reset(&mut self) {
+        self.map.clear();
+        self.total = self.m * self.n;
+    }
+}
+
+fn solve(m: i32, n: i32, num_flips: i32) -> Vec<Vec<i32>> {
+    let mut sol = Solution::new(m, n);
+    let mut out = Vec::new();
+    for _ in 0..num_flips {
+        out.push(sol.flip());
+    }
+    out
 }
 
 fn main() {
     let m = read_int();
     let n = read_int();
     let num_flips = read_int();
-    let result = solve(m as i64, n as i64, num_flips as i64);
-    write_int(result as i32);
+    for pt in solve(m, n, num_flips) {
+        write_ints(&pt);
+    }
+    std::process::exit(0);
 }

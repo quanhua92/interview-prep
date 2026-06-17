@@ -51,14 +51,38 @@
  *     # param_2 = obj.getIntervals()
  */
 
-import { readInts, writeInts } from '../../../wasm_libs/js/io.mjs';
+import { readInt, readInts, readLine, writeInt, writeInts } from '../../../wasm_libs/js/io.mjs';
 
-function solve(values) {
+class SummaryRanges {
+  constructor() {
     throw new Error("NotImplementedError");
+  }
+
+  addNum(value) {
+    throw new Error("NotImplementedError");
+  }
+
+  getIntervals() {
+    throw new Error("NotImplementedError");
+  }
 }
 
-const values = readInts();
-const result = solve(values);
-for (const row of result) {
-    writeInts(row);
+function solve(numOps) {
+  const sr = new SummaryRanges();
+  for (let i = 0; i < numOps; i++) {
+    const op = readLine();
+    const argc = readInt();
+    const args = argc > 0 ? readInts() : [];
+    if (op === "getIntervals") {
+      const iv = sr.getIntervals();
+      writeInt(iv.length);
+      for (const row of iv) {
+        writeInts(row);
+      }
+    } else if (op === "addNum") {
+      sr.addNum(args[0]);
+    }
+  }
 }
+
+solve(readInt());

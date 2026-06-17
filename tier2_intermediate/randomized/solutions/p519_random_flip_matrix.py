@@ -46,28 +46,44 @@ Template (python3):
     # obj.reset()
 """
 
+import random
+
 from src.wasm_libs.py.io import *
 
+random.seed(42)
 
-def solve(m: int, n: int, num_flips: int) -> int:
-    import random
-    random.seed(42)
 
-    total = m * n
-    mapping: dict[int, int] = {}
-    results: set[int] = set()
-    for _ in range(num_flips):
-        r = random.randint(0, total - 1)
-        total -= 1
-        idx = mapping.get(r, r)
-        mapping[r] = mapping.get(total, total)
-        results.add(idx)
-    return len(results)
+class Solution:
+    def __init__(self, m: int, n: int):
+        self.m = m
+        self.n = n
+        self.total = m * n
+        self.mapping: dict[int, int] = {}
+
+    def flip(self) -> list[int]:
+        r = random.randint(0, self.total - 1)
+        x = self.mapping.get(r, r)
+        last = self.total - 1
+        last_val = self.mapping.get(last, last)
+        self.mapping[r] = last_val
+        if last in self.mapping and last != r:
+            del self.mapping[last]
+        self.total -= 1
+        return [x // self.n, x % self.n]
+
+    def reset(self) -> None:
+        self.mapping = {}
+        self.total = self.m * self.n
+
+
+def solve(m: int, n: int, num_flips: int) -> list[list[int]]:
+    sol = Solution(m, n)
+    return [sol.flip() for _ in range(num_flips)]
 
 
 if __name__ == "__main__":
     m = read_int()
     n = read_int()
     num_flips = read_int()
-    result = solve(m, n, num_flips)
-    write_int(result)
+    for pt in solve(m, n, num_flips):
+        write_ints(pt)

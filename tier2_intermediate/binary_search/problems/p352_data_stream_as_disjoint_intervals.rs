@@ -52,23 +52,44 @@
  */
 
 use wasm_libs::*;
-use std::io::Write;
 
-fn solve_intervals(values: &[i32]) -> Vec<Vec<i32>> {
-    todo!();
+struct SummaryRanges {
+    intervals: Vec<(i32, i32)>,
+}
+
+impl SummaryRanges {
+    fn new() -> Self {
+        todo!();
+    }
+
+    fn add_num(&mut self, value: i32) {
+        todo!();
+    }
+
+    fn get_intervals(&self) -> Vec<Vec<i32>> {
+        todo!();
+    }
+}
+
+fn solve(num_ops: i32) {
+    let mut sr = SummaryRanges::new();
+    for _ in 0..num_ops {
+        let op = read_line();
+        let argc = read_int();
+        let args = if argc > 0 { read_ints() } else { Vec::new() };
+        if op == "getIntervals" {
+            let iv = sr.get_intervals();
+            write_int(iv.len() as i32);
+            for row in iv {
+                write_ints(&row);
+            }
+        } else if op == "addNum" {
+            sr.add_num(args[0]);
+        }
+    }
 }
 
 fn main() {
-    let values = read_ints();
-    let result = solve_intervals(&values);
-    let mut out = std::io::stdout().lock();
-    for (i, row) in result.iter().enumerate() {
-        if i > 0 { writeln!(out).unwrap(); }
-        for (j, v) in row.iter().enumerate() {
-            if j > 0 { write!(out, " ").unwrap(); }
-            write!(out, "{}", v).unwrap();
-        }
-    }
-    writeln!(out).unwrap();
+    solve(read_int());
     std::process::exit(0);
 }

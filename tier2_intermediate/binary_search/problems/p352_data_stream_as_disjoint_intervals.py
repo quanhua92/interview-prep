@@ -54,11 +54,31 @@ Template (python3):
 from src.wasm_libs.py.io import *
 
 
-def solve(values: list[int]) -> list[list[int]]:
-    raise NotImplementedError
+class SummaryRanges:
+    def __init__(self):
+        raise NotImplementedError
+
+    def addNum(self, value: int) -> None:
+        raise NotImplementedError
+
+    def getIntervals(self) -> list[list[int]]:
+        raise NotImplementedError
+
+
+def solve(num_ops: int) -> None:
+    sr = SummaryRanges()
+    for _ in range(num_ops):
+        op = read_line()
+        argc = read_int()
+        args = read_ints() if argc else []
+        if op == "getIntervals":
+            intervals = sr.getIntervals()
+            write_int(len(intervals))
+            for a, b in intervals:
+                write_ints([a, b])
+        elif op == "addNum":
+            sr.addNum(args[0])
 
 
 if __name__ == "__main__":
-    values = read_ints()
-    result = solve(values)
-    write_matrix(result)
+    solve(read_int())

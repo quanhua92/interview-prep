@@ -46,17 +46,45 @@
  *     # obj.reset()
  */
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use wasm_libs::*;
 
-fn solve(m: i64, n: i64, num_flips: i64) -> i64 {
-    todo!();
+struct Solution {
+    m: i32,
+    n: i32,
+    total: i32,
+    map: HashMap<i32, i32>,
+}
+
+impl Solution {
+    fn new(m: i32, n: i32) -> Self {
+        todo!();
+    }
+
+    fn flip(&mut self) -> Vec<i32> {
+        todo!();
+    }
+
+    fn reset(&mut self) {
+        todo!();
+    }
+}
+
+fn solve(m: i32, n: i32, num_flips: i32) -> Vec<Vec<i32>> {
+    let mut sol = Solution::new(m, n);
+    let mut out = Vec::new();
+    for _ in 0..num_flips {
+        out.push(sol.flip());
+    }
+    out
 }
 
 fn main() {
     let m = read_int();
     let n = read_int();
     let num_flips = read_int();
-    let result = solve(m as i64, n as i64, num_flips as i64);
-    write_int(result as i32);
+    for pt in solve(m, n, num_flips) {
+        write_ints(&pt);
+    }
+    std::process::exit(0);
 }

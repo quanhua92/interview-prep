@@ -46,16 +46,32 @@ Template (python3):
     # obj.reset()
 """
 
+import random
+
 from src.wasm_libs.py.io import *
 
+random.seed(42)
 
-def solve(m: int, n: int, num_flips: int) -> int:
-    raise NotImplementedError
+
+class Solution:
+    def __init__(self, m: int, n: int):
+        raise NotImplementedError
+
+    def flip(self) -> list[int]:
+        raise NotImplementedError
+
+    def reset(self) -> None:
+        raise NotImplementedError
+
+
+def solve(m: int, n: int, num_flips: int) -> list[list[int]]:
+    sol = Solution(m, n)
+    return [sol.flip() for _ in range(num_flips)]
 
 
 if __name__ == "__main__":
     m = read_int()
     n = read_int()
     num_flips = read_int()
-    result = solve(m, n, num_flips)
-    write_int(result)
+    for pt in solve(m, n, num_flips):
+        write_ints(pt)

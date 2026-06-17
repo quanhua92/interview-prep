@@ -46,6 +46,34 @@
  *     # obj.reset()
  */
 
-import { readInt, writeInt } from '../../wasm_libs/js/io.mjs';
+import { readInt, writeInts } from '../../wasm_libs/js/io.mjs';
 
-throw new Error("NotImplementedError");
+class Solution {
+  constructor(m, n) {
+    throw new Error("NotImplementedError");
+  }
+
+  flip() {
+    throw new Error("NotImplementedError");
+  }
+
+  reset() {
+    throw new Error("NotImplementedError");
+  }
+}
+
+function solve(m, n, numFlips) {
+  const sol = new Solution(m, n);
+  const out = [];
+  for (let i = 0; i < numFlips; i++) {
+    out.push(sol.flip());
+  }
+  return out;
+}
+
+const m = readInt();
+const n = readInt();
+const numFlips = readInt();
+for (const pt of solve(m, n, numFlips)) {
+  writeInts(pt);
+}

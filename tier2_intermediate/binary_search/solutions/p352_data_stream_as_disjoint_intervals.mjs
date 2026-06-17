@@ -51,31 +51,49 @@
  *     # param_2 = obj.getIntervals()
  */
 
-import { readInts, writeInts } from '../../../wasm_libs/js/io.mjs';
+import { readInt, readInts, readLine, writeInt, writeInts } from '../../../wasm_libs/js/io.mjs';
 
-function solve(values) {
-  const intervals = [];
-
-  for (const v of values) {
-    let lo = v;
-    let hi = v;
-    let pos = intervals.findIndex((iv) => iv[0] >= lo);
-    if (pos === -1) pos = intervals.length;
-    if (pos > 0 && intervals[pos - 1][1] >= lo - 1) {
-      pos -= 1;
-      lo = intervals[pos][0];
-    }
-    while (pos < intervals.length && intervals[pos][0] <= hi + 1) {
-      hi = Math.max(hi, intervals[pos][1]);
-      intervals.splice(pos, 1);
-    }
-    intervals.splice(pos, 0, [lo, hi]);
+class SummaryRanges {
+  constructor() {
+    this.intervals = [];
   }
-  return intervals;
+
+  addNum(value) {
+    let lo = value, hi = value;
+    let pos = 0;
+    while (pos < this.intervals.length && this.intervals[pos][0] < lo) pos++;
+    if (pos > 0 && this.intervals[pos - 1][1] >= lo - 1) {
+      pos--;
+      lo = this.intervals[pos][0];
+    }
+    while (pos < this.intervals.length && this.intervals[pos][0] <= hi + 1) {
+      hi = Math.max(hi, this.intervals[pos][1]);
+      this.intervals.splice(pos, 1);
+    }
+    this.intervals.splice(pos, 0, [lo, hi]);
+  }
+
+  getIntervals() {
+    return this.intervals;
+  }
 }
 
-const values = readInts();
-const result = solve(values);
-for (const row of result) {
-  writeInts(row);
+function solve(numOps) {
+  const sr = new SummaryRanges();
+  for (let i = 0; i < numOps; i++) {
+    const op = readLine();
+    const argc = readInt();
+    const args = argc > 0 ? readInts() : [];
+    if (op === "getIntervals") {
+      const iv = sr.getIntervals();
+      writeInt(iv.length);
+      for (const row of iv) {
+        writeInts(row);
+      }
+    } else if (op === "addNum") {
+      sr.addNum(args[0]);
+    }
+  }
 }
+
+solve(readInt());

@@ -47,31 +47,44 @@
  */
 
 #include "io.h"
+#include <cstdlib>
 #include <unordered_map>
-#include <unordered_set>
+#include <vector>
 
-static int solve(int m, int n, int num_flips)
-{
-    long long total = (long long)m * n;
-    std::unordered_map<long long, long long> mapping;
-    std::unordered_set<long long> results;
-
-    for (int f = 0; f < num_flips; f++) {
-        int r = f;
-        total--;
-        long long idx = mapping.count(r) ? mapping[r] : r;
-        long long last = mapping.count(total) ? mapping[total] : total;
-        mapping[r] = last;
-        results.insert(idx);
+class Solution {
+    int m_, n_, total_;
+    std::unordered_map<int, int> map_;
+public:
+    Solution(int m, int n) : m_(m), n_(n), total_(m * n) {}
+    std::vector<int> flip() {
+        int r = rand() % total_;
+        int x = map_.count(r) ? map_[r] : r;
+        int last = total_ - 1;
+        int last_val = map_.count(last) ? map_[last] : last;
+        map_[r] = last_val;
+        map_.erase(last);
+        total_--;
+        std::vector<int> pt;
+        pt.push_back(x / n_);
+        pt.push_back(x % n_);
+        return pt;
     }
-    return (int)results.size();
-}
+    void reset() {
+        map_.clear();
+        total_ = m_ * n_;
+    }
+};
 
 int main(void)
 {
-    int m = read_ints()[0];
-    int n = read_ints()[0];
-    int num_flips = read_ints()[0];
-    write_int(solve(m, n, num_flips));
+    srand(42);
+    int m = read_int();
+    int n = read_int();
+    int num_flips = read_int();
+    Solution sol(m, n);
+    for (int i = 0; i < num_flips; i++) {
+        std::vector<int> pt = sol.flip();
+        write_ints(pt);
+    }
     return 0;
 }

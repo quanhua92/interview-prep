@@ -52,29 +52,53 @@
  */
 
 #include "io.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct { int lo, hi; } Interval;
+typedef struct {
+    int *lo;
+    int *hi;
+    int n;
+    int cap;
+} SummaryRanges;
 
-static Interval *solve_intervals(const int *values, int n, int *ret_size)
-{
+static void solution_init(SummaryRanges *s) {
+    (void)s;
+    abort();
+}
+
+static void solution_addNum(SummaryRanges *s, int value) {
+    (void)s; (void)value;
+    abort();
+}
+
+static void solution_getIntervals(SummaryRanges *s) {
+    (void)s;
     abort();
 }
 
 int main(void)
 {
-    int n;
-    int *values = read_ints(&n);
-    int ret_size = 0;
-    Interval *result = solve_intervals(values, n, &ret_size);
-    for (int i = 0; i < ret_size; i++) {
-        if (i > 0) printf("\n");
-        printf("%d %d", result[i].lo, result[i].hi);
+    int num_ops = read_int();
+    SummaryRanges sr;
+    solution_init(&sr);
+    for (int i = 0; i < num_ops; i++) {
+        char *op = read_line();
+        int argc = read_int();
+        int *args = NULL;
+        if (argc > 0) {
+            int rc;
+            args = read_ints(&rc);
+        }
+        if (strcmp(op, "getIntervals") == 0) {
+            solution_getIntervals(&sr);
+        } else if (strcmp(op, "addNum") == 0) {
+            solution_addNum(&sr, args[0]);
+        }
+        free(op);
+        free(args);
     }
-    printf("\n");
-    free(values);
-    free(result);
+    free(sr.lo);
+    free(sr.hi);
     return 0;
 }

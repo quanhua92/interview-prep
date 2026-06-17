@@ -52,23 +52,41 @@
  */
 
 #include "io.h"
-#include <algorithm>
-#include <cstdio>
+#include <map>
+#include <string>
 #include <vector>
 
-std::vector<std::vector<int>> solve_intervals(const std::vector<int> &values)
-{
-    abort();
-}
+class SummaryRanges {
+public:
+    SummaryRanges() {
+        abort();
+    }
+    void addNum(int value) {
+        (void)value;
+        abort();
+    }
+    std::vector<std::vector<int>> getIntervals() {
+        abort();
+    }
+};
 
 int main(void)
 {
-    std::vector<int> values = read_ints();
-    auto result = solve_intervals(values);
-    for (size_t i = 0; i < result.size(); i++) {
-        if (i > 0) std::printf("\n");
-        std::printf("%d %d", result[i][0], result[i][1]);
+    int num_ops = read_int();
+    SummaryRanges sr;
+    for (int i = 0; i < num_ops; i++) {
+        std::string op = read_line();
+        int argc = read_int();
+        std::vector<int> args = (argc > 0) ? read_ints() : std::vector<int>();
+        if (op == "getIntervals") {
+            std::vector<std::vector<int>> iv = sr.getIntervals();
+            write_int((int)iv.size());
+            for (auto &p : iv) {
+                write_ints(p);
+            }
+        } else if (op == "addNum") {
+            sr.addNum(args[0]);
+        }
     }
-    std::printf("\n");
     return 0;
 }

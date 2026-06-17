@@ -56,22 +56,39 @@ import bisect
 from src.wasm_libs.py.io import *
 
 
-def solve(values: list[int]) -> list[list[int]]:
-    intervals: list[list[int]] = []
-    for v in values:
-        lo, hi = v, v
-        pos = bisect.bisect_left(intervals, [lo, hi])
-        if pos > 0 and intervals[pos - 1][1] >= lo - 1:
+class SummaryRanges:
+    def __init__(self):
+        self.intervals: list[list[int]] = []
+
+    def addNum(self, value: int) -> None:
+        lo, hi = value, value
+        pos = bisect.bisect_left(self.intervals, [lo, hi])
+        if pos > 0 and self.intervals[pos - 1][1] >= lo - 1:
             pos -= 1
-            lo = intervals[pos][0]
-        while pos < len(intervals) and intervals[pos][0] <= hi + 1:
-            hi = max(hi, intervals[pos][1])
-            del intervals[pos]
-        intervals.insert(pos, [lo, hi])
-    return intervals
+            lo = self.intervals[pos][0]
+        while pos < len(self.intervals) and self.intervals[pos][0] <= hi + 1:
+            hi = max(hi, self.intervals[pos][1])
+            del self.intervals[pos]
+        self.intervals.insert(pos, [lo, hi])
+
+    def getIntervals(self) -> list[list[int]]:
+        return self.intervals
+
+
+def solve(num_ops: int) -> None:
+    sr = SummaryRanges()
+    for _ in range(num_ops):
+        op = read_line()
+        argc = read_int()
+        args = read_ints() if argc else []
+        if op == "getIntervals":
+            intervals = sr.getIntervals()
+            write_int(len(intervals))
+            for a, b in intervals:
+                write_ints([a, b])
+        elif op == "addNum":
+            sr.addNum(args[0])
 
 
 if __name__ == "__main__":
-    values = read_ints()
-    result = solve(values)
-    write_matrix(result)
+    solve(read_int())

@@ -46,23 +46,45 @@
  *     # obj.reset()
  */
 
-import { readInt, writeInt } from '../../wasm_libs/js/io.mjs';
+import { readInt, writeInts } from '../../wasm_libs/js/io.mjs';
+
+class Solution {
+  constructor(m, n) {
+    this.m = m;
+    this.n = n;
+    this.total = m * n;
+    this.map = new Map();
+  }
+
+  flip() {
+    const r = Math.floor(Math.random() * this.total);
+    const x = this.map.has(r) ? this.map.get(r) : r;
+    const last = this.total - 1;
+    const lastVal = this.map.has(last) ? this.map.get(last) : last;
+    this.map.set(r, lastVal);
+    this.map.delete(last);
+    this.total--;
+    return [Math.floor(x / this.n), x % this.n];
+  }
+
+  reset() {
+    this.map.clear();
+    this.total = this.m * this.n;
+  }
+}
 
 function solve(m, n, numFlips) {
-  let total = m * n;
-  const mapping = new Map();
-  const results = new Set();
+  const sol = new Solution(m, n);
+  const out = [];
   for (let i = 0; i < numFlips; i++) {
-    const r = i;
-    total -= 1;
-    const idx = mapping.has(r) ? mapping.get(r) : r;
-    mapping.set(r, mapping.has(total) ? mapping.get(total) : total);
-    results.add(idx);
+    out.push(sol.flip());
   }
-  return results.size;
+  return out;
 }
 
 const m = readInt();
 const n = readInt();
 const numFlips = readInt();
-writeInt(solve(m, n, numFlips));
+for (const pt of solve(m, n, numFlips)) {
+  writeInts(pt);
+}
