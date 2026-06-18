@@ -84,64 +84,44 @@
 # Tier 1 — Foundation
 
 ### bfs
-- **Mindset:** BFS explores outward in concentric "distance rings" — the first time you
-  reach a node is via the shortest path. *The* tool for unweighted shortest-path and
-  level-by-level work. Think of it as a wavefront spreading from sources.
-- **When to use:** "shortest path / min steps / min minutes", "level by level",
-  spread/radiate, nearest/closest, multi-source propagation, tree row operations.
-- **Skeleton:**
+- **The Core Intuition (The "Aha!" Moment):** Imagine dropping a stone in a pond. Water rings move outward, step by step. BFS works exactly like this. It checks everything 1 step away, then 2 steps away, and so on. Because it searches level by level, the first time you find the target, it is guaranteed to be the shortest path.
+- **Signal Recognition (When to use it):** Look for keywords like "shortest path", "minimum steps", "minimum minutes to spread", "level by level traversal", "nearest/closest", or anything resembling multi-source propagation/radiation on a grid.
+- **The Logical Blueprint (The Universal Steps):**
+  1. Initialize a queue and push the starting node(s) (along with distance/level if needed).
+  2. Mark the starting node(s) as visited immediately upon enqueuing.
+  3. While the queue is not empty, process the current node (or an entire wave of nodes at once).
+  4. For each unvisited neighbor, mark it as visited and enqueue it.
+  5. Repeat until the target is found or the queue is exhausted.
+- **The Minimal Skeleton:**
   ```python
-  # --- Single-source BFS (shortest path) ---
   from collections import deque
-  queue = deque([(start, 0)])      # (node, dist) or (r, c, dist)
-  visited = {start}                # mark on ENQUEUE, not dequeue
-  while queue:
-      node, dist = queue.popleft()
-      if node == target:
-          return dist
-      for nb in neighbors(node):
-          if nb not in visited:
-              visited.add(nb)      # ← mark HERE before append
-              queue.append((nb, dist + 1))
 
-  # --- Level-by-level BFS (tree row operations) ---
-  queue = deque([root])
-  while queue:
-      level_size = len(queue)      # snapshot level boundary
-      level_result = []
-      for _ in range(level_size):
-          node = queue.popleft()
-          level_result.append(node.val)
-          if node.left:  queue.append(node.left)
-          if node.right: queue.append(node.right)
-      # process level_result here
-
-  # --- Multi-source BFS (p994 pattern) ---
-  queue = deque()
-  fresh = 0
-  for r, c in all_cells:
-      if cell == SOURCE: queue.append((r, c))  # seed ALL sources at t=0
-      elif cell == FRESH: fresh += 1
-  if fresh == 0: return 0          # early exit: nothing to spread to
-  minutes = 0
-  while queue:
-      for _ in range(len(queue)):  # process one wave
-          r, c = queue.popleft()
-          for dr, dc in directions:
-              nr, nc = r+dr, c+dc
-              if in_bounds and grid[nr][nc] == FRESH:
-                  grid[nr][nc] = ROTTEN  # mark on enqueue (mutate grid)
-                  fresh -= 1
-                  queue.append((nr, nc))
-      if queue: minutes += 1       # ← only count if wave produced work
-  return minutes if fresh == 0 else -1
+  def bfs(start, target):
+      queue = deque([start])
+      visited = {start}  # Mark visited on ENQUEUE
+      
+      steps = 0
+      while queue:
+          # Process wave by wave
+          for _ in range(len(queue)):
+              node = queue.popleft()
+              
+              if node == target:
+                  return steps
+                  
+              for neighbor in get_neighbors(node):
+                  if neighbor not in visited:
+                      visited.add(neighbor)  # Mark visited BEFORE enqueue
+                      queue.append(neighbor)
+          steps += 1
+          
+      return -1
   ```
-- **Complexity:** O(V+E) time, O(V) space (queue holds at most all nodes).
-- **Killer gotcha:** Mark visited **on enqueue**, never on dequeue — else the same cell
-  gets re-enqueued multiple times → TLE. In grid problems, mutate the cell value directly
-  (e.g., `grid[nr][nc] = 1`) to avoid a separate visited set. For p994, increment
-  `minutes` only `if queue:` after each wave — avoids off-by-one from the final empty round.
-  p1091: returns -1 if `grid[0][0]==1` OR `grid[n-1][n-1]==1`; also handles `n==1 → return 1`.
+- **Killer Gotchas:**
+  - Mark visited **on enqueue**, never on dequeue! If you mark on dequeue, multiple nodes might enqueue the same neighbor, causing an exponential explosion (TLE).
+  - In grid problems, you can often mutate the cell value directly (e.g., `grid[r][c] = VISITED`) to avoid O(N) space for a visited set.
+  - When tracking steps, be careful not to increment for an empty wave at the end (e.g., in Rotting Oranges, only increment `if queue:` after each wave to avoid an off-by-one error).
+- **Problem Table:**
 
 | Problem | Essence | Key Trick |
 |---|---|---|
@@ -154,50 +134,35 @@
 | p1091 Shortest Path Binary Matrix | Single-source BFS, 8 dirs | Mark `grid[r][c] = 1` on enqueue; early return when neighbor == `(n-1,n-1)`; `n==1 → return 1`; blocked start/end → `-1` |
 
 ### fast_slow_pointers
+- **The Core Intuition (The "Aha!" Moment):** Imagine two cars driving on a road. One car is driving twice as fast as the other. If the road is straight, the fast car reaches the end exactly when the slow car is at the middle. If the road goes in a circle, the fast car will eventually catch up and hit the slow car from behind. This trick helps you find the middle or find a circle (cycle) using no extra memory.
+- **Signal Recognition (When to use it):** You need to find the middle of a linked list, detect a cycle, or track a sequence defined by a mathematical transformation (like Happy Number) where O(1) space is mandated or desired.
+- **The Logical Blueprint (The Universal Steps):**
+  1. Initialize two pointers, `slow` and `fast`.
+  2. Advance `slow` by 1 step, and `fast` by 2 steps.
+  3. Check the exit condition:
+     - For cycle detection: Does `slow` equal `fast`?
+     - For middle finding: Has `fast` reached the end (or is about to)?
+- **The Minimal Skeleton:**
+  ```python
+  # Finding cycle / middle of a linked list
+  slow = head
+  fast = head
 
-- **Mindset:** Two pointers moving at different speeds through a sequence — if a cycle exists, fast eventually laps slow and they meet; if no cycle, fast exhausts the sequence and slow sits at the midpoint.
-
-- **When to use:**
-  - Detect a cycle in a linked list (O(1) space vs hash-set O(N))
-  - Find the middle of a linked list
-  - Apply Floyd's algorithm to an *abstract* sequence defined by a `next(state)→state` function (e.g. happy number, repeated squaring)
-  - Any time you need **O(1) space** over a cycle/length problem
-
-- **Skeleton:**
-
-```python
-# ── Variant A: Linked-list (cycle detection / middle) ──────────────────
-slow, fast = head, head          # both start at head
-while fast and fast.next:        # guard: fast.next.next must be safe
-    slow = slow.next
-    fast = fast.next.next
-    if slow is fast:             # cycle detected (omit this for middle)
-        return True
-return False                     # fast exhausted → no cycle; slow = middle
-
-# ── Variant B: Abstract sequence (e.g. happy number) ───────────────────
-# CRITICAL: offset fast by one step so loop doesn't exit immediately
-slow, fast = n, get_next(n)      # ← NOT both = n
-while fast != target and slow != fast:
-    slow = get_next(slow)
-    fast = get_next(get_next(fast))
-return fast == target            # True = reached goal, False = cycle hit
-
-# ── Variant C: Index-based simulation (array middle) ───────────────────
-slow, fast = 0, 0
-while fast < len(arr) and fast + 1 < len(arr):   # guard 2-step jump
-    slow += 1
-    fast += 2
-return arr[slow:]                # slow is at the (second) middle index
-```
-
-- **Complexity:** O(N) time, O(1) space.
-
+  while fast and fast.next:  # Guard fast.next.next
+      slow = slow.next
+      fast = fast.next.next
+      
+      if slow is fast:
+          return True  # Cycle detected
+          
+  return False  # No cycle; slow is now at the middle
+  ```
 - **Killer Gotchas:**
-  1. `while fast and fast.next` — always guard both; `fast.next.next` will crash if `fast.next` is `None`.
-  2. In p202, **`fast` starts at `get_next(n)` not `n`** — if both started equal, `slow==fast` would trigger on the first check and always return `fast==1` → wrong for unhappy numbers.
-  3. p876 uses `fast + 1 < len(arr)` (not `fast.next and fast.next.next`) when simulating with indices — the guard protects the two-step jump.
-  4. For even-length lists, `slow` lands on the **second** middle (LeetCode standard). If you need the first middle, stop when `fast.next is None` instead.
+  - Always guard the fast pointer's two-step jump: `while fast and fast.next:`. Trying to call `fast.next.next` when `fast.next` is `None` will crash with an AttributeError.
+  - When simulating on an array (index-based), guard with bounds checking: `while fast < len(arr) and fast + 1 < len(arr):`.
+  - For abstract sequences (like Happy Number), **offset the start**: `slow = n`, `fast = get_next(n)`. If both start at `n`, the `slow == fast` check will immediately terminate the loop on the first iteration.
+  - For even-length linked lists, the skeleton above lands `slow` on the **second** middle node. If you need the first middle node, stop when `fast.next.next is None` instead.
+- **Problem Table:**
 
 | Problem | Difficulty | Key Trick | Essence |
 |---|---|---|---|
@@ -206,110 +171,45 @@ return arr[slow:]                # slow is at the (second) middle index
 | p876 Middle of Linked List | Easy | `fast+1 < len` guards 2-step; `slow` is result | Fast 2× / slow 1×; slow lands on 2nd middle for even-length |
 
 ### hashmap
-- **Mindset:** Trade O(N) space for O(1) lookup by mapping a discriminant key
-  (value / count / index) to its data — eliminating rescans and enabling O(1)
-  design operations.
-- **When to use:** count/group frequencies, pair/two-sum lookup, O(1)
-  insert/remove/contains/getRandom, dedupe, "how many share property X",
-  encode↔decode bijection, geometry invariants (XOR corner sets).
-- **Complexity:** O(N) time, O(N) space (typical); p447 is O(N²) due to N pivot passes.
+- **The Core Intuition (The "Aha!" Moment):** Imagine a giant library without a catalog. Finding a book takes a long time because you have to check every shelf. A hashmap is like a perfect catalog or an address book. You give it a name (the key), and it instantly tells you the location or information (the value). This turns a slow search into instant O(1) magic.
+- **Signal Recognition (When to use it):** Look for problems asking to count frequencies, group items, find pairs (like Two Sum), deduplicate, or implement O(1) custom data structures (insert/remove/getRandom). Also useful for encoding/decoding bijectively.
+- **The Logical Blueprint (The Universal Steps):**
+  1. Initialize a hashmap (or sets/arrays if keys are heavily constrained).
+  2. Iterate through the data, building the map (e.g., mapping value to index, or value to frequency).
+  3. Look back into the map as you iterate (or in a second pass) to resolve pairs, answer queries, or maintain invariants.
+- **The Minimal Skeleton:**
+  ```python
+  # O(1) Insert/Remove/GetRandom pattern
+  class O1Set:
+      def __init__(self):
+          self.vals = []          # For O(1) random choice
+          self.idx_map = {}       # val -> index in vals
 
----
+      def insert(self, val):
+          if val in self.idx_map: return False
+          self.idx_map[val] = len(self.vals)
+          self.vals.append(val)
+          return True
 
-#### Skeleton A — O(1) Full Set (p380)
-```python
-class RandomizedSet:
-    def __init__(self):
-        self.vals: list[int] = []          # for O(1) random via random.choice
-        self.idx_map: dict[int, int] = {}  # val → index in vals
-
-    def insert(self, val) -> bool:
-        if val in self.idx_map: return False
-        self.idx_map[val] = len(self.vals)
-        self.vals.append(val)
-        return True
-
-    def remove(self, val) -> bool:
-        if val not in self.idx_map: return False
-        idx  = self.idx_map[val]
-        last = self.vals[-1]
-        # Step 1: overwrite slot with last element
-        self.vals[idx] = last
-        self.idx_map[last] = idx   # fix last's index (no-op if val == last)
-        # Step 2: shrink (MUST come after fixing last's index)
-        self.vals.pop()
-        del self.idx_map[val]
-        return True
-
-    def getRandom(self): return random.choice(self.vals)
-```
-
-#### Skeleton B — Reservoir Sampling (p382, p398)
-```python
-# p382: pick 1 uniform random from a stream of unknown length
-res, i = head.val, 2
-while cur:
-    if random.randint(1, i) == 1:   # prob 1/i → keeps each element equally likely
-        res = cur.val
-    cur, i = cur.next, i + 1
-
-# p398 (alternative — precompute when array fits in memory):
-from collections import defaultdict
-self.idx = defaultdict(list)
-for i, v in enumerate(nums): self.idx[v].append(i)
-def pick(target): return random.choice(self.idx[target])
-```
-
-#### Skeleton C — XOR-Set Geometry Invariant (p391)
-```python
-# Perfect rectangle: two simultaneous conditions must BOTH hold
-corners, total_area = set(), 0
-for x1, y1, x2, y2 in rectangles:
-    total_area += (x2-x1)*(y2-y1)
-    for c in [(x1,y1),(x1,y2),(x2,y1),(x2,y2)]:
-        corners ^= {c}              # toggle: interior corners cancel out
-# Valid iff: only 4 outer corners remain AND areas sum to bounding box
-assert len(corners) == 4 and corners == {"outer", "4", "corners"} and total_area == W*H
-```
-
-#### Skeleton D — TinyURL Bijection (p535)
-```python
-# Two-way map with base-62 counter (NOT Python hash())
-self.url_to_code, self.code_to_url, self.counter = {}, {}, 0
-def encode(url):
-    if url not in url_to_code:
-        code = to_base62(counter); counter += 1
-        url_to_code[url] = code; code_to_url[code] = url
-    return f"http://tinyurl.com/{url_to_code[url]}"
-def decode(short): return code_to_url[short.split("/")[-1]]
-```
-
----
-
-### Killer Gotchas
-
-1. **p380 swap-with-last order:** Fix `idx_map[last] = idx` BEFORE `del idx_map[val]`
-   and `vals.pop()`. Reversing this order corrupts the map when `val == last` (last
-   element being removed) or leaves a dangling index.
-
-2. **p380 self-swap edge case:** When removing the last element in the array,
-   `last == val`, so `idx_map[last] = idx` is a no-op — the code still works correctly
-   because `del idx_map[val]` fires after.
-
-3. **p382/p398 algorithm choice:** Reservoir sampling = O(N) per query, O(1) space.
-   Precompute dict = O(N) build, O(1) query. Use reservoir only when array doesn't
-   fit in memory or the constraint says so.
-
-4. **p391 both conditions required:** Only checking area is insufficient (overlapping
-   sub-rects can still sum correctly). Only checking 4 corners is insufficient (a
-   cross-shaped void can leave 4 corners). You need BOTH invariants.
-
-5. **p447 actual algorithm:** Sort distances per pivot, then count runs with two
-   pointers — NOT a `Counter`. Formula `count*(count-1)` for ordered pairs still applies.
-
----
-
-### Problem Table
+      def remove(self, val):
+          if val not in self.idx_map: return False
+          
+          # Swap with last element to enable O(1) pop
+          idx = self.idx_map[val]
+          last_val = self.vals[-1]
+          
+          self.vals[idx] = last_val
+          self.idx_map[last_val] = idx  # Update last_val's index FIRST
+          
+          self.vals.pop()
+          del self.idx_map[val]         # Delete AFTER updating
+          return True
+  ```
+- **Killer Gotchas:**
+  - In O(1) swap-and-pop (like above), you must update `idx_map[last_val] = idx` BEFORE you `del idx_map[val]`. If `val` is already the last element (self-swap), deleting first and then updating would leave a dangling reference.
+  - Reservoir sampling vs Hashmap: Use Reservoir Sampling (O(1) space) when stream length is unknown or doesn't fit in memory; otherwise, precomputing a dictionary of indices is faster for queries.
+  - When storing geometric coordinates or combinations, remember that tuples are hashable in Python, but lists are not.
+- **Problem Table:**
 
 | Problem | Difficulty | Essence | Key Trick |
 |---|---|---|---|
@@ -323,85 +223,39 @@ def decode(short): return code_to_url[short.split("/")[-1]]
 | p575 Distribute Candies | Easy | Max unique candy types ≤ n/2 | `min(len(set(candyType)), n//2)` — unique count vs quota |
 
 ### merge_intervals
-- **Mindset:** Sort by start once → a single left→right sweep makes every overlap
-  decision local and trivial. Peak concurrency problems split into two sorted arrays
-  and use a two-pointer event simulation instead.
-- **When to use:** Any `[start, end]` interval problem — merge overlaps, insert a new
-  interval, count max concurrent meetings, compute covered time.
-
-- **Skeleton:**
-
-  **Pattern A — Merge / Extend (p056)**
+- **The Core Intuition (The "Aha!" Moment):** Imagine trying to clean up a messy calendar with many overlapping meetings. If the meetings are random, it is very confusing. But if you sort the meetings by their start time first, it becomes easy. You just look at the meetings one by one from left to right. If a meeting starts before the last one ends, you just combine them into one long meeting.
+- **Signal Recognition (When to use it):** The input is an array of `[start, end]` intervals. The problem asks you to merge overlaps, insert a new interval, count meeting rooms, or find total covered time.
+- **The Logical Blueprint (The Universal Steps):**
+  1. Sort the intervals by their start times (if not already sorted).
+  2. Initialize a list with the first interval.
+  3. Iterate through the rest:
+     - If the current interval overlaps with the last interval in the list, extend the last interval's end time.
+     - If it doesn't overlap, append it as a new distinct interval.
+- **The Minimal Skeleton:**
   ```python
-  intervals.sort(key=lambda x: x[0])
-  merged = [intervals[0][:]]
-  for start, end in intervals[1:]:
-      last = merged[-1]
-      if start <= last[1]:           # overlap (touching counts: [1,4],[4,5] → [1,5])
-          last[1] = max(last[1], end)  # nested interval: must take max, not just end
-      else:
-          merged.append([start, end])
+  def merge_intervals(intervals):
+      if not intervals: return []
+      
+      # Sort by start time
+      intervals.sort(key=lambda x: x[0])
+      merged = [intervals[0][:]]
+      
+      for start, end in intervals[1:]:
+          last_end = merged[-1][1]
+          
+          if start <= last_end:  # Overlap found
+              # Extend the end (must take max to handle nested intervals)
+              merged[-1][1] = max(last_end, end)
+          else:
+              merged.append([start, end])
+              
+      return merged
   ```
-
-  **Pattern B — 3-Phase Insert (p057)**  
-  Input is already sorted; scan in one pass, no re-sort needed.
-  ```python
-  result, i, n = [], 0, len(intervals)
-  # Phase 1: intervals strictly before new (end < new.start)
-  while i < n and intervals[i][1] < new_interval[0]:
-      result.append(intervals[i]); i += 1
-  # Phase 2: merge all overlapping with new (start <= new.end)
-  while i < n and intervals[i][0] <= new_interval[1]:
-      new_interval[0] = min(new_interval[0], intervals[i][0])
-      new_interval[1] = max(new_interval[1], intervals[i][1])
-      i += 1
-  result.append(new_interval)
-  # Phase 3: append the rest untouched
-  while i < n:
-      result.append(intervals[i]); i += 1
-  ```
-
-  **Pattern C — Peak Concurrency (p253)**  
-  Split starts & ends into two separate sorted arrays; simulate events.
-  ```python
-  starts = sorted(i[0] for i in intervals)
-  ends   = sorted(i[1] for i in intervals)
-  rooms, end_ptr = 0, 0
-  for start in starts:
-      if start >= ends[end_ptr]:  # a meeting ended → recycle its room
-          end_ptr += 1            # (touching is OK: end=30, start=30 → freed)
-      else:
-          rooms += 1              # no free room → open a new one
-  return rooms
-  # rooms = number of starts that could NOT recycle a freed room
-  ```
-
-  **Pattern D — Capped Interval Sum (p495)**  
-  Input already sorted; each attack contributes `min(duration, gap_to_next)`.
-  ```python
-  total = 0
-  for i in range(len(time_series) - 1):
-      total += min(duration, time_series[i+1] - time_series[i])
-  return total + duration   # last attack always gets full duration
-  ```
-
-- **Complexity:** O(N log N) time (sort dominates), O(N) space.
-  - p057: O(N) time (input already sorted), O(N) space.
-  - p495: O(N) time (already sorted), O(1) space.
-
-- **Killer gotchas:**
-  1. **Nested intervals (p056/p057):** Always use `max(last.end, end)` — a later
-     interval can be fully contained (`[1,10],[2,3]` → end=3 < last.end=10, must keep 10).
-  2. **Touching = overlapping (p056):** `[1,4],[4,5]` merges to `[1,5]` because
-     `start <= last.end` uses `<=`, not `<`.
-  3. **Touching = NOT overlapping for rooms (p253):** Meeting ending at 30 and next
-     starting at 30 → `start >= ends[end_ptr]` fires → room recycled, no extra room needed.
-  4. **p057 boundary conditions:** Phase 1 ends condition is STRICT (`< new.start`);
-     Phase 2 overlap condition is INCLUSIVE (`<= new.end`). Swapping them breaks edge cases.
-  5. **p495 last attack:** The loop runs only `n-1` times. Always add `duration`
-     at the end — the final attack is never cut short by a subsequent one.
-  6. **p253 room count is NOT `end_ptr`:** `rooms` counts starts that got no free room.
-     At the end, `rooms` = minimum rooms needed (not `end_ptr`).
+- **Killer Gotchas:**
+  - **Nested intervals:** Always use `max(last_end, end)` when merging. Don't just replace `last_end` with `end`, because the new interval might be completely swallowed by the last one (e.g., merging `[1, 10]` and `[2, 3]`).
+  - **Touching vs Overlapping:** Pay attention to the problem description. Usually, `[1, 4]` and `[4, 5]` overlap (use `<=`), but in meeting rooms, one meeting ending at 4 and another starting at 4 means the room can be recycled (use `<`).
+  - When finding peak concurrency (Meeting Rooms II), split the starts and ends into two independent sorted arrays. Treat it as a chronology of events (starts = +1 room, ends = -1 room), sweeping through and recycling rooms when `start >= ends[end_ptr]`.
+- **Problem Table:**
 
 | Problem | Difficulty | Essence | Key trick |
 |---|---|---|---|
@@ -411,68 +265,41 @@ def decode(short): return code_to_url[short.split("/")[-1]]
 | p495 Teemo Attacking | Easy | Sum `min(duration, gap)` for each consecutive pair | Always `+duration` at end for last attack's full window |
 
 ### sliding_window
-- **Mindset:** Maintain a `[left, right]` window. Expand `right` every step; contract
-  `left` only when the window violates the constraint. Each element enters and leaves
-  at most once → **O(N)**.
-- **When to use:** "Longest/shortest subarray/substring" under a constraint; "count
-  subarrays/substrings satisfying X"; "anagram / permutation in string"; "at most K
-  distinct / replacements". Key signal: answers involve *contiguous* ranges.
+- **The Core Intuition (The "Aha!" Moment):** Imagine a box that slides over a row of items. When the box moves to the right, you do not need to look at every item inside the box again. You only add the new item entering the box, and remove the old item leaving the box. This saves a lot of time. It changes slow code (O(N²)) into fast code (O(N)).
+- **Signal Recognition (When to use it):** Look for keywords like "contiguous subarray", "longest/shortest substring", "maximum sum of size K", "anagrams/permutations within a string". If the problem asks for optimal consecutive elements and the array/string has positive values or a frequency constraint, sliding window is your go-to.
+- **The Logical Blueprint (The Universal Steps):**
+  1. Initialize `left` and `right` pointers at the start of the array/string, and a state tracker (e.g., sum, hash map).
+  2. Expand the window by moving `right` and adding the new element to your state.
+  3. Check if the window is invalid (e.g., sum too large, too many distinct characters). If invalid, continuously shrink the window by removing the `left` element from your state and moving `left` forward until it becomes valid again.
+  4. At every valid step, update your global answer (e.g., max length, min length, total count).
+  5. Repeat until `right` reaches the end.
+- **The Minimal Skeleton:**
+  ```python
+  def sliding_window(nums, k):
+      left = 0
+      state = 0  # Can be a sum, a counter, etc.
+      best = 0
+      
+      for right, val in enumerate(nums):
+          # 1. Expand: add nums[right] to state
+          state += val
+          
+          # 2. Shrink: while window is invalid
+          while state > k:  # Replace with actual invalid condition
+              state -= nums[left]
+              left += 1
+              
+          # 3. Update best answer
+          best = max(best, right - left + 1)
+          
+      return best
+  ```
+- **Killer Gotchas:**
+  - **Stale Pointers/Data:** If jumping `left` directly (e.g., to skip duplicates using a dictionary of last seen indices), make sure you don't jump backward. Always `left = max(left, last_seen[char] + 1)`.
+  - **Updating the Answer:** Know *when* to update your answer. If you need the *longest* valid window, update it *after* the `while` loop makes the window valid. If you need the *shortest* valid window, update it *inside* the `while` loop *before* shrinking.
+  - **Zero Counts in Hash Maps:** When maintaining character frequencies with a Python `Counter` or `dict`, `state[char] == 0` is NOT the same as the character missing. Actively `del state[char]` if it hits 0 so equality comparisons (e.g., `window == target`) work perfectly.
 
----
-
-- **Skeleton:**
-
-```python
-# --- VARIABLE window (p003, p424, p395) ---
-left = 0
-state = {}          # freq map / whatever tracks validity
-best = 0
-for right, ch in enumerate(s):
-    # 1. Expand: add s[right] to state
-    state[ch] = state.get(ch, 0) + 1
-
-    # 2. Shrink: while window is INVALID, remove s[left]
-    while invalid(state):          # e.g. len(state) > k
-        state[s[left]] -= 1
-        if state[s[left]] == 0:
-            del state[s[left]]
-        left += 1
-
-    # 3. Update answer
-    best = max(best, right - left + 1)
-return best
-
-# --- FIXED window (p438, p567) ---
-w = len(p)
-target = Counter(p)             # or list[26]
-window = Counter(s[:w])
-result = [0] if window == target else []
-for i in range(w, len(s)):
-    window[s[i]] += 1
-    window[s[i - w]] -= 1
-    if window[s[i - w]] == 0:
-        del window[s[i - w]]    # keep Counter clean for == comparison
-    if window == target:
-        result.append(i - w + 1)
-```
-
-- **Complexity:** O(N) time, O(alphabet) space (26 for lowercase, 128 for ASCII).
-
-- **Killer gotchas:**
-  - **p003** — jump `left` only if `char_index[ch] >= left`; stale indices (from before
-    the current window) must be ignored, not acted on.
-  - **p424** — `max_freq` is **never decremented** when shrinking. It tracks the global
-    historical max, not the current window max. This is intentional: the window only
-    grows when a new `max_freq` is achievable, otherwise it slides (left+1, right+1).
-    The window size is monotonically non-decreasing.
-  - **p438** — delete zero-count keys before `Counter ==` comparison. Python `Counter`
-    treats `{'a': 0}` ≠ `{}`, so stale zero entries break equality.
-  - **p567** — use `list[26]` instead of `Counter` to sidestep zero-key deletion
-    entirely: `list` comparison ignores nothing, and O(26) equality is truly O(1).
-  - **p395** — not solvable with a single sliding window pass. Trick: iterate `t` from
-    1 to 26 (number of distinct chars allowed). For each `t`, use a variable window
-    constrained to exactly `t` unique chars where all have freq ≥ k. Total: 26 × O(N).
-
+- **Problem Table:**
 | Problem | Pattern | Essence / Key Trick |
 |---|---|---|
 | p003 Longest Substring No Repeat | Variable | `char→last_index`; jump `left = last_index+1` only if index ≥ left (stale guard) |
@@ -481,59 +308,45 @@ for i in range(w, len(s)):
 | p438 Find All Anagrams | Fixed | Rolling Counter vs `p_count`; delete zero-count keys so `==` works correctly |
 | p567 Permutation in String | Fixed | `list[26]` arrays; roll by `+1`/`−1`; list equality avoids zero-key issue entirely |
 
----
-
 ### string
-- **Mindset:** Strings are char arrays — normalize (strip/upper/lower) then rebuild, or
-  scan with a small state machine. Reach for built-ins (`isupper`, `islower`, `split`)
-  before hand-rolling loops. Many "clever" string problems reduce to a 1-liner once the
-  right observation is made (p521).
-- **When to use:** reformatting/parsing, char-class validation, case rules, counting
-  segments, fixed-size block grouping, license-key / URL transforms, LCS-style puzzles
-  with a mathematical shortcut.
-- **Skeleton:**
+- **The Core Intuition (The "Aha!" Moment):** Strings are just lists of characters. Most string problems are easy if you clean the data first. For example, remove spaces or make everything lowercase before you start. You do not need complex tools. Just use simple flags (like `is_inside_word = True`) or built-in language tools (like `.split()`).
+- **Signal Recognition (When to use it):** The input is strings and asks to reformat them (license keys, URLs), validate rules (capitalization, character classes), group characters, or count segments/words.
+- **The Logical Blueprint (The Universal Steps):**
+  1. **Normalize:** Strip noise, convert cases, or remove invalid characters first. It's infinitely easier to work with clean data than to handle edge cases mid-loop.
+  2. **Scan or Rebuild:** Either use a boolean flag while scanning left-to-right (to track if you are inside a word/segment) OR chunk the normalized string using slices to rebuild it.
+  3. **Return:** Re-join chunks if you're formatting, or return the boolean/counter.
+- **The Minimal Skeleton:**
   ```python
-  # --- Pattern A: normalize → chunk rebuild (p482) ---
-  cleaned = s.replace("-", "").upper()       # strip noise, canonicalize case
-  first_len = len(cleaned) % k              # FIRST group is shorter (not last!)
-  groups = []
-  if first_len > 0:
-      groups.append(cleaned[:first_len])
-  for i in range(first_len, len(cleaned), k):
-      groups.append(cleaned[i:i+k])
-  return "-".join(groups)
-
-  # --- Pattern B: in_segment flag (p434) ---
-  count, in_seg = 0, False
-  for ch in s:
-      if ch != " " and not in_seg:
-          count += 1
-          in_seg = True
-      elif ch == " ":
-          in_seg = False
-  return count
-  # Alternative one-liner: len(s.split())
-
-  # --- Pattern C: built-in char-class predicates (p520) ---
-  return word.isupper() or word.islower() or word[1:].islower()
-  # word[1:].islower() handles first-cap + rest-lower AND single-char words
-
-  # --- Pattern D: mathematical shortcut (p521) ---
-  return -1 if a == b else max(len(a), len(b))
-  # Key: equal STRINGS → -1 (not equal lengths!)
+  # Pattern A: State Machine (Scanning)
+  def count_segments(s: str) -> int:
+      count, in_seg = 0, False
+      for ch in s:
+          if ch != ' ' and not in_seg:
+              count += 1
+              in_seg = True
+          elif ch == ' ':
+              in_seg = False
+      return count
+  
+  # Pattern B: Normalize and Rebuild
+  def reformat(s: str, k: int) -> str:
+      cleaned = s.replace("-", "").upper()
+      # Process the first irregular chunk
+      first_len = len(cleaned) % k
+      groups = [cleaned[:first_len]] if first_len else []
+      
+      # Process remaining perfectly sized chunks
+      for i in range(first_len, len(cleaned), k):
+          groups.append(cleaned[i:i+k])
+          
+      return "-".join(groups)
   ```
-- **Complexity:** O(N) time, O(N) space for rebuilt string; O(1) for pure scan/predicate.
-- **Killer gotchas:**
-  - **p482** — first group is shorter, **not** the last: `first_len = len(cleaned) % k`.
-    Slice `[:first_len]` from the front, then iterate the rest.
-  - **p521** — condition is `a == b` (string equality), **NOT** `len(a) == len(b)`.
-    "aaa" vs "bbb": same length but different → answer is 3, not -1. The insight: if
-    `a ≠ b`, the longer string cannot be a subsequence of the other, so return `max(len)`.
-  - **p520** — use `word[1:].islower()` (not `word[0].isupper() and word[1:].islower()`):
-    the `[1:]` slice covers single-char words cleanly too.
-  - **p434** — `len(s.split())` is the built-in shortcut, but the `in_segment` flag
-    version is the expected "explain your logic" answer in interviews.
+- **Killer Gotchas:**
+  - **First vs Last Chunk:** When splitting into groups of size `k`, the *first* group is often the short one (`len % k`), not the last one. Calculate `first_len` and slice from the front!
+  - **Built-in Blindness:** Don't write a 15-line loop to check if all letters are lowercase when `word.islower()` exists. Check `word[1:].islower()` to elegantly handle Title Case and single-character words simultaneously.
+  - **String Equality Illusion:** Equal length does not mean equal string. If two strings are entirely different, neither is a subsequence of the other, so the longest uncommon subsequence is simply `max(len(a), len(b))`.
 
+- **Problem Table:**
 | Problem | Complexity | Key trick |
 |---|---|---|
 | p434 Number of Segments | O(N) / O(1) | `in_segment` flag: count space→non-space transitions; or just `len(s.split())` |
@@ -542,87 +355,44 @@ for i in range(w, len(s)):
 | p521 Longest Uncommon Subseq I | O(N) / O(1) | `a == b` (string equality!) → -1; else `max(len(a), len(b))` — NOT `len(a)==len(b)` |
 
 ### two_pointers
-- **Mindset:** Two indices moving monotonically — once sorted, one comparison tells you
-  which pointer to advance, collapsing O(N²) into O(N). Three distinct modes:
-  **(A) Inward** (`left=0, right=n−1`): pair/triplet sums, container water.
-  **(B) Same-direction** (`slow=0, fast=1`): remove dups in-place, k-diff pairs.
-  **(C) Merge two sorted sequences** (`i` on A, `j` on B): is-subsequence, heaters.
-- **When to use:** Sorted array + pair/triplet sum to target; is-subsequence check;
-  k-diff pairs; container-with-most-water; merge-advance on two sorted arrays.
-- **Skeleton:**
+- **The Core Intuition (The "Aha!" Moment):** If a list is already sorted, you do not need to check every pair of numbers. You can put one finger at the start and one finger at the end. Then, move your fingers toward the middle based on what you need. If the sum is too small, move the left finger to the right to get a bigger number. If the sum is too big, move the right finger to the left. This makes your search very fast.
+- **Signal Recognition (When to use it):** Look for "sorted array", "find pairs/triplets that sum to X", "container with most water", "k-diff pairs", or checking if one string is a "subsequence" of another.
+- **The Logical Blueprint (The Universal Steps):**
+  - **Inward Pointers (Pairs/Sums):** Place `left` at start, `right` at end. Calculate sum/area. If too small, move `left` right. If too big, move `right` left. If equal, record it and move *both*.
+  - **Same-Direction Pointers (Deduplication/Subsequence):** Place `slow` and `fast` at start. `fast` scouts ahead to find valid conditions. `slow` marks where the next valid element should go, or acts as an anchor.
+  - **Co-Advancing Sequences (Merging):** Pointer `i` on sequence A, pointer `j` on sequence B. Compare `A[i]` and `B[j]`, then selectively advance one or both.
+- **The Minimal Skeleton:**
   ```python
-  # (A) Inward — pair sum
-  left, right = 0, len(nums) - 1
-  while left < right:
-      s = nums[left] + nums[right]
-      if s == target:   return [left+1, right+1]   # 1-indexed for p167!
-      elif s < target:  left += 1
-      else:             right -= 1
-
-  # (A) 3Sum — fix outer, inner inward, triple dedup
-  nums.sort()
-  for i in range(n - 2):
-      if i > 0 and nums[i] == nums[i-1]: continue   # dedup i
-      left, right = i+1, n-1
+  # Pattern: Inward Pointers (Two Sum on Sorted Array)
+  def two_sum_sorted(nums: list[int], target: int) -> list[int]:
+      left, right = 0, len(nums) - 1
+      
       while left < right:
-          total = nums[i] + nums[left] + nums[right]
-          if total < 0:   left += 1
-          elif total > 0: right -= 1
+          curr = nums[left] + nums[right]
+          if curr == target:
+              return [left, right]
+          elif curr < target:
+              left += 1  # Need a bigger sum
           else:
-              result.append([nums[i], nums[left], nums[right]])
-              while left < right and nums[left] == nums[left+1]:  left += 1
-              while left < right and nums[right] == nums[right-1]: right -= 1
-              left += 1; right -= 1   # must move both after recording
-
-  # (B) Same-direction — k-diff pairs on sorted array
-  nums.sort()
-  left, right = 0, 1
-  while right < len(nums):
-      diff = nums[right] - nums[left]
-      if diff < k:    right += 1
-      elif diff > k:  left += 1
-      else:
-          count += 1
-          lv, rv = nums[left], nums[right]
-          while left < len(nums) and nums[left] == lv:  left += 1
-          while right < len(nums) and nums[right] == rv: right += 1
-      if left == right: right += 1   # never let pointers collide
-
-  # (C) is_subseq helper — reused in p392, p522, p524
+              right -= 1 # Need a smaller sum
+              
+      return []
+  
+  # Pattern: Is Subsequence (Same Direction)
   def is_subseq(s: str, t: str) -> bool:
       i = 0
       for ch in t:
-          if i < len(s) and s[i] == ch: i += 1
+          if i < len(s) and s[i] == ch:
+              i += 1
       return i == len(s)
-
-  # (C) Merge two sorted — heaters
-  houses.sort(); heaters.sort()
-  i = j = 0
-  while i < len(houses):
-      # advance heater j while next heater is closer
-      while j+1 < len(heaters) and abs(houses[i]-heaters[j]) >= abs(houses[i]-heaters[j+1]):
-          j += 1
-      result = max(result, abs(houses[i] - heaters[j]))
-      i += 1
   ```
-- **Complexity:** O(N) pair-sum | O(N²) 3Sum | O(N log N) k-diff (sort dominates) |
-  O(N·M) is-subseq per pair | **O(1)** extra space for all pointer variants.
-- **Killer gotchas:**
-  1. **Sort first** — two-pointer logic is invalid on unsorted input (p015, p532, p475).
-  2. **3Sum triple dedup**: skip `nums[i]==nums[i−1]` for i; then skip left/right dups
-     *before* advancing both — a match requires moving both pointers.
-  3. **p167 is 1-indexed** — return `[left+1, right+1]`, not `[left, right]`.
-  4. **p532 k=0 guard**: when k<0 return 0 immediately; when k=0 pairs are `(x,x)`
-     requiring count≥2, handled naturally since `left≠right` is enforced with
-     `if left==right: right+=1`.
-  5. **p475 is pure two-pointer, not binary search** — advance heater `j` while next
-     heater is closer or equidistant; never reset j (both arrays are co-advancing).
-  6. **p522 sort-then-check**: sort strings by length descending so longest candidate is
-     checked first; a string is "uncommon" only if it is NOT a subsequence of ANY other
-     string (including duplicates — a duplicate always disqualifies it).
-  7. **p524 tie-break**: no pre-sorting needed; iterate dictionary, update best if
-     `len(word) > len(best)` OR `(same length AND word < best)` lexicographically.
+- **Killer Gotchas:**
+  - **The Unsorted Trap:** Inward two-pointers for sums *require* the array to be sorted. If it's unsorted and you sort it, remember that original indices are lost.
+  - **Infinite Loops on Duplicates:** When deduplicating pairs/triplets (like in 3Sum), you must use a `while` loop to skip over duplicates *after* you record a valid pair, and you must move *both* pointers.
+  - **Colliding Pointers:** In same-direction pointers (like finding differences), ensure `left != right`. If they collide, always forcefully advance `right += 1` to keep them separated.
+  - **1-Indexed Results:** Read carefully. Some two-pointer problems (like Two Sum II) want 1-indexed output, meaning you return `[left + 1, right + 1]`.
 
+- **Problem Table:**
 | Problem | Difficulty | Essence | Key Trick |
 |---|---|---|---|
 | p011 Container With Most Water | Medium | Maximize `min(h[l],h[r])*(r−l)` | Move the **shorter** side inward; taller side can't improve area |
@@ -634,78 +404,46 @@ for i in range(w, len(s)):
 | p524 Longest Word via Deleting | Medium | Longest dict word that's subseq of s | `is_subseq` per word; tie-break: longer > lexicographically smaller |
 | p532 K-Diff Pairs | Medium | Count unique pairs with `\|diff\|==k` | Sort + same-dir two-pointer; skip dups after match; guard `left==right` |
 
----
+# Tier 2 — Intermediate
 
 ### binary_search
-- **Mindset:** Define a monotone predicate over the search space and halve it each step.
-  One comparison reveals which half the answer is in; shrink toward it until convergence.
-- **When to use:** Sorted/rotated array, first/last occurrence, leftmost satisfying a
-  predicate (`isBadVersion`), O(log n) required, LIS insertion point, "binary search the
-  answer" (search over a value space, not an index space).
+- **The Core Intuition (The "Aha!" Moment):** Think of guessing a number from 1 to 100. If you guess 50 and I say "lower", you do not need to check 51 to 100. You just threw away half of the options! Binary search does exactly this. It uses a simple "yes or no" rule to cut the search area in half every time. It keeps cutting until it finds the exact answer.
+- **Signal Recognition (When to use it):** "Sorted array", "rotated array", "find the first or last position", "O(log n) time complexity required", "leftmost satisfying a condition" (like the first bad version), or "minimum/maximum possible value" (binary searching the answer).
+- **The Logical Blueprint (The Universal Steps):**
+  1. Define the start (`left`) and end (`right`) of your search area.
+  2. Find the exact middle point (`mid`).
+  3. Ask a "yes or no" question about the `mid` point.
+  4. Depending on the answer, throw away the half where the target cannot be.
+  5. Repeat this process until `left` and `right` meet and give you the answer.
+- **The Minimal Skeleton:**
+  ```python
+  # Template 1: Exact Match (Find a specific target)
+  left, right = 0, len(nums) - 1
+  while left <= right:
+      mid = left + (right - left) // 2  # Find middle safely
+      if nums[mid] == target:
+          return mid                    # Found it
+      elif nums[mid] < target:
+          left = mid + 1                # Throw away left half
+      else:
+          right = mid - 1               # Throw away right half
+  return -1                             # Not found
 
-#### Skeleton — Three Templates
-
-```python
-# Template A — Exact match (return index or -1)
-left, right = 0, len(nums) - 1
-while left <= right:
-    mid = left + (right - left) // 2   # overflow-safe (critical in C/C++/Java)
-    if nums[mid] == target:
-        return mid
-    elif nums[mid] < target:
-        left = mid + 1
-    else:
-        right = mid - 1
-return -1
-
-# Template B — Find leftmost position where predicate turns True
-#   (converges to the boundary; NEVER use right=mid-1)
-left, right = 0, n          # or (1, n) depending on domain
-while left < right:         # NOT <=; loop exits when left==right
-    mid = left + (right - left) // 2
-    if predicate(mid):
-        right = mid         # keep mid; answer might BE mid
-    else:
-        left = mid + 1
-return left                 # left == right == answer
-
-# Template C — Outer loop over candidate lengths/digits + inner exact BS
-#   Used when you enumerate a parameter m and binary-search a second param k
-for m in range(max_m, 1, -1):
-    lo, hi = 2, int(num ** (1.0 / (m - 1))) + 2
-    while lo <= hi:
-        mid = (lo + hi) // 2
-        s = geometric_sum(mid, m)
-        if s == num:   return str(mid)
-        elif s < num:  lo = mid + 1
-        else:          hi = mid - 1
-```
-
-- **Rotated array (p153):** compare `mid` vs `right` (NOT vs `left`).  
-  `nums[mid] > nums[right]` → min is in **right half** → `left = mid + 1`  
-  `nums[mid] <= nums[right]` → min is in **left half (incl. mid)** → `right = mid`
-
-- **Prefix-weight sampling (p497):** build cumulative integer-point counts.  
-  `pick`: pick random `t` in `[1, total]`, then Template B to find first prefix `>= t`.
-
-- **Complexity:** O(log n) time, O(1) space (O(n log n) for p354 due to sort).
-- **p352 addNum:** O(k) amortized per call where k = intervals merged; getIntervals O(1).
-
-#### Killer Gotchas
-1. **Template mismatch = infinite loop.** `while left < right` + `right = mid` is safe.
-   `while left <= right` + `right = mid` (not `mid-1`) loops forever when `left == right`.
-2. **`(left + right) // 2` overflows** in C/C++/Java (32-bit int). Always use
-   `left + (right - left) // 2`. Python is immune (arbitrary precision).
-3. **p153 — compare mid vs right, not left.** If you compare `nums[mid] < nums[left]`
-   you get wrong answers for the non-rotated case or single-element arrays.
-4. **p354 sort key must be `(w asc, h desc)` for same-width envelopes.** If two envelopes
-   have equal width, the taller one (sorted descending) prevents it from being counted
-   twice in the LIS on heights. `(w asc, h asc)` gives wrong answers.
-5. **p497 counts integer POINTS, not area.** Width contribution is `(x2-x1+1)`, not
-   `(x2-x1)`. Off-by-one here breaks the uniform distribution.
-6. **p483 fallback is `n-1`, not `2`.** Any integer `n >= 3` written in base `n-1` is
-   always `"11"`, so the answer is at most `n-1`.
-
+  # Template 2: Find the boundary (Leftmost True)
+  left, right = 0, n
+  while left < right:                   # Notice: < not <=
+      mid = left + (right - left) // 2
+      if is_good(mid):
+          right = mid                   # Keep mid, it might be the answer
+      else:
+          left = mid + 1                # Move past bad items
+  return left                           # left and right converge
+  ```
+- **Killer Gotchas:**
+  - **Infinite loop:** Mixing up the templates. `while left < right` must use `right = mid`. `while left <= right` must use `right = mid - 1`. Do not mix them.
+  - **Number Overflow:** `(left + right) // 2` can crash in languages like C++ or Java for very large numbers. Always use `left + (right - left) // 2`.
+  - **Rotated Arrays:** When finding the minimum in a rotated array, always compare `mid` with `right`. If you compare it with `left`, you will get wrong answers.
+- **Problem Table:**
 | Problem | Difficulty | Essence | Key trick |
 |---|---|---|---|
 | p704 Binary Search | Easy | Classic exact-match | Template A; return `mid` on hit, `-1` after loop |
@@ -716,54 +454,37 @@ for m in range(max_m, 1, -1):
 | p483 Smallest Good Base | Hard | Geometric sum = n? | Outer loop `m` from `bit_length(n)` down to 2; inner BS `k` in `[2, n^(1/(m-1))+2]`; fallback = `n-1` |
 | p497 Random Point in Rectangles | Medium | Weighted random rect | Prefix integer-point counts; `randint(1,total)`; Template B to find rect; `randint` within rect |
 
-#### Skeleton — Three Templates
-
 ### bit_manipulation
-- **Mindset:** Treat numbers as bit vectors; exploit XOR/AND/shift identities
-  (`a^a=0`, `a^0=a`, `a&(a-1)` clears lowest set bit) instead of arithmetic.
-  Pick the right skeleton: XOR-fold for "find the odd one out", Kernighan loop
-  for "count set bits", DP-on-bits for "all counts 0..n".
-- **When to use:** "every element appears twice except one", "missing number",
-  parity / counting bits, power-of-two check (`n & (n-1) == 0`), mask/flip
-  complement, O(1) space required, "without division".
-
-- **Skeleton:**
+- **The Core Intuition (The "Aha!" Moment):** Computers store numbers as a line of 0s and 1s. Instead of using normal math like plus or minus, we can change these 0s and 1s directly. Think of it like a row of light switches. You can turn a switch on, turn it off, or flip it. This is super fast because it is exactly how the computer naturally works.
+- **Signal Recognition (When to use it):** "Every element appears twice except one", "find the missing number", "do not use division", "O(1) extra space", "count the number of 1s", or "check if it is a power of two".
+- **The Logical Blueprint (The Universal Steps):**
+  1. Identify what you want to do with the bits (count them, find a unique one, flip them).
+  2. Use XOR (`^`) to cancel out matching pairs (because X XOR X = 0).
+  3. Use AND (`&`) with `n - 1` to turn off the lowest "1" bit in a number.
+  4. Use shifts (`>>` or `<<`) to check the bits one by one.
+- **The Minimal Skeleton:**
   ```python
-  # 1. XOR fold — cancel duplicate pairs, isolate unique element
+  # 1. XOR Fold: Find the single odd element out
   res = 0
   for x in nums:
-      res ^= x          # a^a=0, a^0=a  →  only odd-count element survives
+      res ^= x           # Pairs cancel out to 0, only unique remains
 
-  # 2. Brian Kernighan — count set bits in O(popcount) iterations
+  # 2. Brian Kernighan: Count the "1" bits fast
   count = 0
-  while n:
-      n &= n - 1        # clears the LOWEST set bit each iteration
-      count += 1        # loops exactly popcount(n) times, not bit_width times
+  while n > 0:
+      n &= (n - 1)       # Turns off the rightmost "1" bit
+      count += 1         # Loops only for the number of "1"s
 
-  # 3. DP on bits — build answer array for 0..n in O(n)
+  # 3. DP on bits: Build count for 0 to n quickly
   ans = [0] * (n + 1)
   for i in range(1, n + 1):
-      ans[i] = ans[i >> 1] + (i & 1)   # i>>1 drops LSB; i&1 is that dropped bit
-
-  # 4. Full-width complement mask — flip exactly the significant bits
-  mask = (1 << num.bit_length()) - 1   # e.g. num=5 (101) → mask=7 (111)
-  complement = num ^ mask              # flips only the meaningful bits
-  # ⚠ Only safe when num >= 1 (bit_length(0)==0 → mask=0, complement=0)
+      ans[i] = ans[i >> 1] + (i & 1)  # Shift right and add the lost bit
   ```
-
-- **Complexity:** O(n) time, O(1) space (O(n) space for DP array variant).
-  Kernighan loop is O(k) where k = number of set bits ≤ bit-width.
-
-- **Killer gotchas:**
-  1. **`~num` in Python is NOT bit-flip** — it returns `-(num+1)` (unlimited-precision
-     two's complement). Always build an explicit mask with `bit_length()` and XOR (p476).
-  2. **`n &= n-1` clears the *lowest* set bit**, not just "subtracts 1". This is why
-     the loop runs in O(popcount) time, not O(32). Know this distinction cold.
-  3. **`bit_length()` edge case**: `(0).bit_length() == 0`, so mask = 0 and the
-     complement formula breaks for num=0. Constraints usually exclude 0 — verify first.
-  4. **Power-of-two check**: `n > 0 and n & (n-1) == 0`. The `n > 0` guard is essential
-     because `0 & -1 == 0` would incorrectly pass without it.
-
+- **Killer Gotchas:**
+  - **Python's `~` operator:** `~n` in Python does not just flip the bits; it gives `-(n+1)` because numbers have infinite length. To flip bits, always create a mask (like `1111`) and use XOR: `n ^ mask`.
+  - **`n &= n - 1` vs Subtracting 1:** `n &= n - 1` clears the lowest "1" bit. It is not the same as just subtracting 1. This makes counting bits super fast.
+  - **The Zero Trap:** Be careful with `0`. The power-of-two check is `n > 0 and (n & (n - 1)) == 0`. If you forget `n > 0`, the number `0` will wrongly pass the test!
+- **Problem Table:**
 | Problem | Essence | Key trick |
 |---|---|---|
 | p136 Single Number | XOR all — pairs cancel | `res=0; for x in nums: res^=x` — O(n)/O(1) |
@@ -771,273 +492,90 @@ for m in range(max_m, 1, -1):
 | p338 Counting Bits | Bit counts for 0..n | DP: `ans[i] = ans[i>>1] + (i&1)` — right-shift shares subproblem |
 | p476 Number Complement | Flip significant bits only | `mask=(1<<num.bit_length())-1; return num^mask` — avoids Python `~` trap |
 
----
-
 ### design
-- **Mindset:** Layer multiple O(1) data structures (dicts, sets, `OrderedDict`) so every
-  operation routes to a cheap lookup — trade memory for speed. The hard part is keeping
-  auxiliary structures in sync on every mutation.
-- **When to use:** "design a class", "implement X with O(1) avg", LRU/LFU, eviction
-  policies, hit-counter streams, any "cache with policy" problem.
+- **The Core Intuition (The "Aha!" Moment):** Imagine you are running a very busy restaurant. If you have to look through a long list to find a customer's order, it takes too long. Instead, you keep multiple fast-access lists. One list connects a name to an order. Another list groups orders by time. By keeping these fast lists updated together, every action becomes instant. You use more paper (memory) to save time (speed).
+- **Signal Recognition (When to use it):** "Design a class", "implement a cache", "O(1) average time complexity", "LRU (Least Recently Used) or LFU (Least Frequently Used)", or "eviction policy".
+- **The Logical Blueprint (The Universal Steps):**
+  1. Use a Dictionary (Hash Map) to find values instantly using a key.
+  2. Use a second data structure (like another Dictionary, a Set, or an OrderedDict) to track the rules, like frequency or recency.
+  3. When you read or write data, update all data structures at the exact same time so they never disagree.
+  4. If the cache is full, use your tracking structure to find the right item to remove (evict).
+- **The Minimal Skeleton:**
+  ```python
+  from collections import OrderedDict
 
-- **Skeleton (Simple LFU — as implemented):**
+  class LRUCache:
+      def __init__(self, capacity: int):
+          self.cap = capacity
+          self.cache = OrderedDict()  # Remembers the order keys were added
 
-```python
-from collections import defaultdict
+      def get(self, key: int) -> int:
+          if key not in self.cache:
+              return -1
+          self.cache.move_to_end(key) # Mark as recently used
+          return self.cache[key]
 
-class LFUCache:
-    def __init__(self, capacity: int):
-        self.cap = capacity
-        self.key_to_val  = {}          # key → value
-        self.key_to_freq = {}          # key → current frequency
-        self.freq_to_keys = {}         # freq → set of keys at that freq
-
-    def _update_freq(self, key: int):
-        freq = self.key_to_freq[key]
-        self.freq_to_keys[freq].discard(key)
-        if not self.freq_to_keys[freq]:        # ← MUST delete empty bucket
-            del self.freq_to_keys[freq]        #   or min() returns stale freq
-        self.key_to_freq[key] = freq + 1
-        self.freq_to_keys.setdefault(freq + 1, set()).add(key)
-
-    def get(self, key: int) -> int:
-        if key not in self.key_to_val:
-            return -1
-        self._update_freq(key)
-        return self.key_to_val[key]
-
-    def put(self, key: int, value: int) -> None:
-        if self.cap <= 0:                      # ← guard: capacity 0 edge case
-            return
-        if key in self.key_to_val:             # UPDATE existing key
-            self.key_to_val[key] = value
-            self._update_freq(key)             # no eviction needed
-        else:                                  # INSERT new key
-            if len(self.key_to_val) >= self.cap:   # evict first
-                min_freq = min(self.freq_to_keys)  # O(k) — not truly O(1)
-                evict = self.freq_to_keys[min_freq].pop()
-                del self.key_to_val[evict]
-                del self.key_to_freq[evict]
-            self.key_to_val[key] = value
-            self.key_to_freq[key] = 1
-            self.freq_to_keys.setdefault(1, set()).add(key)
-```
-
-- **Skeleton (True O(1) LFU — interview gold standard):**
-
-```python
-from collections import defaultdict, OrderedDict
-
-class LFUCache:
-    def __init__(self, capacity: int):
-        self.cap = capacity
-        self.min_freq = 0              # ← tracked variable, reset to 1 on new insert
-        self.key_to_val  = {}
-        self.key_to_freq = {}
-        self.freq_to_keys = defaultdict(OrderedDict)  # freq → {key: None} in LRU order
-
-    def _update_freq(self, key: int):
-        freq = self.key_to_freq[key]
-        del self.freq_to_keys[freq][key]
-        if not self.freq_to_keys[freq] and freq == self.min_freq:
-            self.min_freq += 1         # ← safe: only one freq can be min
-        self.key_to_freq[key] = freq + 1
-        self.freq_to_keys[freq + 1][key] = None
-
-    def get(self, key: int) -> int:
-        if key not in self.key_to_val:
-            return -1
-        self._update_freq(key)
-        return self.key_to_val[key]
-
-    def put(self, key: int, value: int) -> None:
-        if self.cap <= 0:
-            return
-        if key in self.key_to_val:
-            self.key_to_val[key] = value
-            self._update_freq(key)
-        else:
-            if len(self.key_to_val) >= self.cap:
-                evict, _ = self.freq_to_keys[self.min_freq].popitem(last=False)  # LRU
-                del self.key_to_val[evict]
-                del self.key_to_freq[evict]
-            self.key_to_val[key] = value
-            self.key_to_freq[key] = 1
-            self.freq_to_keys[1][key] = None
-            self.min_freq = 1          # ← new key always starts at freq=1
-```
-
-- **Complexity:**
-  - Simple variant: O(k) eviction (k = distinct freqs), O(1) get/update, O(capacity) space
-  - True O(1) variant: O(1) all ops amortized, O(capacity) space
-- **Killer gotchas:**
-  1. **Must delete empty freq buckets** — otherwise `min(freq_to_keys)` or `min_freq` tracking returns a stale frequency and evicts the wrong key.
-  2. **`min_freq` always resets to 1 after a new `put`** — every newly inserted key starts at freq=1, which is always ≤ any existing freq. Skip this reset and you evict the wrong bucket.
-  3. **Update ≠ Insert** — if `key` already exists in `put()`, just update value and bump freq; do NOT evict. Failing this double-counts capacity.
-  4. **`cap <= 0` guard** — LeetCode tests with capacity=0; skip all ops or you'll evict into an empty dict.
-  5. **LRU tie-break within same freq** — plain `set.pop()` is arbitrary, not LRU. Only `OrderedDict` with `popitem(last=False)` gives correct LRU order within a frequency bucket.
-
+      def put(self, key: int, value: int) -> None:
+          if self.cap <= 0:
+              return
+          if key in self.cache:
+              self.cache.move_to_end(key) # Mark as recently used
+          self.cache[key] = value
+          
+          if len(self.cache) > self.cap:
+              # Pop the oldest item (from the beginning)
+              self.cache.popitem(last=False)
+  ```
+- **Killer Gotchas:**
+  - **Empty Buckets:** In LFU caches, always delete empty frequency buckets. If you leave them empty, your "minimum frequency" tracker will look at the empty bucket and evict nothing, causing a crash.
+  - **Updating vs Inserting:** If you `put()` a key that already exists, it is an update, not a new insert. Do not increase the total size, and do not evict anything.
+  - **Zero Capacity:** Always check if `capacity <= 0` at the very beginning of your `put` function. LeetCode loves to test with a cache size of 0 to see if your code breaks.
+- **Problem Table:**
 | Problem | Difficulty | Essence | Key trick |
 |---|---|---|---|
 | p460 LFU Cache | Hard | 3-dict LFU: key→val, key→freq, freq→bucket | Delete empty buckets; track `min_freq`; `OrderedDict` per bucket for true O(1) LRU tie-break |
 
----
-
 ### dfs
-- **Mindset:** Explore as deep as possible before backtracking. Mark nodes visited
-  **before** recursing so no node is processed twice. Return values bubble up through
-  the call stack — use this to aggregate (sum, count, bool) in a single pass.
-- **When to use:** Grid connectivity (islands/regions/flood-fill), tree traversals
-  (pre/in/post-order), BST search & restructure, graph reachability over index graphs,
-  parsing nested structures iteratively via an explicit stack.
+- **The Core Intuition (The "Aha!" Moment):** Think of walking through a maze. You keep walking down one path until you hit a dead end. When you hit a dead end, you take one step back and try the next possible path. You keep a map and mark where you have been so you never walk in a circle. This is Depth-First Search. It goes as deep as possible first before looking at other options.
+- **Signal Recognition (When to use it):** "Find all possible ways", "number of islands", "connected components", "walk through a tree", "explore a grid", or "valid paths from start to finish".
+- **The Logical Blueprint (The Universal Steps):**
+  1. Write a function that takes your current position (like a node, or row and column).
+  2. Check if you are out of bounds or at a bad position. If yes, stop and go back.
+  3. Mark the current position as "visited" so you do not come back to it.
+  4. Look at all valid neighbors (up, down, left, right, or children in a tree).
+  5. Call the exact same function (recursion) for each neighbor to explore deeper.
+- **The Minimal Skeleton:**
+  ```python
+  def count_components(grid):
+      rows, cols = len(grid), len(grid[0])
+      
+      def dfs(r, c):
+          # 1. Stop if out of bounds or not the target
+          if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] != "1":
+              return
+          
+          # 2. Mark as visited BEFORE moving
+          grid[r][c] = "0"
+          
+          # 3. Explore all 4 directions
+          dfs(r + 1, c)
+          dfs(r - 1, c)
+          dfs(r, c + 1)
+          dfs(r, c - 1)
 
----
-
-- **Skeleton:**
-
-```python
-# ── Grid DFS (sink/flood pattern) ──────────────────────────
-def num_islands(grid):
-    rows, cols = len(grid), len(grid[0])
-    def dfs(r, c):
-        if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] != "1":
-            return
-        grid[r][c] = "0"          # mark BEFORE recursing!
-        dfs(r+1,c); dfs(r-1,c); dfs(r,c+1); dfs(r,c-1)
-    count = 0
-    for r in range(rows):
-        for c in range(cols):
-            if grid[r][c] == "1": count += 1; dfs(r, c)
-    return count
-
-# ── Grid DFS returning aggregate ───────────────────────────
-def dfs_area(r, c):
-    if out_of_bounds or grid[r][c] != 1: return 0
-    grid[r][c] = 0
-    return 1 + dfs(r+1,c) + dfs(r-1,c) + dfs(r,c+1) + dfs(r,c-1)
-
-# ── Tree DFS (post-order aggregate) ────────────────────────
-def subtree_sum(node):
-    if not node: return 0
-    s = node.val + subtree_sum(node.left) + subtree_sum(node.right)
-    freq[s] = freq.get(s, 0) + 1
-    return s
-
-# ── Tree DFS (structural match) ────────────────────────────
-def is_same(a, b):
-    if not a and not b: return True
-    if not a or not b:  return False
-    return a.val == b.val and is_same(a.left, b.left) and is_same(a.right, b.right)
-
-def is_subtree(root, sub):
-    if not sub:  return True
-    if not root: return False
-    return is_same(root, sub) or is_subtree(root.left, sub) or is_subtree(root.right, sub)
-
-# ── BST DFS (search + modify) ──────────────────────────────
-def delete_bst(root, key):
-    if not root: return None
-    if key < root.val:
-        root.left = delete_bst(root.left, key)
-    elif key > root.val:
-        root.right = delete_bst(root.right, key)
-    else:                                      # found
-        if not root.left:  return root.right   # 0 or 1 child
-        if not root.right: return root.left
-        successor = root.right                 # inorder successor
-        while successor.left: successor = successor.left
-        root.val = successor.val               # overwrite with successor
-        root.right = delete_bst(root.right, successor.val)
-    return root
-
-# ── BST DFS (reverse in-order accumulation) ────────────────
-def convert_to_greater(root):
-    total = 0
-    def reverse_inorder(node):
-        nonlocal total
-        if not node: return
-        reverse_inorder(node.right)   # visit larger values first
-        total += node.val; node.val = total
-        reverse_inorder(node.left)
-    reverse_inorder(root)
-
-# ── Index-graph DFS (follow chain) ─────────────────────────
-def jump_game(arr, start):
-    visited = set()
-    def dfs(i):
-        if i < 0 or i >= len(arr) or i in visited: return False
-        if arr[i] == 0: return True
-        visited.add(i)
-        return dfs(i + arr[i]) or dfs(i - arr[i])
-    return dfs(start)
-
-# ── Permutation cycle (iterative, no recursion) ────────────
-def array_nesting(nums):           # p565 — NOT recursive DFS
-    visited = [False] * len(nums)
-    max_len = 0
-    for i in range(len(nums)):
-        if not visited[i]:
-            count, j = 0, i
-            while not visited[j]:
-                visited[j] = True; j = nums[j]; count += 1
-            max_len = max(max_len, count)
-    return max_len
-
-# ── Stack-based parser (iterative, DFS-flavored) ───────────
-def deserialize(s):                # p385 — iterative stack, not recursive
-    if not s.startswith("["): return NestedInteger(int(s))
-    stack = []
-    i = 0
-    while i < len(s):
-        if s[i] == "[":   stack.append(NestedInteger()); i += 1
-        elif s[i] == "]": 
-            done = stack.pop()
-            if stack: stack[-1].add(done)
-            else: return done
-            i += 1
-        elif s[i] == ",": 
-            i += 1
-        else:             
-            j = i
-            while j < len(s) and (s[j].isdigit() or s[j] == "-"): j += 1
-            if stack: stack[-1].add(NestedInteger(int(s[i:j])))
-            i = j
-    return stack[0]
-
-# ── Stack-as-depth (cumulative length) ─────────────────────
-def longest_file_path(input_str):   # p388
-    stack = [0]   # stack[depth] = cumulative path length up to that depth
-    max_len = 0
-    for part in input_str.split("\n"):
-        depth = part.count("\t")
-        name  = part.lstrip("\t")
-        while len(stack) > depth + 1: stack.pop()
-        if "." in name:   max_len = max(max_len, stack[-1] + len(name))
-        else:             stack.append(stack[-1] + len(name) + 1)  # +1 for "/"
-    return max_len
-```
-
-- **Complexity:**
-  - Grid DFS: O(rows × cols) time, O(rows × cols) space (call stack worst case)
-  - Tree DFS: O(N) time, O(H) space (H = height; O(N) worst for skewed tree)
-  - BST delete: O(H) time and space
-  - Index/cycle DFS: O(N) time, O(N) space (visited set/array)
-  - Parser/file-path: O(|s|) time, O(depth) space
-
-- **Killer gotchas:**
-  1. **Mark visited BEFORE recursing** — `grid[r][c] = "0"` must come *before* the 4
-     recursive calls, or you get infinite loops revisiting the same cell.
-  2. **Python recursion limit** — grids up to 300×300 = 90,000 cells; default limit is
-     1000. Either `sys.setrecursionlimit(200000)` or go iterative with an explicit stack.
-  3. **BST delete with 2 children** — don't just find the inorder successor; you must
-     also **recursively delete it from the right subtree** (`root.right = delete(root.right, successor.val)`). Forgetting this leaves a duplicate.
-  4. **p565 is NOT recursive DFS** — it's an iterative cycle-following loop. Don't
-     try to recurse on large inputs (n up to 10^5 → stack overflow).
-  5. **p385 is stack-based, NOT recursive descent** — the stack simulates DFS
-     nesting; push on `[`, pop on `]`, parse number token inline.
-  6. **p388 stack stores cumulative lengths, not names** — `stack[d]` = total char
-     count of path up to depth `d`. Add `+1` for each `/` separator when pushing directories.
-
+      count = 0
+      for r in range(rows):
+          for c in range(cols):
+              if grid[r][c] == "1":
+                  count += 1
+                  dfs(r, c)
+      return count
+  ```
+- **Killer Gotchas:**
+  - **Mark BEFORE you move:** Always mark a node as 'visited' before you call DFS on its neighbors. If you forget or do it after, your program will run forever in a loop between two nodes.
+  - **Python recursion limits:** In Python, recursion can go too deep and crash the program. For very large grids, you might need to use an explicit stack (a list) instead of recursion.
+  - **Grid Boundaries:** Always check `r < 0` or `r >= rows` before you read `grid[r][c]`. Reading outside the grid will cause an "index out of range" error.
+- **Problem Table:**
 | Problem | Essence | Key trick |
 |---|---|---|
 | p200 Number of Islands | Count connected `'1'` components | Sink cells (`'1'`→`'0'`) in-place during DFS; no visited set needed |
@@ -1048,88 +586,54 @@ def longest_file_path(input_str):   # p388
 | p450 Delete Node in BST | BST delete handling 3 cases | 2-child case: copy inorder successor value up, then recursively delete successor from right subtree |
 | p1306 Jump Game III | Can index with value 0 be reached via ±jumps? | DFS on index graph; `visited.add(i)` before branching to avoid cycles |
 | p565 Array Nesting | Longest cycle in permutation array | Iterative cycle-follow with boolean visited array; mark before advancing `j = nums[j]` |
-| p385 Mini Parser | Deserialize `"[123,[456,[789]]]"` string | Iterative stack: push on `[`, pop+attach on `]`, parse digit runs inline |
-| p388 Longest Abs File Path | Longest path to a file in indented filesystem string | Stack of cumulative path lengths indexed by depth; `+1` per `/`; file = contains `.` |
-
----
 
 ### divide_and_conquer
-- **Mindset:** Split input into independent halves, solve each recursively, then combine.
-  The combine step is where the real work (merge, count, build) happens. Think:
-  `solve(whole) = combine(solve(left), solve(right))`.
-- **When to use:** Sorting, "merge k …", recurrence `T(n) = 2T(n/2) + O(n)`, counting
-  reverse pairs / inversions, 2-D quad-tree partition. Also when a problem is tagged D&C
-  but has a cleaner greedy/iterative solution (e.g., p169 Boyer-Moore).
-- **Complexity:** O(n log n) time, O(n) merge buffer + O(log n) stack.
-  ⚠️ Exception: p427 `all_same()` scan is O(size²) per call → worst-case **O(n² log n)**.
-
-#### Skeleton A — Merge Sort (p912, p023)
+- **The Core Intuition (The "Aha!" Moment):** Imagine you have 100 unsorted cards. Sorting them all at once is hard. Instead, you split the cards into two piles of 50. You give each pile to a friend to sort. They keep splitting until everyone has just 1 card. One card is already sorted! Then, you take the sorted small piles and easily merge them together. The secret of Divide and Conquer is in the "merge" step. Splitting is easy, but putting the solved pieces back together is where the real work happens.
+- **Signal Recognition (When to use it):** Look for problems that ask to "sort an array", "count inversions/reverse pairs", or "construct a quad-tree". Phrases like "merge k sorted..." or recurrence relations resembling `T(n) = 2T(n/2) + O(n)` are dead giveaways. Also, if a problem is naturally represented as a 2D grid that needs to be broken into 4 quadrants, it's a D&C problem.
+- **The Logical Blueprint (The Universal Steps):**
+  1. **Base Case:** Define the simplest possible input (e.g., an array of length 0 or 1) and return the immediate answer.
+  2. **Divide:** Split the problem space (array, grid, etc.) into equal or roughly equal halves (or quadrants).
+  3. **Conquer:** Recursively call the same function on these divided parts.
+  4. **Combine:** This is the core logic. Take the results from the recursive calls and merge them, count across them, or link them together to form the answer for the current level.
+- **The Minimal Skeleton:**
 ```python
-def merge_sort(arr):
+def divide_and_conquer(arr):
+    # 1. Base case
     if len(arr) <= 1:
-        return arr[:]          # base case: already sorted copy
+        return arr[:]  # Return a copy to avoid mutating the original prematurely
+    
+    # 2. Divide
     mid = len(arr) // 2
-    left  = merge_sort(arr[:mid])
-    right = merge_sort(arr[mid:])
-    # two-pointer merge
-    result, i, j = [], 0, 0
-    while i < len(left) and j < len(right):
-        if left[i] <= right[j]:
-            result.append(left[i]); i += 1
+    left_half = arr[:mid]
+    right_half = arr[mid:]
+    
+    # 3. Conquer
+    left_res = divide_and_conquer(left_half)
+    right_res = divide_and_conquer(right_half)
+    
+    # 4. Combine (Example: Merge step for sorting/counting)
+    result = []
+    i = j = 0
+    while i < len(left_res) and j < len(right_res):
+        if left_res[i] <= right_res[j]:
+            result.append(left_res[i])
+            i += 1
         else:
-            result.append(right[j]); j += 1
-    result.extend(left[i:])
-    result.extend(right[j:])
+            result.append(right_res[j])
+            j += 1
+    
+    result.extend(left_res[i:])
+    result.extend(right_res[j:])
+    
     return result
 ```
+- **Killer Gotchas:**
+  - **Slicing doubles memory:** Using `arr[:mid]` creates a copy at every recursive level, leading to O(n log n) total extra space. If memory is tight, pass indices (`start`, `end`) instead of slicing.
+  - **Phase ordering in counting pairs (e.g., Reverse Pairs):** You must COUNT cross pairs using the original values *before* you SORT the subarray. Swapping these phases destroys the relative pair relationships and gives wrong answers.
+  - **Cross-pair condition:** When counting pairs like `nums[i] > 2 * nums[j]`, remember this is a specific multiplier condition, not a standard inversion.
+  - **Quad-Tree scanning costs:** Scanning an entire grid to check if it's uniform is O(size²). In the worst case, this leads to O(n² log n) time complexity, not O(n log n).
 
-#### Skeleton B — Count-Then-Merge (p493 Reverse Pairs)
-```python
-def merge_sort_count(arr):
-    if len(arr) <= 1:
-        return 0
-    mid = len(arr) // 2
-    left, right = arr[:mid], arr[mid:]
-    count = merge_sort_count(left) + merge_sort_count(right)
-    # Phase 1: COUNT cross-half pairs BEFORE sorting (values still original)
-    j = 0
-    for num in left:
-        while j < len(right) and num > 2 * right[j]:  # ← condition varies
-            j += 1
-        count += j
-    # Phase 2: SORT the subarray (destroys original order — must count first!)
-    arr[:] = sorted(left + right)   # or use two-pointer merge for O(n)
-    return count
-```
-
-#### Skeleton C — 2-D Quad-Tree (p427)
-```python
-def build(x, y, size):
-    if all_same(x, y, size):          # O(size²) scan
-        return leaf_node(grid[x][y])
-    half = size // 2
-    tl = build(x,        y,        half)
-    tr = build(x,        y + half, half)
-    bl = build(x + half, y,        half)
-    br = build(x + half, y + half, half)
-    return internal_node(tl, tr, bl, br)
-```
-
-- **Complexity:** O(n log n) time, O(n) buffer + O(log n) stack.
-- **Killer gotchas:**
-  1. **Slicing doubles memory:** `arr[:mid]` creates a copy at every level → O(n log n) total
-     extra space; use index ranges if memory-bound.
-  2. **p493 two-phase order:** COUNT cross pairs with original values FIRST, THEN sort.
-     Swapping the phases gives wrong answers because sorting destroys the pair relationship.
-  3. **p493 condition is `> 2*right[j]`**, NOT a plain inversion (`> right[j]`). The 2×
-     multiplier makes it a "reverse pair", not a classic inversion count.
-  4. **p169 Boyer-Moore prerequisite:** The algorithm is guaranteed correct only when a
-     strict majority (> n/2 occurrences) is guaranteed to exist. Without that guarantee,
-     a second validation pass is required.
-  5. **p427 `all_same()` cost:** O(size²) per call; full-grid uniform = O(1) nodes but
-     worst-case (all mixed) = O(n² log n). Grid size is constrained to n = 2^x (x ≤ 6)
-     so this is fine in practice, but don't assume O(n log n) for large grids.
-
+- **Problem Table:**
 | Problem | Essence | Key trick |
 |---|---|---|
 | p912 Sort an Array | Classic merge sort | Split at `mid`, recurse, two-pointer merge; base `len≤1` returns a copy |
@@ -1138,96 +642,53 @@ def build(x, y, size):
 | p427 Construct Quad Tree | Recursive 2-D subdivision | `all_same(x,y,size)` → leaf; else split into 4 quadrants; BFS serialize with nulls |
 | p493 Reverse Pairs | Merge-sort counting with 2× condition | Count `left[i] > 2*right[j]` cross-pairs (two-pointer) BEFORE sorting the subarray |
 
-#### Skeleton A — Merge Sort (p912, p023)
-
 ### dynamic_programming
-- **Mindset:** Identify `state = answer to a sub-instance`. Write the recurrence. Choose
-  top-down (memoised recursion) or bottom-up (fill table). Read answer from one cell.
-- **When to use:** "max/min", "number of ways", "is it possible", overlapping subproblems
-  + optimal substructure; longest/shortest subsequence/path; counting combinations.
-- **Complexity:** O(states × transitions); space often reducible with rolling arrays.
-
----
-
-#### Skeletons
-
+- **The Core Intuition (The "Aha!" Moment):** Dynamic Programming is "smart brute force." Imagine calculating the 10th Fibonacci number. Instead of recalculating the 3rd and 4th numbers many times, you calculate them once, save the answers in a list, and look them up later. Every DP problem asks you to define a "state" (what does one item in the list mean?) and a "transition" (how do I use old answers to find the new answer?).
+- **Signal Recognition (When to use it):** The prompt asks for the "maximum/minimum cost", "number of distinct ways", or "is it possible to...". The problem involves making a sequence of choices where current choices depend on previous ones (overlapping subproblems), and the optimal solution can be constructed from optimal sub-solutions (optimal substructure). Often applied to sequences, strings (substrings/subsequences), or grids.
+- **The Logical Blueprint (The Universal Steps):**
+  1. **Define the State:** Figure out what changing variables uniquely identify a subproblem (e.g., `dp[i]` = max profit up to day `i`).
+  2. **Find the Base Case(s):** Determine the trivial starting values (e.g., `dp[0] = 0` or `dp[1] = nums[0]`).
+  3. **Establish the Recurrence Relation:** Formulate how to compute the current state from previously computed states (e.g., `dp[i] = max(dp[i-1], dp[i-2] + nums[i])`).
+  4. **Choose Iteration Order:** Decide if you are building from bottom-up (loops) or top-down (recursion + memoization).
+  5. **Extract the Answer:** The final result is usually at the end of your DP table (`dp[n]`) or the max/min of the entire table.
+- **The Minimal Skeleton:**
 ```python
-# ── 1D rolling (Fibonacci) ─────────────────────────────────────────
-a, b = 1, 2
-for _ in range(3, n + 1):
-    a, b = b, a + b          # p070
+# Skeleton: 1D Bottom-Up DP (e.g., House Robber / Fibonacci)
+def solve_1d_dp(nums):
+    if not nums: return 0
+    n = len(nums)
+    
+    # 1. Define State and Base Cases
+    dp = [0] * (n + 1)
+    dp[0] = 0  # Base case 1
+    dp[1] = nums[0]  # Base case 2
+    
+    # 2. Iterate and Transition
+    for i in range(2, n + 1):
+        # Choose to either skip current, or take current + non-adjacent previous
+        dp[i] = max(dp[i-1], dp[i-2] + nums[i-1])
+        
+    # 3. Extract Answer
+    return dp[n]
 
-prev, curr = 0, 0
-for num in nums:
-    prev, curr = curr, max(curr, prev + num)  # p198
-
-# ── Unbounded knapsack — MIN (order doesn't matter) ────────────────
-INF = amount + 1             # tighter than float('inf')
-dp = [INF] * (amount + 1)
-dp[0] = 0
-for i in range(1, amount + 1):
-    for coin in coins:
-        if coin <= i:
-            dp[i] = min(dp[i], dp[i - coin] + 1)
-return dp[amount] if dp[amount] != INF else -1   # p322
-
-# ── Unbounded knapsack — COUNT COMBINATIONS (outer=coins!) ─────────
-dp = [0] * (amount + 1);  dp[0] = 1
-for coin in coins:                # ← outer loop over coins = NO permutation duplicates
-    for a in range(coin, amount + 1):
-        dp[a] += dp[a - coin]     # p518
-
-# ── Interval DP ────────────────────────────────────────────────────
-n = len(s)
-dp = [[0]*n for _ in range(n)]
-for i in range(n): dp[i][i] = 1   # base: single char
-for length in range(2, n + 1):
-    for i in range(n - length + 1):
-        j = i + length - 1
-        if s[i] == s[j]:
-            dp[i][j] = dp[i+1][j-1] + 2
-        else:
-            dp[i][j] = max(dp[i+1][j], dp[i][j-1])  # p516
-
-# ── Inverted DP (p887 Super Egg Drop) ──────────────────────────────
-# Reframe: dp[m][k] = max floors testable with m moves, k eggs
-# Recurrence: dp[m][k] = dp[m-1][k-1] + dp[m-1][k] + 1
-# Find smallest m such that dp[m][k] >= n  →  O(k·log n)
-dp = [0] * (k + 1)
-moves = 0
-while dp[k] < n:
-    moves += 1
-    for i in range(k, 0, -1):
-        dp[i] = dp[i] + dp[i-1] + 1
-return moves
-
-# ── 3D state-machine DP (p552) ─────────────────────────────────────
-# State: dp[i][absences][consecutive_lates]
-dp = [[[0]*3 for _ in range(2)] for _ in range(n+1)]
-dp[0][0][0] = 1
-for i in range(n):
-    for a in range(2):
-        for cl in range(3):
-            v = dp[i][a][cl]
-            dp[i+1][a][0]    = (dp[i+1][a][0] + v) % MOD      # P (present)
-            if a < 1:
-                dp[i+1][a+1][0] = (dp[i+1][a+1][0] + v) % MOD # A (absent)
-            if cl < 2:
-                dp[i+1][a][cl+1] = (dp[i+1][a][cl+1] + v) % MOD # L (late)
+# Skeleton: Unbounded Knapsack (Combinations / Min Items)
+def solve_knapsack(items, target):
+    dp = [0] * (target + 1) # Use float('inf') for minimums
+    dp[0] = 1 # Base case: 1 way to make target 0
+    
+    for item in items: # Outer loop over items prevents permutation duplicates
+        for amount in range(item, target + 1):
+            dp[amount] += dp[amount - item]
+            
+    return dp[target]
 ```
-
----
-
 - **Killer Gotchas:**
-  1. **Iteration order — combinations vs permutations (p518):** outer loop over **coins**, inner over amounts → combinations. Swap them → permutations (wrong for p518). p322 can use either order (only counts fewest).
-  2. **Interval DP must iterate by length (p516):** `dp[i+1][j-1]` must be filled before `dp[i][j]`. Always outer-loop on `length`, not on `i` or `j`.
-  3. **INF sentinel for min-DP (p322):** use `amount + 1` (not 0, not -1). Return -1 if still INF after fill.
-  4. **Inverted framing (p887):** the naive O(kn²) DP (try every floor for the drop) TLEs. Invert: ask "with `m` moves and `k` eggs, how many floors can I certify?" — recurrence `dp[m][k] = dp[m-1][k-1] + dp[m-1][k] + 1`. Binary search / increment on `m`.
-  5. **Circular rotation formula (p514):** `cost = min(diff, ring_len - diff) + 1` — the `+1` is the button press and is easy to forget.
-  6. **Wraparound condition (p467):** consecutive iff `ord(s[i]) - ord(s[i-1]) == 1 OR -25` (z→a wrap). Track `max_len[c]` = max run length ending at char `c`; answer = `sum(max_len)`.
-  7. **p553 is NOT interval DP — it's pure greedy math:** always place one set of parens: `nums[0] / (nums[1] / nums[2] / … / nums[-1])`. No DP needed.
-  8. **p466 is cycle-detection, not classical DP:** simulate s2 matching through s1 copies, record `s2_index` at end of each s1 copy, detect repeat → skip full cycles.
+  - **Combinations vs. Permutations in Knapsack:** When counting ways, if the outer loop is over `items` and the inner loop is over `amounts`, you get *combinations* (order doesn't matter). If you swap them (outer `amounts`, inner `items`), you get *permutations* (1+2 and 2+1 are counted twice).
+  - **INF Sentinel for Min-DP:** When looking for a minimum (like fewest coins), initialize the DP table with `amount + 1` or `float('inf')`. Always check at the end if the answer is still INF (meaning impossible) and return `-1` if so.
+  - **Interval DP Loop Order:** For palindromes or bursting balloons, you cannot iterate `i` from 0 to n. You MUST iterate by `length` of the subarray first, so that smaller internal intervals (`dp[i+1][j-1]`) are solved before expanding to (`dp[i][j]`).
+  - **Inverted Framing (Egg Drop):** Sometimes the naive state `dp[eggs][floors]` is too slow. Invert the question: `dp[moves][eggs] = max floors testable`.
 
+- **Problem Table:**
 | Problem | Pattern | Essence | Key Trick |
 |---|---|---|---|
 | p070 Climbing Stairs | 1D linear | `dp[i]=dp[i-1]+dp[i-2]` | Two rolling vars; this is Fibonacci |
@@ -1244,87 +705,51 @@ for i in range(n):
 | p466 Count Repetitions | Cycle detection | Simulate s2 match through s1 copies; detect s2_index cycle | Skip full cycles; check charset subset first |
 | p553 Optimal Division | Greedy (not DP!) | Always `a/(b/c/.../z)` = `a*c*...*z/b` | Math insight: maximise divisor = group all after first under one paren |
 
----
-
 ### math
-- **Mindset:** Recognize the underlying math structure (information theory, geometry,
-  permutation, palindrome construction) and either apply a closed-form directly or
-  enumerate a small structured candidate set — never simulate exhaustively.
-- **When to use:** "minimum number of …" (information-theoretic lower bound), circle/
-  geometry sampling, "next permutation", modular arithmetic, palindrome construction,
-  constraints that hint at a formula (n ≤ 8, digits ≤ 18).
-- **Skeleton:**
-
+- **The Core Intuition (The "Aha!" Moment):** Math problems in coding interviews ask you to find a hidden formula. It is like counting bricks in a wall: you do not count one by one, you just multiply rows by columns. You should not use `while` loops that run millions of times. Instead, find a mathematical rule, use a simple formula, or generate a few correct choices directly.
+- **Signal Recognition (When to use it):** Look for problems that ask for the "minimum number of tests/pigs" (screams information theory), "random point in a circle" (geometry/sampling), "next permutation" of a number, or finding a "closest palindrome". Extremely large input constraints (like numbers up to 10^18) combined with strict time limits are a strong signal that an O(1) math formula or an O(log n) digit manipulation is required.
+- **The Logical Blueprint (The Universal Steps):**
+  1. **Identify the Core Principle:** Is this information theory (base conversion)? Geometry (rejection sampling)? Combinatorics (permutations)?
+  2. **Avoid Simulation:** If you find yourself wanting to increment a number by 1 inside a `while` loop that could run a billion times, stop. There is a mathematical shortcut.
+  3. **Generate Candidates / Apply Formula:** For geometry or information theory, apply the mathematical formula. For strings/numbers (like palindromes or permutations), generate the small set of valid candidates (e.g., mirroring prefixes) or apply the specific permutation algorithm.
+  4. **Handle Edge Cases:** Math formulas notoriously break on extreme bounds (like n=1, single digits, or overflow limits).
+- **The Minimal Skeleton:**
 ```python
-# p458 — information-theoretic: each pig encodes one "digit" in base (tests+1)
-tests = minutesToTest // minutesToDie
-pigs = 0
-while (tests + 1) ** pigs < buckets:
-    pigs += 1
-return pigs
-# Closed-form equivalent: math.ceil(math.log(buckets) / math.log(tests + 1))
-
-# p478 — rejection sampling in unit square, then scale
-while True:
-    x, y = random.uniform(-1, 1), random.uniform(-1, 1)
-    if x*x + y*y <= 1:               # discard corners; ~21.5% rejection rate
-        return [cx + x*r, cy + y*r]
-
-# p479 — mirror top half → 2n-digit palindrome, then find factor in [√pal, upper]
-upper = 10**n - 1
-for left in range(upper, lower-1, -1):
-    pal = mirror(left)                # e.g. 98 → 9889
-    for right in range(upper, int(pal**0.5)-1, -1):
-        if right*right < pal: break
-        if pal % right == 0: return pal % 1337
-# Edge case: n==1 → return 9 directly
-
-# p556 — standard next-permutation on digit list
-digits = list(str(n))
-i = len(digits)-2
-while i >= 0 and digits[i] >= digits[i+1]: i -= 1
-if i < 0: return -1
-j = len(digits)-1
-while digits[j] <= digits[i]: j -= 1
-digits[i], digits[j] = digits[j], digits[i]
-digits[i+1:] = reversed(digits[i+1:])
-result = int("".join(digits))
-return result if result <= 2**31 - 1 else -1
-
-# p564 — generate 5 candidates, pick closest (ties → smaller)
-prefix = int(n[:(length+1)//2])
-for p in (prefix-1, prefix, prefix+1):   # same-length palindromes
-    candidates.add(mirror(p, length))
-candidates.add(10**(length-1) - 1)        # e.g. "999" (one digit shorter)
-candidates.add(10**length + 1)            # e.g. "1001" (one digit longer)
-candidates.discard(num)
-return str(min(candidates, key=lambda x: (abs(x-num), x)))  # tie → smaller
+# Skeleton: Next Greater Element / Next Permutation
+def next_permutation_number(n):
+    digits = list(str(n))
+    length = len(digits)
+    
+    # 1. Find the first dip from the right
+    i = length - 2
+    while i >= 0 and digits[i] >= digits[i + 1]:
+        i -= 1
+        
+    if i < 0:
+        return -1  # No greater permutation possible
+        
+    # 2. Find the smallest digit to the right that is strictly greater than digits[i]
+    j = length - 1
+    while digits[j] <= digits[i]:
+        j -= 1
+        
+    # 3. Swap and reverse the suffix
+    digits[i], digits[j] = digits[j], digits[i]
+    digits[i + 1:] = reversed(digits[i + 1:])
+    
+    result = int("".join(digits))
+    
+    # 4. Check integer bounds!
+    return result if result <= 2**31 - 1 else -1
 ```
+- **Killer Gotchas:**
+  - **Rejection Sampling (Geometry):** When picking a random point in a circle, do NOT pick a random radius uniformly. This clusters points near the center because area grows with r^2. Instead, pick a random point in a square bounding box and reject it if it falls outside the circle.
+  - **Information Theory States (+1):** In the "Poor Pigs" problem, the base of the exponent is `tests + 1`, not `tests`. The `+1` represents the implicit state of "survived all rounds."
+  - **Tie-Breaking Closest Numbers:** When looking for closest candidates (like palindromes), if two candidates have the same absolute difference from the target, you usually must return the *smaller* one. Use Python's `min()` with a tuple key: `key=lambda x: (abs(x - target), x)`.
+  - **Overflow Constraints:** Python automatically handles arbitrarily large integers, but LeetCode problems often demand a 32-bit signed integer limit. You must explicitly verify `result <= 2**31 - 1`.
+  - **Edge Case Breakdowns:** Generic math algorithms (like prefix mirroring for palindromes) often fail for 1-digit numbers or exact powers of 10. You must manually add candidates like `10**(len-1) - 1` (e.g., 999) or `10**len + 1` (e.g., 1001).
 
-- **Complexity:**
-  | Problem | Time | Space |
-  |---|---|---|
-  | p458 | O(log buckets / log(tests+1)) — tiny loop | O(1) |
-  | p478 | O(1) amortized per point (≈1.27 tries avg) | O(1) |
-  | p479 | O(10^n) outer × O(10^n / √pal) inner; n≤8, exits early | O(1) |
-  | p556 | O(d) where d = number of digits ≤ 10 | O(d) |
-  | p564 | O(length) to build candidates | O(1) |
-
-- **Killer gotchas:**
-  1. **p458 "+1 state":** `tests = minutesToTest // minutesToDie` (integer division!).
-     The base is `tests+1` not `tests` — the +1 is the "survived all rounds" state.
-  2. **p478 naive radius:** `random.uniform(0, r)` for radius clusters points near center
-     (area ∝ r²). Must use rejection sampling in the bounding square, not polar coords
-     with uniform radius.
-  3. **p479 n=1 edge case:** the mirror loop produces `pal = 1*10+1 = 11` for `left=1`,
-     which has no single-digit factor — hard-code `return 9`.
-  4. **p556 overflow:** Python ints don't overflow, but must explicitly check
-     `result <= 2**31 - 1`; the constraint says n ≤ 2^31-1 but the *answer* must also fit.
-  5. **p564 tie-breaking:** on equal distance, return the **smaller** palindrome.
-     The `key=lambda x: (abs(x-num), x)` tuple sort handles this automatically.
-  6. **p564 num ≤ 10 edge case:** return `str(num - 1)` directly (e.g. "1"→"0",
-     "9"→"8") — the generic prefix mirroring breaks down for single-digit inputs.
-
+- **Problem Table:**
 | Problem | Essence | Key trick |
 |---|---|---|
 | p458 Poor Pigs | Min pigs s.t. `(tests+1)^pigs ≥ buckets` | Information theory: each pig = 1 digit in base `tests+1`; loop until capacity ≥ buckets |
@@ -1334,103 +759,63 @@ return str(min(candidates, key=lambda x: (abs(x-num), x)))  # tie → smaller
 | p564 Find Closest Palindrome | Nearest palindrome (not itself); tie → smaller | 5 candidates: prefix±1 mirrored, same prefix mirrored, 10^(len-1)-1, 10^len+1 |
 
 ### prefix_sum
-- **Mindset:** Precompute cumulative aggregates so any contiguous-range query collapses
-  to a difference of two prefix values in O(1). For counting problems, store the prefix
-  value in a hash map and look up `curr − target` to find matching earlier prefixes.
-- **When to use:** "subarray sum/product equals k", range sum queries, "equal # of 0s and 1s",
-  O(n) with division banned, weighted random pick, "subarray sum multiple of k".
+- **The Core Intuition (The "Aha!" Moment):** A prefix sum is like a running bank balance. If your total balance in January was $100, and in March it was $500, you know you made $400 between February and March. You do not need to look at every transaction. By saving a running total, you can find the sum of any subarray instantly using subtraction: `Sum(i to j) = Prefix[j] - Prefix[i-1]`.
+- **Signal Recognition (When to use it):** Look for phrases like "subarray sum equals K", "contiguous array with equal 0s and 1s", "subarray product", or questions asking for properties of a contiguous range. If division is explicitly banned (e.g., "Product of Array Except Self"), two-pass prefix/suffix arrays are the intended solution. Also applies to weighted random sampling.
+- **The Logical Blueprint (The Universal Steps):**
+  1. **Initialize the Accumulator and Map:** Create a running total (`curr_sum` or `balance`) and a Hash Map to store past prefix states.
+  2. **Set the Base Case:** *Crucial step.* Prime the map to account for a subarray that starts from the very beginning (index 0). For sums, `map[0] = 1` (frequency) or `map[0] = -1` (index).
+  3. **Iterate and Accumulate:** Loop through the array, updating the running total with the current element.
+  4. **Look Backward:** Check the map for `curr_sum - target` (for counting) or check if the exact `curr_sum` has been seen before (for longest subarrays).
+  5. **Update the Map:** Add the new running total to the map, or update its frequency. (If looking for the *longest* subarray, only store the *first* time you see a prefix).
+- **The Minimal Skeleton:**
+```python
+# Skeleton: Counting Subarrays that equal K
+def subarray_sum_count(nums, k):
+    # freq_map stores {prefix_sum: count_of_occurrences}
+    freq_map = {0: 1}  # Base case: One way to have sum=0 (empty prefix)
+    
+    curr_sum = 0
+    total_subarrays = 0
+    
+    for num in nums:
+        curr_sum += num
+        
+        # If (curr_sum - k) exists in map, it means a subarray ending here sums to k
+        target = curr_sum - k
+        if target in freq_map:
+            total_subarrays += freq_map[target]
+            
+        # Record the current prefix sum
+        freq_map[curr_sum] = freq_map.get(curr_sum, 0) + 1
+        
+    return total_subarrays
 
-- **Skeleton A — Prefix-freq map (count subarrays summing to k):**
-  ```python
-  # p0560 pattern
-  freq = defaultdict(int)
-  freq[0] = 1          # ← MANDATORY base case: empty prefix has sum 0
-  curr, ans = 0, 0
-  for x in nums:
-      curr += x
-      ans += freq[curr - k]   # how many earlier prefixes make this window sum == k
-      freq[curr] += 1
-  ```
+# Skeleton: Two-Pass Prefix/Suffix (Product Except Self)
+def product_except_self(nums):
+    n = len(nums)
+    res = [1] * n
+    
+    # Left pass
+    left_prod = 1
+    for i in range(n):
+        res[i] = left_prod # Assign first
+        left_prod *= nums[i] # Then multiply
+        
+    # Right pass
+    right_prod = 1
+    for i in range(n - 1, -1, -1):
+        res[i] *= right_prod # Multiply with existing left product
+        right_prod *= nums[i]
+        
+    return res
+```
+- **Killer Gotchas:**
+  - **The Missing Empty Prefix:** Forgetting to initialize the base case (`freq[0] = 1` for counting, or `seen[0] = -1` for indices) is the most common error. Without it, any valid subarray that starts at index 0 will be completely ignored!
+  - **Overwriting the Map:** When finding the *longest* subarray (e.g., equal 0s and 1s, or multiples of K), you only care about the *earliest* index a prefix sum was seen. Never overwrite an existing entry in the map.
+  - **Assign Before Multiply:** In a two-pass prefix/suffix array, you must assign the current running product to the result array *before* you multiply the current element into the running product. Otherwise, you include the element itself in the result.
+  - **1-Indexed Random Picking:** When doing weighted random picks using binary search on a prefix array, pick a random number `t` in `[1, total]`, not `[0, total-1]`. You are finding which bucket the "weight ticket" falls into.
 
-- **Skeleton B — Prefix-first-index map (earliest index per value):**
-  ```python
-  # p0525 pattern (longest subarray)
-  seen = {0: -1}       # ← base case: count=0 seen before index 0
-  count = max_len = 0
-  for i, x in enumerate(nums):
-      count += 1 if x == 1 else -1   # map 0→-1 so balance=0 means equal
-      if count in seen:
-          max_len = max(max_len, i - seen[count])
-      else:
-          seen[count] = i            # only store FIRST occurrence
-
-  # p0523 pattern (existence, length ≥ 2, multiples of k)
-  mod_idx = {0: -1}    # ← base case: remainder 0 seen before index 0
-  prefix = 0
-  for i, x in enumerate(nums):
-      prefix = (prefix + x) % k
-      if prefix in mod_idx:
-          if i - mod_idx[prefix] > 1:   # ← MANDATORY: subarray length ≥ 2
-              return True
-          # do NOT update mod_idx[prefix] — keep the FIRST occurrence
-      else:
-          mod_idx[prefix] = i
-  return False
-  ```
-
-- **Skeleton C — Two-pass prefix/suffix product (no division):**
-  ```python
-  # p0238 pattern
-  n = len(nums)
-  output = [1] * n
-  left = 1
-  for i in range(n):
-      output[i] = left       # assign BEFORE multiplying
-      left *= nums[i]
-  right = 1
-  for i in range(n - 1, -1, -1):
-      output[i] *= right     # assign BEFORE multiplying (same pattern, right side)
-      right *= nums[i]
-  ```
-
-- **Skeleton D — Prefix sum + binary search (weighted random pick):**
-  ```python
-  # p0528 pattern
-  # __init__: build prefix sums
-  prefix = []
-  total = 0
-  for x in w:
-      total += x
-      prefix.append(total)
-  # pickIndex: pick random int in [1, total], binary-search for first prefix >= t
-  t = random.randint(1, total)   # 1-indexed! not 0-indexed
-  lo, hi = 0, len(prefix) - 1
-  while lo < hi:
-      mid = (lo + hi) // 2
-      if prefix[mid] >= t: hi = mid
-      else: lo = mid + 1
-  return lo
-  ```
-
-- **Complexity:**
-  | Problem | Time | Space |
-  |---|---|---|
-  | p0560, p0525, p0523 | O(n) | O(n) hash |
-  | p0238 | O(n) | O(1) extra (output array doesn't count) |
-  | p0713 | O(n) | O(1) |
-  | p0528 init / pickIndex | O(n) / O(log n) | O(n) |
-
-- **Killer gotchas:**
-  1. **Empty-prefix base case** — always init `freq[0]=1` (p560) or `seen[0]=-1` (p525/p523).
-     Missing this causes every subarray starting at index 0 to be uncounted.
-  2. **p523: first-occurrence only** — never overwrite `mod_idx[prefix]`; the first index gives
-     the longest possible window. Also require `i - mod_idx[prefix] > 1` (length ≥ 2).
-  3. **p238 assign-before-multiply on BOTH passes** — `output[i] = left` then `left *= nums[i]`
-     on the left pass; `output[i] *= right` then `right *= nums[i]` on the right pass.
-  4. **p713 edge case** — `if k <= 1: return 0` immediately (all positive nums have product ≥ 1).
-  5. **p528 1-indexed random** — `random.randint(1, total)` not `(0, total-1)`. You are picking
-     a position in [1, total] weight-space, then finding which bucket it falls in.
-
+- **Problem Table:**
 | Problem | Pattern | Key trick |
 |---|---|---|
 | p0560 Subarray Sum Equals K | prefix freq map | `freq[curr-k]` count; init `freq[0]=1` |
@@ -1441,135 +826,161 @@ return str(min(candidates, key=lambda x: (abs(x-num), x)))  # tie → smaller
 | p0528 Random Pick with Weight | prefix sums + binary search | `randint(1,total)` (1-indexed); find first prefix ≥ t |
 
 ### randomized
-- **Mindset:** Generate from a **uniform source** by mapping samples onto a grid and
-  **rejecting the overhang** so every accepted outcome is equiprobable. For "random pick
-  without repeat", use **virtual Fisher-Yates**: swap the picked slot with the last slot
-  in a lazy dict, then shrink the space — no actual array needed.
-- **When to use:** "implement randX from randY", random pick without repeats, shuffle,
-  reservoir sampling — must be strictly uniform.
+- **The Core Intuition (The "Aha!" Moment):** 
+  Randomized problems usually fall into two buckets: generating a new uniform distribution from an existing one, or sampling items without replacement. 
+  For distributions: Think of rolling two 7-sided dice to pick a number from 1 to 49 by laying out a 7x7 grid. To get 1-10 uniformly, you just accept the first 40 outcomes (which neatly divide into four sets of 1-10) and reject the rest, re-rolling if necessary.
+  For sampling without replacement: Think of a deck of cards. Instead of deleting a drawn card (which is slow), you swap the drawn card with the last card in the deck, then pretend the deck is one card smaller. If the deck is massive (like a 10,000 x 10,000 matrix), you don't even create the deck; you just use a dictionary to remember the swaps.
 
-#### Skeleton — p470: Rand10 from Rand7 (Rejection Sampling)
+- **Signal Recognition (When to use it):**
+  - "Implement `randX()` using `randY()`".
+  - "Pick a random element without replacement."
+  - "Uniformly random" or "equal probability."
+  - Massive grids or ranges where generating an actual array or matrix would cause memory errors.
+
+- **The Logical Blueprint (The Universal Steps):**
+  **For Rejection Sampling (RandX from RandY):**
+  1. Create a uniform 2D grid: `(randY() - 1) * Y + randY()`.
+  2. Find the largest multiple of `X` that is `<= Y * Y`. This is your acceptance threshold.
+  3. If your roll falls within the threshold, map it to `1..X` using modulo arithmetic.
+  4. If it falls outside (the "overhang"), reject and re-roll.
+
+  **For Virtual Fisher-Yates (Massive array sampling):**
+  1. Keep track of the current logical size of the array (`total`).
+  2. Pick a random index `r` between `0` and `total - 1`.
+  3. Look up `r` in your dictionary. If it's not there, the value is just `r`.
+  4. Do the same for the `last` index (`total - 1`).
+  5. Swap: Set `dictionary[r]` to the value of the `last` index.
+  6. Delete the `last` index from the dictionary (if it's there) to save space, but *only* if `r != last`.
+  7. Decrement `total`.
+
+- **The Minimal Skeleton:**
 ```python
+# Rejection Sampling (e.g., rand10 from rand7)
 def rand10():
     while True:
-        row = rand7()           # 1..7
-        col = rand7()           # 1..7
-        idx = (row - 1) * 7 + col   # 1..49  (uniform 7×7 grid)
-        if idx <= 40:           # accept only 1..40 (perfect multiple of 10)
-            return (idx - 1) % 10 + 1  # map to 1..10
-        # reject 41..49 and retry  ← the overhang
+        # 1. Roll twice to create a uniform 1..49 grid
+        row, col = rand7(), rand7()
+        idx = (row - 1) * 7 + col
+        
+        # 2. Accept up to the largest multiple of 10 (which is 40)
+        if idx <= 40:
+            return (idx - 1) % 10 + 1
+        # 3. Reject 41..49 and loop to re-roll
+
+# Virtual Fisher-Yates
+class RandomPicker:
+    def __init__(self, total_elements):
+        self.total = total_elements
+        self.mapping = {}
+
+    def pick(self):
+        # 1. Pick a random index in the current valid range
+        r = random.randint(0, self.total - 1)
+        
+        # 2. Get the actual value mapped to r (or r itself if unmapped)
+        res = self.mapping.get(r, r)
+        
+        # 3. Get the value of the last valid element
+        last_idx = self.total - 1
+        last_val = self.mapping.get(last_idx, last_idx)
+        
+        # 4. Map r to the last element's value (the swap)
+        self.mapping[r] = last_val
+        
+        # 5. Cleanup the last element's mapping (unless we picked it)
+        if last_idx in self.mapping and last_idx != r:
+            del self.mapping[last_idx]
+            
+        # 6. Shrink the range
+        self.total -= 1
+        return res
 ```
 
-**Why 40?** 40 = 4 × 10, the largest multiple of 10 ≤ 49. Any bias-free range must be a multiple of the target range.
+- **Killer Gotchas:**
+  - **Adding instead of gridding:** `(rand7() + rand7()) % 10` is heavily biased toward middle numbers. Always use the 2D grid formula `(row - 1) * Y + col`.
+  - **Wrong acceptance threshold:** For `rand10` from `rand7`, you must accept exactly up to 40. Accepting up to 42 makes 1 and 2 appear more often. The threshold must be a multiple of the target.
+  - **Virtual Fisher-Yates cleanup bug:** Deleting `mapping[last]` blindly without checking `if last != r` will delete the new mapping you *just* established if `r` happened to randomly equal `last`!
+  - **Decoding 1D to 2D:** When mapping a flat index `x` back to a matrix, it's `row = x // cols`, `col = x % cols`. Don't use `rows` instead of `cols` for the modulo!
+  - **Judge determinism:** Both problem and solution files might need `random.seed(42)` to ensure output matches the WASM judge.
 
-#### Skeleton — p519: Random Flip Matrix (Virtual Fisher-Yates)
-```python
-class Solution:
-    def __init__(self, m, n):
-        self.m, self.n = m, n
-        self.total = m * n          # number of unflipped cells
-        self.mapping: dict[int,int] = {}   # sparse remapping table
-
-    def flip(self):
-        r = random.randint(0, self.total - 1)   # pick a random flat index
-        x = self.mapping.get(r, r)              # resolve: what cell does r map to?
-        last = self.total - 1
-        last_val = self.mapping.get(last, last)
-        self.mapping[r] = last_val              # swap r ← last (lazy)
-        # ⚠️ only delete mapping[last] if last != r (don't erase what we just wrote)
-        if last in self.mapping and last != r:
-            del self.mapping[last]
-        self.total -= 1                         # shrink the space
-        return [x // self.n, x % self.n]       # decode flat index → (row, col)
-
-    def reset(self):
-        self.mapping = {}               # drop all remapping entries
-        self.total = self.m * self.n    # restore full size
-```
-
-**Key insight:** The dict never stores cells at their "natural" position — it only stores redirects for cells that were swapped away. `mapping.get(k, k)` elegantly handles both cases: swapped and unswapped.
-
-- **Complexity:**
-
-| Problem | Time per call | Space |
-|---|---|---|
-| p470 Rand10 from Rand7 | Expected O(1); ~1.225 `rand7()` calls per result (49/40 ratio) | O(1) |
-| p519 flip | Expected O(1) amortized | O(flips) for mapping dict |
-| p519 reset | O(flips) to clear dict | O(1) after clear |
-
-- **Killer gotchas:**
-  1. **Uniformity breaks without rejection:** `(rand7()+rand7())%10` is **biased** — sums are not uniform. Always use the 2D grid + reject-overhang technique.
-  2. **Overhang must be a multiple of target range:** Accept ≤40 (not ≤42 or ≤45). Any other cutoff introduces bias.
-  3. **p519 — stale `last` key:** After swapping `r ← last`, you must delete `mapping[last]` **unless** `r == last` (picked the last slot). Skipping the `last != r` guard leaves a phantom redirect that causes repeats.
-  4. **p519 — forgetting `total -= 1`:** Without shrinking the space, the same cell can be returned twice.
-  5. **p519 — decode flat index:** `x // n` gives row, `x % n` gives col. Easy to swap or omit.
-  6. **Judge determinism:** Both files use `random.seed(42)` for reproducible WASM judge output — keep it in both problem and solution files.
-
+- **Problem Table:**
 | Problem | Key trick | Essence |
 |---|---|---|
 | p470 Rand10 from Rand7 | 7×7 grid → 1..49; accept ≤40; `(idx-1)%10+1` | Cutoff = largest multiple of target ≤ source range |
 | p519 Random Flip Matrix | Dict-based lazy swap-with-last; `mapping.get(k, k)` | Virtual Fisher-Yates; `r==last` edge case; flat→(row,col) decode |
 
-#### Skeleton — p470: Rand10 from Rand7 (Rejection Sampling)
-
 ### stack
-- **Mindset:** Push state so the most-recently-seen item is handled next — natural fit for
-  nesting/matching, "what was I doing before?", monotonic sequences, and expression eval.
-- **When to use:** Bracket matching/nesting, decode/compress, monotonic (next greater/smaller),
-  LIFO/recent-item tracking, expression evaluation, iterative DFS.
+- **The Core Intuition (The "Aha!" Moment):** 
+  Think of a stack like a pile of plates. You can only put a new plate on top, and you can only take the top plate off. In coding, this means "deal with the most recent thing first."
+  For brackets: The last open bracket you saw is the first one you need to close.
+  For nested tasks (like decoding a string `3[a2[c]]`): You read `3[a`, then you see another `2[c`. You must put `3[a` on hold (push to stack), finish `2[c` first, and then come back to `3[a` (pop from stack). The stack acts as your "save state" button.
 
-- **Skeleton:**
+- **Signal Recognition (When to use it):**
+  - "Valid parentheses" or "matching pairs."
+  - Nested structures, like decoding strings or parsing expressions.
+  - "What was the previous state?" or "Undo the last action."
+  - Finding the "next greater" or "next smaller" element (this uses a monotonic stack).
 
-  **p020 — Bracket matching**
-  ```python
-  mapping = {')':'(', ']':'[', '}':'{'}
-  stack = []
-  for ch in s:
-      if ch in mapping:                          # closer
-          if not stack or stack[-1] != mapping[ch]:
-              return False                       # empty mid-loop OR mismatch
-          stack.pop()
-      else:
-          stack.append(ch)                       # push opener
-  return len(stack) == 0                         # unclosed openers?
-  ```
+- **The Logical Blueprint (The Universal Steps):**
+  1. Initialize an empty stack (usually a list or array).
+  2. Iterate through the elements one by one.
+  3. If the element is an "opener" or "start of a new task", save your current state by pushing it onto the stack.
+  4. If the element is a "closer" or "end of a task", pop the last state from the stack and combine it with your current result.
+  5. At the end, check if the stack is empty (e.g., to ensure all brackets were closed).
 
-  **p155 — Min Stack (running-min trick)**
-  ```python
-  stack, min_stack = [], []
-  # push:
-  stack.append(val)
-  min_stack.append(val if not min_stack else min(val, min_stack[-1]))  # global min so far
-  # pop:
-  stack.pop(); min_stack.pop()                   # always in sync
-  # getMin: min_stack[-1]                        # O(1) — top IS current global min
-  ```
+- **The Minimal Skeleton:**
+```python
+# Bracket Matching
+def is_valid(s):
+    stack = []
+    mapping = {')': '(', ']': '[', '}': '{'}
+    
+    for char in s:
+        if char in mapping:
+            # It's a closing bracket
+            if not stack or stack[-1] != mapping[char]:
+                return False
+            stack.pop()
+        else:
+            # It's an opening bracket
+            stack.append(char)
+            
+    return len(stack) == 0
 
-  **p394 — Decode String (nested repeat)**
-  ```python
-  stack = []          # list of (repeat_count, string_before_bracket)
-  curr_num, curr_str = 0, ""
-  for ch in s:
-      if ch.isdigit():
-          curr_num = curr_num * 10 + int(ch)     # multi-digit accumulate
-      elif ch == '[':
-          stack.append((curr_num, curr_str))
-          curr_num, curr_str = 0, ""             # RESET BOTH on every [
-      elif ch == ']':
-          repeat, prefix = stack.pop()
-          curr_str = prefix + curr_str * repeat  # prefix FIRST, then repeated segment
-      else:
-          curr_str += ch
-  return curr_str
-  ```
+# Nested State (e.g., Decode String)
+def decode_string(s):
+    stack = []
+    current_num = 0
+    current_str = ""
+    
+    for char in s:
+        if char.isdigit():
+            # Build the number (might be multiple digits)
+            current_num = current_num * 10 + int(char)
+        elif char == '[':
+            # Save the current state before going deeper
+            stack.append((current_num, current_str))
+            # Reset for the new nested level
+            current_num = 0
+            current_str = ""
+        elif char == ']':
+            # Finished this level, combine with the previous state
+            repeat, prev_str = stack.pop()
+            current_str = prev_str + current_str * repeat
+        else:
+            # Normal character
+            current_str += char
+            
+    return current_str
+```
 
-- **Complexity:** O(n) time, O(n) space for all three.
+- **Killer Gotchas:**
+  - **Popping an empty stack:** Always check `if not stack` before trying to look at `stack[-1]` or `stack.pop()`.
+  - **Forgetting the final check:** In bracket problems, don't just return `True` at the end. Return `len(stack) == 0` (or `not stack`) because there might be unclosed openers leftover.
+  - **Multi-digit numbers:** In string parsing, numbers can be more than one digit (e.g., `12[a]`). Always build the number: `num = num * 10 + int(char)`.
+  - **Resetting state:** When pushing state onto the stack to start a nested level, remember to reset *both* the current string and the current number variables.
 
-- **Killer gotchas:**
-  - **p020:** Two separate failure conditions — don't collapse them. `not stack` and `stack[-1] != mapping[ch]` both matter.
-  - **p155:** `min_stack` stores the **running global minimum**, not just the pushed value. `min_stack[-1]` after any push = minimum of the entire current stack. Always push/pop both stacks together or `getMin` drifts.
-  - **p394:** Reset **both** `curr_num = 0` and `curr_str = ""` on `[`. Forgetting `curr_num` reset bleeds digit state across nesting levels. Reconstruction order is `prefix + curr_str * repeat` (not reversed).
-
+- **Problem Table:**
 | Problem | Difficulty | Key trick | Essence |
 |---|---|---|---|
 | p020 Valid Parentheses | Easy | `close→open` map + two failure modes | Push openers; closer checks `not stack OR top≠mapping[ch]`; return `stack==[]` at end |
@@ -1577,98 +988,57 @@ class Solution:
 | p394 Decode String | Medium | Multi-digit accumulate + reset BOTH vars on `[` | Push `(curr_num, curr_str)` on `[`; on `]`: `prefix + curr_str * repeat`; reset num AND str |
 
 ### top_k_elements
-- **Mindset:** Keep a heap of bounded size k — a **min-heap of size k retains the k
-  largest** (evicts the smallest), a **max-heap of size k retains the k smallest**
-  (evicts the largest). After processing all n elements, the root is your answer.
-  Python's `heapq` is min-heap only; negate keys to simulate a max-heap.
+- **The Core Intuition (The "Aha!" Moment):** 
+  Think of a heap as a VIP club with a strict capacity limit `k`. 
+  If you want to find the **k largest** elements, you keep the club full. Every time a new element wants to enter, it challenges the *weakest* (smallest) member of the club. If the newcomer is larger, they kick out the smallest member and take their place. To quickly find the weakest member, the VIP club is organized as a **min-heap**.
+  Conversely, to find the **k smallest** elements, the club must kick out the largest members. So it uses a **max-heap**.
+  This strategy prevents you from having to sort the entire line of people.
 
-- **When to use:** "kth largest/smallest", "top/bottom k", "k closest / most frequent",
-  streaming top-k where full O(n log n) sort is wasteful. Also: 2D elevation
-  problems solvable with Dijkstra-like min-heap BFS from a boundary.
+- **Signal Recognition (When to use it):**
+  - "Find the k-th largest/smallest/most frequent element."
+  - "Top K elements" or "Closest K elements."
+  - Streaming data where you need the "top X" at any given time and sorting the whole stream is too slow.
 
-- **Skeleton:**
+- **The Logical Blueprint (The Universal Steps):**
+  1. Determine if you need the `k` largest (use a min-heap) or `k` smallest (use a max-heap). Python only has min-heaps, so for a max-heap, multiply your values by `-1` before pushing them in.
+  2. Iterate through the elements one by one.
+  3. Push the current element onto the heap.
+  4. If the heap's size exceeds `k`, immediately pop from the heap. This automatically removes the element you *don't* want (the smallest in a min-heap, or the largest in a max-heap).
+  5. After checking all elements, your heap contains exactly the top `k` elements. The root (`heap[0]`) is the k-th element.
 
+- **The Minimal Skeleton:**
 ```python
 import heapq
-from collections import Counter
 
-# --- Pattern A: k LARGEST elements (min-heap of size k) ---
-def kth_largest(nums, k):
+# Find K Largest Elements (Uses Min-Heap)
+def k_largest(nums, k):
     heap = []
     for x in nums:
-        heapq.heappush(heap, x)       # min at root
+        heapq.heappush(heap, x)       # Push current element
         if len(heap) > k:
-            heapq.heappop(heap)       # evict smallest → keeps k largest
-    return heap[0]                    # root = kth largest
+            heapq.heappop(heap)       # Evict the smallest element
+    return heap[0]                    # The k-th largest is at the top of the heap
 
-# Shortcut (non-streaming): heapq.nlargest(k, nums)[-1]
-# Shortcut (non-streaming): heapq.nsmallest(k, nums)[-1]
-
-# --- Pattern B: k CLOSEST (max-heap of size k, negate distance) ---
+# Find K Smallest / Closest Elements (Uses Max-Heap simulation via negation)
 def k_closest(points, k):
     heap = []
     for x, y in points:
-        dist = -(x*x + y*y)           # negate → min-heap acts as max-heap
-        heapq.heappush(heap, (dist, [x, y]))
+        dist = x*x + y*y              # Calculate distance (skip square root)
+        heapq.heappush(heap, (-dist, [x, y])) # Negate distance for max-heap
         if len(heap) > k:
-            heapq.heappop(heap)       # evict farthest
-    return [p for _, p in heap]
-
-# --- Pattern C: k MOST FREQUENT (Counter + sort/heap) ---
-def top_k_frequent(nums, k):
-    count = Counter(nums)
-    # Sort approach O(n log n): good enough for most interviews
-    return [item for item, _ in
-            sorted(count.items(), key=lambda x: -x[1])[:k]]
-    # Heap approach O(n log k):
-    # return [item for item, _ in heapq.nlargest(k, count.items(), key=lambda x: x[1])]
-    # Bucket sort O(n): buckets[freq].append(item); scan from n down
-
-# --- Pattern D: 2D Min-Heap BFS (Trapping Rain Water II) ---
-def trap_rain_water_ii(heightMap):
-    m, n = len(heightMap), len(heightMap[0])
-    visited = [[False]*n for _ in range(m)]
-    heap = []                          # min-heap by cell height
-    # Seed with all boundary cells
-    for r in range(m):
-        for c in [0, n-1]:
-            heapq.heappush(heap, (heightMap[r][c], r, c))
-            visited[r][c] = True
-    for c in range(1, n-1):
-        for r in [0, m-1]:
-            heapq.heappush(heap, (heightMap[r][c], r, c))
-            visited[r][c] = True
-    water = 0
-    for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:
-        ...  # always pop min-height boundary, water += max(0, h - neighbor_h)
-             # push max(h, neighbor_h) to maintain water level
-    return water
+            heapq.heappop(heap)       # Evict the farthest element
+            
+    # Extract the points from the heap
+    return [point for neg_dist, point in heap]
 ```
 
-- **Complexity:**
+- **Killer Gotchas:**
+  - **Heap direction mismatch:** The most common mistake is using a max-heap for the `k` largest. Remember the VIP club analogy: to *keep* the largest, you must easily find and *evict* the smallest. So, keeping the largest requires a **min-heap**.
+  - **Unnecessary sorting:** Don't sort the whole array if `k` is small. Sorting is slow, while a heap of size `k` is fast.
+  - **Distance calculations:** For spatial problems (like k closest points), never use `math.sqrt()`. It is slow and unnecessary. Just compare `x*x + y*y`.
+  - **Python's heapq:** Python's `heapq` module only implements min-heaps. For max-heap behavior, you *must* negate the numbers. Don't forget to un-negate them if you need the actual values later.
 
-| Approach | Time | Space |
-|---|---|---|
-| Heap of size k | O(n log k) | O(k) |
-| `heapq.nlargest/nsmallest` | O(n log k) | O(k) |
-| Full sort | O(n log n) | O(1) |
-| Quickselect | O(n) avg, O(n²) worst | O(1) |
-| Bucket sort (p347) | O(n) | O(n) |
-| 2D BFS min-heap (p407) | O(mn log(mn)) | O(mn) |
-
-- **Killer gotchas:**
-  1. **Heap direction is backwards from intuition:** min-heap of size k keeps the k
-     LARGEST (evicts the small ones). Want k smallest? Use max-heap (negate).
-  2. **p215 solution uses `heapq.nlargest(k, nums)[-1]`** — not a manual push/pop loop.
-     Both are valid; the manual loop is better for streaming/memory-constrained contexts.
-  3. **p347 solution uses `sorted()`, not a heap** — Counter + sort is O(n log n) but
-     simpler to write. The O(n log k) heap or O(n) bucket sort are follow-up optimisations.
-  4. **p407 uses a MIN-heap (not max)** — it's Dijkstra from the boundary inward.
-     Always pop the lowest wall first; water trapped = `max(0, popped_h − neighbor_h)`;
-     push `max(popped_h, neighbor_h)` to carry the "current water level" forward.
-     Requires a `visited` grid to avoid revisiting cells.
-  5. **p973: skip `sqrt`** — compare dist² directly (monotone transformation preserves order).
-
+- **Problem Table:**
 | Problem | Difficulty | Heap type | Key trick |
 |---|---|---|---|
 | p215 Kth Largest | Medium | min-heap size k | `heapq.nlargest(k,nums)[-1]` or manual push+pop; root = answer |
@@ -1677,186 +1047,122 @@ def trap_rain_water_ii(heightMap):
 | p407 Trapping Rain Water II | Hard | min-heap BFS | Dijkstra from boundary; push `max(wall_h, nbr_h)` to carry water level; needs `visited` grid |
 
 ### two_heaps
-- **Mindset:** Maintain two heaps — `small` (max-heap, lower half) and `large` (min-heap,
-  upper half) — so the partition boundary is always at one of the two roots. Every insert
-  goes through `small` first, then gets routed to maintain sorted order between heaps.
-- **When to use:** "median of a data stream/window", split elements into two balanced
-  halves, k-way merge of sorted feeds, need O(1) access to both ends of an ordered
-  partition.
+- **The Core Intuition (The "Aha!" Moment):** 
+  Imagine you have a massive pile of numbers and you want to instantly know the middle number (the median). If you split the numbers into two equal piles—a "smaller half" and a "larger half"—the median is just the biggest number in the smaller half, or the smallest number in the larger half.
+  To do this fast, use two heaps:
+  1. A **Max-Heap** for the smaller half (so the biggest of the smalls is always on top).
+  2. A **Min-Heap** for the larger half (so the smallest of the bigs is always on top).
+  When a new number arrives, pass it through the smaller half to "filter" it, then move the largest from the smaller half into the larger half. If the piles get unbalanced, shift one back. The median is always right at the top!
 
-- **Skeleton (p295 — median of stream):**
+- **Signal Recognition (When to use it):**
+  - "Find the median of a data stream."
+  - "Sliding window median."
+  - Problems where you need to dynamically divide numbers into two halves and check the boundary between them.
+
+- **The Logical Blueprint (The Universal Steps):**
+  **For Stream Median:**
+  1. Create `small` (Max-Heap) and `large` (Min-Heap).
+  2. When a number arrives, always push it to `small` first.
+  3. Immediately pop the top of `small` and push it to `large`. (This guarantees that the largest item in `small` is correctly placed in `large`).
+  4. If `large` now has more elements than `small`, pop the top of `large` and push it back to `small`. (This keeps the rule: `small` always has the same number of elements as `large`, or exactly one more).
+  5. The median is the top of `small` (if odd total) or the average of the tops of both heaps (if even total).
+
+  **For Sliding Window Median (Lazy Deletion):**
+  When a number leaves the sliding window, finding it inside a heap to delete it is slow. Instead, use **Lazy Deletion**:
+  1. Store the index along with the value in the heap: `(value, index)`.
+  2. When an element falls out of the window, don't delete it from the heap. Just record its index in a `delayed` dictionary and decrement your *logical* size counters.
+  3. Whenever you need to look at the top of a heap, check if its index is in the `delayed` dictionary. If it is, *now* you pop and throw it away (pruning). Keep pruning until the top is a valid, active element.
+
+- **The Minimal Skeleton:**
 ```python
 import heapq
-small, large = [], []   # small = max-heap (negate), large = min-heap
 
-def add(num):
-    heapq.heappush(small, -num)          # 1. always push to small
-    heapq.heappush(large, -heapq.heappop(small))  # 2. move small's top → large (ensures ordering)
-    if len(large) > len(small):          # 3. rebalance: invariant = small ∈ {large, large+1}
-        heapq.heappush(small, -heapq.heappop(large))
-
-def median():
-    if len(small) > len(large):
-        return float(-small[0])
-    return (-small[0] + large[0]) / 2.0
-```
-
-- **Skeleton (p480 — sliding window median, lazy deletion):**
-```python
-small: list[tuple[int,int]] = []   # (-val, idx) — max-heap
-large: list[tuple[int,int]] = []   # ( val, idx) — min-heap
-delayed: dict[int,int] = {}        # idx → pending deletion count
-in_small: dict[int,bool] = {}      # idx → True if in small, False if in large
-small_size = large_size = 0        # LOGICAL sizes (heap may hold stale entries)
-
-def prune(heap):
-    while heap and heap[0][1] in delayed:
-        idx = heap[0][1]
-        delayed[idx] -= 1
-        if delayed[idx] == 0: del delayed[idx]
-        heapq.heappop(heap)
-
-def make_balanced():
-    # nonlocal small_size, large_size
-    if small_size > large_size + 1:
-        prune(small); val, idx = heapq.heappop(small)
-        heapq.heappush(large, (-val, idx)); in_small[idx] = False
-        small_size -= 1; large_size += 1; prune(small)
-    elif small_size < large_size:
-        prune(large); val, idx = heapq.heappop(large)
-        heapq.heappush(small, (-val, idx)); in_small[idx] = True
-        large_size -= 1; small_size += 1; prune(large)
-
-for i, num in enumerate(nums):
-    prune(small); prune(large)              # proactive: clear stale tops before insert
-    # Insert: go to small if ≤ current small-root, else large
-    if not small or num <= -small[0][0]:
-        heapq.heappush(small, (-num, i)); in_small[i] = True; small_size += 1
-    else:
-        heapq.heappush(large, (num, i)); in_small[i] = False; large_size += 1
-    make_balanced()
-
-    if i >= k:                              # evict element leaving window
-        out = i - k
-        delayed[out] = delayed.get(out, 0) + 1
-        if in_small.get(out, True): small_size -= 1
-        else: large_size -= 1
-        make_balanced()
-
-    if i >= k - 1:
-        prune(small); prune(large)
-        result.append(-small[0][0] if k%2==1 else (-small[0][0]+large[0][0])/2.0)
-```
-
-- **Skeleton (p355 — design Twitter, heap merge):**
-```python
-# Store tweets as (-timestamp, tweetId) per user; use global counter for ordering
-class Twitter:
+# Median of a Data Stream
+class MedianFinder:
     def __init__(self):
-        self.ts = 0
-        self.tweets = {}   # userId → [(-ts, tweetId), ...]
-        self.following = {}  # followerId → set of followeeIds
+        self.small = []  # Max-Heap (stores smaller half, negate values)
+        self.large = []  # Min-Heap (stores larger half)
 
-    def postTweet(self, userId, tweetId):
-        self.tweets.setdefault(userId, []).append((-self.ts, tweetId))
-        self.ts += 1
+    def addNum(self, num):
+        # 1. Push to small (max-heap)
+        heapq.heappush(self.small, -num)
+        
+        # 2. Pop from small and push to large (min-heap)
+        largest_in_small = -heapq.heappop(self.small)
+        heapq.heappush(self.large, largest_in_small)
+        
+        # 3. Balance: small should always be >= large in size
+        if len(self.large) > len(self.small):
+            smallest_in_large = heapq.heappop(self.large)
+            heapq.heappush(self.small, -smallest_in_large)
 
-    def getNewsFeed(self, userId):
-        # Dump ALL tweets from self + followees into heap, pop top 10
-        # O(T log T) where T = total tweets of all followed users
-        heap = []
-        for uid in self.following.get(userId, set()) | {userId}:
-            for tweet in self.tweets.get(uid, []):
-                heapq.heappush(heap, tweet)
-        return [heapq.heappop(heap)[1] for _ in range(min(10, len(heap)))]
+    def findMedian(self):
+        if len(self.small) > len(self.large):
+            return -self.small[0]  # Odd total: small has the extra element
+        # Even total: average the two tops
+        return (-self.small[0] + self.large[0]) / 2.0
 ```
 
-- **Complexity:**
-  | Problem | Time | Space |
-  |---|---|---|
-  | p295 add/findMedian | O(log n) / O(1) | O(n) |
-  | p480 per window step | O(log n) amortized | O(n) |
-  | p355 getNewsFeed | O(T log T) where T = total followee tweets | O(T) |
+- **Killer Gotchas:**
+  - **Breaking the rule:** Never try to be smart by writing `if num < small[0]: push to small else: push to large`. Just push to `small`, then pop to `large`. It handles all edge cases automatically.
+  - **Lazy deletion index requirement:** In sliding window median, you *must* push `(value, index)` into the heaps. If you only push values, you cannot tell the difference between two identical numbers when one expires and the other is still valid.
+  - **Pruning at the wrong time:** In lazy deletion, the *only* thing that matters is the top of the heap. You don't need to prune stale elements buried deep inside. But you *must* proactively prune the top before asking for the median, and before checking sizes.
 
-- **Killer gotchas:**
-  1. **Heap ordering guarantee (p295):** The push-to-small → pop-to-large sequence is what guarantees every element in `large` ≥ every element in `small`. Skipping this and inserting directly breaks the invariant silently.
-  2. **Lazy deletion requires index, not value (p480):** Duplicate values make value-based deletion impossible. Always store `(val, idx)` tuples so each element is uniquely identifiable.
-  3. **`in_small` is mandatory (p480):** When evicting a window element, you must know which heap it logically belongs to in order to decrement the correct size counter. The heap may not even have it at its root (it's stale); the size counter must be updated without touching the heap.
-  4. **`delayed` decrements, not deletes (p480):** The same index can theoretically be marked multiple times (guard against accidents). Always `delayed[idx] -= 1` and only `del` when it hits 0.
-  5. **Prune timing matters (p480):** Call `prune` proactively at loop start, after `make_balanced()`, AND before reading the median. Failing to prune before reading roots yields stale median values.
-  6. **p355 is NOT a k-way pointer merge:** The solution pushes all tweets onto a single heap — simple but O(T log T). A pointer-per-user approach would be O(10 log U) per call.
-
+- **Problem Table:**
 | Problem | Difficulty | Key trick | Essence |
 |---|---|---|---|
 | p295 Median Finder | Hard | push→move→rebalance | Max-heap lower half + min-heap upper half; invariant: `\|small\| ∈ {large, large+1}` |
 | p480 Sliding Window Median | Hard | lazy deletion via index tuples + `in_small` size tracking | Two heaps + `delayed` dict; decouple logical size from heap physical size |
 | p355 Design Twitter | Medium | negative timestamp for max-heap ordering | Dump all followee tweets into heap; negate timestamp to get newest-first order |
 
+# Tier 3 — Advanced
+
 ### backtracking
-- **Mindset:** Build a partial solution choice-by-choice; the moment a branch violates
-  constraints or cannot exceed the best known solution, abandon (back-track) it.
-  Aggressive pruning on a decision tree.
-- **When to use:** "find all **valid** combinations/partitions satisfying a constraint",
-  "return true if possible to form/partition", small N (≤~20), constraint satisfaction.
-  Signals: *find all combinations that sum to*, *partition into equal*, *matchsticks to square*.
-- **Skeleton (Standard start-index for subsets/combinations):**
+- **The Core Intuition (The "Aha!" Moment):** Imagine you are walking through a large maze. You don't try every path blindly. When you hit a dead end or break a rule, you stop. Then, you take one step back (backtrack) and try a different way. This saves time because you stop early when a path is bad.
+- **Signal Recognition (When to use it):** Look for phrases like "find all valid combinations", "return true if possible to partition", "matchsticks to square", or "solve the board". The input size `N` is usually very small (N ≤ 20), and you are looking for paths that satisfy a strict constraint.
+- **The Logical Blueprint (The Universal Steps):**
+  1. Sort the input if possible (crucial for cutting off bad branches early).
+  2. Create a recursive function that tracks the current state (e.g., remaining budget, current path).
+  3. Base case: If the goal is met (budget is 0, board is solved), save a copy of the path and return.
+  4. Loop through the possible choices at the current step.
+  5. Prune: If a choice is obviously invalid (too large), `break` or `continue`.
+  6. Choose: Add the choice to the path.
+  7. Explore: Recursively call the function with updated state.
+  8. Un-choose: Remove the choice from the path before the next iteration.
+- **The Minimal Skeleton:**
 ```python
 def solve(candidates, target):
     result = []
-    candidates.sort()                # sorting is essential for early pruning!
+    candidates.sort() # Sorting is the key to early pruning
 
     def backtrack(start: int, remaining: int, path: list[int]):
         if remaining == 0:
-            result.append(path[:])   # clone the path (shallow copy)
+            result.append(path[:]) # Always append a copy!
             return
+            
         for i in range(start, len(candidates)):
-            # Pruning: since candidates are sorted, if this one is too big, all later ones are too
+            # Prune: If this candidate is too big, all subsequent ones are too
             if candidates[i] > remaining:
                 break
-            
+                
             # Choose
             path.append(candidates[i])
-            # Explore (start index = i allows reusing same element; i+1 forbids reuse)
+            
+            # Explore (use `i` to allow reuse, `i + 1` to forbid reuse)
             backtrack(i, remaining - candidates[i], path)
+            
             # Un-choose
             path.pop()
 
     backtrack(0, target, [])
     return result
 ```
-
-- **Skeleton (Subset sum/partition to K equal buckets — e.g. p473):**
-```python
-def makesquare(matchsticks: list[int]) -> bool:
-    total = sum(matchsticks)
-    if total % 4 != 0: return False
-    side = total // 4
-    matchsticks.sort(reverse=True)   # BIG matchsticks first → prunes invalid paths immediately!
-    if matchsticks[0] > side: return False
-    sides = [0] * 4
-
-    def backtrack(idx: int) -> bool:
-        if idx == len(matchsticks):
-            return sides[0] == sides[1] == sides[2] == side
-        for i in range(4):
-            if sides[i] + matchsticks[idx] <= side:
-                sides[i] += matchsticks[idx]   # Choose
-                if backtrack(idx + 1):         # Explore
-                    return True
-                sides[i] -= matchsticks[idx]   # Un-choose
-        return False
-
-    return backtrack(0)
-```
-
-- **Complexity:** O(2^N) subset-style to O(N!) permutation-style worst case (assignment to buckets = O(k^N)). Pruned branches reduce search space dramatically. O(N) space for recursion stack.
-- **Killer gotchas:**
-  1. **Forgetting `path.pop()` or `sides[i] -= val`** — leaks state into sibling branches, corrupting the search.
-  2. **Pruning without sorting** — for p039, if candidates are unsorted, you cannot `break` the loop early when `candidates[i] > remaining` because a smaller valid candidate might appear later.
-  3. **Zuma Game (p488) memo key** — needs immutable types. Use `(board_str, hand_sorted_tuple)` as the memoization dictionary key.
-  4. **Per-level deduplication (p491)** — when duplicates exist in the input but we cannot sort it (as sorting would break the subsequence order), use a local `used = set()` *inside* each `backtrack()` call to prevent processing the same value multiple times at the same level.
-  5. **Sort descending for bucket-fill** — in partition problems (p473), filling bins with the largest items first causes early capacity overflows, fanning out fewer recursion branches.
-
+- **Killer Gotchas:**
+  1. **Forgetting `path.pop()`:** This leaks state into sibling branches and corrupts the entire search. Always clean up!
+  2. **Appending `path` instead of `path[:]`:** You must append a shallow copy of the path. Otherwise, Python will just store a reference, and your final result will be full of empty lists.
+  3. **Pruning unsorted arrays:** You can only `break` early if the array is sorted. If it's unsorted, you might skip a smaller valid number that appears later.
+  4. **Sort descending for bucket-filling:** When partitioning (like filling squares), try the largest items first. They cause early overflows, pruning the tree massively right at the top.
+- **Problem Table:**
 | Problem | Essence | Key trick |
 |---|---|---|
 | p017 Letter Combinations | Digit-to-letters combinations | Standard DFS; one char added per recursion depth |
@@ -1867,151 +1173,119 @@ def makesquare(matchsticks: list[int]) -> bool:
 | p488 Zuma Game | Min balls to clear board | DFS + memoization on `(collapsed_board, hand_tuple)` |
 
 ### cyclic_sort
-- **Mindset:** When values map ~1:1 onto indices, use the array as its own hash table.
-  Two strategies: **(1) Cyclic-sort swap** — physically place each number at its
-  "correct" index, then scan for mismatches. **(2) Negation-mark** — flip the sign
-  at `abs(val)−1` to mark "seen"; a second pass reads off violations.
-- **When to use:** Array of n numbers in range `[0,n]` or `[1,n]`; asked to find
-  missing / duplicate / disappeared numbers in **O(n) time + O(1) space**.
-  Signal: range-of-values ≈ array-length.
-
-- **Skeleton:**
-
+- **The Core Intuition (The "Aha!" Moment):** You have an array of `N` numbers, and the numbers are from 1 to `N`. This means each number has its own "correct" index. It is like putting numbered balls into numbered boxes. If ball #3 is in box #5, you just swap it with the ball in box #3. If you cannot move the balls, you can mark box #3 with a negative sign to remember that "ball #3 exists".
+- **Signal Recognition (When to use it):** An array of size `N` containing numbers in the range `[0, N]` or `[1, N]`. You're asked to find missing, duplicate, or disappeared numbers. The constraints demand **O(N) time and O(1) space**.
+- **The Logical Blueprint (The Universal Steps):**
+  - **Strategy 1 (Swap into place - Range `[0, N]`):**
+    1. Iterate through the array with a while loop.
+    2. Check where the current number *should* live.
+    3. If it's not where it belongs (and is within bounds), swap it with the occupant of its correct home.
+    4. Otherwise, advance your pointer.
+    5. After sorting, do a final scan. The first index that doesn't match its value is the missing one.
+  - **Strategy 2 (Negation Mark - Range `[1, N]`):**
+    1. Iterate through the array.
+    2. For each number, calculate its target index (e.g., `abs(num) - 1`).
+    3. If the value at that index is already negative, you've found a duplicate!
+    4. Otherwise, flip the value at that index to negative to mark it as "seen".
+    5. A second pass reveals disappeared numbers (their corresponding indices will still be positive).
+- **The Minimal Skeleton:**
 ```python
-# --- Strategy 1: Cyclic-sort swap (p268 pattern, range [0,n]) ---
+# Strategy 1: Cyclic Swap (Range [0, N])
 i = 0
+n = len(nums)
 while i < n:
-    correct = nums[i]           # where nums[i] SHOULD live
-    if correct < n and nums[i] != nums[correct]:
-        nums[i], nums[correct] = nums[correct], nums[i]   # swap into place
+    correct_idx = nums[i]
+    # Guard against out-of-bounds (the number N has no home) and check if swap is needed
+    if correct_idx < n and nums[i] != nums[correct_idx]:
+        nums[i], nums[correct_idx] = nums[correct_idx], nums[i]
     else:
-        i += 1                  # only advance when nothing useful to swap
+        i += 1
 
-# After sort: first index where nums[i] != i is the missing value; if none → n
+# First index with a mismatch is the answer
 for i in range(n):
     if nums[i] != i:
         return i
 return n
 
-# --- Strategy 2: Negation-mark (p442/p448 pattern, range [1,n]) ---
+# Strategy 2: Negation Mark (Range [1, N])
+duplicates = []
 for num in nums:
-    idx = abs(num) - 1          # must use abs() — value may already be negated
+    idx = abs(num) - 1 # Use abs() because it might have been negated!
     if nums[idx] < 0:
-        result.append(abs(num)) # already seen → duplicate (p442)
+        duplicates.append(abs(num)) # Already negative -> duplicate
     else:
-        nums[idx] = -nums[idx]  # mark visited
+        nums[idx] = -nums[idx]      # Mark as seen
 
-# Find disappeared: indices still positive after pass
-return [i + 1 for i in range(n) if nums[i] > 0]  # (p448)
+# Find disappeared (indices that remained positive)
+disappeared = [i + 1 for i in range(len(nums)) if nums[i] > 0]
 ```
-
-- **Complexity:** O(n) time, O(1) space.
-  - Cyclic-sort: each element swaps at most once → amortized O(1) per element.
-  - Negation-mark: single pass + single scan.
-
-- **Killer gotchas:**
-  1. **`correct < n` guard (p268 only).** Range is `[0,n]` so value `n` has no valid home
-     (index n is out-of-bounds). Without this guard → index error or infinite swap loop.
-  2. **Always read with `abs(num)`.** Once you start negating, raw `num` is corrupted
-     mid-pass. Every index computation must be `abs(num) - 1`.
-  3. **Advance `i` only in the else branch** (cyclic-sort). If you always do `i += 1`
-     you'll skip elements that just landed at `i` via a swap.
-  4. **What to append in p442.** Append `abs(num)` (the current value), NOT `idx + 1`.
-     They're equal for valid [1,n] input, but using `abs(num)` is semantically correct
-     and safe when you've already negated prior elements.
-  5. **p442 vs p448 post-pass logic is opposite:** p442 collects values that *land on*
-     an already-negative index; p448 collects indices that are *still positive* after
-     the pass.
-
+- **Killer Gotchas:**
+  1. **The Out-of-Bounds Swap:** In range `[0, N]`, the value `N` will crash your code if you try to swap it to `nums[N]`. Always guard with `correct_idx < n`.
+  2. **Advance pointer ONLY in the `else` block:** If you just swap and immediately do `i += 1`, you skip checking the new number that just landed in `i`.
+  3. **Forgetting `abs()` in Negation Mark:** Once you start flipping signs, the raw values are corrupted. You *must* use `abs(num)` to compute indices and when appending to results.
+  4. **Confusing the post-pass scan:** Finding duplicates means checking if the target is *already* negative mid-pass. Finding disappeared numbers means checking what is *still* positive after the full pass.
+- **Problem Table:**
 | Problem | Range | Algorithm | Key trick |
 |---|---|---|---|
 | p268 Missing Number | [0,n] | Cyclic-sort swap | Guard `correct < n`; after sort, first `nums[i]≠i` → answer; fallback `n` |
 | p442 Find Duplicates | [1,n] | Negation-mark | `idx=abs(num)-1`; already-negative → append `abs(num)` |
 | p448 Find Disappeared | [1,n] | Negation-mark | Same negate pass; collect `i+1` where `nums[i] > 0` after pass |
 
----
-
 ### modified_binary_search
-- **Mindset:** When the search space is monotonic but not a plain sorted array, halve it
-  via a predicate — by *discovering which half is sorted* (rotated array) or by
-  binary-searching the **answer range** itself (feasibility / "minimize the max").
-- **When to use:** O(log n) on a rotated/bi-tonic array **OR** "minimize the max /
-  maximize the min" where feasibility is monotonic. Signals: *rotated sorted array*,
-  *koko / min speed*, *split array largest sum*, "smallest value such that…".
+- **The Core Intuition (The "Aha!" Moment):** Normal binary search needs a perfectly sorted array. But the real goal is just to cut the search area in half. You can do this if you can answer a simple yes/no question. For a rotated array, the question is: "Which half is fully sorted?". For other problems, the question is: "Is this answer possible?". Instead of searching the array, you search the range of possible answers.
+- **Signal Recognition (When to use it):** 
+  - Arrays that are *rotated* but otherwise sorted.
+  - Problems asking to "minimize the maximum" or "maximize the minimum" (e.g., Koko eating bananas, split array largest sum).
+  - You need $O(\log N)$ or $O(N \log M)$ performance.
+- **The Logical Blueprint (The Universal Steps):**
+  - **Pattern A (Rotated Array):**
+    1. Find the mid point. Check if it's the target.
+    2. Determine which half is perfectly sorted by comparing `nums[lo]` and `nums[mid]`.
+    3. If the left is sorted, check if the target falls within that strict range. If yes, go left. If no, go right.
+    4. If the right is sorted, do the mirror check.
+  - **Pattern B (Answer-Space / "Minimize the Max"):**
+    1. Define the absolute minimum and maximum possible answers (`lo` and `hi`).
+    2. Create a monotonic `feasible(mid)` function that tests if a candidate answer works.
+    3. Loop `while lo < hi`.
+    4. If `mid` is feasible, it might be the answer, or we could do better. Discard the right half by setting `hi = mid`.
+    5. If `mid` is not feasible, we *must* go higher. Discard the left half by setting `lo = mid + 1`.
+- **The Minimal Skeleton:**
+```python
+# Pattern A: Rotated Array
+lo, hi = 0, len(nums) - 1
+while lo <= hi: # Target might not exist
+    mid = lo + (hi - lo) // 2
+    if nums[mid] == target:
+        return mid
+        
+    if nums[lo] <= nums[mid]: # Left half is sorted
+        if nums[lo] <= target < nums[mid]:
+            hi = mid - 1      # Target is in the sorted left half
+        else:
+            lo = mid + 1      # Target must be in the right half
+    else:                     # Right half is sorted
+        if nums[mid] < target <= nums[hi]:
+            lo = mid + 1      # Target is in the sorted right half
+        else:
+            hi = mid - 1      # Target must be in the left half
+return -1
 
-- **Skeleton:**
-
-  **Pattern A — half-is-sorted (rotated array search):**
-  ```python
-  # Target may not exist → while lo <= hi, return -1
-  lo, hi = 0, len(nums) - 1
-  while lo <= hi:
-      mid = lo + (hi - lo) // 2
-      if nums[mid] == target:
-          return mid
-      if nums[lo] <= nums[mid]:          # left half is sorted
-          if nums[lo] <= target < nums[mid]:
-              hi = mid - 1              # target in left half
-          else:
-              lo = mid + 1              # target in right half
-      else:                             # right half is sorted
-          if nums[mid] < target <= nums[hi]:
-              lo = mid + 1              # target in right half
-          else:
-              hi = mid - 1             # target in left half
-  return -1
-  ```
-
-  **Pattern B — answer-space (minimize feasible value):**
-  ```python
-  # Answer always exists → while lo < hi, return lo
-  lo, hi = min_possible, max_possible
-  while lo < hi:
-      mid = lo + (hi - lo) // 2
-      if feasible(mid):
-          hi = mid        # mid is valid; keep it, try smaller
-      else:
-          lo = mid + 1    # mid too small; discard it
-  return lo               # lo == hi == minimum feasible value
-
-  # feasible() must be MONOTONIC: once True stays True as value grows
-  # --- p875 Koko ---
-  def feasible(k):
-      return sum(math.ceil(p / k) for p in piles) <= h
-
-  # --- p410 Split Array ---
-  def feasible(max_sum):
-      count, cur = 1, 0
-      for n in nums:
-          cur += n
-          if cur > max_sum:   # overflow → new subarray
-              count += 1
-              cur = n
-              if count > k: return False
-      return True
-  ```
-
-- **Complexity:** A: O(log n). B: O(n · log M), where M = answer-range width.
-
-- **Killer gotchas:**
-  1. **Loop difference is critical:** Pattern A uses `while lo <= hi` (target may be absent);
-     Pattern B uses `while lo < hi` (answer always exists). Mixing them causes off-by-one bugs.
-  2. **Pattern B: use `hi = mid`, not `hi = mid − 1`** — `mid` is feasible so it's a valid
-     candidate; never discard it.
-  3. **Pattern A: use `nums[lo] <= nums[mid]` (with `<=`)** — handles 2-element arrays where
-     `lo == mid` (left half is trivially sorted).
-  4. **Pattern A has two symmetric branches** — both need the "in sorted half?" range check
-     and both else-branches redirect to the opposite half.
-  5. **Pattern B: `feasible()` must be monotonic** — if feasible(x) is True, then
-     feasible(x+1) must also be True. Verify this before applying the template.
-  6. **Pattern B answer-range bounds matter:** Koko: `[1, max(piles)]`; Split Array:
-     `[max(nums), sum(nums)]` — getting these wrong silently produces wrong answers.
-
-- **How it differs from plain BS:** Plain BS compares `nums[mid]` to a `target` in a
-  clean sorted array. Modified BS either *discovers structure first* (which half is sorted)
-  before narrowing, or *abandons the array entirely* — searching a numeric **answer** via
-  `feasible(mid)`, never comparing array values to a target.
-
+# Pattern B: Answer Space
+lo, hi = min_possible, max_possible
+while lo < hi: # We are narrowing down to exactly one answer
+    mid = lo + (hi - lo) // 2
+    if feasible(mid):
+        hi = mid       # It works, but can we go smaller? Keep mid!
+    else:
+        lo = mid + 1   # Too small, must increase. Discard mid!
+return lo
+```
+- **Killer Gotchas:**
+  1. **Loop condition mix-ups:** Pattern A uses `while lo <= hi` because we are searching for a specific index. Pattern B uses `while lo < hi` because we are squeezing bounds until they converge on the optimal value.
+  2. **Discarding valid answers:** In Pattern B, if `feasible(mid)` is true, you must do `hi = mid`. If you do `hi = mid - 1`, you might throw away the correct optimal answer.
+  3. **The `<= ` check for sorted halves:** In Pattern A, use `nums[lo] <= nums[mid]`. The `=` handles the edge case of a 2-element subarray where `lo` and `mid` point to the exact same element.
+  4. **The Feasibility Function must be Monotonic:** For Pattern B to work, once an answer is feasible, all larger answers must also be feasible (or vice-versa for maximizing). If it fluctuates, binary search will fail.
+- **Problem Table:**
 | Problem | Pattern | Answer range | Key trick |
 |---|---|---|---|
 | p033 Search Rotated Sorted Array | A — rotated | index `[0, n-1]` | `nums[lo] <= nums[mid]` → left sorted; check if target inside `[lo, mid)`, else go right |
@@ -2019,72 +1293,50 @@ return [i + 1 for i in range(n) if nums[i] > 0]  # (p448)
 | p410 Split Array Largest Sum | B — minimize | `[max(nums), sum(nums)]` | `feasible(cap)`: greedy pack into subarrays ≤ cap; count subarrays ≤ k |
 
 ### subsets
-- **Mindset:** Systematically generate **every** member of a combinatorial space
-  (subsets / combinations / permutations) by building partial paths and recording results
-  — pure enumeration, minimal pruning. The space is the answer itself.
-- **When to use:** "return **all** subsets / combinations / permutations / power set",
-  small n (≤ ~20), no optimization phrasing. Signal: the word *all* + a structure (subset,
-  combo, perm). If there's a goal constraint (sum == target, is-valid?), use backtracking.
-- **Complexity:** Subsets O(n·2ⁿ); Combinations O(k·C(n,k)); Permutations O(n·n!).
-- **Killer gotcha:** **Duplicate subsets** with repeats (p090) — sort first, then skip
-  `if i > start and nums[i] == nums[i-1]`. The `i > start` (not `i > 0`) is essential:
-  dedup only within one loop level, still allowing the same value deeper in the tree.
-
----
-
-**Skeleton A — Subsets / Combinations (start-index, choose→explore→unchoose):**
+- **The Core Intuition (The "Aha!" Moment):** This pattern is for listing everything. Imagine you have a menu of ingredients, and you want to write down every possible sandwich you can make. You are not looking for one "correct" sandwich. You want to see all combinations. You build them step by step and save every single one.
+- **Signal Recognition (When to use it):** The prompt explicitly asks to return **all** subsets, combinations, or permutations. The constraint $N$ is tiny (usually $N \le 20$). There is no phrasing about "maximizing", "minimizing", or finding a specific target sum.
+- **The Logical Blueprint (The Universal Steps):**
+  1. Use a recursive function to build the combinations choice by choice.
+  2. At the start of the function (or when a path reaches the desired length), append a copy of the current path to the results.
+  3. Loop through the remaining available choices.
+  4. To avoid reusing elements in subsets/combinations, pass a `start` index into the next recursive call, advancing it each time.
+  5. For permutations, you either use a `used` set to track what's currently in the path, or iteratively insert the new number into every slot of existing permutations.
+  6. Add to the path, recurse, then pop from the path.
+- **The Minimal Skeleton:**
 ```python
-def backtrack(start, path):
-    result.append(path[:])          # Subsets: record every node
-    # if len(path) == k: result.append(path[:]); return  # Combinations: record leaf only
+# SKELETON: Subsets / Combinations
+def subsets(nums):
+    result = []
+    
+    def backtrack(start, path):
+        # Subsets: Record EVERY step of the journey
+        result.append(path[:]) 
+        
+        for i in range(start, len(nums)):
+            path.append(nums[i])
+            backtrack(i + 1, path) # i + 1 ensures we move forward, preventing reuse
+            path.pop()
+            
+    backtrack(0, [])
+    return result
 
-    for i in range(start, len(nums)):
-        # Pruning (Combinations only): stop if not enough elements remain
-        # if (len(nums) - i + 1) < (k - len(path): break
-
-        # Dedup (Subsets II only): skip same value at same level
-        # if i > start and nums[i] == nums[i-1]: continue
-
-        path.append(nums[i])
-        backtrack(i + 1, path)      # i+1 prevents reuse
-        path.pop()
-
-backtrack(0, [])
+# SKELETON: Permutations (Iterative BFS Insertion)
+def permute(nums):
+    perms = [[]]
+    for num in nums:
+        new_perms = []
+        for p in perms:
+            # Insert the new number into every possible gap
+            for i in range(len(p) + 1):
+                new_perms.append(p[:i] + [num] + p[i:])
+        perms = new_perms
+    return perms
 ```
-
-**Skeleton B — Permutations (iterative BFS insertion — actual p046 approach):**
-```python
-perms = [[]]
-for num in nums:
-    new_perms = []
-    for p in perms:
-        for i in range(len(p) + 1):      # insert num at every position
-            new_perms.append(p[:i] + [num] + p[i:])
-    perms = new_perms
-return sorted(perms)
-```
-
-**Skeleton B-alt — Permutations (recursive DFS with `used` set):**
-```python
-def backtrack(path, used):
-    if len(path) == len(nums):
-        result.append(path[:])
-        return
-    for i in range(len(nums)):
-        if i in used: continue
-        used.add(i)
-        path.append(nums[i])
-        backtrack(path, used)
-        path.pop()
-        used.discard(i)
-
-backtrack([], set())
-```
-
-> **vs backtracking:** identical skeleton, opposite philosophy.  
-> Subsets records **every** partial path, rarely prunes → *enumerate all*.  
-> Backtracking records only **goal-reaching** paths, prunes hard → *search for the valid*.
-
+- **Killer Gotchas:**
+  1. **Subsets with duplicates (p090):** If the input array has duplicates, you will generate duplicate subsets. Fix: Sort the array first, then inside the loop add `if i > start and nums[i] == nums[i-1]: continue`. The `i > start` is vital—it dedupes siblings at the *same* level of the tree, but allows the same value to be used deeper in the tree.
+  2. **Combinations vs. Subsets:** Subsets append the path to the result on *every single recursive call*. Combinations only append when `len(path) == k`.
+  3. **Backtracking vs. Subsets Philosophy:** They look identical in code, but subsets is meant to just blindly gather everything, while backtracking has a goal and prunes bad branches heavily.
+- **Problem Table:**
 | Problem | Essence | Key Trick |
 |---|---|---|
 | p046 Permutations | All orderings of distinct ints | Iterative insertion: insert new num at every position of each existing perm |
@@ -2092,117 +1344,55 @@ backtrack([], set())
 | p090 Subsets II | Power set with duplicate elements | Sort + per-level dedup: `if i > start and nums[i] == nums[i-1]: continue` |
 
 ### trie
-- **Mindset:** Store strings by shared character prefixes in a tree — insert/search/
-  prefix-lookup is O(word length), common prefixes share nodes (memory efficient for
-  large word sets). Two flavors of end-node: `is_end: bool` for exact-word queries;
-  `word: str | None` for grid-DFS where you need the word itself at collection time.
-- **When to use:** prefix matching, autocomplete, dictionary with wildcard `.`, word search
-  on a grid, "words formed by concatenating others". Signals: many strings + repeated
-  **prefix** queries, or board-DFS that must early-abort non-prefix paths.
-- **Skeleton:**
-  ```python
-  class TrieNode:
-      def __init__(self):
-          self.children: dict[str, TrieNode] = {}
-          self.is_end = False          # or: self.word: str | None = None (grid DFS)
+- **The Core Intuition (The "Aha!" Moment):** A Trie is a tree for words. It saves space by sharing common starting letters. For example, "car", "cat", and "cart" all start with "ca". The tree stores "c", then "a", then splits to "r" and "t". This makes searching for words very fast. Instead of checking every word in a dictionary, you only follow the letters down the tree.
+- **Signal Recognition (When to use it):** Problems asking for autocomplete, prefix matching, word search on a grid (Boggle), dictionary matching with wildcards (e.g., `.at`), or finding words made of other words. You have many strings and repeated prefix queries.
+- **The Logical Blueprint (The Universal Steps):**
+  1. Define a `TrieNode` containing a dictionary of `children` and an `is_end` boolean (or a `word` string for grid searches).
+  2. Initialize the `Trie` with a root node.
+  3. **Insert:** Iterate through each character of the word. If the char isn't in the current node's children, create a new node. Move to the child. After the loop, mark the final node as the end of a word.
+  4. **Search:** Walk down the tree char by char. If a char is missing, return false. If you reach the end of the word, check if `is_end` is true.
+  5. **Prefix Match:** Same as search, but just return true if you successfully walk down the tree without hitting a dead end.
+- **The Minimal Skeleton:**
+```python
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False 
+        # self.word = None  <-- Use this instead of is_end for grid searches!
 
-  class Trie:
-      def __init__(self):
-          self.root = TrieNode()
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
-      def insert(self, word: str) -> None:
-          node = self.root
-          for ch in word:
-              if ch not in node.children:
-                  node.children[ch] = TrieNode()
-              node = node.children[ch]
-          node.is_end = True
+    def insert(self, word: str) -> None:
+        node = self.root
+        for ch in word:
+            if ch not in node.children:
+                node.children[ch] = TrieNode()
+            node = node.children[ch]
+        node.is_end = True
 
-      def _find(self, prefix: str) -> TrieNode | None:
-          """Shared helper — avoids duplicating walk logic."""
-          node = self.root
-          for ch in prefix:
-              if ch not in node.children:
-                  return None
-              node = node.children[ch]
-          return node
+    def _find(self, prefix: str) -> TrieNode | None:
+        node = self.root
+        for ch in prefix:
+            if ch not in node.children:
+                return None
+            node = node.children[ch]
+        return node
 
-      def search(self, word: str) -> bool:
-          node = self._find(word)
-          return node is not None and node.is_end  # must check is_end!
+    def search(self, word: str) -> bool:
+        node = self._find(word)
+        return node is not None and node.is_end # Must check is_end!
 
-      def starts_with(self, prefix: str) -> bool:
-          return self._find(prefix) is not None    # reachability only
-
-  # Wildcard '.' — DFS with index (p211):
-  def _dfs(self, node, word, index):
-      if index == len(word):
-          return node.is_end
-      ch = word[index]
-      if ch == '.':
-          return any(self._dfs(child, word, index+1)
-                     for child in node.children.values())
-      if ch not in node.children:
-          return False
-      return self._dfs(node.children[ch], word, index+1)
-
-  # Grid DFS along trie edges (p212) — store word at leaf, mark visited in-place:
-  def dfs(r, c, parent):
-      ch = board[r][c]
-      curr = parent.children.get(ch)
-      if not curr: return
-      if curr.word:                    # found a complete word
-          result.append(curr.word)
-          curr.word = None             # deduplicate: null out immediately
-      board[r][c] = '#'                # mark visited (in-place, no visited set)
-      for dr, dc in [(0,1),(0,-1),(1,0),(-1,0)]:
-          nr, nc = r+dr, c+dc
-          if 0 <= nr < rows and 0 <= nc < cols and board[nr][nc] != '#':
-              dfs(nr, nc, curr)
-      board[r][c] = ch                 # restore
-      if not curr.children:            # leaf pruning: remove dead branch
-          parent.children.pop(ch)
-
-  # Concatenated words (p472) — trie + recursive DFS, insert AFTER check:
-  words_sorted = sorted(words, key=len)
-  for word in words_sorted:
-      if can_concatenate(word, start=0, count=0):
-          result.append(word)
-      insert(word)        # insert AFTER check — prevents self-match!
-
-  def can_concatenate(word, start, count):
-      node = root
-      for i in range(start, len(word)):
-          ch = word[i]
-          if ch not in node.children: return False
-          node = node.children[ch]
-          if node.is_end:
-              if i == len(word) - 1: return count >= 1  # ≥2 pieces total
-              if can_concatenate(word, i+1, count+1): return True
-      return False
-  ```
-- **Complexity:** Insert/search O(L). Wildcard search O(Σ^D · L) worst (D = # of dots).
-  Grid O(m·n·4^L) worst but trie-pruned in practice. Space O(Σ·N) for trie nodes
-  (Σ = alphabet size, N = total characters across all words).
-
-- **Killer gotchas:**
-  1. **`search` vs `starts_with`** — `starts_with("app")` returns True even if only
-     "apple" is inserted; `search("app")` must check `node.is_end`. Never skip the
-     `is_end` check for exact-word queries.
-  2. **p212 — two-level pruning required for no TLE:**
-     - Null `curr.word = None` after collecting (prevents re-adding duplicates)
-     - Pop `parent.children[ch]` when `not curr.children` (removes exhausted branches,
-       shrinks the trie as the DFS progresses — critical for large inputs)
-  3. **p212 — pass `parent`, not `curr`, into DFS** so that leaf pruning
-     (`parent.children.pop(ch)`) is possible without an extra reference.
-  4. **p472 — sort by length + insert AFTER check.** If you insert all words first,
-     a word matches itself (1 piece = itself), giving a false positive. Sorting ensures
-     you only check against strictly shorter words already in the trie.
-  5. **p472 — `count >= 1` not `count >= 2`** at the terminal check: `count` is
-     incremented when you *start* a new piece; the last piece adds to `count` only if
-     `can_concatenate` recurses again, so at the final character `count >= 1` means
-     ≥2 total pieces.
-
+    def starts_with(self, prefix: str) -> bool:
+        return self._find(prefix) is not None
+```
+- **Killer Gotchas:**
+  1. **`search` vs `starts_with`:** `search("app")` must check `node.is_end`. If you inserted "apple", `search("app")` should be false, but `starts_with("app")` should be true. Do not forget the `is_end` check!
+  2. **Grid DFS (Word Search II) TLE Traps:** You must prune the Trie dynamically! When you find a word, set `node.word = None` to avoid duplicates. More importantly, if a node's `children` dict becomes empty, `pop` it from its parent to shrink the Trie and avoid re-exploring dead branches.
+  3. **Word Search II parameter:** Pass the `parent` node into your DFS, not the `current` node. This gives you the reference needed to `pop` dead branches from the tree.
+  4. **Concatenated Words false positives:** If you insert all words into the Trie *before* checking, a word will just match itself. Sort the array by length, and always check if a word can be concatenated *before* inserting it into the Trie.
+- **Problem Table:**
 | Problem | Essence | Key trick |
 |---|---|---|
 | p208 Implement Trie | Foundation: insert/search/starts_with | `_find()` helper shared by both; `search` checks `node.is_end`, `starts_with` checks reachability only |
@@ -2210,68 +1400,68 @@ backtrack([], set())
 | p212 Word Search II | Build trie from words, DFS board along trie edges | Store `word` at leaf (not `is_end`); in-place `'#'` marking; prune: null word + pop empty children |
 | p472 Concatenated Words | Trie + recursive DFS to split word into ≥2 pieces | Sort by length, insert word AFTER check; `count >= 1` at end = ≥2 pieces total |
 
+# Tier 4 — Expert
+
 ### graph
-- **Mindset:** Model relationships as nodes+edges. Two sub-patterns:
-  (1) **Topological sort (Kahn's BFS)** — for dependency/ordering with cycle detection;
-  (2) **Net in/out-degree score** — when you just need to find a "special node" with no
-  traversal needed. DFS-based topo sort is equally valid but Kahn's is interview-safe.
-- **When to use:**
-  - Prerequisites / dependencies / ordering → **topological sort** (Kahn's BFS)
-  - "Trusted by all / trusts nobody" → **net degree score** (one pass, no graph)
+- **The Core Intuition (The "Aha!" Moment):** A graph connects things together. For ordering problems, think of a to-do list where some tasks must be done before others. If Task A needs Task B, and Task B needs Task A, you are stuck in a circle (a cycle). For "special node" problems, think of an election. You just count who gets the most votes. You do not need to walk through the graph.
+- **Signal Recognition (When to use it):**
+  - "Prerequisites", "dependencies", or "valid ordering" → Use **Topological Sort** (Kahn's BFS).
+  - "Trusted by all but trusts nobody", "find the center" → Use **Net Degree Score** (simple counting).
+- **The Logical Blueprint (The Universal Steps):**
+  - **Topological Sort (Kahn's BFS):**
+    1. Count how many prerequisites each node has (`in_degree`).
+    2. Build an adjacency list mapping each node to its dependents.
+    3. Put all nodes with 0 prerequisites into a queue (they are ready to process).
+    4. While the queue isn't empty, pop a node, add it to your order, and reduce the prerequisite count for all its dependents.
+    5. If a dependent's count hits 0, add it to the queue.
+    6. If the final order doesn't include all nodes, a cycle exists.
+  - **Net Degree Score:**
+    1. Create an array to track the "score" of each node.
+    2. For every directed edge `A -> B`, decrement A's score (trusts someone) and increment B's score (is trusted).
+    3. Find the node with a score exactly equal to `N - 1`.
+- **The Minimal Skeleton:**
+  ```python
+  # --- Topological Sort (Kahn's BFS) ---
+  from collections import deque
 
-- **Skeleton (Kahn's BFS — covers p207 & p210):**
-```python
-from collections import deque
+  def topo_sort(n, edges):
+      graph = {i: [] for i in range(n)}
+      in_degree = [0] * n
+      for dest, src in edges:
+          graph[src].append(dest)
+          in_degree[dest] += 1
 
-def kahn(n, edges):          # edges: list of [dest, src] (dest depends on src)
-    graph = {i: [] for i in range(n)}   # src → [dest, ...]
-    in_degree = [0] * n
-    for dest, src in edges:
-        graph[src].append(dest)
-        in_degree[dest] += 1
+      queue = deque(i for i in range(n) if in_degree[i] == 0)
+      order = []
 
-    queue = deque(i for i in range(n) if in_degree[i] == 0)
-    order = []
-    while queue:
-        node = queue.popleft()
-        order.append(node)
-        for nei in graph[node]:
-            in_degree[nei] -= 1
-            if in_degree[nei] == 0:
-                queue.append(nei)
+      while queue:
+          node = queue.popleft()
+          order.append(node)
+          for nei in graph[node]:
+              in_degree[nei] -= 1
+              if in_degree[nei] == 0:
+                  queue.append(nei)
 
-    # p207: return len(order) == n          ← cycle detection only
-    # p210: return order if len(order)==n else []   ← emit order
-```
+      return order if len(order) == n else []  # Empty if cycle exists
 
-- **Skeleton (net-degree score — covers p997):**
-```python
-def find_special(n, trust):      # nodes are 1-indexed → size n+1
-    scores = [0] * (n + 1)       # net = in_degree - out_degree
-    for a, b in trust:
-        scores[a] -= 1           # a trusts someone → out_degree++
-        scores[b] += 1           # b is trusted     → in_degree++
-    for i in range(1, n + 1):
-        if scores[i] == n - 1:   # trusted by all n-1, trusts nobody
-            return i
-    return -1
-```
-
-- **Complexity:** O(V+E) time & space (both patterns).
-
-- **Killer gotchas:**
-  1. **Edge direction:** Add edge `prereq → course`, bump `in_degree[course]`. Reversing it
-     seeds the wrong zero-in-degree nodes and silently produces wrong answers.
-  2. **p997 nodes are 1-indexed (1..n):** `scores = [0] * (n+1)`, loop `range(1, n+1)`.
-     Using size-n or 0-indexed is an off-by-one that's easy to miss.
-  3. **p997 score == n-1, not n:** The judge is trusted by all OTHER n-1 people (not
-     themselves). Score n would be impossible.
-  4. **Cycle detection:** `len(order) == n` (not `> 0`). If even one node is stuck in a
-     cycle its in-degree never reaches 0, so it's never enqueued.
-  5. **DFS is equally valid** for topo sort (color-based: white/gray/black). Kahn's is
-     preferred in interviews because it's iterative and cycle detection is a natural
-     byproduct (no extra visited set needed).
-
+  # --- Net Degree Score ---
+  def find_special_node(n, edges):
+      scores = [0] * (n + 1)  # Assuming 1-indexed nodes
+      for u, v in edges:
+          scores[u] -= 1      # u points out
+          scores[v] += 1      # v is pointed to
+      
+      for i in range(1, n + 1):
+          if scores[i] == n - 1:
+              return i
+      return -1
+  ```
+- **Killer Gotchas:**
+  1. **Edge Direction:** Add edge `prereq -> course`. If you reverse this, your zero-in-degree nodes will be completely wrong.
+  2. **1-Indexed Nodes:** Many degree problems (like town judge) use nodes labeled 1 to N. Array size must be `N + 1`, and loops must iterate `range(1, N + 1)`.
+  3. **Cycle Detection Check:** Always check if `len(order) == n` at the end of Kahn's. If nodes are trapped in a cycle, their in-degree never reaches 0, so they are never added to the queue.
+  4. **Target Score:** The special node is trusted by everyone *else*, so its score must be `N - 1`, not `N`.
+- **Problem Table:**
 | Problem | Difficulty | Essence | Key trick |
 |---|---|---|---|
 | p207 Course Schedule | Medium | Can all courses be taken? (cycle detection) | Kahn's BFS; `len(order)==n` → True |
@@ -2279,65 +1469,49 @@ def find_special(n, trust):      # nodes are 1-indexed → size n+1
 | p997 Find the Town Judge | Easy | Find node trusted by everyone, trusts nobody | Net score array `[0]*(n+1)`; judge score == `n-1` |
 
 ### greedy
-- **Mindset:** Sweep once carrying a single "best frontier" variable (`max_reach`, earliest `end`, running `surplus`) and update/reset on violations. A local optimum never blocks a better future.
-- **When to use:** "can reach? / minimum count / valid starting point" over a sequence or intervals where a local invariant is monotonic and sufficient. Signals: *furthest jump*, *minimize arrows*, *cooldown task scheduling*, *maximum profit IPO*.
-- **Skeleton (Interval selection / p452):**
-```python
-def find_min_arrows(points: list[list[int]]) -> int:
-    if not points: return 0
-    # Always sort by END coordinate (right endpoint)
-    points.sort(key=lambda x: x[1])
-    arrows = 1
-    end = points[0][1]
-    for start, finish in points[1:]:
-        if start > end:               # no overlap with current arrow reach
-            arrows += 1
-            end = finish              # place new arrow at the end of this balloon
-    return arrows
-```
+- **The Core Intuition (The "Aha!" Moment):** Always make the best choice right now. Do not worry about the future steps. For example, if you want to use the fewest arrows to pop balloons, shoot the arrow where the most balloons overlap right now. If making the best choice now does not ruin future choices, you can just move forward. You only need to keep track of the best state so far. You never need to go back.
+- **Signal Recognition (When to use it):**
+  - "Can you reach the end?", "Minimum number of jumps/arrows", "Maximum profit".
+  - Finding a valid starting point in a circular route (Gas Station).
+  - Interval problems where you want to minimize overlap or maximize non-overlapping intervals.
+- **The Logical Blueprint (The Universal Steps):**
+  - **Intervals:** Sort by the *end* time. Track the end of the current selection. Iterate through; if a new item starts *after* your tracked end, you must make a new selection (e.g., shoot another arrow) and update the tracked end.
+  - **Running Surplus (Gas Station):** Track a global surplus and a local running surplus. If the local surplus drops below zero, the current starting point is invalid; reset the starting point to the very next item and reset local surplus. At the end, if global surplus >= 0, return the start point.
+  - **Max Reach (Jump Game):** Track the furthest index you can reach. Iterate through indices. At each step, update the furthest reach. If your current index exceeds your furthest reach, you're stuck.
+- **The Minimal Skeleton:**
+  ```python
+  # --- Interval Selection (e.g., Min Arrows) ---
+  def greedy_intervals(intervals):
+      if not intervals: return 0
+      intervals.sort(key=lambda x: x[1])  # Sort by END coordinate
+      count = 1
+      end = intervals[0][1]
+      
+      for start, finish in intervals[1:]:
+          if start > end:                 # No overlap
+              count += 1
+              end = finish                # Update frontier
+      return count
 
-- **Skeleton (Heap-based greedy selection / p502):**
-```python
-import heapq
-
-def find_max_capital(k: int, w: int, profits: list[int], capital: list[int]) -> int:
-    projects = sorted(zip(capital, profits))
-    max_heap = []
-    i = 0
-    for _ in range(k):
-        # Push profits of all projects we can currently afford
-        while i < len(projects) and projects[i][0] <= w:
-            heapq.heappush(max_heap, -projects[i][1])  # negate for max-heap
-            i += 1
-        if not max_heap:
-            break
-        w += -heapq.heappop(max_heap)                 # pick project with max profit
-    return w
-```
-
-- **Skeleton (Two-pass neighbor constraints / p135):**
-```python
-def candy(ratings: list[int]) -> int:
-    n = len(ratings)
-    candies = [1] * n
-    # Pass 1: left-to-right (ensure right-neighbor gets more if rating is higher)
-    for i in range(1, n):
-        if ratings[i] > ratings[i-1]:
-            candies[i] = candies[i-1] + 1
-    # Pass 2: right-to-left (ensure left-neighbor gets more if rating is higher)
-    for i in range(n-2, -1, -1):
-        if ratings[i] > ratings[i+1]:
-            candies[i] = max(candies[i], candies[i+1] + 1)
-    return sum(candies)
-```
-
-- **Complexity:** O(N) for single-pass / multi-pass, O(N log N) if sorting or heaps are used. O(1) extra space (or O(N) for heaps/sorting).
-- **Killer gotchas:**
-  1. **Sorting intervals by start (p452)** — fails for nested intervals (e.g. `[1, 10]` and `[2, 3]`). You must sort by **end** point to greedily resolve intervals that finish earliest.
-  2. **Gas station (p134) local vs global** — if `current_surplus` drops below 0 at `i`, the starting point must be reset to `i + 1`. This is valid, but you MUST verify `total_surplus >= 0` at the very end to guarantee a complete cycle is possible.
-  3. **Task Scheduler (p621) idle slots** — formula is `(max_freq - 1) * (n + 1) + max_count`. The `-1` is because the last execution of the most frequent task does not require cooldown after it.
-  4. **Multi-machine task scheduler (p621b) simulation** — cooldown is per-machine. At each step, greedily assign task with highest remaining frequency. If stuck (no machine can execute any task), fast-forward `time` directly to the next cooldown expiry, avoiding empty loops.
-
+  # --- Running Surplus (e.g., Gas Station) ---
+  def greedy_surplus(gain, cost):
+      total_surplus = local_surplus = start = 0
+      for i in range(len(gain)):
+          net = gain[i] - cost[i]
+          total_surplus += net
+          local_surplus += net
+          
+          if local_surplus < 0:           # Failed here
+              start = i + 1               # Try next index
+              local_surplus = 0           # Reset local
+              
+      return start if total_surplus >= 0 else -1
+  ```
+- **Killer Gotchas:**
+  1. **Sort Intervals by End:** Sorting by start fails for nested intervals (e.g., `[1, 10]` and `[2, 3]`). You must sort by *end* point to greedily process intervals that finish earliest.
+  2. **Global Validation:** For circular surplus problems, resetting `start` locally isn't enough. You MUST check that `total_surplus >= 0` at the end to ensure the journey is globally possible.
+  3. **Task Scheduler Math:** The math formula `(max_freq - 1) * (n + 1) + max_count` dictates the length. The `-1` is crucial because the final execution of the most frequent task requires no trailing cooldown.
+- **Problem Table:**
 | Problem | Essence | Key trick |
 |---|---|---|
 | p055 Jump Game | Farthest reachable index | Update `max_reach = max(max_reach, i + nums[i])`; return `False` if `i > max_reach` |
@@ -2350,109 +1524,55 @@ def candy(ratings: list[int]) -> int:
 | p621b Task Scheduler Multi-Machine | Task scheduler with m machines | Simulation: assign highest-freq task not in cooldown per machine; fast-forward time on deadlock |
 
 ### matrix_traversal
-- **Mindset:** Three sub-patterns: (1) *index math in-place* (transpose + reverse for rotation),
-  (2) *boundary pointer simulation* (shrinking `top/bottom/left/right` for spiral),
-  (3) *diagonal grouping by index sum* (`d = i+j`) for diagonal traversal,
-  (4) *multi-source BFS* treating the grid as an implicit graph for distance problems.
-- **When to use:** rotate/transform in-place → transpose + row-reverse; spiral/layer order →
-  4 boundary pointers + shrink-and-guard; diagonal order → group by `i+j`, reverse even diagonals;
-  "nearest X per cell" → multi-source BFS from all X-cells simultaneously.
+- **The Core Intuition (The "Aha!" Moment):** A matrix is just a grid of numbers. Do not get confused by complex loops. Find the simple geometric rule:
+  - To rotate 90 degrees: swap rows with columns, then reverse each row.
+  - To read in a spiral: imagine 4 walls moving inward.
+  - To find diagonals: cells on the same diagonal have the same `row + col` sum.
+  - To find the shortest distance to water: imagine dropping a stone in all water cells at the same time and watching the waves spread out.
+- **Signal Recognition (When to use it):**
+  - "Rotate 90 degrees in-place".
+  - "Spiral order" or "layer order".
+  - "Diagonal traverse".
+  - "Nearest 0 for every cell" or "distance to nearest X" (implicitly a grid graph).
+- **The Logical Blueprint (The Universal Steps):**
+  - **Rotation:** Transpose the matrix (swap `matrix[i][j]` with `matrix[j][i]`), then reverse every row.
+  - **Spiral:** Define 4 boundaries (`top`, `bottom`, `left`, `right`). Traverse the top row, then right col, then bottom row (if `top <= bottom`), then left col (if `left <= right`). Shrink the boundaries inward after each segment.
+  - **Diagonal:** Group cells into a hash map by `diagonal_id = row + col`. Then read the groups sequentially. Reverse the elements for even IDs (to simulate the zig-zag up-right direction).
+  - **Multi-source BFS:** Enqueue all target cells (e.g., all `0`s) at distance 0. Mark all other cells as unvisited (`-1`). Run a standard BFS.
+- **The Minimal Skeleton:**
+  ```python
+  # --- Rotation (In-place) ---
+  def rotate(matrix):
+      n = len(matrix)
+      # Transpose
+      for i in range(n):
+          for j in range(i + 1, n):
+              matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+      # Reverse rows
+      for row in matrix:
+          row.reverse()
 
-- **Skeleton:**
-
-```python
-# --- p048: Rotate Image (90° clockwise, in-place) ---
-def rotate(matrix):
-    n = len(matrix)
-    # Step 1: Transpose (swap across main diagonal)
-    for i in range(n):
-        for j in range(i + 1, n):
-            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
-    # Step 2: Reverse each row (mirror horizontally)
-    for row in matrix:
-        row.reverse()
-
-# --- p054: Spiral Matrix (read in spiral order) ---
-def spiral(matrix):
-    result = []
-    top, bottom = 0, len(matrix) - 1
-    left, right = 0, len(matrix[0]) - 1
-    while top <= bottom and left <= right:
-        for c in range(left, right + 1):   # → top row
-            result.append(matrix[top][c])
-        top += 1
-        for r in range(top, bottom + 1):   # ↓ right col
-            result.append(matrix[r][right])
-        right -= 1
-        if top <= bottom:                   # GUARD: may be single row left
-            for c in range(right, left - 1, -1):  # ← bottom row
-                result.append(matrix[bottom][c])
-            bottom -= 1
-        if left <= right:                   # GUARD: may be single col left
-            for r in range(bottom, top - 1, -1):  # ↑ left col
-                result.append(matrix[r][left])
-            left += 1
-    return result
-
-# --- p498: Diagonal Traverse (group by diagonal index) ---
-def diagonal_traverse(mat):
-    m, n = len(mat), len(mat[0])
-    diags = {}
-    for i in range(m):
-        for j in range(n):
-            d = i + j                      # KEY: cells on same diagonal share i+j
-            diags.setdefault(d, []).append(mat[i][j])
-    result = []
-    for d in range(m + n - 1):
-        if d % 2 == 0:
-            result.extend(reversed(diags[d]))  # even diagonals go up-right → reverse
-        else:
-            result.extend(diags[d])            # odd diagonals go down-left → as-is
-    return result
-
-# --- p542: 01 Matrix (multi-source BFS from all 0-cells) ---
-from collections import deque
-def update_matrix(mat):
-    m, n = len(mat), len(mat[0])
-    dist = [[0] * n for _ in range(m)]
-    queue = deque()
-    for r in range(m):
-        for c in range(n):
-            if mat[r][c] == 0:
-                queue.append((r, c))           # enqueue ALL sources first
-            else:
-                dist[r][c] = -1               # -1 = unvisited sentinel
-    dirs = [(-1,0),(1,0),(0,-1),(0,1)]
-    while queue:
-        r, c = queue.popleft()
-        for dr, dc in dirs:
-            nr, nc = r + dr, c + dc
-            if 0 <= nr < m and 0 <= nc < n and dist[nr][nc] == -1:
-                dist[nr][nc] = dist[r][c] + 1
-                queue.append((nr, nc))
-    return dist
-```
-
-- **Complexity:**
-  - p048 Rotate: O(n²) time, **O(1)** space (pure in-place)
-  - p054 Spiral: O(m·n) time, O(1) extra space (result not counted)
-  - p498 Diagonal: O(m·n) time, **O(m·n)** space (diagonals dict)
-  - p542 01 Matrix: O(m·n) time, O(m·n) space (dist array + queue)
-
-- **Killer gotchas:**
-  - **p054** — After consuming the top row (`top++`) and right col (`right--`), you MUST
-    re-check `top <= bottom` before the bottom-row loop AND `left <= right` before the
-    left-col loop. Without these guards a single remaining row or column gets appended
-    twice.
-  - **p048** — Transpose only swaps `j > i` pairs (`for j in range(i+1, n)`); starting
-    from `j=0` would double-swap and undo the transpose.
-  - **p498** — The grouping approach (`d = i+j`) is simpler and safer than direction-flip
-    simulation. Even-indexed diagonals (`d % 2 == 0`) go **up-right** in the output, so
-    you reverse the collected list; odd diagonals go down-left as-is.
-  - **p542** — Use `dist[nr][nc] == -1` (not a `visited` set) as the unvisited sentinel.
-    This works because distance is always non-negative, so `-1` is unambiguous. Enqueue
-    ALL 0-cells before starting BFS — not one at a time.
-
+  # --- Diagonal Grouping ---
+  def diagonal_traverse(mat):
+      m, n = len(mat), len(mat[0])
+      diags = {}
+      for i in range(m):
+          for j in range(n):
+              diags.setdefault(i + j, []).append(mat[i][j])
+              
+      result = []
+      for d in range(m + n - 1):
+          if d % 2 == 0:
+              result.extend(reversed(diags[d]))
+          else:
+              result.extend(diags[d])
+      return result
+  ```
+- **Killer Gotchas:**
+  1. **Spiral Double-Counting:** After traversing the top and right edges and shrinking `top` and `right`, you MUST check `if top <= bottom` and `if left <= right` before traversing the bottom and left edges. Otherwise, a 1D strip gets counted twice.
+  2. **Transpose Bounds:** When transposing, the inner loop must be `for j in range(i + 1, n)`. If you start from `0`, you swap everything twice, effectively undoing the transpose!
+  3. **Multi-Source BFS Sentinel:** Initialize distances of non-target cells to `-1` instead of using a `visited` set. Distances are non-negative, so `-1` acts as a perfect, collision-free unvisited sentinel.
+- **Problem Table:**
 | Problem | Approach | Key Trick |
 |---|---|---|
 | p048 Rotate Image | Transpose then reverse each row | Transpose swaps `(i,j)↔(j,i)` for `j>i` only; then `row.reverse()` = clockwise 90° |
@@ -2461,74 +1581,54 @@ def update_matrix(mat):
 | p542 01 Matrix | Multi-source BFS from all 0-cells | Seed queue with every 0, mark 1-cells as `dist=-1`; BFS propagates distance outward |
 
 ### monotonic_stack
-- **Mindset:** Keep a stack of **indices** whose values are strictly monotonic (increasing or decreasing). When a new element breaks this monotonicity, it acts as the right-boundary constraint for the elements popped from the stack.
-- **When to use:** "next greater/smaller", "distance to next warmer/colder", "largest rectangle bounded by smaller neighbors", "contribution of each element as min/max of all subarrays", "132 subsequence search".
-- **Skeleton (Next Greater / Decreasing Stack — p739 / p503):**
-```python
-def next_greater(nums: list[int]) -> list[int]:
-    n = len(nums)
-    answer = [-1] * n
-    stack = []                       # stores indices
-    for i in range(2 * n):           # 2 * n loops for circular array (p503)
-        idx = i % n
-        while stack and nums[stack[-1]] < nums[idx]:
-            answer[stack.pop()] = nums[idx]
-        if i < n:                    # only push indices in first pass (p503)
-            stack.append(idx)
-    return answer
-```
+- **The Core Intuition (The "Aha!" Moment):** A monotonic stack helps you remember items that are "waiting" for a future condition. Imagine a line of people. You are looking for the next taller person. A short person waits in the stack. When a tall person arrives, the tall person answers the question for all short people waiting. We then remove the short people from the stack. We store the index, not just the value, so we can calculate the distance or width between them.
+- **Signal Recognition (When to use it):**
+  - "Next greater/smaller element".
+  - "Distance to the next warmer/colder day".
+  - "Largest rectangle in a histogram".
+  - "Sum of all subarray minimums/maximums" (element contribution).
+- **The Logical Blueprint (The Universal Steps):**
+  1. Initialize an empty stack and a result array.
+  2. Iterate through the array (sometimes appending a sentinel like 0 to force a final flush).
+  3. While the stack is not empty and the current element breaks the required order (e.g., current > top for a decreasing stack):
+     - Pop the top index.
+     - The current element is the "right boundary" or "next greater" for the popped element.
+     - The new top of the stack is the "left boundary".
+     - Calculate width, area, or answer for the popped element.
+  4. Push the current index onto the stack.
+- **The Minimal Skeleton:**
+  ```python
+  # --- Next Greater Element (Decreasing Stack) ---
+  def next_greater(nums):
+      ans = [-1] * len(nums)
+      stack = []  # stores indices
+      for i, num in enumerate(nums):
+          while stack and nums[stack[-1]] < num:
+              popped_idx = stack.pop()
+              ans[popped_idx] = num  # Resolved!
+          stack.append(i)
+      return ans
 
-- **Skeleton (Largest Rectangle / Increasing Stack with Sentinel — p084):**
-```python
-def largest_rectangle_area(heights: list[int]) -> int:
-    stack = []
-    max_area = 0
-    heights = heights + [0]          # sentinel 0 forces a flush of all remaining elements
-    for i, h in enumerate(heights):
-        while stack and h < heights[stack[-1]]:
-            height = heights[stack.pop()]
-            # Left boundary is the new top of stack, right boundary is i
-            width = i if not stack else i - stack[-1] - 1
-            max_area = max(max_area, height * width)
-        stack.append(i)
-    return max_area
-```
-
-- **Skeleton (Subarray Min Contribution — p907):**
-```python
-def sum_subarray_mins(arr: list[int]) -> int:
-    n = len(arr)
-    left = [-1] * n
-    right = [n] * n
-    stack = []
-    
-    # Pass 1: find first smaller to left (strictly smaller)
-    for i in range(n):
-        while stack and arr[stack[-1]] >= arr[i]:
-            stack.pop()
-        left[i] = stack[-1] if stack else -1
-        stack.append(i)
-        
-    stack.clear()
-    # Pass 2: find first smaller or equal to right (prevents double-counting duplicates)
-    for i in range(n - 1, -1, -1):
-        while stack and arr[stack[-1]] > arr[i]:
-            stack.pop()
-        right[i] = stack[-1] if stack else n
-        stack.append(i)
-        
-    # sum up: (i - left[i]) * (right[i] - i) is the number of subarrays where arr[i] is the minimum
-    return sum(arr[i] * (i - left[i]) * (right[i] - i) for i in range(n)) % (10**9 + 7)
-```
-
-- **Complexity:** O(N) time (each index is pushed and popped at most once). O(N) space for stack and boundary arrays.
-- **Killer gotchas:**
-  1. **Rectangle width index math (p084)** — width is `i - stack[-1] - 1` if stack is not empty, else `i`. It is NOT `i - popped_idx`. The left boundary is defined by the element that remains at the top of the stack, not the one that was popped.
-  2. **Sentinel appending (p084)** — you must append `0` (or `-1` for positive values) at the end of `heights`. Without it, elements left in the stack at the end of the loop never get popped and processed.
-  3. **Duplicate boundaries in contribution sum (p907)** — to avoid double counting elements of equal values in subarrays, one search pass must use strictly greater-than/strictly less-than (`>=` / `>`) while the other uses non-strict inequality (`>` / `>=`).
-  4. **132 Pattern (p456) backward traversal** — traversal must go from right-to-left. Keep stack decreasing. `third` represents the `nums[k]` candidate. If we see `nums[i] < third`, return `True` (since `third` was popped by some larger `nums[j]` on stack, we have `nums[i] < third < nums[j]`).
-  5. **Car fleet (p853) sorted positions** — sorting positions descending makes it a monotonic sequence of arrival times from front to back. A car behind forms a new fleet only if its time to target is strictly greater than the current slowest time.
-
+  # --- Largest Rectangle (Increasing Stack with Sentinel) ---
+  def largest_rectangle(heights):
+      heights.append(0)  # Sentinel to flush the stack at the end
+      stack = []
+      max_area = 0
+      for i, h in enumerate(heights):
+          while stack and h < heights[stack[-1]]:
+              height = heights[stack.pop()]
+              # Width spans from current index to the new stack top
+              width = i if not stack else i - stack[-1] - 1
+              max_area = max(max_area, height * width)
+          stack.append(i)
+      heights.pop()  # Clean up the sentinel
+      return max_area
+  ```
+- **Killer Gotchas:**
+  1. **Width Calculation:** For the largest rectangle, the width for a popped element is `i - stack[-1] - 1` (if the stack isn't empty). It is NOT `i - popped_idx`. The left boundary is defined by the element that *remains* beneath it on the stack.
+  2. **The Sentinel:** Always append a `0` (or `-1` if values are positive) at the end of the array for histogram/rectangle problems. If you don't, elements forming a rising slope at the end of the array never get popped and processed.
+  3. **Duplicate Handling (Subarray Contributions):** When calculating subarray mins/maxes, avoid double-counting subarrays with duplicate values by making one pass strictly greater/less (`>`, `<`) and the other inclusive (`>=`, `<=`).
+- **Problem Table:**
 | Problem | Essence | Key trick |
 |---|---|---|
 | p739 Daily Temperatures | Next warmer day distance | Decreasing stack of indices; `ans[j] = i - j` on pop |
@@ -2539,114 +1639,56 @@ def sum_subarray_mins(arr: list[int]) -> int:
 | p907 Sum of Subarray Mins | Subarray minimums contribution | Two passes (left `<` and right `≤` bounds); contribution = `val * left_gap * right_gap` |
 
 ### union_find
-- **Mindset:** Track dynamic connectivity ("same set?") with near-O(1) `union`/`find` via
-  path compression + union by rank — incremental grouping, faster than BFS/DFS for repeated
-  undirected "who's connected" queries. Think: forest of roots where `find` returns the root
-  and `union` merges two trees.
-- **When to use:** **Undirected** connectivity only: component count, redundant/cycle edge
-  detection, equality satisfiability, dynamic grouping. NOT for directed graphs or shortest path.
+- **The Core Intuition (The "Aha!" Moment):** Think of nodes as people in different groups. Every group has a boss (the root). To check if two people are in the same group, you just find their bosses. If the bosses are the same, they are in the same group (`find`). If they want to merge groups (`union`), you simply make one boss report to the other boss. To make this very fast, use "path compression": every time a person finds their boss, they save the boss's number directly. This flattens the tree.
+- **Signal Recognition (When to use it):**
+  - "Are these connected?", "Count connected components".
+  - "Find the redundant edge", "Is there a cycle?" in an UNDIRECTED graph.
+  - Satisfiability of equality equations (`==` and `!=`).
+  - Dynamic grouping where you frequently add edges and query connectivity.
+- **The Logical Blueprint (The Universal Steps):**
+  1. Initialize a `parent` array where every node points to itself, and a `rank` (or size) array initialized to 0.
+  2. Define `find(x)`: Recursively find the root. As you return, update the parent pointer of every node along the path to point directly to the root (Path Compression).
+  3. Define `union(x, y)`: Find the roots of `x` and `y`. If they are the same, a cycle is detected. If different, attach the tree with the smaller rank under the root of the tree with the larger rank (Union by Rank).
+- **The Minimal Skeleton:**
+  ```python
+  class UnionFind:
+      def __init__(self, n):
+          self.parent = list(range(n))
+          self.rank = [0] * n
 
-- **Skeleton:**
-```python
-class UnionFind:
-    def __init__(self, n: int):
-        self.parent = list(range(n))   # each node is its own root
-        self.rank   = [0] * n
+      def find(self, x):
+          if self.parent[x] != x:
+              # Path compression
+              self.parent[x] = self.find(self.parent[x])
+          return self.parent[x]
 
-    def find(self, x: int) -> int:
-        if self.parent[x] != x:
-            self.parent[x] = self.find(self.parent[x])  # path compression (recursive)
-        return self.parent[x]
-
-    def union(self, x: int, y: int) -> bool:
-        rx, ry = self.find(x), self.find(y)
-        if rx == ry:
-            return False                # already same set — cycle detected
-        if self.rank[rx] < self.rank[ry]:
-            rx, ry = ry, rx            # always attach smaller rank under larger
-        self.parent[ry] = rx
-        if self.rank[rx] == self.rank[ry]:
-            self.rank[rx] += 1
-        return True                    # successful merge
-
-# p323 driver
-uf = UnionFind(n)
-components = n
-for u, v in edges:
-    if uf.union(u, v):
-        components -= 1               # one fewer component per merge
-return components
-
-# p684 driver  — nodes are 1-indexed! parent size = n+1
-parent = list(range(len(edges) + 1))  # NOT range(len(edges))
-rank   = [0] * (len(edges) + 1)
-for u, v in edges:
-    if not union(u, v):
-        return [u, v]                 # first edge that fails = redundant
-
-# p990 driver  — 26-node fixed pool; char → int via ord(c) - ord('a')
-parent = list(range(26))
-rank   = [0] * 26
-# Pass 1: union all "==" (eq[1]=='=' because format is "a==b")
-for eq in equations:
-    if eq[1] == '=':                  # eq[1] is '=' for "==", '!' for "!="
-        union(ord(eq[0])-ord('a'), ord(eq[3])-ord('a'))
-# Pass 2: reject any "!=" where both sides share a root
-for eq in equations:
-    if eq[1] == '!':
-        if find(ord(eq[0])-ord('a')) == find(ord(eq[3])-ord('a')):
-            return False
-return True
-```
-
-- **Complexity:** O(E · α(N)) ≈ O(E) time (α = inverse Ackermann, effectively constant).
-  O(N) space for parent + rank arrays.
-
-- **Killer gotchas:**
-  1. **p990 MUST be two passes** — union every `==` *first*, only then check `!=`.
-     Interleaving fails: a later `==` can merge sets that an earlier `!=` wrongly passed.
-  2. **p684: 1-indexed nodes** — edges use nodes `1..n`, so `parent` must be size `n+1`
-     (`list(range(len(edges)+1))`). Off-by-one here causes silent wrong answers.
-  3. **p684: stop at the first failed union** — problem guarantees exactly one redundant
-     edge; the answer is the last such edge in input order, which is the *first* `union` failure.
-  4. **Path compression is recursive** — Python default recursion limit (~1000) is fine for
-     constraints here (n ≤ 2000), but consider iterative `find` for very large n.
-  5. **Rank only increases when both sides have equal rank** — a common mistake is always
-     incrementing rank[rx].
-
+      def union(self, x, y):
+          root_x = self.find(x)
+          root_y = self.find(y)
+          
+          if root_x == root_y:
+              return False  # Already in same set (cycle)
+              
+          # Union by rank
+          if self.rank[root_x] < self.rank[root_y]:
+              self.parent[root_x] = root_y
+          elif self.rank[root_x] > self.rank[root_y]:
+              self.parent[root_y] = root_x
+          else:
+              self.parent[root_y] = root_x
+              self.rank[root_x] += 1
+              
+          return True  # Successfully merged
+  ```
+- **Killer Gotchas:**
+  1. **1-Indexed Nodes:** Many problems (like Redundant Connection) use nodes labeled 1 to N. Your `parent` array must be initialized to size `N + 1` (`list(range(n + 1))`). Off-by-one errors here will cause out-of-bounds exceptions or silent logic bugs.
+  2. **Two Passes for Equations:** For equality satisfiability (e.g., `a==b`, `c!=d`), you MUST process all `==` equations in the first pass to build the clubs, and then verify all `!=` equations in a second pass. Interleaving them fails.
+  3. **Cycle Detection = False Return:** If `union(x, y)` finds that `root_x == root_y`, returning `False` is exactly how you detect a redundant edge.
+  4. **Only Increment Rank on Equality:** `rank` is a rough tree depth. It only increases when you merge two trees of the *exact same rank*. Don't increment it indiscriminately.
+- **Problem Table:**
 | Problem | Essence | Key trick |
 |---|---|---|
 | p323 Connected Components | `n − successful_unions` | Decrement counter only when `union()` returns `True` |
 | p684 Redundant Connection | First edge linking already-connected nodes | Nodes are **1-indexed**; parent size = `n+1`; return on first `False` |
 | p990 Equality Equations | Union all `==`, then reject `!=` contradictions | Fixed 26-node pool; `eq[1]=='='` to detect `==`; `eq[0]`/`eq[3]` are the variable chars |
 
-### Greedy vs DP
-- **Greedy** ⟺ one forward pass + one state variable suffices and the optimal local
-  choice never forecloses a better global one (p055, p134, p452, p455).
-- Reach for **DP / multi-pass** when a position's answer is constrained by **both sides at
-  once** (p135 candy: L→R and R→L then max) or when choices interact.
-
-### Graph: BFS vs Topological Sort vs Union-Find
-- **Linear order / dependencies / cycle in a *directed* graph** → **topological sort**
-  (Kahn's) (p207, p210).
-- **Distance / shortest path / nearest-X / flood fill** → **BFS/DFS** (multi-source in
-  p542).
-- **"Same component?" with *undirected* edges, possibly streaming** → **union-find**
-  (p323, p684, p990) — incremental, avoids full traversal.
-- Just need **in/out-degree of one special node** → neither; pure **degree array** (p997).
-
-### Binary Search: plain vs modified vs answer-space
-- **plain** — compare `nums[mid]` to `target` in a cleanly sorted array.
-- **modified (rotated)** — discover *which half is sorted* before deciding where target lives.
-- **answer-space** — abandon the array; search a numeric **answer** via a monotonic
-  `feasible(mid)` predicate ("minimize the max"). Loop `while lo<hi`, move `hi=mid` on success.
-
-### Backtracking vs Subsets
-- Identical choose→explore→un-choose skeleton, opposite philosophy.
-- **Subsets** records **every** partial path (the answer-set *is* the path-space); rarely prunes.
-- **Backtracking** records only **goal-reaching** paths (`remaining==0`, square complete);
-  prunes hard. Subsets = *enumerate all*; backtracking = *search for the valid*.
-
-### Heap direction (top-k)
-- A **min-heap of size k keeps the k LARGEST** (you evict the small ones) — backwards from
-  intuition. To keep k smallest, negate keys.
