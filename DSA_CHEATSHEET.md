@@ -300,6 +300,7 @@
   - **Zero Counts in Hash Maps:** When maintaining character frequencies with a Python `Counter` or `dict`, `state[char] == 0` is NOT the same as the character missing. Actively `del state[char]` if it hits 0 so equality comparisons (e.g., `window == target`) work perfectly.
 
 - **Problem Table:**
+
 | Problem | Pattern | Essence / Key Trick |
 |---|---|---|
 | p003 Longest Substring No Repeat | Variable | `char→last_index`; jump `left = last_index+1` only if index ≥ left (stale guard) |
@@ -347,6 +348,7 @@
   - **String Equality Illusion:** Equal length does not mean equal string. If two strings are entirely different, neither is a subsequence of the other, so the longest uncommon subsequence is simply `max(len(a), len(b))`.
 
 - **Problem Table:**
+
 | Problem | Complexity | Key trick |
 |---|---|---|
 | p434 Number of Segments | O(N) / O(1) | `in_segment` flag: count space→non-space transitions; or just `len(s.split())` |
@@ -393,6 +395,7 @@
   - **1-Indexed Results:** Read carefully. Some two-pointer problems (like Two Sum II) want 1-indexed output, meaning you return `[left + 1, right + 1]`.
 
 - **Problem Table:**
+
 | Problem | Difficulty | Essence | Key Trick |
 |---|---|---|---|
 | p011 Container With Most Water | Medium | Maximize `min(h[l],h[r])*(r−l)` | Move the **shorter** side inward; taller side can't improve area |
@@ -444,6 +447,7 @@
   - **Number Overflow:** `(left + right) // 2` can crash in languages like C++ or Java for very large numbers. Always use `left + (right - left) // 2`.
   - **Rotated Arrays:** When finding the minimum in a rotated array, always compare `mid` with `right`. If you compare it with `left`, you will get wrong answers.
 - **Problem Table:**
+
 | Problem | Difficulty | Essence | Key trick |
 |---|---|---|---|
 | p704 Binary Search | Easy | Classic exact-match | Template A; return `mid` on hit, `-1` after loop |
@@ -485,6 +489,7 @@
   - **`n &= n - 1` vs Subtracting 1:** `n &= n - 1` clears the lowest "1" bit. It is not the same as just subtracting 1. This makes counting bits super fast.
   - **The Zero Trap:** Be careful with `0`. The power-of-two check is `n > 0 and (n & (n - 1)) == 0`. If you forget `n > 0`, the number `0` will wrongly pass the test!
 - **Problem Table:**
+
 | Problem | Essence | Key trick |
 |---|---|---|
 | p136 Single Number | XOR all — pairs cancel | `res=0; for x in nums: res^=x` — O(n)/O(1) |
@@ -531,6 +536,7 @@
   - **Updating vs Inserting:** If you `put()` a key that already exists, it is an update, not a new insert. Do not increase the total size, and do not evict anything.
   - **Zero Capacity:** Always check if `capacity <= 0` at the very beginning of your `put` function. LeetCode loves to test with a cache size of 0 to see if your code breaks.
 - **Problem Table:**
+
 | Problem | Difficulty | Essence | Key trick |
 |---|---|---|---|
 | p460 LFU Cache | Hard | 3-dict LFU: key→val, key→freq, freq→bucket | Delete empty buckets; track `min_freq`; `OrderedDict` per bucket for true O(1) LRU tie-break |
@@ -576,6 +582,7 @@
   - **Python recursion limits:** In Python, recursion can go too deep and crash the program. For very large grids, you might need to use an explicit stack (a list) instead of recursion.
   - **Grid Boundaries:** Always check `r < 0` or `r >= rows` before you read `grid[r][c]`. Reading outside the grid will cause an "index out of range" error.
 - **Problem Table:**
+
 | Problem | Essence | Key trick |
 |---|---|---|
 | p200 Number of Islands | Count connected `'1'` components | Sink cells (`'1'`→`'0'`) in-place during DFS; no visited set needed |
@@ -634,6 +641,7 @@ def divide_and_conquer(arr):
   - **Quad-Tree scanning costs:** Scanning an entire grid to check if it's uniform is O(size²). In the worst case, this leads to O(n² log n) time complexity, not O(n log n).
 
 - **Problem Table:**
+
 | Problem | Essence | Key trick |
 |---|---|---|
 | p912 Sort an Array | Classic merge sort | Split at `mid`, recurse, two-pointer merge; base `len≤1` returns a copy |
@@ -689,6 +697,7 @@ def solve_knapsack(items, target):
   - **Inverted Framing (Egg Drop):** Sometimes the naive state `dp[eggs][floors]` is too slow. Invert the question: `dp[moves][eggs] = max floors testable`.
 
 - **Problem Table:**
+
 | Problem | Pattern | Essence | Key Trick |
 |---|---|---|---|
 | p070 Climbing Stairs | 1D linear | `dp[i]=dp[i-1]+dp[i-2]` | Two rolling vars; this is Fibonacci |
@@ -750,6 +759,7 @@ def next_permutation_number(n):
   - **Edge Case Breakdowns:** Generic math algorithms (like prefix mirroring for palindromes) often fail for 1-digit numbers or exact powers of 10. You must manually add candidates like `10**(len-1) - 1` (e.g., 999) or `10**len + 1` (e.g., 1001).
 
 - **Problem Table:**
+
 | Problem | Essence | Key trick |
 |---|---|---|
 | p458 Poor Pigs | Min pigs s.t. `(tests+1)^pigs ≥ buckets` | Information theory: each pig = 1 digit in base `tests+1`; loop until capacity ≥ buckets |
@@ -816,6 +826,7 @@ def product_except_self(nums):
   - **1-Indexed Random Picking:** When doing weighted random picks using binary search on a prefix array, pick a random number `t` in `[1, total]`, not `[0, total-1]`. You are finding which bucket the "weight ticket" falls into.
 
 - **Problem Table:**
+
 | Problem | Pattern | Key trick |
 |---|---|---|
 | p0560 Subarray Sum Equals K | prefix freq map | `freq[curr-k]` count; init `freq[0]=1` |
@@ -904,6 +915,7 @@ class RandomPicker:
   - **Judge determinism:** Both problem and solution files might need `random.seed(42)` to ensure output matches the WASM judge.
 
 - **Problem Table:**
+
 | Problem | Key trick | Essence |
 |---|---|---|
 | p470 Rand10 from Rand7 | 7×7 grid → 1..49; accept ≤40; `(idx-1)%10+1` | Cutoff = largest multiple of target ≤ source range |
@@ -981,6 +993,7 @@ def decode_string(s):
   - **Resetting state:** When pushing state onto the stack to start a nested level, remember to reset *both* the current string and the current number variables.
 
 - **Problem Table:**
+
 | Problem | Difficulty | Key trick | Essence |
 |---|---|---|---|
 | p020 Valid Parentheses | Easy | `close→open` map + two failure modes | Push openers; closer checks `not stack OR top≠mapping[ch]`; return `stack==[]` at end |
@@ -1039,6 +1052,7 @@ def k_closest(points, k):
   - **Python's heapq:** Python's `heapq` module only implements min-heaps. For max-heap behavior, you *must* negate the numbers. Don't forget to un-negate them if you need the actual values later.
 
 - **Problem Table:**
+
 | Problem | Difficulty | Heap type | Key trick |
 |---|---|---|---|
 | p215 Kth Largest | Medium | min-heap size k | `heapq.nlargest(k,nums)[-1]` or manual push+pop; root = answer |
@@ -1109,6 +1123,7 @@ class MedianFinder:
   - **Pruning at the wrong time:** In lazy deletion, the *only* thing that matters is the top of the heap. You don't need to prune stale elements buried deep inside. But you *must* proactively prune the top before asking for the median, and before checking sizes.
 
 - **Problem Table:**
+
 | Problem | Difficulty | Key trick | Essence |
 |---|---|---|---|
 | p295 Median Finder | Hard | push→move→rebalance | Max-heap lower half + min-heap upper half; invariant: `\|small\| ∈ {large, large+1}` |
@@ -1163,6 +1178,7 @@ def solve(candidates, target):
   3. **Pruning unsorted arrays:** You can only `break` early if the array is sorted. If it's unsorted, you might skip a smaller valid number that appears later.
   4. **Sort descending for bucket-filling:** When partitioning (like filling squares), try the largest items first. They cause early overflows, pruning the tree massively right at the top.
 - **Problem Table:**
+
 | Problem | Essence | Key trick |
 |---|---|---|
 | p017 Letter Combinations | Digit-to-letters combinations | Standard DFS; one char added per recursion depth |
@@ -1225,6 +1241,7 @@ disappeared = [i + 1 for i in range(len(nums)) if nums[i] > 0]
   3. **Forgetting `abs()` in Negation Mark:** Once you start flipping signs, the raw values are corrupted. You *must* use `abs(num)` to compute indices and when appending to results.
   4. **Confusing the post-pass scan:** Finding duplicates means checking if the target is *already* negative mid-pass. Finding disappeared numbers means checking what is *still* positive after the full pass.
 - **Problem Table:**
+
 | Problem | Range | Algorithm | Key trick |
 |---|---|---|---|
 | p268 Missing Number | [0,n] | Cyclic-sort swap | Guard `correct < n`; after sort, first `nums[i]≠i` → answer; fallback `n` |
@@ -1286,6 +1303,7 @@ return lo
   3. **The `<= ` check for sorted halves:** In Pattern A, use `nums[lo] <= nums[mid]`. The `=` handles the edge case of a 2-element subarray where `lo` and `mid` point to the exact same element.
   4. **The Feasibility Function must be Monotonic:** For Pattern B to work, once an answer is feasible, all larger answers must also be feasible (or vice-versa for maximizing). If it fluctuates, binary search will fail.
 - **Problem Table:**
+
 | Problem | Pattern | Answer range | Key trick |
 |---|---|---|---|
 | p033 Search Rotated Sorted Array | A — rotated | index `[0, n-1]` | `nums[lo] <= nums[mid]` → left sorted; check if target inside `[lo, mid)`, else go right |
@@ -1337,6 +1355,7 @@ def permute(nums):
   2. **Combinations vs. Subsets:** Subsets append the path to the result on *every single recursive call*. Combinations only append when `len(path) == k`.
   3. **Backtracking vs. Subsets Philosophy:** They look identical in code, but subsets is meant to just blindly gather everything, while backtracking has a goal and prunes bad branches heavily.
 - **Problem Table:**
+
 | Problem | Essence | Key Trick |
 |---|---|---|
 | p046 Permutations | All orderings of distinct ints | Iterative insertion: insert new num at every position of each existing perm |
@@ -1393,6 +1412,7 @@ class Trie:
   3. **Word Search II parameter:** Pass the `parent` node into your DFS, not the `current` node. This gives you the reference needed to `pop` dead branches from the tree.
   4. **Concatenated Words false positives:** If you insert all words into the Trie *before* checking, a word will just match itself. Sort the array by length, and always check if a word can be concatenated *before* inserting it into the Trie.
 - **Problem Table:**
+
 | Problem | Essence | Key trick |
 |---|---|---|
 | p208 Implement Trie | Foundation: insert/search/starts_with | `_find()` helper shared by both; `search` checks `node.is_end`, `starts_with` checks reachability only |
@@ -1462,6 +1482,7 @@ class Trie:
   3. **Cycle Detection Check:** Always check if `len(order) == n` at the end of Kahn's. If nodes are trapped in a cycle, their in-degree never reaches 0, so they are never added to the queue.
   4. **Target Score:** The special node is trusted by everyone *else*, so its score must be `N - 1`, not `N`.
 - **Problem Table:**
+
 | Problem | Difficulty | Essence | Key trick |
 |---|---|---|---|
 | p207 Course Schedule | Medium | Can all courses be taken? (cycle detection) | Kahn's BFS; `len(order)==n` → True |
@@ -1512,6 +1533,7 @@ class Trie:
   2. **Global Validation:** For circular surplus problems, resetting `start` locally isn't enough. You MUST check that `total_surplus >= 0` at the end to ensure the journey is globally possible.
   3. **Task Scheduler Math:** The math formula `(max_freq - 1) * (n + 1) + max_count` dictates the length. The `-1` is crucial because the final execution of the most frequent task requires no trailing cooldown.
 - **Problem Table:**
+
 | Problem | Essence | Key trick |
 |---|---|---|
 | p055 Jump Game | Farthest reachable index | Update `max_reach = max(max_reach, i + nums[i])`; return `False` if `i > max_reach` |
@@ -1573,6 +1595,7 @@ class Trie:
   2. **Transpose Bounds:** When transposing, the inner loop must be `for j in range(i + 1, n)`. If you start from `0`, you swap everything twice, effectively undoing the transpose!
   3. **Multi-Source BFS Sentinel:** Initialize distances of non-target cells to `-1` instead of using a `visited` set. Distances are non-negative, so `-1` acts as a perfect, collision-free unvisited sentinel.
 - **Problem Table:**
+
 | Problem | Approach | Key Trick |
 |---|---|---|
 | p048 Rotate Image | Transpose then reverse each row | Transpose swaps `(i,j)↔(j,i)` for `j>i` only; then `row.reverse()` = clockwise 90° |
@@ -1629,6 +1652,7 @@ class Trie:
   2. **The Sentinel:** Always append a `0` (or `-1` if values are positive) at the end of the array for histogram/rectangle problems. If you don't, elements forming a rising slope at the end of the array never get popped and processed.
   3. **Duplicate Handling (Subarray Contributions):** When calculating subarray mins/maxes, avoid double-counting subarrays with duplicate values by making one pass strictly greater/less (`>`, `<`) and the other inclusive (`>=`, `<=`).
 - **Problem Table:**
+
 | Problem | Essence | Key trick |
 |---|---|---|
 | p739 Daily Temperatures | Next warmer day distance | Decreasing stack of indices; `ans[j] = i - j` on pop |
@@ -1686,6 +1710,7 @@ class Trie:
   3. **Cycle Detection = False Return:** If `union(x, y)` finds that `root_x == root_y`, returning `False` is exactly how you detect a redundant edge.
   4. **Only Increment Rank on Equality:** `rank` is a rough tree depth. It only increases when you merge two trees of the *exact same rank*. Don't increment it indiscriminately.
 - **Problem Table:**
+
 | Problem | Essence | Key trick |
 |---|---|---|
 | p323 Connected Components | `n − successful_unions` | Decrement counter only when `union()` returns `True` |
