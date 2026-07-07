@@ -3,6 +3,7 @@
 - **Difficulty**: Medium
 - **Target Role**: LLM Inference Engineer / LLM Serving Engineer
 - **Source**: sampling.py / SAMPLING.md (tiny-llm)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

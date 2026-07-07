@@ -4,6 +4,7 @@
 - **Difficulty**: Expert
 - **Target Role**: LLM Inference Engineer / LLM Serving Engineer
 - **Source**: NVIDIA CUDA Programming Guide / vLLM paper
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

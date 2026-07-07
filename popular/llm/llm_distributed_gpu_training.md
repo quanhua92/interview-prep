@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: LLM Systems Engineer / Distributed Systems Engineer / Platform Architect
 - **Source**: Megatron-LM / DeepSpeed / PyTorch FSDP (NVIDIA H100 Architecture)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

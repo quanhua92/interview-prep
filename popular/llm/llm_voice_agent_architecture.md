@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Conversational AI Engineer / Voice AI Architect
 - **Source**: NVIDIA Speech AI Team, NeMo & Riva Engineering
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

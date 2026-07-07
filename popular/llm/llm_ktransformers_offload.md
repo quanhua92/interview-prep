@@ -4,6 +4,7 @@
 - **Difficulty**: Expert
 - **Target Role**: LLM Inference Architect / ML Platform Engineer
 - **Source**: KTransformers SOSP Paper (Chen et al., 2025) / llama.cpp
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

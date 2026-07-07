@@ -4,6 +4,7 @@
 - **Difficulty**: Expert
 - **Target Role**: LLM Inference Architect / ML Platform Engineer
 - **Source**: Fast Inference from Transformers via Speculative Decoding (Leviathan et al., 2023) / Speculative Sampling (Chen et al., 2023)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

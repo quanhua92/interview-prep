@@ -3,6 +3,7 @@
 - **Difficulty**: Medium
 - **Target Role**: LLM Inference Engineer / ML Systems Engineer
 - **Source**: TOKENIZATION.md + tokenization_output.txt (Sennrich et al. 2016, Kudo & Richardson 2018)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Conversational AI Engineer / Voice AI Architect
 - **Source**: NVIDIA Riva & TensorRT-LLM Performance Team
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

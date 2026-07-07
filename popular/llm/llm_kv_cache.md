@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: LLM Inference Engineer / ML Systems Engineer
 - **Source**: PagedAttention (Kwon et al., SOSP 2023) + vLLM
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

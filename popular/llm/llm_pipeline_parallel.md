@@ -4,6 +4,7 @@
 - **Difficulty**: Expert
 - **Target Role**: LLM Systems Engineer / Distributed Systems Engineer
 - **Source**: GPipe (Huang et al., 2019) / Megatron-LM Pipeline Parallelism (Narayanan et al., 2021)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

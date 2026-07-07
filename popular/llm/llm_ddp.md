@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: LLM Systems Engineer / ML Platform Engineer
 - **Source**: DDP.md + ddp_output.txt (Goyal et al. 2017, Micikevicius et al. 2017)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

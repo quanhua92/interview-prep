@@ -4,6 +4,7 @@
 - **Difficulty**: Expert
 - **Target Role**: LLM Inference Engineer / LLM Serving Engineer
 - **Source**: SGLang paper (Zheng et al., 2023) / RadixAttention
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

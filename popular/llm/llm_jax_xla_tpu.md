@@ -4,6 +4,7 @@
 - **Difficulty**: Expert
 - **Target Role**: LLM Inference Architect / ML Platform Engineer
 - **Source**: JAX (Frostig et al., SysML 2018) / TPU Systolic Array (Jouppi et al., ISCA 2017) / FlashAttention (Dao et al., 2022) / TPU Pallas
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

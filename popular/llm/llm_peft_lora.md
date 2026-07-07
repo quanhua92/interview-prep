@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: LLM Systems Engineer / ML Platform Engineer
 - **Source**: PEFT_LORA.md + peft_lora_output.txt (Hu et al. 2021, Dettmers et al. 2023, Chen et al. 2023, Sheng et al. 2023)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

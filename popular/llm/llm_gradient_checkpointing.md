@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: LLM Systems Engineer / ML Platform Engineer
 - **Source**: GRADIENT_CHECKPOINTING.md + gradient_checkpointing_output.txt (Chen et al. 2016, Gruslys et al. 2016, Korthikanti et al. 2022)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

@@ -7,10 +7,11 @@
 #   popular/pdfs/intermediate.pdf    — Tier 2: Intermediate (63 problems)
 #   popular/pdfs/advanced.pdf        — Tier 3: Advanced (19 problems)
 #   popular/pdfs/expert.pdf          — Tier 4: Expert (24 problems)
+#   popular/pdfs/llm.pdf             — LLM Systems (34 topics)
 #
 # Usage:
-#   ./scripts/popular-to-pdf.sh              # build all 5 PDFs
-#   ./scripts/popular-to-pdf.sh --tiers-only # skip popular.pdf, build 4 tier PDFs
+#   ./scripts/popular-to-pdf.sh              # build all 6 PDFs
+#   ./scripts/popular-to-pdf.sh --tiers-only # skip popular.pdf, build 5 tier/topic PDFs
 #   ./scripts/popular-to-pdf.sh --main-only  # build popular.pdf only
 #
 # Requirements: pandoc, xelatex (MacTeX or TeX Live)
@@ -129,7 +130,7 @@ if $BUILD_MAIN; then
     "$POPULAR_DIR/system_design_gpu_microservices_bottleneck.md"
     "$POPULAR_DIR/system_design_task_scheduler_multiple_machines.md"
   )
-  echo "[1/5] Building popular.pdf ..."
+  echo "[1/6] Building popular.pdf ..."
   compile_pdf "$MAIN_OUTPUT" "${MAIN_FILES[@]}"
 fi
 
@@ -138,7 +139,7 @@ fi
 # --------------------------------------------------------------------------- #
 if $BUILD_TIERS; then
   F="$TIERS_DIR/foundation"
-  echo "[2/5] Building foundation.pdf ..."
+  echo "[2/6] Building foundation.pdf ..."
   compile_pdf "$PDFS_DIR/foundation.pdf" \
     "$F/README.md" \
     \
@@ -192,7 +193,7 @@ if $BUILD_TIERS; then
   # 3. intermediate.pdf — Tier 2 (63 problems, module order from README)
   # -------------------------------------------------------------------------- #
   I="$TIERS_DIR/intermediate"
-  echo "[3/5] Building intermediate.pdf ..."
+  echo "[3/6] Building intermediate.pdf ..."
   compile_pdf "$PDFS_DIR/intermediate.pdf" \
     "$I/README.md" \
     \
@@ -275,7 +276,7 @@ if $BUILD_TIERS; then
   # 4. advanced.pdf — Tier 3 (19 problems, module order from README)
   # -------------------------------------------------------------------------- #
   A="$TIERS_DIR/advanced"
-  echo "[4/5] Building advanced.pdf ..."
+  echo "[4/6] Building advanced.pdf ..."
   compile_pdf "$PDFS_DIR/advanced.pdf" \
     "$A/README.md" \
     \
@@ -307,7 +308,7 @@ if $BUILD_TIERS; then
   # 5. expert.pdf — Tier 4 (24 problems, module order from README)
   # -------------------------------------------------------------------------- #
   E="$TIERS_DIR/expert"
-  echo "[5/5] Building expert.pdf ..."
+  echo "[5/6] Building expert.pdf ..."
   compile_pdf "$PDFS_DIR/expert.pdf" \
     "$E/README.md" \
     \
@@ -339,8 +340,57 @@ if $BUILD_TIERS; then
     "$E/coding_car_fleet.md" \
     "$E/coding_sum_of_subarray_minimums.md"
 
+  # -------------------------------------------------------------------------- #
+  # 6. llm.pdf — LLM Systems (34 topics, module order from TODO)
+  # -------------------------------------------------------------------------- #
+  LLM_DIR="$POPULAR_DIR/llm"
+  echo "[6/6] Building llm.pdf ..."
+  compile_pdf "$PDFS_DIR/llm.pdf" \
+    "$LLM_DIR/README.md" \
+    \
+    "$LLM_DIR/llm_normalization.md" \
+    "$LLM_DIR/llm_tokenization.md" \
+    "$LLM_DIR/llm_rope.md" \
+    "$LLM_DIR/llm_mlp_activation.md" \
+    "$LLM_DIR/llm_causal_mask.md" \
+    \
+    "$LLM_DIR/llm_kv_cache.md" \
+    "$LLM_DIR/llm_flash_attention.md" \
+    "$LLM_DIR/llm_gqa.md" \
+    "$LLM_DIR/llm_quantization.md" \
+    \
+    "$LLM_DIR/llm_sampling.md" \
+    "$LLM_DIR/llm_paged_attention.md" \
+    "$LLM_DIR/llm_block_manager.md" \
+    "$LLM_DIR/llm_scheduler.md" \
+    "$LLM_DIR/llm_prefix_cache.md" \
+    "$LLM_DIR/llm_cuda_graphs.md" \
+    \
+    "$LLM_DIR/llm_peft_lora.md" \
+    "$LLM_DIR/llm_gradient_checkpointing.md" \
+    \
+    "$LLM_DIR/llm_nccl_collectives.md" \
+    "$LLM_DIR/llm_ddp.md" \
+    "$LLM_DIR/llm_tensor_parallel.md" \
+    "$LLM_DIR/llm_pipeline_parallel.md" \
+    "$LLM_DIR/llm_zero.md" \
+    "$LLM_DIR/llm_distributed_gpu_training.md" \
+    \
+    "$LLM_DIR/llm_moe_routing.md" \
+    "$LLM_DIR/llm_speculative_decoding.md" \
+    "$LLM_DIR/llm_lmcache.md" \
+    "$LLM_DIR/llm_disaggregated_serving.md" \
+    "$LLM_DIR/llm_ktransformers_offload.md" \
+    "$LLM_DIR/llm_jax_xla_tpu.md" \
+    \
+    "$LLM_DIR/llm_nemo_riva_stack.md" \
+    "$LLM_DIR/llm_voice_agent_architecture.md" \
+    "$LLM_DIR/llm_latency_optimization.md" \
+    "$LLM_DIR/llm_multimodal_audio.md" \
+    "$LLM_DIR/llm_agent_benchmarking.md"
+
   echo ""
-  echo "Tier PDFs written to: $PDFS_DIR/"
+  echo "Tier and LLM PDFs written to: $PDFS_DIR/"
 fi
 
 echo ""

@@ -3,6 +3,7 @@
 - **Difficulty**: Hard
 - **Target Role**: LLM Inference Engineer / LLM Serving Engineer
 - **Source**: paged_attention.py / PAGED_ATTENTION.md (vLLM, SOSP 2023)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

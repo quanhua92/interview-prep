@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: LLM Inference Engineer / LLM Serving Engineer
 - **Source**: vLLM paper (SOSP 2023) / nano-vllm
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

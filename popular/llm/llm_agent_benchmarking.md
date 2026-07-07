@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Conversational AI Engineer / Voice AI Architect
 - **Source**: Google & NVIDIA Evaluation Frameworks
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

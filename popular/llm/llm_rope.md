@@ -3,6 +3,7 @@
 - **Difficulty**: Hard
 - **Target Role**: LLM Inference Engineer / ML Systems Engineer
 - **Source**: ROPE.md + ABSOLUTE_PE.md + rope_output.txt (Su et al. 2021, Vaswani et al. 2017, Radford 2019)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

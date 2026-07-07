@@ -4,6 +4,7 @@
 - **Difficulty**: Expert
 - **Target Role**: LLM Inference Architect / ML Platform Engineer
 - **Source**: Sparsely-Gated MoE (Shazeer et al., 2017) / GShard (Lepikhin et al., 2020) / Switch Transformer (Fedus et al., 2022) / Mixtral (Jiang et al., 2024) / DeepSeek-V3 (DeepSeek-AI, 2024)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

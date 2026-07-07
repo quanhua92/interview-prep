@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: LLM Inference Engineer / ML Systems Engineer
 - **Source**: CAUSAL_MASK.md + causal_mask_output.txt (Vaswani et al. 2017, Dehghani et al. 2023)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

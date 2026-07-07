@@ -4,6 +4,7 @@
 - **Difficulty**: Expert
 - **Target Role**: LLM Systems Engineer / Distributed Systems Engineer
 - **Source**: ZeRO (Rajbhandari et al., 2019) / DeepSpeed
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

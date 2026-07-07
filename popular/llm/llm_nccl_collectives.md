@@ -4,6 +4,7 @@
 - **Difficulty**: Expert
 - **Target Role**: LLM Systems Engineer / ML Platform Engineer
 - **Source**: NCCL_COLLECTIVES.md + nccl_collectives_output.txt (Patarasuk & Yuan 2009, Gibiansky 2017)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

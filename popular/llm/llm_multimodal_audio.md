@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Conversational AI Engineer / Voice AI Architect
 - **Source**: AudioPaLM / GPT-4o / SeamlessM4T research papers
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

@@ -4,6 +4,7 @@
 - **Difficulty**: Expert
 - **Target Role**: LLM Inference Engineer / ML Systems Engineer
 - **Source**: FlashAttention (Dao et al. 2022) + Online Softmax (Milakov & Gimelshein 2018)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

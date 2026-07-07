@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: LLM Inference Architect / ML Platform Engineer
 - **Source**: LMCache: An Efficient KV Cache Layer for Enterprise-Scale LLM Inference (Liu et al., 2025) / Mooncake: A KVCache-centric Disaggregated Architecture (Qin et al., 2024)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

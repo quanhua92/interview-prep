@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: LLM Inference Engineer / ML Systems Engineer
 - **Source**: MLP_ACTIVATION.md + mlp_activation_output.txt (Hendrycks & Gimpel 2016, Shazeer 2020)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

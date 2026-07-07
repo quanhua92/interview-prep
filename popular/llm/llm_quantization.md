@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: LLM Inference Engineer / ML Systems Engineer
 - **Source**: LLM.int8() (Dettmers et al. 2022) + AWQ (Lin et al. 2024) + MLX affine quantization
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

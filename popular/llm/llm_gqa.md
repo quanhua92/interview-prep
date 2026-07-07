@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: LLM Inference Engineer / ML Systems Engineer
 - **Source**: GQA (Ainslie et al. 2023) + MQA (Shazeer 2019)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

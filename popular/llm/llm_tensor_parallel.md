@@ -4,6 +4,7 @@
 - **Difficulty**: Expert
 - **Target Role**: LLM Systems Engineer / Distributed Systems Engineer
 - **Source**: Megatron-LM (Shoeybi et al., 2019)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

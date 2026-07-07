@@ -4,6 +4,7 @@
 - **Difficulty**: Expert
 - **Target Role**: LLM Inference Architect / ML Platform Engineer
 - **Source**: DistServe (Zhong et al., 2024) / Mooncake (Qin et al., 2025) / Splitwise (Microsoft, 2023)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 

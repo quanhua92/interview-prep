@@ -3,6 +3,7 @@
 - **Difficulty**: Medium
 - **Target Role**: LLM Inference Engineer / ML Systems Engineer
 - **Source**: NORMALIZATION.md + normalization_output.txt (Zhang & Sennrich 2019, Ba et al. 2016)
+- **Flashcards**: [LLM Systems deck](../flash_cards/llm/llm_systems.md)
 
 ---
 
