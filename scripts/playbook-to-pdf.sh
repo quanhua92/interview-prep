@@ -45,6 +45,7 @@ PANDOC_OPTS=(
   --from markdown-smart
   --pdf-engine=xelatex
   --lua-filter="$SCRIPT_DIR/strip-emoji.lua"
+  --include-in-header="$SCRIPT_DIR/pdf-header.tex"
   --variable=geometry:"margin=0.75in"
   --variable=fontsize:"11pt"
   --variable=fontfamily:"helvet"
@@ -62,7 +63,9 @@ PANDOC_OPTS=(
 # --------------------------------------------------------------------------- #
 compile_pdf() {
   local OUTPUT="$1"
-  shift
+  local TITLE="$2"
+  local KEYWORDS="$3"
+  shift 3
   local FILES=("$@")
 
   # Validate every file exists
@@ -75,7 +78,14 @@ compile_pdf() {
 
   rm -f "$OUTPUT"
   echo "  Compiling ${#FILES[@]} files → $(basename "$OUTPUT") ..."
-  pandoc "${FILES[@]}" "${PANDOC_OPTS[@]}" --output "$OUTPUT"
+  pandoc "${FILES[@]}" "${PANDOC_OPTS[@]}" \
+    --metadata title="$TITLE" \
+    --metadata subtitle="github.com/quanhua92/interview-prep" \
+    --metadata author="Interview Prep Playbook" \
+    --metadata date="$(date '+%B %Y')" \
+    --metadata subject="Interview Preparation — $TITLE" \
+    --metadata keywords="$KEYWORDS" \
+    --output "$OUTPUT"
   echo "  ✓ $(basename "$OUTPUT")"
 }
 
@@ -131,7 +141,10 @@ if $BUILD_MAIN; then
     "$POPULAR_DIR/system_design_task_scheduler_multiple_machines.md"
   )
   echo "[1/6] Building playbook.pdf ..."
-  compile_pdf "$MAIN_OUTPUT" "${MAIN_FILES[@]}"
+  compile_pdf "$MAIN_OUTPUT" \
+    "High-Performance Systems & LLM Interview Playbook" \
+    "interview prep, system design, GPU, CUDA, LLM, speech AI, coding" \
+    "${MAIN_FILES[@]}"
 fi
 
 # --------------------------------------------------------------------------- #
@@ -141,6 +154,8 @@ if $BUILD_TIERS; then
   F="$TIERS_DIR/foundation"
   echo "[2/6] Building foundation.pdf ..."
   compile_pdf "$PDFS_DIR/foundation.pdf" \
+    "Tier 1 — Foundation: Coding Patterns" \
+    "coding interview, algorithms, two pointers, sliding window, BFS, hashmap" \
     "$F/README.md" \
     \
     "$F/coding_container_water.md" \
@@ -195,6 +210,8 @@ if $BUILD_TIERS; then
   I="$TIERS_DIR/intermediate"
   echo "[3/6] Building intermediate.pdf ..."
   compile_pdf "$PDFS_DIR/intermediate.pdf" \
+    "Tier 2 — Intermediate: Coding Patterns" \
+    "coding interview, dynamic programming, binary search, DFS, heap, stack" \
     "$I/README.md" \
     \
     "$I/coding_product_except_self.md" \
@@ -278,6 +295,8 @@ if $BUILD_TIERS; then
   A="$TIERS_DIR/advanced"
   echo "[4/6] Building advanced.pdf ..."
   compile_pdf "$PDFS_DIR/advanced.pdf" \
+    "Tier 3 — Advanced: Coding Patterns" \
+    "coding interview, backtracking, trie, modified binary search, subsets" \
     "$A/README.md" \
     \
     "$A/coding_missing_number.md" \
@@ -310,6 +329,8 @@ if $BUILD_TIERS; then
   E="$TIERS_DIR/expert"
   echo "[5/6] Building expert.pdf ..."
   compile_pdf "$PDFS_DIR/expert.pdf" \
+    "Tier 4 — Expert: Coding Patterns" \
+    "coding interview, graph, greedy, monotonic stack, union find, matrix" \
     "$E/README.md" \
     \
     "$E/coding_rotate_image.md" \
@@ -346,6 +367,8 @@ if $BUILD_TIERS; then
   LLM_DIR="$POPULAR_DIR/llm"
   echo "[6/6] Building llm.pdf ..."
   compile_pdf "$PDFS_DIR/llm.pdf" \
+    "LLM Systems Engineering: Interview Guide" \
+    "LLM, transformer, inference, serving, distributed training, FlashAttention, vLLM, LoRA, ZeRO" \
     "$LLM_DIR/README.md" \
     \
     "$LLM_DIR/llm_normalization.md" \

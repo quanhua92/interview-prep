@@ -4,7 +4,7 @@ Two ways to use this directory:
 
 - **Speed Run (7 days)** — A cherry-picked ~50-item subset drawn from this folder **and** [`tiers/`](tiers/), optimized for maximum interview yield in minimum time. High-frequency patterns first; niche problems and role-specific files are deferred to a "Future" bucket. See [Speed Run](#speed-run-7-day-cherry-pick) below.
 - **Full Suite** — The complete reference: 34 deep interview question files (Sections 1–6 below) plus 145 LeetCode problems in [`tiers/`](tiers/). Each deep file is self-contained, with optimal C++/Python/SystemVerilog/Triton implementations, complexity analysis, and systems-level / compiler / hardware optimization details. Use this for deep, role-targeted study once the Speed Run is done.
-- **LLM Systems Deep Dive** — After the 7-day speed run, continue with [`llm/`](llm/) — 34 self-contained guides covering the full LLM engineering stack: Transformer internals, memory & attention efficiency (FlashAttention, GQA), PagedAttention serving, distributed training (TP/PP/ZeRO), advanced scale (MoE, speculative decoding), and voice AI. See [Section 7](#7-llm-systems-engineering-34-guides) and the [LLM Roadmap](llm/README.md).
+- **LLM Systems Deep Dive** — After the 7-day speed run, continue with [`llm/`](llm/) — 34 self-contained guides covering the full LLM engineering stack: Transformer internals, memory & attention efficiency (FlashAttention, GQA), PagedAttention serving, distributed training (TP/PP/ZeRO), advanced scale (MoE, speculative decoding), and voice AI. See the [LLM Roadmap](llm/README.md).
 
 ---
 
