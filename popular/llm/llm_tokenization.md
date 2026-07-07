@@ -224,8 +224,8 @@ CJK: `"你好世界"` = 4 chars = 12 UTF-8 bytes. No spaces → a whitespace pre
 
 ## Pro-Tip: How to Impress the Interviewer
 
-- **Know the encoding algorithm type**: "BPE encodes by **rank-greedy** (lowest merge rank first, not longest match). WordPiece encodes by **greedy longest-prefix match**. The difference is testable: `newer` → BPE `[new,e,r]` but WordPiece `[new,##er]`." Most candidates blur these.
+- **Know the encoding algorithm type**: "BPE encodes by **rank-greedy** (lowest merge rank first, not longest match). WordPiece encodes by **greedy longest-prefix match**. The difference is testable: `newer` $\rightarrow$ BPE `[new,e,r]` but WordPiece `[new,##er]`." Most candidates blur these.
 - **Qwen3 tokenizer specifics**: Qwen3's vocabulary is 151,936 tokens with special tokens `<|im_start|>`, `<|im_end|>`, `<|endoftext|>`. The training algorithm is byte-level BPE (not SentencePiece), though they may apply SentencePiece-style NFKC normalization first.
-- **The 1 word ≈ 1–3 tokens rule**: English text averages ~1.3 tokens/word. A CJK character is typically 3 UTF-8 bytes → up to 3 tokens. Never equate tokens with words in latency/cost estimates.
+- **The 1 word $\approx$ 1–3 tokens rule**: English text averages $\sim 1.3$ tokens/word. A CJK character is typically 3 UTF-8 bytes $\rightarrow$ up to 3 tokens. Never equate tokens with words in latency/cost estimates.
 - **The tie-break matters for reproducibility**: BPE tie-breaking (equal pair frequencies) must be deterministic. The gold in this guide uses earliest-first-seen order. A different tie-break produces a different vocabulary — two "identical" trainers that differ only in tie-break will diverge silently.
-- **Gold to cite**: `lowest → [low, est] → IDs [11, 13]`; `newer → [new, e, r] → IDs [15, 1, 6]`. 12 merges, vocab size 22 on the standard BPE demo corpus.
+- **Gold to cite**: `lowest` $\rightarrow$ `[low, est]` $\rightarrow$ IDs `[11, 13]`; `newer` $\rightarrow$ `[new, e, r]` $\rightarrow$ IDs `[15, 1, 6]`. 12 merges, vocab size 22 on the standard BPE demo corpus.

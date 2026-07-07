@@ -8,7 +8,7 @@
 
 ## Concept Overview
 
-The Transformer's attention mechanism is a dot product `Q · K` that is completely **blind to token order** — shuffle the tokens and every score stays the same. Position information must be injected from outside. There are two fundamentally different families:
+The Transformer's attention mechanism is a dot product $Q \cdot K$ that is completely **blind to token order** — shuffle the tokens and every score stays the same. Position information must be injected from outside. There are two fundamentally different families:
 
 **Absolute PE** (the "stamp-a-barcode" family) adds a position-specific vector to the token's embedding once at the input, before any Transformer block. Each token carries its seat number permanently baked in. GPT-2 uses a **learned** version (an `nn.Embedding` table `wpe`); the original Transformer uses a **sinusoidal** version (fixed sin/cos formula).
 
@@ -18,7 +18,7 @@ This guide covers both families side by side. RoPE is used by Llama, Qwen, Mistr
 
 ### The Problem It Solves
 
-Without position encoding, `"The cat sat"` and `"sat cat The"` produce identical attention scores and identical model outputs. From the output file: with RoPE, Q·K score for gap=1 is always **+0.514498** regardless of absolute seat (positions (2,1), (5,4), (10,9) all give the same score). With absolute PE, the same gap=1 gives **+7.0556, +4.9014, +7.2618** — completely different for different seats. RoPE encodes relative distance; absolute PE encodes absolute position.
+Without position encoding, `"The cat sat"` and `"sat cat The"` produce identical attention scores and identical model outputs. From the output file: with RoPE, $Q \cdot K$ score for $\text{gap} = 1$ is always **+0.514498** regardless of absolute seat (positions $(2,1)$, $(5,4)$, $(10,9)$ all give the same score). With absolute PE, the same $\text{gap} = 1$ gives **+7.0556, +4.9014, +7.2618** — completely different for different seats. RoPE encodes relative distance; absolute PE encodes absolute position.
 
 ### How It Works
 
@@ -82,9 +82,9 @@ This is the defining property: absolute PE operates on `[B, L, E]`, added **once
 
 Both families use the same inverse-exponential frequency structure:
 
-```
-θ_i = base^(−2i/dim)    (same formula, different dim: E for absolute, D for RoPE)
-```
+$$\theta_i = \text{base}^{-\frac{2i}{\text{dim}}}$$
+
+(same formula, different dim: $E$ for absolute, $D$ for RoPE)
 
 From `rope_output.txt` **Section A** (`D=8, base=10000`):
 
@@ -99,7 +99,7 @@ The same four frequencies appear in the sinusoidal PE table (from `absolute_pe.p
 
 ### Sinusoidal PE Table (Section B from absolute_pe output)
 
-`PE(pos, 2i) = sin(pos / base^(2i/E))`, `PE(pos, 2i+1) = cos(pos / base^(2i/E))`
+$$\text{PE}(\text{pos}, 2i) = \sin\left(\frac{\text{pos}}{\text{base}^{2i/E}}\right), \quad \text{PE}(\text{pos}, 2i+1) = \cos\left(\frac{\text{pos}}{\text{base}^{2i/E}}\right)$$
 
 | m | d0 (sin) | d1 (cos) | d2 (sin) | d3 (cos) | d6 (sin) | d7 (cos) |
 |---|---|---|---|---|---|---|
@@ -123,7 +123,7 @@ Initial values are small random noise (~`*0.02`). The model learns what each sea
 
 ### Why Absolute PE Cannot Encode Relative Position
 
-From `absolute_pe.py` **Section E** — same fixed Q and K, different absolute seats:
+From `absolute_pe.py` **Section E** — same fixed $Q$ and $K$, different absolute seats:
 
 | m_q | m_k | gap = m_q−m_k | Q·K score |
 |---|---|---|---|
@@ -134,7 +134,7 @@ From `absolute_pe.py` **Section E** — same fixed Q and K, different absolute s
 | 5 | 3 | **2** | **+4.768941** |
 | 10 | 8 | **2** | **+6.810799** |
 
-Same gap, completely different scores. Adding the barcode bakes `m_q` into Q and `m_k` into K separately. The dot product then has cross terms `pe[m_q]·pe[m_k]`, `q·pe[m_k]`, `pe[m_q]·k` — no trig identity cancels them to a function of `m_q − m_k` alone.
+Same gap, completely different scores. Adding the barcode bakes $m_q$ into $Q$ and $m_k$ into $K$ separately. The dot product then has cross terms $pe[m_q] \cdot pe[m_k]$, $q \cdot pe[m_k]$, $pe[m_q] \cdot k$ — no trig identity cancels them to a function of $m_q - m_k$ alone.
 
 ---
 
@@ -142,24 +142,24 @@ Same gap, completely different scores. Adding the barcode bakes `m_q` into Q and
 
 ### The Compass Analogy
 
-Each token holds `D/2` compass needles (called "clock dials"). The token's seat number `m` tells each needle how far to rotate. When two rotated tokens are later compared (dot product `Q·K`), what survives is only the **difference** in rotation angles — i.e., only `m_q − m_k` survives. Absolute positions cancel; relative distance appears for free.
+Each token holds $D/2$ compass needles (called "clock dials"). The token's seat number $m$ tells each needle how far to rotate. When two rotated tokens are later compared (dot product $Q \cdot K$), what survives is only the **difference** in rotation angles — i.e., only $m_q - m_k$ survives. Absolute positions cancel; relative distance appears for free.
 
 ### The Frequency Table (Section A)
 
-From `rope_output.txt` **Section A** (`D=8, base=10000`):
+From `rope_output.txt` **Section A** ($D=8, \text{base}=10000$):
 
-| j | inner = j/(D/2) | θ_j = base^(−inner) | meaning |
+| j | inner = $j/(D/2)$ | $\theta_j = \text{base}^{-\text{inner}}$ | meaning |
 |---|---|---|---|
-| 0 | 0.0000 | **1.000000** | FAST — tracks local position |
+| 0 | 0.0000 | **1.000000** | FAST rotation — tracks local position |
 | 1 | 0.2500 | **0.100000** | FAST |
 | 2 | 0.5000 | **0.010000** | SLOW — tracks long-range position |
 | 3 | 0.7500 | **0.001000** | SLOW — barely moves over 1000 seats |
 
-Pair j=0 is a twitchy stopwatch; pair j=3 is a slow hour-hand. Together they record both fine-grained and coarse position simultaneously — a Fourier-like decomposition.
+Pair $j=0$ is a twitchy stopwatch; pair $j=3$ is a slow hour-hand. Together they record both fine-grained and coarse position simultaneously — a Fourier-like decomposition.
 
 ### Precomputed Lookup Tables (Section B+C)
 
-Angle table `angle[m,j] = m · θ_j` (radians):
+Angle table $\text{angle}[m,j] = m \cdot \theta_j$ (radians):
 
 | m\j | j=0 | j=1 | j=2 | j=3 |
 |---|---|---|---|---|
@@ -168,27 +168,27 @@ Angle table `angle[m,j] = m · θ_j` (radians):
 | m=2 | 2.0000 | 0.2000 | 0.0200 | 0.0020 |
 | m=3 | 3.0000 | 0.3000 | 0.0300 | 0.0030 |
 
-COS table (what gets looked up at seat m=2):
+COS table (what gets looked up at seat $m=2$):
 
 | m\j | j=0 | j=1 | j=2 | j=3 |
 |---|---|---|---|---|
 | m=2 | **−0.4161** | 0.9801 | 0.9998 | 1.0000 |
 
-SIN table at m=2:
+SIN table at $m=2$:
 
 | m\j | j=0 | j=1 | j=2 | j=3 |
 |---|---|---|---|---|
 | m=2 | **0.9093** | 0.1987 | 0.0200 | 0.0020 |
 
-Seat 0's row is all `cos=1, sin=0` → identity rotation (no spin). Seat 3's j=0 clock has cos=−0.99 (swung almost 180°); j=3 clock is still at cos≈1.000 (barely moved).
+Seat 0's row is all $\cos=1, \sin=0 \rightarrow$ identity rotation (no spin). Seat 3's $j=0$ clock has $\cos=-0.99$ (swung almost 180°); $j=3$ clock is still at $\cos \approx 1.000$ (barely moved).
 
 ### Rotating One Token (Section D)
 
-Input token `x` at position `m=2`, head dim `D=8`:
-- `x1` (first half) = `[1.0, 0.5, −0.3, 0.8]`
-- `x2` (second half) = `[0.2, −0.1, 0.4, 0.6]`
+Input token $x$ at position $m=2$, head dim $D=8$:
+- $x_1$ (first half) = `[1.0, 0.5, −0.3, 0.8]`
+- $x_2$ (second half) = `[0.2, −0.1, 0.4, 0.6]`
 
-Per-pair rotation (complex multiply `(x1+i·x2)·(cos+i·sin)`):
+Per-pair rotation (complex multiply $(x_1+i \cdot x_2) \cdot (\cos+i \cdot \sin)$):
 
 | pair j | x1 | x2 | cos | sin | real = x1·cos−x2·sin | imag = x2·cos+x1·sin |
 |---|---|---|---|---|---|---|
@@ -203,7 +203,7 @@ RoPE(x, m=2) = [-0.598, 0.5099, -0.3079, 0.7988, 0.8261, 0.0013, 0.3939, 0.6016]
 original x   = [ 1.0,   0.5,   -0.3,    0.8,   0.2,  -0.1,   0.4,   0.6  ]
 ```
 
-> **Norm preserved**: `max|‖out‖−‖in‖| = 2.98e−08` — rotation never stretches a vector.
+> **Norm preserved**: $\max|\|\text{out}\|-\|\text{in}\|| = 2.98 \times 10^{-8}$ — rotation never stretches a vector.
 
 ### Full Batch Output (Section E)
 
@@ -220,14 +220,11 @@ Row m=0 is unchanged (identity rotation). Rows get progressively more churned as
 
 ### The Relative Position Proof (Section H)
 
-The math: rotating Q by `m_q · θ` and K by `m_k · θ`, then taking the dot product:
+The math: rotating $Q$ by $m_q \cdot \theta$ and $K$ by $m_k \cdot \theta$, then taking the dot product:
 
-```
-clock contribution = (q1·k1 + q2·k2)·cos((m_q − m_k)·θ)
-                   + (q1·k2 − q2·k1)·sin((m_q − m_k)·θ)
-```
+$$\text{clock contribution} = (q_1 k_1 + q_2 k_2)\cos((m_q − m_k)\theta) + (q_1 k_2 − q_2 k_1)\sin((m_q − m_k)\theta)$$
 
-Only `(m_q − m_k)` survives. From `rope_output.txt` **Section H**:
+Only $(m_q − m_k)$ survives. From `rope_output.txt` **Section H**:
 
 | m_q | m_k | relative = m_q−m_k | Q·K score |
 |---|---|---|---|
@@ -238,7 +235,7 @@ Only `(m_q − m_k)` survives. From `rope_output.txt` **Section H**:
 | 5 | 3 | **2** | **+0.285792** |
 | 10 | 8 | **2** | **+0.285792** |
 
-Same gap → identical score, regardless of absolute seat. This is the property absolute PE structurally cannot provide.
+Same gap $\rightarrow$ identical score, regardless of absolute seat. This is the property absolute PE structurally cannot provide.
 
 ### Where RoPE Operates: The Tensor Shape Dance
 

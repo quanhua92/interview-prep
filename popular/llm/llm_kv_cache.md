@@ -13,8 +13,8 @@ Think of autoregressive decoding like a student writing an essay one word at a t
 
 ### The Problem It Solves
 
-- **No cache**: every decode step recomputes K,V for the *entire* prefix. Generating 5 tokens costs `1+2+3+4+5 = 15` K,V projections — `O(L²)` total. Token-0's K,V is recomputed **5×** without a cache vs **1×** with one.
-- **Dense cache**: reduces decode to `O(1)` per step, but pre-allocates `[B, H_kv, max_seq_len, D]` up front. With `max_seq_len=8192` and a 512-token response, **93.75%** of the slab is dead memory (`1 − 512/8192 = 0.9375`). Across 100 concurrent requests: reserved = **400 GiB**, used = **25 GiB**, wasted = **375 GiB**.
+- **No cache**: every decode step recomputes K,V for the *entire* prefix. Generating 5 tokens costs $1+2+3+4+5 = 15$ K,V projections — $O(L^2)$ total. Token-0's K,V is recomputed **5×** without a cache vs **1×** with one.
+- **Dense cache**: reduces decode to $O(1)$ per step, but pre-allocates `[B, H_kv, max_seq_len, D]` up front. With `max_seq_len=8192` and a 512-token response, **93.75%** of the slab is dead memory ($1 - 512/8192 = 0.9375$). Across 100 concurrent requests: reserved = **400 GiB**, used = **25 GiB**, wasted = **375 GiB**.
 - **Paged cache**: wastes only the last partial page. vLLM measured **< 4% system-wide waste** vs **60–80%** for prior dense/over-reserving systems.
 
 ### How It Works
@@ -45,10 +45,10 @@ Think of autoregressive decoding like a student writing an essay one word at a t
 
 **Dense cache decode loop (step by step):**
 
-1. New token arrives → project only *it* → `Q[1,d]`, `K[1,d]`, `V[1,d]`
-2. Rotate Q and K at `offset = slice(current_len, current_len+1)` via RoPE (critical — wrong offset → gibberish)
-3. Append `K[1]`, `V[1]` to the slab at `axis=2` (SeqLen axis)
-4. Attention: `Q[1,d] @ K[S,d]^T` — O(S) per step, NOT O(S²)
+1. New token arrives → project only *it* → $Q[1, d]$, $K[1, d]$, $V[1, d]$
+2. Rotate $Q$ and $K$ at `offset = slice(current_len, current_len+1)` via RoPE (critical — wrong offset → gibberish)
+3. Append $K[1]$, $V[1]$ to the slab at `axis=2` (sequence length axis)
+4. Attention: $Q[1, d] K[S, d]^T$ — $O(S)$ per step, not $O(S^2)$
 
 **Paged cache (PagedAttention):**
 

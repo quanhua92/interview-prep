@@ -62,9 +62,9 @@ max_seq_len reserved = 8192, actual tokens used = 512
 waste fraction = 1 - 512/8192 = 0.9375 = 93.75%
 ```
 
-**Per-request dense KV bytes** (LLaMA-7B: 32 layers, 32 KV heads, d=128):
+**Per-request dense KV bytes** (LLaMA-7B: 32 layers, 32 KV heads, $d=128$):
 ```
-2(KV) × 32 × 32 × 8192 × 128 × 2 B = 4,294,967,296 bytes = 4.000 GiB
+2(\text{KV}) \times 32 \times 32 \times 8192 \times 128 \times 2\text{ B} = 4,294,967,296\text{ bytes} = 4.000\text{ GiB}
 ```
 
 **100 concurrent requests** (each using only 512 tokens):
@@ -78,17 +78,17 @@ wasted   = 375.0 GiB  (93.8% of reserved!)
 
 | page_size | worst-case internal waste |
 |-----------|--------------------------|
-| 16        | 6.25% ← vLLM default    |
-| 128       | 0.78% ← tiny-llm        |
+| 16        | $6.25\%$ $\leftarrow$ vLLM default    |
+| 128       | $0.78\%$ $\leftarrow$ tiny-llm        |
 
-> vLLM measured: PagedAttention wastes **<4%** in practice vs **60–80%** for prior systems.
+> vLLM measured: PagedAttention wastes **$< 4\%$** in practice vs **$60\text{--}80\%$** for prior systems.
 
 Two different numbers — keep them distinct:
 | Number | What it measures |
 |--------|-----------------|
-| **93.75%** | One request's reserved-vs-used slab (`1 − 512/8192`) |
+| **93.75%** | One request's reserved-vs-used slab ($1 - 512/8192$) |
 | **60–80%** | System-wide KV waste measured by vLLM across all concurrent requests |
-| **<4%** | System-wide waste under PagedAttention |
+| **$< 4\%$** | System-wide waste under PagedAttention |
 
 ---
 
@@ -222,7 +222,7 @@ PagedAttention only changes **where** the bytes live (scattered pages vs contigu
 | Metric | Dense Cache | Paged Cache | Notes |
 |--------|------------|-------------|-------|
 | Memory reserved | `[B,H_kv,max_len,d]` up-front | on-demand pages | Dense wastes 93.75% for short seqs |
-| Worst-case waste | **93.75%** (one req) / **60–80%** (system) | **<4%** (system) | vLLM paper §3.2 |
+| Worst-case waste | **93.75%** (one req) / **60–80%** (system) | **$< 4\%$** (system) | vLLM paper §3.2 |
 | K/V addressing | sequential: `base + j*D` | indirect: `((page_id*H+head)*PS+slot)*D+c` | One extra indirection |
 | Prefix sharing | impossible (private slabs) | ref-counted pages | CoW for forked sequences |
 | Rewind (spec decode) | truncate offset | pop pages to free list | Use `ceil`, not `floor` |
@@ -234,19 +234,19 @@ PagedAttention only changes **where** the bytes live (scattered pages vs contigu
 ## Common Interview Questions & How to Answer
 
 ### Q1: How does PagedAttention eliminate KV cache fragmentation?
-- **Answer**: Dense KV caching pre-allocates `max_seq_len` slots per request at admission, wasting 93.75% for a 512-token sequence on an 8192 slot slab. PagedAttention uses the OS virtual-memory trick: a shared pool of fixed-size pages and a per-request block table mapping logical page indices to physical page ids. Pages are allocated on-demand and returned to the pool when the request finishes. The only waste is the last partial page per request — bounded by `1/page_size` (<4% in practice).
+- **Answer**: Dense KV caching pre-allocates `max_seq_len` slots per request at admission, wasting $93.75\%$ for a 512-token sequence on an $8192$ slot slab. PagedAttention uses the OS virtual-memory trick: a shared pool of fixed-size pages and a per-request block table mapping logical page indices to physical page ids. Pages are allocated on-demand and returned to the pool when the request finishes. The only waste is the last partial page per request — bounded by `1/page_size` ($< 4\%$ in practice).
 
 ### Q2: Explain the block table and how the paged attention kernel uses it.
-- **Answer**: The block table is the per-request logical→physical page index: `page_ids[logical_page] = physical_page_id`. For logical token position `t`, the kernel computes `page_idx = t // page_size`, `slot = t % page_size`, then looks up `page_id = block_table[page_idx]`. The K address is then `k_idx = ((page_id*H_kv + kv_head)*page_size + slot)*D + c`. This one extra indirection enables scattered physical storage. Concrete example: for logical pos 2 with page_size=2, `page_idx=1, slot=0, page_id=2, k_idx=32` — verified to produce K=0.3010, matching dense.
+- **Answer**: The block table is the per-request logical $\to$ physical page index: `page_ids[logical_page] = physical_page_id`. For logical token position $t$, the kernel computes `page_idx = t // page_size`, `slot = t % page_size`, then looks up `page_id = block_table[page_idx]`. The $K$ address is then `k_idx = ((page_id*H_kv + kv_head)*page_size + slot)*D + c`. This one extra indirection enables scattered physical storage. Concrete example: for logical pos 2 with `page_size=2`, `page_idx=1, slot=0, page_id=2, k_idx=32` — verified to produce $K=0.3010$, matching dense.
 
 ### Q3: What is the `rewind` operation and why must it use `ceil` not `floor`?
-- **Answer**: `rewind(n)` undoes the last `n` appended K,V tokens during speculative decoding rejection. It computes `target_pages = ceil(new_offset / page_size)` and pops pages beyond that target to the free list. Using `floor` would be wrong at exact page boundaries: `offset=8, rewind(1)` → `new=7`, `ceil(7/4)=2` pages kept (correct: 4+3 tokens), but `floor(7/4)=1` would drop a still-needed page → silent data loss.
+- **Answer**: `rewind(n)` undoes the last $n$ appended K,V tokens during speculative decoding rejection. It computes `target_pages = ceil(new_offset / page_size)` and pops pages beyond that target to the free list. Using `floor` would be wrong at exact page boundaries: $\text{offset}=8, \text{rewind}(1) \to \text{new}=7$, $\text{ceil}(7/4)=2$ pages kept (correct: $4+3$ tokens), but $\text{floor}(7/4)=1$ would drop a still-needed page $\to$ silent data loss.
 
 ### Q4: How does PagedAttention enable prefix sharing across requests?
 - **Answer**: Because pages are allocated from a shared pool with a block table, two requests that wrote identical token prefixes can reference the **same physical page** (ref-counted). The `BlockManager` uses content-addressing (chained hash of token ids) to detect when an incoming request's prefix matches an already-allocated page, and assigns it the same physical page id with `ref_count++`. This enables sharing system prompts, few-shot contexts, and chat history without recomputing KV.
 
 ### Q5: What are the two distinct waste numbers from the vLLM paper and what do each measure?
-- **Answer**: (1) **93.75%**: per-request arithmetic `1 − 512/8192` — illustrates how wasteful dense pre-allocation is for one sequence. (2) **60–80%**: system-wide KV memory waste measured by vLLM across heterogeneous concurrent requests (internal + external fragmentation + over-reservation). PagedAttention brings this to **<4%** system-wide. Don't confuse the two — one is illustrative per-request math, the other is a production measurement.
+- **Answer**: (1) **93.75%**: per-request arithmetic $1 - 512/8192$ — illustrates how wasteful dense pre-allocation is for one sequence. (2) **60–80%**: system-wide KV memory waste measured by vLLM across heterogeneous concurrent requests (internal + external fragmentation + over-reservation). PagedAttention brings this to **$< 4\%$** system-wide. Don't confuse the two — one is illustrative per-request math, the other is a production measurement.
 
 ---
 
