@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Senior Speech LLM Engineer / Voice-First AI Architect
 - **Source**: NVIDIA Speech AI Team, NeMo & Riva Engineering
+- **Flashcards**: [Speech LLM deck](flash_cards/speech/speech_llm.md)
 
 ---
 

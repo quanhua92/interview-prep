@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: Software Engineer / Low-Level Developer
 - **Source**: LeetCode 500, Glassdoor
+- **Flashcards**: [Hashmap deck](../../flash_cards/coding/hashmap.md)
 
 ---
 

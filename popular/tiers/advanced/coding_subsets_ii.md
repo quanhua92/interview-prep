@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer / AI Systems Architect
 - **Source**: LeetCode 90, Glassdoor
+- **Flashcards**: [Subsets deck](../../flash_cards/coding/subsets.md)
 
 ---
 

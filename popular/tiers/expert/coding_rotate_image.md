@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer
 - **Source**: LeetCode 48, Glassdoor
+- **Flashcards**: [Matrix Traversal deck](../../flash_cards/coding/matrix_traversal.md)
 
 ---
 

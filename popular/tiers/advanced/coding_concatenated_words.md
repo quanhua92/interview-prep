@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Software Engineer / AI Systems Architect
 - **Source**: LeetCode 472, Glassdoor
+- **Flashcards**: [Trie deck](../../flash_cards/coding/trie.md)
 
 ---
 

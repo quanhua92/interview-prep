@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: Software Engineer
 - **Source**: LeetCode 876, Glassdoor
+- **Flashcards**: [Fast & Slow Pointers deck](../../flash_cards/coding/fast_slow_pointers.md)
 
 ---
 

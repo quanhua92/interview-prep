@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer / AI Systems Architect
 - **Source**: LeetCode 33, Glassdoor
+- **Flashcards**: [Modified Binary Search deck](../../flash_cards/coding/modified_binary_search.md)
 
 ---
 

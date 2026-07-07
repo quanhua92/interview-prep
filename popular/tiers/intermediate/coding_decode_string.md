@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / QA & Test Engineer
 - **Source**: LeetCode 394, Glassdoor
+- **Flashcards**: [Stack deck](../../flash_cards/coding/stack.md)
 
 ---
 

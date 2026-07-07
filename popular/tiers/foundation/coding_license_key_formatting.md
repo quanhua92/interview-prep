@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: Software Engineer / Low-Level Developer
 - **Source**: LeetCode 482, Glassdoor
+- **Flashcards**: [String deck](../../flash_cards/coding/string.md)
 
 ---
 

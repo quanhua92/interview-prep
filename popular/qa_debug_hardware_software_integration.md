@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: QA & Test Engineer / Systems Developer / Embedded Developer / Silicon Validation Engineer
 - **Source**: Glassdoor, Taro, NVIDIA Interview Experience
+- **Flashcards**: [QA deck](flash_cards/behavioral_qa/qa.md)
 
 ---
 

@@ -3,6 +3,7 @@
 **Category**: Low-level Systems / CUDA
 **Difficulty**: Hard
 **Target Role**: Low-Level Developer / AI Kernel Engineer / GPU Compiler Engineer
+**Flashcards**: [CUDA deck](flash_cards/systems/cuda.md)
 
 ---
 

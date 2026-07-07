@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Software Engineer / AI Systems Architect / QA & Test Engineer
 - **Source**: LeetCode 212, Glassdoor
+- **Flashcards**: [Trie deck](../../flash_cards/coding/trie.md)
 
 ---
 

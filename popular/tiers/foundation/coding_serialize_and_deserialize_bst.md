@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer / AI Systems Architect
 - **Source**: LeetCode 449, Glassdoor
+- **Flashcards**: [BFS deck](../../flash_cards/coding/bfs.md)
 
 ---
 

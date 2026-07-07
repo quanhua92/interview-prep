@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer
 - **Source**: LeetCode 713, Glassdoor
+- **Flashcards**: [Prefix Sum deck](../../flash_cards/coding/prefix_sum.md)
 
 ---
 

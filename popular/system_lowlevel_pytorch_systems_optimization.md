@@ -3,6 +3,7 @@
 - **Category**: Low-level Systems / PyTorch Systems Engineering
 - **Difficulty**: Very Hard
 - **Target Role**: Core Deep Learning Systems Engineer / GPU Optimization Engineer / Systems Architect
+- **Flashcards**: [Python Internals deck](flash_cards/systems/python_internals.md)
 
 ---
 

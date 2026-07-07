@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / AI Systems Architect
 - **Source**: LeetCode 535, Glassdoor
+- **Flashcards**: [Hashmap deck](../../flash_cards/coding/hashmap.md)
 
 ---
 

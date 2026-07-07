@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Conversational AI Engineer / Sovereign AI Architect
 - **Source**: NVIDIA NeMo & Riva Product Group
+- **Flashcards**: [Speech LLM deck](flash_cards/speech/speech_llm.md)
 
 ---
 

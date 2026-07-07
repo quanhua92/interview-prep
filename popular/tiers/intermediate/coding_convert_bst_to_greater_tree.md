@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / AI Systems Architect
 - **Source**: LeetCode 538, LeetCode 1038, Glassdoor
+- **Flashcards**: [DFS deck](../../flash_cards/coding/dfs.md)
 
 ---
 

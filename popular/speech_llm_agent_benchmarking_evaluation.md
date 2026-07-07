@@ -3,6 +3,7 @@
 - **Category**: Speech AI / System Benchmarking & QA
 - **Difficulty**: Hard
 - **Target Role**: Senior QA Engineer / Voice AI Systems Architect / Infrastructure Engineer
+- **Flashcards**: [Speech LLM deck](flash_cards/speech/speech_llm.md)
 
 ---
 

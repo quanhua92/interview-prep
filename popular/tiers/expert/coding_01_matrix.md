@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / AI Systems Architect
 - **Source**: LeetCode 542, Glassdoor
+- **Flashcards**: [Matrix Traversal deck](../../flash_cards/coding/matrix_traversal.md)
 
 ---
 

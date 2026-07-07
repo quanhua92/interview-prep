@@ -4,6 +4,7 @@
 - **Difficulty**: Medium to Hard
 - **Target Role**: QA & Test Engineer / Systems Developer / DevOps Engineer / Infrastructure Architect
 - **Source**: Glassdoor, Taro, NVIDIA Interview Experience
+- **Flashcards**: [QA deck](flash_cards/behavioral_qa/qa.md)
 
 ---
 

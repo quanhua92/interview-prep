@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / AI Engineer / Systems Developer
 - **Source**: LeetCode 200, Taro, Glassdoor, Voz
+- **Flashcards**: [Coding Playbook deck](flash_cards/behavioral_qa/coding_playbook.md)
 
 ---
 

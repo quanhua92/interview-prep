@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / QA & Test Engineer / Low-Level Developer
 - **Source**: LeetCode 56, Glassdoor
+- **Flashcards**: [Coding Playbook deck](flash_cards/behavioral_qa/coding_playbook.md)
 
 ---
 

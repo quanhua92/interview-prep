@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / AI Systems Architect
 - **Source**: LeetCode 621, Glassdoor
+- **Flashcards**: [Greedy deck](../../flash_cards/coding/greedy.md)
 
 ---
 

@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer / AI Systems Architect
 - **Source**: LeetCode 33, Glassdoor
+- **Flashcards**: [Coding Playbook deck](flash_cards/behavioral_qa/coding_playbook.md)
 
 ---
 

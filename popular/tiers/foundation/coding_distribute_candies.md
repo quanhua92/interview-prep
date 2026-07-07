@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: Software Engineer
 - **Source**: LeetCode 575, Glassdoor
+- **Flashcards**: [Hashmap deck](../../flash_cards/coding/hashmap.md)
 
 ---
 

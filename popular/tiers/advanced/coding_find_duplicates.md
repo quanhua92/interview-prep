@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer / AI Systems Architect
 - **Source**: LeetCode 442, Glassdoor
+- **Flashcards**: [Cyclic Sort deck](../../flash_cards/coding/cyclic_sort.md)
 
 ---
 

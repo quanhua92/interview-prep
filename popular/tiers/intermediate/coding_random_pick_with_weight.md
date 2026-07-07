@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / AI Systems Architect
 - **Source**: LeetCode 528, Glassdoor
+- **Flashcards**: [Prefix Sum deck](../../flash_cards/coding/prefix_sum.md)
 
 ---
 

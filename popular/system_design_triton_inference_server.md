@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: MLOps Engineer / Infrastructure Engineer / AI Platform Architect
 - **Source**: NVIDIA Triton Team Interview Experience, Glassdoor
+- **Flashcards**: [System Design deck](flash_cards/design/system_design.md)
 
 ---
 

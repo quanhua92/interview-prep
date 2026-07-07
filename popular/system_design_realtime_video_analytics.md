@@ -4,6 +4,7 @@
 - **Difficulty**: Medium/Hard
 - **Target Role**: Software Engineer / Solutions Architect / Computer Vision Engineer / QA Engineer
 - **Source**: NVIDIA DeepStream Solutions Group Interview Experience
+- **Flashcards**: [System Design deck](flash_cards/design/system_design.md)
 
 ---
 

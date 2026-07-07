@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Software Engineer / Low-Level Developer / AI Systems Architect
 - **Source**: LeetCode 295, Glassdoor
+- **Flashcards**: [Two Heaps deck](../../flash_cards/coding/two_heaps.md)
 
 ---
 

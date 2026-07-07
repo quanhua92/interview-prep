@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer / AI System Developer
 - **Source**: LeetCode 208, Glassdoor
+- **Flashcards**: [Coding Playbook deck](flash_cards/behavioral_qa/coding_playbook.md)
 
 ---
 

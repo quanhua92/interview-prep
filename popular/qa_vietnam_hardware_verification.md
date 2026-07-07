@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: ASIC Verification Engineer / Design Verification (DV) Developer
 - **Source**: Voz, Glassdoor (Vietnam Loop), Hardware Verification Experience
+- **Flashcards**: [QA deck](flash_cards/behavioral_qa/qa.md)
 
 ---
 

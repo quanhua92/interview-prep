@@ -3,6 +3,7 @@
 - **Category**: Speech AI / Multimodal LLM Architecture
 - **Difficulty**: Very Hard
 - **Target Role**: Senior Machine Learning Engineer / Speech LLM Architect / Core AI Researcher
+- **Flashcards**: [Speech LLM deck](flash_cards/speech/speech_llm.md)
 
 ---
 

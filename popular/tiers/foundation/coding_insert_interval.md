@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer
 - **Source**: LeetCode 57, Glassdoor
+- **Flashcards**: [Merge Intervals deck](../../flash_cards/coding/merge_intervals.md)
 
 ---
 

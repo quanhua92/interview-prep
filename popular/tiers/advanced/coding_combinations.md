@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / AI Systems Architect / QA & Test Engineer
 - **Source**: LeetCode 77, Glassdoor
+- **Flashcards**: [Subsets deck](../../flash_cards/coding/subsets.md)
 
 ---
 

@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Systems Engineer / DevOps Architect / Backend Engineer / AI Infrastructure Engineer
 - **Source**: NVIDIA Core Infrastructure & Cloud Team Interview Experience, Glassdoor
+- **Flashcards**: [System Design deck](flash_cards/design/system_design.md)
 
 ---
 

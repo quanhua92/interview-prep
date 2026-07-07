@@ -4,6 +4,7 @@
 - **Difficulty**: Medium to Hard
 - **Target Role**: Software Engineer / Low-Level Developer / AI Engineer / QA & Test Engineer
 - **Source**: Glassdoor, Taro, NVIDIA Interview Experience
+- **Flashcards**: [Behavioral deck](flash_cards/behavioral_qa/behavioral.md)
 
 ---
 

@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / AI Systems Architect
 - **Source**: LeetCode 102, Glassdoor
+- **Flashcards**: [BFS deck](../../flash_cards/coding/bfs.md)
 
 ---
 

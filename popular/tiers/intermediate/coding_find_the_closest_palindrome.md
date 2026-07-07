@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Software Engineer / AI Systems Architect
 - **Source**: LeetCode 564, Glassdoor
+- **Flashcards**: [Math deck](../../flash_cards/coding/math.md)
 
 ---
 

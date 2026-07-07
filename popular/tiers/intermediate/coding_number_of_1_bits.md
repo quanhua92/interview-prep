@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: Software Engineer / Low-Level Developer / AI Systems Architect
 - **Source**: LeetCode 191, Glassdoor
+- **Flashcards**: [Bit Manipulation deck](../../flash_cards/coding/bit_manipulation.md)
 
 ---
 

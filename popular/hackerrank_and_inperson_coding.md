@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Software Engineer / Low-Level Developer / AI System Engineer / CUDA Engineer
 - **Source**: NVIDIA Recruiting Process, Glassdoor, Internal Interview Guidelines
+- **Flashcards**: [Coding Playbook deck](flash_cards/behavioral_qa/coding_playbook.md)
 
 ---
 

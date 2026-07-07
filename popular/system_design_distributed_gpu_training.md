@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Deep Learning Infrastructure Engineer / Platform Architect / AI Engineer
 - **Source**: NVIDIA AI Infrastructure Group Interview Experience
+- **Flashcards**: [System Design deck](flash_cards/design/system_design.md)
 
 ---
 

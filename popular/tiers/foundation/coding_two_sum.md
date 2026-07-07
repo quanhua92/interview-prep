@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer
 - **Source**: LeetCode 167, Glassdoor
+- **Flashcards**: [Two Pointers deck](../../flash_cards/coding/two_pointers.md)
 
 ---
 

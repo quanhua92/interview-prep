@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: Software Engineer / Low-Level Developer
 - **Source**: LeetCode 141, Glassdoor
+- **Flashcards**: [Fast & Slow Pointers deck](../../flash_cards/coding/fast_slow_pointers.md)
 
 ---
 

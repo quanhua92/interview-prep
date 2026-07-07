@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / AI Systems Architect
 - **Source**: LeetCode 210, Glassdoor
+- **Flashcards**: [Graph deck](../../flash_cards/coding/graph.md)
 
 ---
 

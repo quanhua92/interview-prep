@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Algorithm Engineer
 - **Source**: LeetCode 522, Glassdoor
+- **Flashcards**: [Two Pointers deck](../../flash_cards/coding/two_pointers.md)
 
 ---
 

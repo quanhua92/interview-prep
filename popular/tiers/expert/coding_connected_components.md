@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer
 - **Source**: LeetCode 323, Glassdoor
+- **Flashcards**: [Union Find deck](../../flash_cards/coding/union_find.md)
 
 ---
 

@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / AI Systems Architect
 - **Source**: LeetCode 467, Glassdoor
+- **Flashcards**: [Dynamic Programming deck](../../flash_cards/coding/dynamic_programming.md)
 
 ---
 

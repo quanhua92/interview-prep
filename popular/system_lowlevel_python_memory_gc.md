@@ -3,6 +3,7 @@
 **Category**: Python Internals & Memory Architecture
 **Difficulty**: Hard
 **Target Role**: Python/C++ Infrastructure Engineer, PyTorch Core Engineer, High-Performance Systems Engineer
+**Flashcards**: [Python Internals deck](flash_cards/systems/python_internals.md)
 
 ---
 

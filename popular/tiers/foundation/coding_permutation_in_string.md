@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer / AI Systems Architect
 - **Source**: LeetCode 567, Glassdoor
+- **Flashcards**: [Sliding Window deck](../../flash_cards/coding/sliding_window.md)
 
 ---
 

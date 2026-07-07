@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer
 - **Source**: LeetCode 134, Glassdoor
+- **Flashcards**: [Greedy deck](../../flash_cards/coding/greedy.md)
 
 ---
 

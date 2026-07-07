@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: Software Engineer / QA & Test Engineer
 - **Source**: LeetCode 455, Glassdoor
+- **Flashcards**: [Greedy deck](../../flash_cards/coding/greedy.md)
 
 ---
 

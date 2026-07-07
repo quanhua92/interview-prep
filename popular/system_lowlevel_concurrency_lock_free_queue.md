@@ -3,6 +3,7 @@
 **Category**: Multithreading & Concurrency
 **Difficulty**: Hard
 **Target Role**: Low-Level Systems Architect / HFT Kernel Engineer / C++ Platform Engineer
+**Flashcards**: [Concurrency deck](flash_cards/systems/concurrency.md)
 
 ---
 

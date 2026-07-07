@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: Software Engineer / ML Engineer
 - **Source**: LeetCode 392, Glassdoor
+- **Flashcards**: [Two Pointers deck](../../flash_cards/coding/two_pointers.md)
 
 ---
 

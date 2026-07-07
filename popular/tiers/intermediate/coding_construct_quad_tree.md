@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer / AI Systems Architect
 - **Source**: LeetCode 427, Glassdoor
+- **Flashcards**: [Divide & Conquer deck](../../flash_cards/coding/divide_and_conquer.md)
 
 ---
 

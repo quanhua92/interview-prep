@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: Software Engineer / QA & Test Engineer
 - **Source**: LeetCode 572, Glassdoor
+- **Flashcards**: [DFS deck](../../flash_cards/coding/dfs.md)
 
 ---
 

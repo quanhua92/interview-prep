@@ -3,6 +3,7 @@
 **Category**: Low-level Systems / Memory Management
 **Difficulty**: Medium / Hard
 **Target Role**: Low-Level Systems Developer / AI Compiler Developer / C++ Game Engine Engineer
+**Flashcards**: [Concurrency deck](flash_cards/systems/concurrency.md)
 
 ---
 

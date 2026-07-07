@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: Software Engineer / Low-Level Developer
 - **Source**: LeetCode 463, Glassdoor
+- **Flashcards**: [BFS deck](../../flash_cards/coding/bfs.md)
 
 ---
 

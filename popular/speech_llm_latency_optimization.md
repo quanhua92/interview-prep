@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Senior Performance Engineer / Speech LLM Engineer
 - **Source**: NVIDIA Riva & TensorRT-LLM Performance Team
+- **Flashcards**: [Speech LLM deck](flash_cards/speech/speech_llm.md)
 
 ---
 

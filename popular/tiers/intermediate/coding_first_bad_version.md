@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: Software Engineer / QA & Test Engineer
 - **Source**: LeetCode 278, Glassdoor
+- **Flashcards**: [Binary Search deck](../../flash_cards/coding/binary_search.md)
 
 ---
 

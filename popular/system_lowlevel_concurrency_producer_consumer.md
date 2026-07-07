@@ -3,6 +3,7 @@
 **Category**: Multithreading & Concurrency
 **Difficulty**: Medium / Hard
 **Target Role**: Low-Level Developer / Systems Engineer / C++ Platform Engineer
+**Flashcards**: [Concurrency deck](flash_cards/systems/concurrency.md)
 
 ---
 

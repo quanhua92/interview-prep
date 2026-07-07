@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer / AI Systems Architect
 - **Source**: LeetCode 200, Glassdoor
+- **Flashcards**: [DFS deck](../../flash_cards/coding/dfs.md)
 
 ---
 

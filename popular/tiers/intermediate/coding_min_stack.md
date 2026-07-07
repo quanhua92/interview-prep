@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer
 - **Source**: LeetCode 155, Glassdoor
+- **Flashcards**: [Stack deck](../../flash_cards/coding/stack.md)
 
 ---
 

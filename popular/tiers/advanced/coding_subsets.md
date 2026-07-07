@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / Low-Level Developer / AI Systems Architect
 - **Source**: LeetCode 78, Glassdoor
+- **Flashcards**: [Backtracking deck](../../flash_cards/coding/backtracking.md)
 
 ---
 

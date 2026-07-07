@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Autonomous Vehicle (AV) Software Engineer / Systems Architect / AI Engineer
 - **Source**: NVIDIA AV Team Interview Experience, Glassdoor
+- **Flashcards**: [System Design deck](flash_cards/design/system_design.md)
 
 ---
 

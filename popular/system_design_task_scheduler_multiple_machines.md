@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: Systems Architect / Infrastructure Engineer / AI Platform Engineer
 - **Source**: LeetCode 621 (Extension), Onsite Design Loops
+- **Flashcards**: [System Design deck](flash_cards/design/system_design.md)
 
 ---
 

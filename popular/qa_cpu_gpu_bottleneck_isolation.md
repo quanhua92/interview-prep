@@ -4,6 +4,7 @@
 - **Difficulty**: Hard
 - **Target Role**: QA & Test Engineer / Performance Engineer / AI Engineer / CUDA Systems Engineer
 - **Source**: Glassdoor, Taro, LeetCode Discuss
+- **Flashcards**: [QA deck](flash_cards/behavioral_qa/qa.md)
 
 ---
 

@@ -4,6 +4,7 @@
 - **Difficulty**: Easy
 - **Target Role**: Software Engineer / QA & Test Engineer
 - **Source**: LeetCode 70, Glassdoor
+- **Flashcards**: [Dynamic Programming deck](../../flash_cards/coding/dynamic_programming.md)
 
 ---
 

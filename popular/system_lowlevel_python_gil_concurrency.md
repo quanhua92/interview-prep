@@ -3,6 +3,7 @@
 **Category**: Python Internals & Low-Level Systems
 **Difficulty**: Hard
 **Target Role**: Python/C++ Infrastructure Engineer, Deep Learning Platform Engineer, High-Performance Systems Architect
+**Flashcards**: [Python Internals deck](flash_cards/systems/python_internals.md)
 
 ---
 

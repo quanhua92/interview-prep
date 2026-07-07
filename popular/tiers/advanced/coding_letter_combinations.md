@@ -4,6 +4,7 @@
 - **Difficulty**: Medium
 - **Target Role**: Software Engineer / AI Systems Architect / QA & Test Engineer
 - **Source**: LeetCode 17, Glassdoor
+- **Flashcards**: [Backtracking deck](../../flash_cards/coding/backtracking.md)
 
 ---
 

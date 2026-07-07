@@ -3,6 +3,7 @@
 **Category**: Python C-Bindings & Foreign Function Interfaces (FFI)
 **Difficulty**: Hard
 **Target Role**: Python/C++ Infrastructure Engineer, CUDA Platform Developer, High-Performance Systems Engineer
+**Flashcards**: [Python Internals deck](flash_cards/systems/python_internals.md)
 
 ---
 
