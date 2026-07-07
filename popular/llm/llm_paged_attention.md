@@ -64,9 +64,8 @@ waste fraction = 1 - 512/8192 = 0.9375 = 93.75%
 ```
 
 **Per-request dense KV bytes** (LLaMA-7B: 32 layers, 32 KV heads, $d=128$):
-```
-2(\text{KV}) \times 32 \times 32 \times 8192 \times 128 \times 2\text{ B} = 4,294,967,296\text{ bytes} = 4.000\text{ GiB}
-```
+
+$$2 \times 32 \times 32 \times 8192 \times 128 \times 2\text{ B} = 4{,}294{,}967{,}296\text{ bytes} = 4.000\text{ GiB}$$
 
 **100 concurrent requests** (each using only 512 tokens):
 ```

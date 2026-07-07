@@ -90,7 +90,7 @@ We trace three sequences with prompt lengths `[3, 5, 2]` under a budget of `max_
 
 **Sequence 1 `num_cached_tokens` growth**: `0 -> 4 -> 5 -> 6`. It caches 4 prompt tokens in Step 2, completes the last prompt token in Step 3, and decodes in Step 4.
 
-**Why Seq 0 Idled in Steps 2–3**:
+**Why `seq0` Idled in Steps 2–3**:
 Because new prefills (`seq1` and `seq2`) have priority over active decodes to keep TTFT low, `seq0` must wait for the prefill queue to clear before it is allowed to decode.
 
 ---

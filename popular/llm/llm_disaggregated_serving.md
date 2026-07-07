@@ -14,7 +14,7 @@ An LLM request consists of two phases with opposite computational profiles: the 
 
 **Disaggregated serving** separates the prefill and decode phases onto **distinct GPU pools** connected by high-speed networks. The prefill pool processes the prompt, generates the Key-Value (KV) cache, and transmits the KV cache bytes over RDMA to the decode pool, which handles token generation.
 
-```
+```text
 Co-located (1 GPU): prefill blocks decode → ITL spikes
 [ Decode Batch (20ms) ] → [ Prefill (80ms) ] → [ Decode Batch (stalled!) ] → ITL = 100ms (5x spike)
 

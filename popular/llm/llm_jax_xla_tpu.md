@@ -14,12 +14,12 @@ Eager execution frameworks (like PyTorch) compute operations sequentially as Pyt
 
 **JAX** and **XLA** solve this by tracing and compiling execution blocks. When a function is JIT-compiled (`@jax.jit`), JAX performs a single dry-run trace using abstract placeholders (**Tracers**) to record the operation dependencies into a functional Intermediate Representation called a **jaxpr**. The **XLA** compiler then analyzes this jaxpr to **fuse** producer-consumer operations. Intermediates flow directly within register file structures or fast on-chip memory (VMEM), minimizing HBM round-trips. The compiled binary runs on a **TPU**, which features a **systolic Matrix Multiply Unit (MXU)** where weights sit still and activations flow through a 2D processing element grid, eliminating intermediate memory writebacks.
 
-```
+```text
 Eager PyTorch (4 HBM writes):
-[ x @ W1 ] ──> HBM ──> [ + b1 ] ──> HBM ──> [ silu ] ──> HBM ──> [ @ W2 ] ──> HBM
+[x@W1] ──> HBM ──> [+b1] ──> HBM ──> [silu] ──> HBM ──> [@W2] ──> HBM
 
 XLA Fused JAX (1 HBM write):
-[ ( x @ W1 ) ──> Register ──> ( + b1 ) ──> Register ──> ( silu ) ──> Register ──> ( @ W2 ) ] ──> HBM
+[ (x@W1) ──> Reg ──> (+b1) ──> Reg ──> (silu) ──> Reg ──> (@W2) ] ──> HBM
 ```
 
 ### The Problem It Solves

@@ -4,6 +4,7 @@ Two ways to use this directory:
 
 - **Speed Run (7 days)** — A cherry-picked ~50-item subset drawn from this folder **and** [`tiers/`](tiers/), optimized for maximum interview yield in minimum time. High-frequency patterns first; niche problems and role-specific files are deferred to a "Future" bucket. See [Speed Run](#speed-run-7-day-cherry-pick) below.
 - **Full Suite** — The complete reference: 34 deep interview question files (Sections 1–6 below) plus 145 LeetCode problems in [`tiers/`](tiers/). Each deep file is self-contained, with optimal C++/Python/SystemVerilog/Triton implementations, complexity analysis, and systems-level / compiler / hardware optimization details. Use this for deep, role-targeted study once the Speed Run is done.
+- **LLM Systems Deep Dive** — After the 7-day speed run, continue with [`llm/`](llm/) — 34 self-contained guides covering the full LLM engineering stack: Transformer internals, memory & attention efficiency (FlashAttention, GQA), PagedAttention serving, distributed training (TP/PP/ZeRO), advanced scale (MoE, speculative decoding), and voice AI. See [Section 7](#7-llm-systems-engineering-34-guides) and the [LLM Roadmap](llm/README.md).
 
 ---
 
@@ -104,6 +105,22 @@ Role swaps:
 - [ ] Practice both STAR stories out loud, timed to 2 minutes each.
 - [ ] Re-read just the MCQ section of [hackerrank_and_inperson_coding.md](hackerrank_and_inperson_coding.md) once.
 
+### Day 8+ — LLM Systems Deep Dive (post speed-run bonus)
+
+After completing Days 1–7, continue into the [`llm/`](llm/) folder. These 34 guides are structured as a separate 7-module curriculum — pick modules that match your target role:
+
+| Module | Files | Target Role |
+| :--- | :--- | :--- |
+| 1: Transformer Foundations | `llm_normalization`, `llm_rope`, `llm_mlp_activation`, `llm_causal_mask`, `llm_tokenization`, `llm_sampling` | LLM Engineer (any) |
+| 2: Memory & Attention Efficiency | `llm_kv_cache`, `llm_flash_attention`, `llm_gqa`, `llm_quantization` | Inference Engineer |
+| 3: Inference & Serving Stack | `llm_paged_attention`, `llm_block_manager`, `llm_scheduler`, `llm_prefix_cache`, `llm_cuda_graphs` | Serving Engineer |
+| 4: Fine-tuning & Adaptation | `llm_peft_lora`, `llm_gradient_checkpointing` | ML Engineer |
+| 5: Distributed Training | `llm_nccl_collectives`, `llm_ddp`, `llm_tensor_parallel`, `llm_pipeline_parallel`, `llm_zero`, `llm_distributed_gpu_training` | ML Platform / Infra |
+| 6: Advanced Scale & Serving | `llm_moe_routing`, `llm_speculative_decoding`, `llm_lmcache`, `llm_disaggregated_serving`, `llm_ktransformers_offload`, `llm_jax_xla_tpu` | LLM Architect |
+| 7: Voice & Conversational AI | `llm_nemo_riva_stack`, `llm_voice_agent_architecture`, `llm_latency_optimization`, `llm_multimodal_audio`, `llm_agent_benchmarking` | Conversational AI Eng |
+
+See the full [LLM Systems Roadmap](llm/README.md) and matching [Flashcard Deck](flash_cards/llm/llm_systems.md).
+
 ### Future bucket (defer until after the 7-day run)
 
 Low interview yield or highly specialized. Return only with spare time, or if the file matches your role exactly.
@@ -201,6 +218,49 @@ These files address organizational values, troubleshooting methodology for hardw
 
 ---
 
+## 7. LLM Systems Engineering (34 Guides)
+
+A complete post-speed-run curriculum covering the full stack of modern LLM engineering — from Transformer math to production-scale distributed serving. All guides are in [`llm/`](llm/), compiled into [`pdfs/llm.pdf`](pdfs/llm.pdf), and paired with the [LLM Systems Flashcard Deck](flash_cards/llm/llm_systems.md).
+
+| File | Topic | Difficulty | Target Role |
+| :--- | :--- | :--- | :--- |
+| [llm/llm_normalization.md](llm/llm_normalization.md) | LayerNorm vs RMSNorm | Medium | LLM Engineer |
+| [llm/llm_rope.md](llm/llm_rope.md) | Rotary Position Embeddings | Hard | LLM Engineer |
+| [llm/llm_mlp_activation.md](llm/llm_mlp_activation.md) | MLP Activations (SwiGLU, GELU) | Medium | LLM Engineer |
+| [llm/llm_causal_mask.md](llm/llm_causal_mask.md) | Causal Masking Mechanics | Easy | LLM Engineer |
+| [llm/llm_tokenization.md](llm/llm_tokenization.md) | BPE Tokenization | Medium | LLM Engineer |
+| [llm/llm_sampling.md](llm/llm_sampling.md) | Decoding Strategies (Top-k, Top-p) | Medium | LLM Engineer |
+| [llm/llm_kv_cache.md](llm/llm_kv_cache.md) | KV Cache Memory Layout | Hard | Inference Engineer |
+| [llm/llm_flash_attention.md](llm/llm_flash_attention.md) | FlashAttention Tiled Computation | Expert | Inference Engineer |
+| [llm/llm_gqa.md](llm/llm_gqa.md) | Grouped-Query Attention | Hard | Inference Engineer |
+| [llm/llm_quantization.md](llm/llm_quantization.md) | INT8/INT4/FP8 Quantization | Hard | Inference Engineer |
+| [llm/llm_paged_attention.md](llm/llm_paged_attention.md) | PagedAttention (vLLM) | Hard | Serving Engineer |
+| [llm/llm_block_manager.md](llm/llm_block_manager.md) | Block Manager & Physical Pages | Hard | Serving Engineer |
+| [llm/llm_scheduler.md](llm/llm_scheduler.md) | Continuous Batching Scheduler | Hard | Serving Engineer |
+| [llm/llm_prefix_cache.md](llm/llm_prefix_cache.md) | Prefix KV Cache Reuse | Expert | Serving Engineer |
+| [llm/llm_cuda_graphs.md](llm/llm_cuda_graphs.md) | CUDA Graph Capture & Replay | Expert | Serving Engineer |
+| [llm/llm_peft_lora.md](llm/llm_peft_lora.md) | LoRA Fine-Tuning | Hard | ML Engineer |
+| [llm/llm_gradient_checkpointing.md](llm/llm_gradient_checkpointing.md) | Gradient Checkpointing | Hard | ML Engineer |
+| [llm/llm_nccl_collectives.md](llm/llm_nccl_collectives.md) | NCCL All-Reduce / All-Gather | Expert | ML Platform |
+| [llm/llm_ddp.md](llm/llm_ddp.md) | Distributed Data Parallel | Hard | ML Platform |
+| [llm/llm_tensor_parallel.md](llm/llm_tensor_parallel.md) | Tensor Parallelism (Megatron) | Expert | ML Platform |
+| [llm/llm_pipeline_parallel.md](llm/llm_pipeline_parallel.md) | Pipeline Parallelism & Bubbles | Expert | ML Platform |
+| [llm/llm_zero.md](llm/llm_zero.md) | ZeRO Optimizer Stages | Expert | ML Platform |
+| [llm/llm_distributed_gpu_training.md](llm/llm_distributed_gpu_training.md) | 3D Parallelism System Design | Hard | ML Platform |
+| [llm/llm_moe_routing.md](llm/llm_moe_routing.md) | Mixture-of-Experts Routing | Expert | LLM Architect |
+| [llm/llm_speculative_decoding.md](llm/llm_speculative_decoding.md) | Speculative Decoding | Expert | LLM Architect |
+| [llm/llm_lmcache.md](llm/llm_lmcache.md) | LMCache KV Offload | Hard | LLM Architect |
+| [llm/llm_disaggregated_serving.md](llm/llm_disaggregated_serving.md) | Disaggregated Prefill/Decode | Expert | LLM Architect |
+| [llm/llm_ktransformers_offload.md](llm/llm_ktransformers_offload.md) | KTransformers CPU Offload | Expert | LLM Architect |
+| [llm/llm_jax_xla_tpu.md](llm/llm_jax_xla_tpu.md) | JAX/XLA & TPU Programming | Expert | LLM Architect |
+| [llm/llm_nemo_riva_stack.md](llm/llm_nemo_riva_stack.md) | NeMo/Riva Speech Stack | Hard | Conversational AI Eng |
+| [llm/llm_voice_agent_architecture.md](llm/llm_voice_agent_architecture.md) | Voice Agent Pipeline | Hard | Conversational AI Eng |
+| [llm/llm_latency_optimization.md](llm/llm_latency_optimization.md) | End-to-End Latency Profiling | Hard | Conversational AI Eng |
+| [llm/llm_multimodal_audio.md](llm/llm_multimodal_audio.md) | Multimodal Audio-Language Models | Hard | Conversational AI Eng |
+| [llm/llm_agent_benchmarking.md](llm/llm_agent_benchmarking.md) | Voice Agent Benchmarking | Hard | Conversational AI Eng |
+
+---
+
 ## How to Prepare Using These Resources
 
 1. **For Speech LLM & Voice Agent Roles:**
@@ -267,4 +327,20 @@ Follow this roadmap to structure your preparation from foundational coding and c
 *   [ ] [system_design_distributed_gpu_training.md](system_design_distributed_gpu_training.md) | [system_design_triton_inference_server.md](system_design_triton_inference_server.md) — *NCCL cluster topology vs. KV cache serving*
 *   [ ] [system_design_realtime_video_analytics.md](system_design_realtime_video_analytics.md) | [system_design_gpu_microservices_bottleneck.md](system_design_gpu_microservices_bottleneck.md) — *GStreamer GPU paths vs. MIG/MPS multi-tenancy*
 *   [ ] [system_design_task_scheduler_multiple_machines.md](system_design_task_scheduler_multiple_machines.md) — *Distributed cooldown locks, SKIP LOCKED DB queues, Redis leases*
+
+### Phase 5: LLM Systems Engineering (Expert)
+*Goal: Master the full LLM stack — from transformer internals to production-scale distributed inference. Essential for LLM Engineer, Inference Engineer, and ML Platform roles.*
+*   [ ] [llm/llm_normalization.md](llm/llm_normalization.md) + [llm/llm_rope.md](llm/llm_rope.md) + [llm/llm_mlp_activation.md](llm/llm_mlp_activation.md) — *Layer math, RoPE frequencies, SwiGLU gating*
+*   [ ] [llm/llm_tokenization.md](llm/llm_tokenization.md) + [llm/llm_causal_mask.md](llm/llm_causal_mask.md) + [llm/llm_sampling.md](llm/llm_sampling.md) — *BPE merge rules, triangular masks, top-p nucleus sampling*
+*   [ ] [llm/llm_kv_cache.md](llm/llm_kv_cache.md) + [llm/llm_flash_attention.md](llm/llm_flash_attention.md) + [llm/llm_gqa.md](llm/llm_gqa.md) — *KV memory math, tiled SRAM attention, head sharing*
+*   [ ] [llm/llm_quantization.md](llm/llm_quantization.md) + [llm/llm_peft_lora.md](llm/llm_peft_lora.md) + [llm/llm_gradient_checkpointing.md](llm/llm_gradient_checkpointing.md) — *INT8/FP8 calibration, rank decomposition, activation recompute*
+*   [ ] [llm/llm_paged_attention.md](llm/llm_paged_attention.md) + [llm/llm_block_manager.md](llm/llm_block_manager.md) + [llm/llm_scheduler.md](llm/llm_scheduler.md) — *vLLM page tables, physical block pools, continuous batching*
+*   [ ] [llm/llm_prefix_cache.md](llm/llm_prefix_cache.md) + [llm/llm_cuda_graphs.md](llm/llm_cuda_graphs.md) — *Radix tree KV reuse, CUDA graph capture & replay*
+*   [ ] [llm/llm_nccl_collectives.md](llm/llm_nccl_collectives.md) + [llm/llm_ddp.md](llm/llm_ddp.md) + [llm/llm_tensor_parallel.md](llm/llm_tensor_parallel.md) — *Ring all-reduce bandwidth, DDP gradient buckets, Megatron column/row split*
+*   [ ] [llm/llm_pipeline_parallel.md](llm/llm_pipeline_parallel.md) + [llm/llm_zero.md](llm/llm_zero.md) + [llm/llm_distributed_gpu_training.md](llm/llm_distributed_gpu_training.md) — *Bubble fraction, optimizer sharding, 3D parallelism system design*
+*   [ ] [llm/llm_moe_routing.md](llm/llm_moe_routing.md) + [llm/llm_speculative_decoding.md](llm/llm_speculative_decoding.md) — *Expert load balancing, draft-verify acceptance rate math*
+*   [ ] [llm/llm_disaggregated_serving.md](llm/llm_disaggregated_serving.md) + [llm/llm_lmcache.md](llm/llm_lmcache.md) + [llm/llm_ktransformers_offload.md](llm/llm_ktransformers_offload.md) — *PD separation, CPU DRAM offload, heterogeneous serving*
+*   [ ] [llm/llm_jax_xla_tpu.md](llm/llm_jax_xla_tpu.md) — *XLA JIT compilation, pmap/shard_map, TPU topology*
+*   [ ] [llm/llm_nemo_riva_stack.md](llm/llm_nemo_riva_stack.md) + [llm/llm_voice_agent_architecture.md](llm/llm_voice_agent_architecture.md) + [llm/llm_latency_optimization.md](llm/llm_latency_optimization.md) — *Riva NIM, barge-in, TTFT/TTFA roofline*
+*   [ ] [llm/llm_multimodal_audio.md](llm/llm_multimodal_audio.md) + [llm/llm_agent_benchmarking.md](llm/llm_agent_benchmarking.md) — *RVQ tokenization, PESQ/ViSQOL evaluation*
 

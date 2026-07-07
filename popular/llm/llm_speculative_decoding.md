@@ -22,13 +22,13 @@ On an NVIDIA A100 GPU (312 TFLOPS FP16 peak / 2.0 TB/s HBM bandwidth), the syste
 
 By verifying $K$ tokens in a single target pass, speculative decoding loads the target model weights once but performs $2 \cdot P \cdot K$ FLOPs, scaling the intensity:
 
-| K | Target FLOPs | Weights Loaded (ONCE) | Arithmetic Intensity | GPU Peak Capacity % |
+| $K$ | Target FLOPs | Weights Loaded (ONCE) | Arithmetic Intensity | GPU Peak Capacity % |
 |---|---|---|---|---|
-| **1** (Baseline) | $1.40 \times 10^{11}$ | $1.40 \times 10^{11}$ bytes | **1 FLOP/B** | 0.6% |
-| **2** | $2.80 \times 10^{11}$ | $1.40 \times 10^{11}$ bytes | **2 FLOP/B** | 1.3% |
-| **4** | $5.60 \times 10^{11}$ | $1.40 \times 10^{11}$ bytes | **4 FLOP/B** | 2.6% |
-| **8** | $1.12 \times 10^{12}$ | $1.40 \times 10^{11}$ bytes | **8 FLOP/B** | 5.1% |
-| **16** | $2.24 \times 10^{12}$ | $1.40 \times 10^{11}$ bytes | **16 FLOP/B** | 10.3% |
+| **1** (Baseline) | $1.40 \times 10^{11}$ | $1.40 \times 10^{11}\text{ bytes}$ | **$1\text{ FLOP/B}$** | 0.6% |
+| **2** | $2.80 \times 10^{11}$ | $1.40 \times 10^{11}\text{ bytes}$ | **$2\text{ FLOP/B}$** | 1.3% |
+| **4** | $5.60 \times 10^{11}$ | $1.40 \times 10^{11}\text{ bytes}$ | **$4\text{ FLOP/B}$** | 2.6% |
+| **8** | $1.12 \times 10^{12}$ | $1.40 \times 10^{11}\text{ bytes}$ | **$8\text{ FLOP/B}$** | 5.1% |
+| **16** | $2.24 \times 10^{12}$ | $1.40 \times 10^{11}\text{ bytes}$ | **$16\text{ FLOP/B}$** | 10.3% |
 
 By increasing $K$, speculative decoding amortizes weight loading, boosting GPU utilization and resulting in **2×–3× latency speedups** in practice.
 
@@ -179,7 +179,7 @@ Only tokens `0` ("the") and `5` ("on") have mass (where $p > q$). Drawing from $
 ### Q2: Under what conditions does speculative decoding result in a slowdown ($S < 1$), and how do we optimize the draft length $K$?
 - **Answer**: Speculative decoding slows down inference when the cost of drafting plus the cost of target verification exceeds the cost of standard autoregressive decoding. This happens when:
   1. The draft model is too large, meaning the cost ratio $\gamma = \text{Cost}_{draft}/\text{Cost}_{target}$ is too high.
-  2. The draft model is inaccurate, leading to a low acceptance rate $\alpha$, which causes most draft tokens to be rejected. For instance, with $\alpha = 0.2, K=4, \gamma=0.5$, the speedup $S$ falls to **0.42×** (a major slowdown).
+  2. The draft model is inaccurate, leading to a low acceptance rate $\alpha$, which causes most draft tokens to be rejected. For instance, with $\alpha = 0.2, K=4, \gamma=0.5$, the speedup $S$ falls to **$0.42\times$** (a major slowdown).
   To optimize $K$, we analyze the derivative of the speedup equation:
   $$S = \frac{1 - \alpha^{K+1}}{(1 - \alpha)(1 + K\gamma)}$$
   - When $\alpha$ is high (e.g., $0.9$), increasing $K$ maximizes speedup (e.g., optimal $K \approx 10$ at $\gamma=0.1$ yielding $3.40\times$).

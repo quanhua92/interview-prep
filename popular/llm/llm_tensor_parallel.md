@@ -40,7 +40,7 @@ A single FP16 weight matrix (`gate_proj`) of size $[28,672, 8,192]$ contains **$
 
 By sharding every weight matrix by a factor of $TP$, memory scale savings are linear:
 
-| TP | Shard Shape | Elements per Rank | Weight Memory per Rank (FP16) | Savings |
+| $TP$ | Shard Shape | Elements per Rank | Weight Memory per Rank (FP16) | Savings |
 |---|---|---|---|---|
 | **1** | $[28,672, 8,192]$ | $234,881,024$ | $0.438\text{ GiB}$ | Baseline |
 | **2** | $[14,336, 8,192]$ | $117,440,512$ | $0.219\text{ GiB}$ | $2\times$ smaller |
@@ -149,7 +149,7 @@ For a model input $X$ of shape $[1, 8]$ and weight matrix $W$ of shape $[8, 8]$:
   - Summing them: $Y = Y_{0, \text{partial}} + Y_{1, \text{partial}} = [-0.8029, +0.4008, -1.2338, +0.4680, -0.0224, -0.8494, +0.7460, +0.3059]$ (exactly identical to the unsharded run, requiring **one** `AllReduce`).
 
 ### 2. The Megatron MLP Trick in Action
-Using $TP=2$, input $X [1, 8]$, column-parallel gate matrix $A [4, 8]$, and row-parallel down matrix $B [8, 4]$:
+Using $TP=2$, input $X$ of shape $[1, 8]$, column-parallel gate matrix $A$ of shape $[4, 8]$, and row-parallel down matrix $B$ of shape $[8, 4]$:
 
 | Tensor | Values | Shape |
 |---|---|---|
@@ -167,8 +167,8 @@ When sharding packed Q, K, and V projections, Grouped-Query Attention ($H_{kv} <
 
 | Rank | Q Heads | K Heads | V Heads | Shard Rows per Rank |
 |---|---|---|---|---|
-| **Rank 0** | $0..1$ | $0..0$ | $0..0$ | $8$ rows |
-| **Rank 1** | $2..3$ | $1..1$ | $1..1$ | $8$ rows |
+| **Rank 0** | $0\text{--}1$ | $0\text{--}0$ | $0\text{--}0$ | $8$ rows |
+| **Rank 1** | $2\text{--}3$ | $1\text{--}1$ | $1\text{--}1$ | $8$ rows |
 
 *Divisibility Constraint:* To map heads cleanly to ranks, $H_q$ and $H_{kv}$ must both be divisible by $TP$. If $H_{kv} \pmod{TP} \neq 0$ (e.g. $H_{kv}=2$ with $TP=4$), the loader throws an assertion error, which is why production GQA models choose $H_{kv}$ compatible with expected TP groups.
 

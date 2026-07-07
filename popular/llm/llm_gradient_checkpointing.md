@@ -38,7 +38,7 @@ Gradient checkpointing splits the $L$ layers of a network into $\approx \sqrt{L}
 === Gradient Checkpointing (√L = 2) ===
 ┌───────────┐     ┌───────────┐     ┌───────────┐     ┌───────────┐
 │  Layer 0  │ ──► │  Layer 1  │ ──► │  Layer 2  │ ──► │  Layer 3  │
-│[CHECKPT]  │     │ [Discard] │     │ [CHECKPT] │     │ [Discard] │
+│ [CHECKPT] │     │ [Discard] │     │ [CHECKPT] │     │ [Discard] │
 └───────────┘     └───────────┘     └───────────┘     └───────────┘
       │                 ▲                 │                 ▲
       └─ recompute ─────┘                 └─ recompute ─────┘

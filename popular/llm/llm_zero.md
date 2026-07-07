@@ -198,7 +198,7 @@ ZeRO-3 adds one extra `AllGather` step. Because parameters are sharded, they mus
 
 ## Common Interview Questions & How to Answer
 
-### Q1: Does ZeRO-3 increase the communication volume by 3× compared to standard DDP?
+### Q1: Does ZeRO-3 increase the communication volume by $3\times$ compared to standard DDP?
 - **Answer**: No. While ZeRO-3 uses **three collective operations** per step (AllGather for weights in forward, AllGather for weights in backward, and ReduceScatter for gradients) compared to DDP's **one collective operation** (`AllReduce` for gradients), the actual **communication volume is only $1.5\times$ DDP**. 
 A standard ring-AllReduce transfers $2 \cdot \Psi$ bytes of data per rank. In ZeRO-3, the three collectives (`ReduceScatter` and two `AllGather`s) each transfer $1 \cdot \Psi$ bytes per rank. The total data transferred is $3 \cdot \Psi$ bytes, which is a $50\%$ increase over DDP's $2 \cdot \Psi$ bytes, not a $3\times$ increase.
 

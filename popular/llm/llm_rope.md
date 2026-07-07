@@ -126,7 +126,7 @@ Initial values are small random noise (~`*0.02`). The model learns what each sea
 
 From `absolute_pe.py` **Section E** — same fixed $Q$ and $K$, different absolute seats:
 
-| m_q | m_k | gap = m_q−m_k | Q·K score |
+| $m_q$ | $m_k$ | gap = $m_q - m_k$ | $Q \cdot K$ score |
 |---|---|---|---|
 | 2 | 1 | **1** | **+7.055621** |
 | 5 | 4 | **1** | **+4.901406** |
@@ -191,7 +191,7 @@ Input token $x$ at position $m=2$, head dim $D=8$:
 
 Per-pair rotation (complex multiply $(x_1+i \cdot x_2) \cdot (\cos+i \cdot \sin)$):
 
-| pair j | x1 | x2 | cos | sin | real = x1·cos−x2·sin | imag = x2·cos+x1·sin |
+| Pair $j$ | $x_1$ | $x_2$ | $\cos$ | $\sin$ | $\text{real} = x_1 \cos\theta - x_2 \sin\theta$ | $\text{imag} = x_2 \cos\theta + x_1 \sin\theta$ |
 |---|---|---|---|---|---|---|
 | 0 | +1.0 | +0.20 | −0.4161 | +0.9093 | **−0.5980** | **+0.8261** |
 | 1 | +0.5 | −0.10 | +0.9801 | +0.1987 | **+0.5099** | **+0.0013** |
@@ -227,7 +227,7 @@ $$\text{clock contribution} = (q_1 k_1 + q_2 k_2)\cos((m_q − m_k)\theta) + (q_
 
 Only $(m_q − m_k)$ survives. From `rope_output.txt` **Section H**:
 
-| m_q | m_k | relative = m_q−m_k | Q·K score |
+| $m_q$ | $m_k$ | relative = $m_q - m_k$ | $Q \cdot K$ score |
 |---|---|---|---|
 | 2 | 1 | **1** | **+0.514498** |
 | 5 | 4 | **1** | **+0.514498** |
@@ -355,34 +355,34 @@ With the wrong offset (`slice(0,1)`), the new token's needle doesn't spin at all
 
 ### Q1: Why does RoPE encode relative position but absolute PE does not?
 
-- **Answer**: It's a consequence of the math. With absolute PE, adding a position vector `pe[m]` to the token embedding bakes `m` permanently into the vector. When you dot-product two such vectors, you get cross-terms like `pe[m_q]·pe[m_k]`, `q·pe[m_k]`, `pe[m_q]·k` — these are functions of both `m_q` and `m_k` **separately**, not just their difference. No trig identity collapses them. With RoPE, rotating Q by `m_q·θ` and K by `m_k·θ` and then multiplying uses the identity that `cos(A)cos(B) + sin(A)sin(B) = cos(A−B)`, so the dot product becomes a function of `(m_q − m_k)·θ` only — absolute positions cancel exactly.
+- **Answer**: It's a consequence of the math. With absolute PE, adding a position vector $pe[m]$ to the token embedding bakes $m$ permanently into the vector. When you dot-product two such vectors, you get cross-terms like $pe[m_q] \cdot pe[m_k]$, $q \cdot pe[m_k]$, $pe[m_q] \cdot k$ — these are functions of both $m_q$ and $m_k$ **separately**, not just their difference. No trig identity collapses them. With RoPE, rotating $Q$ by $m_q \cdot \theta$ and $K$ by $m_k \cdot \theta$ and then multiplying uses the identity that $\cos(A)\cos(B) + \sin(A)\sin(B) = \cos(A-B)$, so the dot product becomes a function of $(m_q - m_k) \cdot \theta$ only — absolute positions cancel exactly.
 
 ### Q2: What is the RoPE frequency table and why does it use a range of speeds?
 
-- **Answer**: The frequency table has `D/2` entries where `θ_j = base^(−j/(D/2))`. With `D=8, base=10000`, that gives `[1.0, 0.1, 0.01, 0.001]` — a geometric sequence spanning 3 orders of magnitude. The fast pairs (j=0: θ=1.0) rotate by 1 radian per seat, so they can distinguish nearby tokens (they're fully differentiated by position 3). The slow pairs (j=3: θ=0.001) barely move across 1000 seats, so they encode coarse/global position. Together, it's a Fourier-like decomposition of position — fine-grained and coarse at the same time, with a single compact table.
+- **Answer**: The frequency table has $D/2$ entries where $\theta_j = \text{base}^{-j/(D/2)}$. With $D=8$ and $\text{base}=10000$, that gives $[1.0, 0.1, 0.01, 0.001]$ — a geometric sequence spanning 3 orders of magnitude. The fast pairs ($j=0$: $\theta=1.0$) rotate by 1 radian per seat, so they can distinguish nearby tokens (they're fully differentiated by position 3). The slow pairs ($j=3$: $\theta=0.001$) barely move across 1000 seats, so they encode coarse/global position. Together, it's a Fourier-like decomposition of position — fine-grained and coarse at the same time, with a single compact table.
 
 ### Q3: What is the split vs traditional layout in RoPE, and what breaks if you mix them?
 
-- **Answer**: Both layouts apply the same rotation math but pair different coordinate dimensions. **Split** (Llama/Qwen, `traditional=False`): clock j pairs dim `j` with dim `j + D/2` — i.e., `x1 = x[..., :D/2]`, `x2 = x[..., D/2:]`. **Traditional** (GPT-NeoX, `traditional=True`): clock j pairs dim `2j` with dim `2j+1` — adjacent coordinates. From the output: the same vector at m=2 gives `[-4.963, 0.768, 2.859, ...]` under split but `[-2.235, 0.077, 2.146, ...]` under traditional. If you mix them, you get wrong outputs with no error message — the shapes match, the computation runs, but every attention score is wrong. Always read `config.json` for the `rope_scaling` and traditional flag.
+- **Answer**: Both layouts apply the same rotation math but pair different coordinate dimensions. **Split** (Llama/Qwen, `traditional=False`): clock $j$ pairs dim $j$ with dim $j + D/2$ — i.e., `x1 = x[..., :D/2]`, `x2 = x[..., D/2:]`. **Traditional** (GPT-NeoX, `traditional=True`): clock $j$ pairs dim $2j$ with dim $2j+1$ — adjacent coordinates. From the output: the same vector at $m=2$ gives `[-4.963, 0.768, 2.859, ...]` under split but `[-2.235, 0.077, 2.146, ...]` under traditional. If you mix them, you get wrong outputs with no error message — the shapes match, the computation runs, but every attention score is wrong. Always read `config.json` for the `rope_scaling` and traditional flag.
 
 ### Q4: Why is the `offset` parameter critical during KV cache decode, and what is the failure mode?
 
-- **Answer**: During decode, only one new token is processed per step, but it must be rotated at its **true** position `m = current_len`, not position 0. The `offset` parameter tells RoPE which row of the precomputed cos/sin table to look up: `offset = slice(current_len, current_len + 1)`. If you forget the offset and use `slice(0, 1)`, you look up row 0 (the identity rotation — cos=1, sin=0), meaning the new token's needle never spins. Its Q is unrotated, while the cached K vectors were correctly rotated at positions 0,1,2,... — the relative geometry is destroyed and the model emits nonsense. No crash, no error. From the output: correct gives `[..., 0.003]` in the last dimension; wrong gives `[..., 0.0]`.
+- **Answer**: During decode, only one new token is processed per step, but it must be rotated at its **true** position $m = \text{current\_len}$, not position 0. The `offset` parameter tells RoPE which row of the precomputed cos/sin table to look up: `offset = slice(current_len, current_len + 1)`. If you forget the offset and use `slice(0, 1)`, you look up row 0 (the identity rotation — $\cos=1, \sin=0$), meaning the new token's needle never spins. Its $Q$ is unrotated, while the cached $K$ vectors were correctly rotated at positions $0, 1, 2, \dots$ — the relative geometry is destroyed and the model emits nonsense. No crash, no error. From the output: correct gives `[..., 0.003]` in the last dimension; wrong gives `[..., 0.0]`.
 
 ### Q5: What is the difference between `base=10000` (Llama) and `base=1000000` (Qwen3)?
 
-- **Answer**: A larger base means **slower** overall rotation — at position `m`, the angle for pair j is `m · base^(−j/(D/2))`. With `base=10000`, position 1000 has angle 1000 for the fastest pair — already past multiple full rotations, starting to alias. With `base=1000000`, position 1000 has angle 1000·(10^6)^0 = 1000 for j=0 but the slower pairs are 10× slower, effectively stretching the model's "distance scale" by 100×. This is a form of context length extrapolation — a larger base shifts the aliasing problem to much longer sequences. Qwen3's choice of `base=1_000_000` is why it handles 128k+ context better than Llama-classic with `base=10_000`.
+- **Answer**: A larger base means **slower** overall rotation — at position $m$, the angle for pair $j$ is $m \cdot \text{base}^{-j/(D/2)}$. With $\text{base}=10000$, position 1000 has angle 1000 for the fastest pair — already past multiple full rotations, starting to alias. With $\text{base}=1000000$, position 1000 has angle $1000 \cdot (10^6)^0 = 1000$ for $j=0$ but the slower pairs are $10\times$ slower, effectively stretching the model's "distance scale" by $100\times$. This is a form of context length extrapolation — a larger base shifts the aliasing problem to much longer sequences. Qwen3's choice of $\text{base}=1\_000\_000$ is why it handles 128k+ context better than Llama-classic with $\text{base}=10\_000$.
 
 ### Q6: What is the tensor shape order for applying RoPE, and why does it matter?
 
-- **Answer**: RoPE must be applied while the tensor is in `[B, L, H, D]` layout, **before** the transpose to `[B, H, L, D]`. Reason: position is the `L` axis, and the cos/sin lookup tables are indexed by `L`. In `[B, L, H, D]`, the L axis is at position 1 and is directly accessible for per-position rotation; broadcasting over H works cleanly. After transposing to `[B, H, L, D]`, L is at position 2 — the code still works but the convention in all reference implementations (Qwen, Llama) is to rotate first. If you apply RoPE after the transpose using the wrong axis, you'll rotate over heads instead of positions — silent garbage with no shape error.
+- **Answer**: RoPE must be applied while the tensor is in `[B, L, H, D]` layout, **before** the transpose to `[B, H, L, D]`. Reason: position is the $L$ axis, and the cos/sin lookup tables are indexed by $L$. In `[B, L, H, D]`, the $L$ axis is at position 1 and is directly accessible for per-position rotation; broadcasting over $H$ works cleanly. After transposing to `[B, H, L, D]`, $L$ is at position 2 — the code still works but the convention in all reference implementations (Qwen, Llama) is to rotate first. If you apply RoPE after the transpose using the wrong axis, you'll rotate over heads instead of positions — silent garbage with no shape error.
 
 ---
 
 ## Pro-Tip: How to Impress the Interviewer
 
-- **The relative-position proof in one breath**: "RoPE's dot product collapses to `cos((m_q−m_k)·θ)` terms via the trig identity `cos(A−B) = cosA·cosB + sinA·sinB`. The absolute positions `m_q` and `m_k` cancel — only their difference survives. Absolute PE has no such cancellation because addition bakes both positions in separately."
+- **The relative-position proof in one breath**: "RoPE's dot product collapses to $\cos((m_q-m_k)\theta)$ terms via the trig identity $\cos(A-B) = \cos A \cos B + \sin A \sin B$. The absolute positions $m_q$ and $m_k$ cancel — only their difference survives. Absolute PE has no such cancellation because addition bakes both positions in separately."
 - **Know the Qwen3 specifics**: `rope_theta = 1_000_000` (not 10,000), `traditional = False` (split layout), per-head RMSNorm (QK-Norm) applied **before** RoPE. Getting these three details right in a code review is what separates inference engineers from ML practitioners.
-- **Norm preservation is a useful invariant**: "RoPE preserves L2 norm exactly (max drift 2.98e−8 from the output file). This means `‖Q_rotated‖ = ‖Q_raw‖`, so the attention score magnitude `Q·K/√D` is controlled purely by the query/key content, not position. Absolute PE doesn't have this property — adding a barcode changes vector length."
+- **Norm preservation is a useful invariant**: "RoPE preserves $L_2$ norm exactly (max drift $2.98 \times 10^{-8}$ from the output file). This means $\|Q_{\text{rotated}}\| = \|Q_{\text{raw}}\|$, so the attention score magnitude $Q \cdot K / \sqrt{D}$ is controlled purely by the query/key content, not position. Absolute PE doesn't have this property — adding a barcode changes vector length."
 - **Gold values to cite**: `RoPE(x=[1..8], m=2) = [-0.598, 0.510, -0.308, 0.799, 0.826, 0.001, 0.394, 0.602]` (split layout). Gap-1 score = `+0.514498` regardless of absolute seat.
 - **YaRN/NTK connection**: For context extension beyond training length, mention that RoPE's base can be interpolated (NTK-aware scaling, YaRN) to extend context 2–32× with minimal fine-tuning. Absolute PE (especially learned `wpe`) hard-crashes at `max_len` with an index error — no such extension is possible without retraining the position table.

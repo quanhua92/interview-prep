@@ -223,30 +223,30 @@ After $/T=0.7$ and renormalize: `idx 5 ("on")` has $\text{prob} = 1.0000$.
 
 ## Common Interview Questions & How to Answer
 
-### Q1: What is the difference between top-k and top-p sampling?
-- **Answer**: Top-k keeps a **fixed number** of tokens (always k). Top-p (nucleus) keeps the **smallest set** of tokens whose cumulative probability reaches p — so the set size *adapts* to the distribution shape. On a confident distribution, top-p may keep just 1 token; on a flat distribution it may keep 20+. Concrete example: top-k=3 keeps `[0,1,5]` (always 3), top-p=0.6 keeps `[0,5]` (just 2, because the top-2 already cover 52.8%). Top-p is adaptive; top-k is blind to distribution shape.
+### Q1: What is the difference between top-$k$ and top-$p$ sampling?
+- **Answer**: Top-$k$ keeps a **fixed number** of tokens (always $k$). Top-$p$ (nucleus) keeps the **smallest set** of tokens whose cumulative probability reaches $p$ — so the set size *adapts* to the distribution shape. On a confident distribution, top-$p$ may keep just 1 token; on a flat distribution it may keep 20+. Concrete example: top-$k=3$ keeps `[0,1,5]` (always 3), top-$p=0.6$ keeps `[0,5]` (just 2, because the top-2 already cover 52.8%). Top-$p$ is adaptive; top-$k$ is blind to distribution shape.
 
-### Q2: Why must you cumsum on probabilities and NOT log-probabilities in top-p?
-- **Answer**: Logprobs are always ≤ 0, so their cumsum stays negative forever, making `cumsum(logprobs) < p` always true for any positive p. This means *nothing* ever gets masked — the nucleus silently becomes the whole vocabulary with no error. The fix is `cumsum(exp(logprobs))`. This is the single most common top-p implementation bug.
+### Q2: Why must you cumsum on probabilities and NOT log-probabilities in top-$p$?
+- **Answer**: Logprobs are always $\le 0$, so their cumsum stays negative forever, making `cumsum(logprobs) < p` always true for any positive $p$. This means *nothing* ever gets masked — the nucleus silently becomes the whole vocabulary with no error. The fix is `cumsum(exp(logprobs))`. This is the single most common top-$p$ implementation bug.
 
 ### Q3: What does temperature do mathematically, and what is its effect on entropy?
-- **Answer**: Temperature `T` divides the logits *before* softmax: `probs_T = softmax(z / T)`. Dividing by `T<1` widens the logit gaps (sharpens toward argmax); `T>1` narrows gaps (flattens toward uniform). Real numbers: `entropy(T=0.5) = 1.3981 nats`, `entropy(T=1.0) = 1.8062`, `entropy(T=2.0) = 1.9984`. `T=0` collapses to a one-hot → greedy.
+- **Answer**: Temperature $T$ divides the logits *before* softmax: `probs_T = softmax(z / T)`. Dividing by $T < 1$ widens the logit gaps (sharpens toward argmax); $T > 1$ narrows gaps (flattens toward uniform). Real numbers: $\text{entropy}(T=0.5) = 1.3981 \text{ nats}$, $\text{entropy}(T=1.0) = 1.8062 \text{ nats}$, $\text{entropy}(T=2.0) = 1.9984 \text{ nats}$. $T=0$ collapses to a one-hot $\rightarrow$ greedy.
 
 ### Q4: What is the correct sampling pipeline order and why does it matter?
-- **Answer**: The order is: `/temp → top-k → top-p → multinomial`. Temperature must come first because it reshapes the distribution that top-p then cuts. Applying temperature *after* top-p means top-p computed on the wrong distribution. Top-k is order-insensitive to temperature (positive scaling preserves rank), but top-p is sensitive (temperature reshapes cumulative probabilities). Filter steps are deterministic; only the final `multinomial` uses the RNG.
+- **Answer**: The order is: $/T \rightarrow \text{top-}k \rightarrow \text{top-}p \rightarrow \text{multinomial}$. Temperature must come first because it reshapes the distribution that top-$p$ then cuts. Applying temperature *after* top-$p$ means top-$p$ computed on the wrong distribution. Top-$k$ is order-insensitive to temperature (positive scaling preserves rank), but top-$p$ is sensitive (temperature reshapes cumulative probabilities). Filter steps are deterministic; only the final `multinomial` uses the RNG.
 
 ### Q5: When would you use greedy vs nucleus sampling?
-- **Answer**: Use **greedy** (`temp=0`) for factual QA, benchmarks, or any task needing reproducibility and the single-best answer. Use **nucleus** (`top_p=0.9–0.95, temp=0.7`) for creative generation, dialogue, and summarization — where diversity and avoiding repetition loops matter. Greedy is prone to degenerate looping on creative tasks.
+- **Answer**: Use **greedy** ($T=0$) for factual QA, benchmarks, or any task needing reproducibility and the single-best answer. Use **nucleus** ($\text{top-}p \in [0.9, 0.95]$, $T=0.7$) for creative generation, dialogue, and summarization — where diversity and avoiding repetition loops matter. Greedy is prone to degenerate looping on creative tasks.
 
 ### Q6: What is "neural text degeneration" and which sampling strategy addresses it?
-- **Answer**: Neural text degeneration (Holtzman et al., ICLR 2020) is the failure mode where greedy or beam search produces repetitive, loopy text — because the most likely next token after a repeated phrase is the phrase again. Top-p (nucleus) sampling addresses it by cutting the low-probability tail while adapting the shortlist to the distribution shape, preventing the model from getting stuck in high-probability repetition loops.
+- **Answer**: Neural text degeneration (Holtzman et al., ICLR 2020) is the failure mode where greedy or beam search produces repetitive, loopy text — because the most likely next token after a repeated phrase is the phrase again. Top-$p$ (nucleus) sampling addresses it by cutting the low-probability tail while adapting the shortlist to the distribution shape, preventing the model from getting stuck in high-probability repetition loops.
 
 ---
 
 ## Pro-Tip: How to Impress the Interviewer
 
-- **Cite real numbers**: "On 8-token vocab with logits `[2.3,2.0,0.4,1.5,0.1,2.5,0.7,1.2]`, top-k=3 keeps `[0,1,5]` but top-p=0.6 keeps `[0,5]` because the top-2 already hold 52.8% — and adding a third would push past 0.6."
+- **Cite real numbers**: "On 8-token vocab with logits `[2.3,2.0,0.4,1.5,0.1,2.5,0.7,1.2]`, top-$k=3$ keeps `[0,1,5]` but top-$p=0.6$ keeps `[0,5]` because the top-2 already hold $52.8\%$ — and adding a third would push past 0.6."
 - **Know the silent failure mode**: logprob cumsum produces no error, no crash — just a nucleus equaling the entire vocabulary. "I always `assert nucleus_size < vocab_size` in integration tests."
-- **Know all three components**: `temp` (reshapes), `top-k` (hard cutoff), `top-p` (adaptive cutoff). Production systems use all three in sequence.
-- **Mention beam search as a contrast**: keeps top-B *sequences* (not tokens) across steps. Deterministic but expensive `O(B × V)` per step and prone to generic outputs. Nucleus remains the production default.
-- **Temperature entropy intuition**: at T=0.5, entropy drops to 1.3981 nats (−23% from T=1); at T=2.0, it rises to 1.9984 nats (+11%). The "creativity dial" has concrete, measurable effects.
+- **Know all three components**: $T$ (reshapes), top-$k$ (hard cutoff), top-$p$ (adaptive cutoff). Production systems use all three in sequence.
+- **Mention beam search as a contrast**: keeps top-$B$ *sequences* (not tokens) across steps. Deterministic but expensive $\mathcal{O}(B \times V)$ per step and prone to generic outputs. Nucleus remains the production default.
+- **Temperature entropy intuition**: at $T=0.5$, entropy drops to $1.3981\text{ nats}$ ($-23\%$ from $T=1$); at $T=2.0$, it rises to $1.9984\text{ nats}$ ($+11\%$). The "creativity dial" has concrete, measurable effects.

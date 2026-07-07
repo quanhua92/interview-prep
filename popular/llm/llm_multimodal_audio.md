@@ -56,7 +56,7 @@ Think of this transition like translating a live performance:
            Residual e1                       │
                 │                            │
                 ▼                            │
-    ┌───────────────────────┐                ├─► [ Sum Reconstruction ] ──► Z_hat
+    ┌───────────────────────┐                ├─► [ Sum Recon. ] ──► Z_hat
     │      Quantizer 2      │ ──► Index c2 ──┤
     └───────────┬───────────┘                │
                 │ Subtract                   │
