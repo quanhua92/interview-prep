@@ -17,20 +17,45 @@ Think of this stack like a high-security embassy communication channel:
 * **NVIDIA Riva NIM (Neural Inference Microservice)** acts as the embassy's high-speed operations center: it compiles the models into optimized TensorRT execution engines and hosts them on Triton Inference Server to stream audio at maximum throughput.
 * **Sovereign AI Guardrails (NeMo Guardrails)** acts as the security detail: it inspects incoming messages for threats (prompt injections, off-topic requests) and filters outgoing answers to prevent the leakage of sensitive data (Personally Identifiable Information/PII).
 
-```mermaid
-graph TD
-    UserAudio[User Audio Input] --> ASR[Streaming ASR: FastConformer]
-    ASR -->|Text Stream| Guardrails[NeMo Guardrails]
-    Guardrails -->|Sanitized Prompt| LLM[Local LLM: Llama-3-8B TRT-LLM]
-    LLM -->|Response Tokens| GuardrailsOutput[NeMo Guardrails Output Checker]
-    GuardrailsOutput -->|Verified Text| TTS[Streaming TTS: FastPitch + HiFi-GAN]
-    TTS -->|Audio Output| UserSpeaker[Speaker Output]
-    
-    subgraph Sovereign Security Boundary (On-Premises)
-        Guardrails
-        LLM
-        GuardrailsOutput
-    end
+```text
+           [ User Audio Input ]
+                    │
+                    ▼
+     ┌──────────────────────────────┐
+     │   Streaming ASR:             │
+     │   FastConformer              │
+     └──────────────┬───────────────┘
+                    │ Text Stream
+                    ▼
+     ┌─────────────────────────────────────────────────────┐
+     │ Sovereign Security Boundary (On-Premises)           │
+     │                                                     │
+     │       ┌──────────────────────────────┐              │
+     │       │       NeMo Guardrails        │              │
+     │       └──────────────┬───────────────┘              │
+     │                      │ Sanitized Prompt             │
+     │                      ▼                              │
+     │       ┌──────────────────────────────┐              │
+     │       │          Local LLM:          │              │
+     │       │      Llama-3-8B TRT-LLM      │              │
+     │       └──────────────┬───────────────┘              │
+     │                      │ Response Tokens              │
+     │                      ▼                              │
+     │       ┌──────────────────────────────┐              │
+     │       │        NeMo Guardrails       │              │
+     │       │        Output Checker        │              │
+     │       └──────────────┬───────────────┘              │
+     │                      │                              │
+     └──────────────────────┼──────────────────────────────┘
+                            │ Verified Text
+                            ▼
+     ┌──────────────────────────────┐
+     │   Streaming TTS:             │
+     │   FastPitch + HiFi-GAN       │
+     └──────────────┬───────────────┘
+                    │
+                    ▼
+           [ Speaker Output ]
 ```
 
 ### The Problem It Solves

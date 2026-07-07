@@ -51,15 +51,21 @@ At 400 Gbps RoCEv2, the transfer takes only **1.34 ms**. This is negligible comp
 4. **Decode Execution**: The decode GPU appends the pages to its local block table (under PagedAttention). It continues generating subsequent tokens autoregressively at low, flat ITL.
 5. **Dynamic Co-optimization**: The platform searches for the optimal ratio of prefill-to-decode GPUs (e.g., 2P:1D) based on traffic profiles to maximize overall system goodput.
 
-```mermaid
-graph LR
-    Req["Request"] --> Router{"Request Router<br/>(Mooncake: Prefix-aware)"}
-    Router -->|"Prompt Suffix"| Prefill["Prefill Pool<br/>(TP, low TTFT)<br/>Produces KV"]
-    Prefill -->|"RDMA Transfer<br/>Size_KV / BW (~1.34 ms)"| Decode["Decode Pool<br/>(DP, low ITL)<br/>Consumes KV"]
-    Decode -->|"Tokens"| Client["Client"]
-    style Prefill fill:#fdecea,stroke:#c0392b,stroke-width:2px
-    style Decode fill:#eaf2f8,stroke:#2980b9,stroke-width:2px
-    style Router fill:#fef9e7,stroke:#f1c40f
+```text
+          ┌────────────────┐       ┌──────────────────────┐
+Request ─►│ Request Router │       │     Prefill Pool     │
+          │   (Mooncake:   │──────►│    (TP, low TTFT)    │
+          │ Prefix-aware)  │       │     Produces KV      │
+          └────────────────┘       └──────────┬───────────┘
+                                              │
+                                              │ RDMA Transfer
+                                              │ Size_KV / BW (~1.34 ms)
+                                              ▼
+          ┌────────────────┐       ┌──────────┴───────────┐
+          │     Client     │◄──────│     Decode Pool      │
+          │    (Tokens)    │       │    (DP, low ITL)     │
+          │                │       │     Consumes KV      │
+          └────────────────┘       └──────────────────────┘
 ```
 
 ---

@@ -18,32 +18,29 @@ Think of this architecture like a fast-paced game show contestant:
 * **The Voice (TTS)** starts speaking the first few words (e.g., "Yes, I can...") while the brain is still thinking of the remaining words in the sentence.
 * **The Reflexes (Barge-in Manager)** instantly stop the voice and clear the queue if the user interrupts, shifting the brain's focus immediately.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User
-    participant Client as Client (VAD & Speaker)
-    participant Orch as Async Orchestrator
-    participant ASR as Streaming ASR (Riva)
-    participant LLM as TRT-LLM Engine
-    participant TTS as Streaming TTS (Riva)
-
-    User->>Client: Speaks raw audio
-    Client->>Orch: Stream Audio Chunks (WS)
-    Orch->>ASR: Pipe Audio Frames
-    ASR->>Orch: Partial Transcript (incremental)
-    Orch->>LLM: Stream Prompt Tokens
-    LLM->>Orch: Stream Response Tokens (Prefill Completed)
-    Orch->>TTS: Phrase-Level Text Chunks (2-3 words)
-    TTS->>Orch: Audio Waveform Chunks
-    Orch->>Client: Send Playback Audio Stream
-    Client->>User: Playback Audio Output
-    Note over User,Client: User Interrupts (Barge-In)
-    User->>Client: Starts talking mid-playback
-    Client->>Orch: WS: USER_INTERRUPTED
-    Note over Orch: Cancel LLM & TTS tasks
-    Orch->>Client: Send CLEAR_BUFFER command
-    Orch->>Orch: Truncate conversation history in DB
+```text
+ User      Client       Orch        ASR        LLM        TTS
+   │          │          │          │          │          │
+   ├──────────►│ Speaks raw audio   │          │          │
+   │          ├──────────►│ Stream Audio Chunks (WS)      │
+   │          │          ├──────────►│ Pipe Audio Frames  │
+   │          │          │◄──────────┤ Partial Transcript │
+   │          │          ├────────────────────►│ Stream Prompt Tokens
+   │          │          │◄────────────────────┤ Response Tokens
+   │          │          ├───────────────────────────────►│ Text Chunks
+   │          │          │◄───────────────────────────────┤ Waveform Chunks
+   │          │◄──────────┤ Send Playback Audio Stream    │
+   │◄─────────┤ Playback Audio Output          │          │
+   │          │          │          │          │          │
+   ─── User Interrupts (Barge-In) ─────────────────────────
+   │          │          │          │          │          │
+   ├──────────►│ Starts talking mid-playback   │          │
+   │          ├──────────►│ WS: USER_INTERRUPTED          │
+   │          │          │─┐ Cancel LLM & TTS tasks       │
+   │          │          │ ◄┘       │          │          │
+   │          │◄──────────┤ Send CLEAR_BUFFER  │          │
+   │          │          │─┐ Truncate conversation in DB  │
+   │          │          │ ◄┘       │          │          │
 ```
 
 ### The Problem It Solves

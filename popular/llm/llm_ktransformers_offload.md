@@ -64,17 +64,44 @@ This full-token transfer takes only **218.6 µs** over PCIe Gen4, which is **25,
 5. **Activation Return & Synthesis**: The CPU transfers the expert outputs back to the GPU. The GPU scales the outputs by the gate weights and sums them with the always-on shared expert output to update the residual stream:
    $$y = y_{\text{shared}} + \sum_{i \in \text{active}} G(x)_i \cdot E_i(x)$$
 
-```mermaid
-graph TD
-    X["Hidden State (GPU VRAM)"] --> Attn["1. GPU: Embeddings & Attention"]
-    Attn --> Router["2. GPU: Router project top-k"]
-    Router -->|"3. Stream Hidden State ~14.3 KB"| PCIe["PCIe Bus"]
-    PCIe -->|"4. Arrive CPU DRAM"| CPU["5. CPU: Intel AMX compute active k experts"]
-    CPU -->|"6. Stream Out Activations ~14.3 KB"| PCIe
-    PCIe -->|"7. Arrive GPU VRAM"| Res["8. GPU: Scale & Add to Shared Expert + Residual"]
-    style GPU fill:#eaf2f8,stroke:#2980b9
-    style PCIe fill:#fef9e7,stroke:#f1c40f
-    style CPU fill:#eafaf1,stroke:#27ae60,stroke-width:2px
+```text
+           [ Hidden State (GPU VRAM) ]
+                        │
+                        ▼
+         ┌──────────────────────────────┐
+         │ 1. GPU: Embeddings & Attn    │
+         └──────────────┬───────────────┘
+                        │
+                        ▼
+         ┌──────────────────────────────┐
+         │ 2. GPU: Router top-k         │
+         └──────────────┬───────────────┘
+                        │
+         3. Stream Hidden State (~14.3 KB)
+                        │
+                        ▼
+     ================ PCIe Bus ================
+                        │
+         4. Arrive CPU DRAM
+                        │
+                        ▼
+         ┌──────────────────────────────┐
+         │ 5. CPU: Intel AMX Compute    │
+         │    (Active k Experts)        │
+         └──────────────┬───────────────┘
+                        │
+         6. Stream Out Activations (~14.3 KB)
+                        │
+                        ▼
+     ================ PCIe Bus ================
+                        │
+         7. Arrive GPU VRAM
+                        │
+                        ▼
+         ┌──────────────────────────────┐
+         │ 8. GPU: Scale & Add to Shared│
+         │    Expert + Residual         │
+         └──────────────────────────────┘
 ```
 
 ---

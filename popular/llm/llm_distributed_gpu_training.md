@@ -17,50 +17,50 @@ In ML systems, **Distributed GPU Training** refers to the infrastructure and sys
 2. **Data Ingestion Plane**: Streams training datasets directly from storage to GPU memory.
 3. **Compute & Communication Plane**: Executes forward/backward math and synchronizes parameters using high-performance network collectives.
 
-```mermaid
-graph TD
-    subgraph Storage ["Storage Layer"]
-        FS["Parallel Storage (Lustre / WekaFS)"]
-        GDS["GPUDirect Storage (NVMe-oF)"]
-        FS --> GDS
-    end
-
-    subgraph Node ["DGX H100 Compute Node (1 of 128)"]
-        subgraph GPU_Fabric ["Intra-Node NVLink Fabric"]
-            GPU0["H100 GPU 0"]
-            GPU1["H100 GPU 1"]
-            GPU7["H100 GPU 7"]
-            NVSwitch["NVSwitch Chips (4x)<br/>900 GB/s BiDir per GPU"]
-            GPU0 <--> NVSwitch
-            GPU1 <--> NVSwitch
-            GPU7 <--> NVSwitch
-        end
-
-        PCIe["PCIe Gen 5 Switch"]
-        CPU["Sapphire Rapids CPU"]
-        HCA0["ConnectX-7 HCA 0"]
-        HCA7["ConnectX-7 HCA 7"]
-
-        CPU <--> PCIe
-        GPU0 <--> PCIe
-        HCA0 <--> PCIe
-        HCA7 <--> PCIe
-    end
-
-    GDS -->|Direct DMA via PCIe| GPU0
-    GDS -->|Direct DMA via PCIe| GPU7
-
-    HCA0 -->|400 Gbps| IB_Leaf1["InfiniBand Leaf Switch 1"]
-    HCA7 -->|400 Gbps| IB_Leaf2["InfiniBand Leaf Switch 2"]
-
-    subgraph IB_Network ["Inter-Node Network Fabric"]
-        IB_Leaf1 <--> IB_Spine["InfiniBand Spine Switch (SHARP)"]
-        IB_Leaf2 <--> IB_Spine
-    end
-    
-    style NVSwitch fill:#eaf2f8,stroke:#2980b9
-    style IB_Network fill:#eafaf1,stroke:#27ae60,stroke-width:2px
-    style Storage fill:#fef9e7,stroke:#f1c40f
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                             Storage Layer                              │
+│                                                                        │
+│  ┌─────────────────────────────────┐   ┌────────────────────────────┐  │
+│  │ Parallel Storage (Lustre/WekaFS)│──►│ GPUDirect Storage (NVMe-oF)│  │
+│  └─────────────────────────────────┘   └─────────────┬──────────────┘  │
+└──────────────────────────────────────────────────────┼─────────────────┘
+                                                       │ Direct DMA (PCIe)
+                                                       ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                    DGX H100 Compute Node (1 of 128)                    │
+│                                                                        │
+│  ┌──────────────────┐  ┌──────────────────┐      ┌──────────────────┐  │
+│  │    Sapphire      │  │   ConnectX-7     │      │   ConnectX-7     │  │
+│  │   Rapids CPU     │  │     HCA 0        │      │     HCA 7        │  │
+│  └────────┬─────────┘  └────────┬─────────┘      └────────┬─────────┘  │
+│           │                     │                         │            │
+│           ▼                     ▼                         ▼            │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │                        PCIe Gen 5 Switch                         │  │
+│  └───────┬──────────────────────┬────────────────────────┬──────────┘  │
+│          │                      │                        │             │
+│          ▼                      ▼                        ▼             │
+│  ┌───────────────┐      ┌───────────────┐        ┌───────────────┐     │
+│  │  H100 GPU 0   │◄────►│NVSwitch Chips │◄──────►│  H100 GPU 7   │     │
+│  └───────────────┘      │(4x, 900 GB/s) │        └───────────────┘     │
+│                         └───────────────┘                              │
+└──────────┬────────────────────────────────────────────────┬────────────┘
+           │ 400 Gbps                                       │ 400 Gbps
+           ▼                                                ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                       Inter-Node Network Fabric                        │
+│                                                                        │
+│  ┌─────────┴─────────┐                          ┌────────┴──────────┐  │
+│  │ InfiniBand Leaf 1 │                          │ InfiniBand Leaf 2 │  │
+│  └─────────┬─────────┘                          └────────┬──────────┘  │
+│            │                                             │             │
+│            └─────────────────────┬───────────────────────┘             │
+│                                  ▼                                     │
+│          ┌───────────────────────────────────────────────────┐         │
+│          │          InfiniBand Spine Switch (SHARP)          │         │
+│          └───────────────────────────────────────────────────┘         │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### The Problem It Solves

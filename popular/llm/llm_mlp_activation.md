@@ -24,16 +24,27 @@ Without proper activation functions and MLP architectures, deep networks fail to
 
 Modern MLP blocks evolved along two independent axes: activation functions and network topology.
 
-```mermaid
-graph TD
-    subgraph Axis 1: Activation Function Evolution
-        R["ReLU(x) = max(0, x)<br/>(Hard Switch)"] --> G["GELU(x) = x · Φ(x)<br/>(Gaussian Dimmer)"]
-        G --> S["SiLU(x) = x · σ(x)<br/>(Sigmoid Dimmer)"]
-    end
-    subgraph Axis 2: MLP Topology Evolution
-        V_MLP["Vanilla MLP<br/>down(act(fc(x)))<br/>(2 Matrices)"] --> G_MLP["Gated MLP (SwiGLU)<br/>down(silu(gate(x)) · up(x))<br/>(3 Matrices)"]
-    end
-    S -.->|Combined in modern LLMs| G_MLP
+```text
+  Axis 1: Activation Evolution                 Axis 2: MLP Topology Evolution
+  ┌──────────────────────────────┐             ┌──────────────────────────────┐
+  │           ReLU(x)            │             │         Vanilla MLP          │
+  │         = max(0, x)          │             │       down(act(fc(x)))       │
+  │        (Hard Switch)         │             │         (2 Matrices)         │
+  └──────────────┬───────────────┘             └──────────────┬───────────────┘
+                 │                                            │
+                 ▼                                            │
+  ┌──────────────────────────────┐                            │
+  │           GELU(x)            │                            │
+  │          = x · Φ(x)          │                            │
+  │      (Gaussian Dimmer)       │                            │
+  └──────────────┬───────────────┘                            │
+                 │                                            │
+                 ▼                                            ▼
+  ┌──────────────────────────────┐             ┌──────────────────────────────┐
+  │           SiLU(x)            │             │      Gated MLP (SwiGLU)      │
+  │          = x · σ(x)          │ ┄┄┄┄┄┄┄┄┄┄► │     down(silu(gate) ⊙ up)    │
+  │       (Sigmoid Dimmer)       │             │         (3 Matrices)         │
+  └──────────────────────────────┘             └──────────────────────────────┘
 ```
 
 #### Step-by-Step Gated MLP (SwiGLU) Pipeline:

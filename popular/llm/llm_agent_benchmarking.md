@@ -18,24 +18,45 @@ Think of evaluating a voice agent like testing a drive-thru intercom system at a
 * **TTFT vs. TTFA** is the latency gap: TTFT is how fast the cashier registers the answer in their brain (first text token), whereas TTFA is how long it takes for their voice to actually travel out of the intercom speaker (first audio wave).
 * **Barge-In Success** is when you interrupt the cashier mid-sentence. Does the cashier immediately stop talking to listen, or do they keep reading their script over you?
 
-```mermaid
-graph TD
-    %% Test Bench Pipeline
-    subgraph Test Bench Simulator
-        CleanAudio[Clean Reference Audio] --> NoiseInj[Acoustic Noise Injector: SNR dB]
-        NoiseInj --> NetSim[Network Jitter/Loss Simulator]
-        NetSim --> ASR[ASR Model under Test]
-        ASR -->|Text Transcript| LLM[LLM Judge / Evaluator]
-        CleanAudio -->|Reference Text| LLM
-        LLM -->|Metrics| Report[Evaluation Report: WER, Latency, MOS]
-    end
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                          Test Bench Simulator                          │
+│                                                                        │
+│   ┌────────────────────────┐                                           │
+│   │ Clean Reference Audio  │──────────────────────────┐                │
+│   └───────────┬────────────┘                          │                │
+│               │                                       │ Reference Text │
+│               ▼                                       ▼                │
+│   ┌────────────────────────┐              ┌───────────┴────────────┐   │
+│   │ Acoustic Noise Injector│              │       LLM Judge        │   │
+│   │       (SNR dB)         │              │      / Evaluator       │   │
+│   └───────────┬────────────┘              └──────┬─────────┴───────┘   │
+│               │                                  │    ▲                │
+│               ▼                                  │    │ Text           │
+│   ┌────────────────────────┐                     │    │ Transcript     │
+│   │  Network Jitter/Loss   │                     │    │                │
+│   │       Simulator        │                     │    │                │
+│   └───────────┬────────────┘                     │    │                │
+│               │                                  │    │                │
+│               ▼                                  │    │                │
+│   ┌────────────────────────┐                     │    │                │
+│   │  ASR Model under Test  │─────────────────────┼─────────┘           │
+│   └────────────────────────┘                     │                     │
+│                                                  ▼                     │
+│                                           ┌──────┴─────────────────┐   │
+│                                           │   Evaluation Report:   │   │
+│                                           │    WER, Latency, MOS   │   │
+│                                           └────────────────────────┘   │
+└────────────────────────────────────────────────────────────────────────┘
 
-    subgraph User Experience Metrics
-        direction LR
-        TTFT[Time to First Token]
-        TTFA[Time to First Audio]
-        BargeIn[Barge-In Success Rate]
-    end
+┌────────────────────────────────────────────────────────────────────────┐
+│                        User Experience Metrics                         │
+│                                                                        │
+│  ┌────────────────────────┐ ┌────────────────────────┐ ┌─────────────┐ │
+│  │  Time to First Token   │ │  Time to First Audio   │ │  Barge-In   │ │
+│  │        (TTFT)          │ │        (TTFA)          │ │Success Rate │ │
+│  └────────────────────────┘ └────────────────────────┘ └─────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### The Problem It Solves

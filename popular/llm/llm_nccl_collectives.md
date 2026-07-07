@@ -34,18 +34,36 @@ NCCL implements 5 core collective primitives that define the vocabulary of distr
 4. **ReduceScatter**: Performs an element-wise reduction across all ranks, splits the result into $K$ chunks, and distributes chunk $r$ to rank $r$.
 5. **AllGather**: Gathers a shard from each rank, concatenates them in rank order, and distributes the full concatenated buffer to all ranks.
 
-```mermaid
-graph TD
-    subgraph Primitives
-        BC["Broadcast (One-to-All)"]
-        RD["Reduce (All-to-One)"]
-        AR["AllReduce (All-to-All)"]
-        RS["ReduceScatter (All-to-Shards)"]
-        AG["AllGather (Shards-to-All)"]
-    end
-    
-    AR -.->|"Identical Decomposition"| RS
-    RS -.->|"Followed by"| AG
+```text
+┌─────────────────────────────────────────────────────────────────┐
+│                           Primitives                            │
+│                                                                 │
+│   ┌─────────────────────┐             ┌─────────────────────┐   │
+│   │      Broadcast      │             │       Reduce        │   │
+│   │    (One-to-All)     │             │    (All-to-One)     │   │
+│   └─────────────────────┘             └─────────────────────┘   │
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                        AllReduce                        │   │
+│   │                      (All-to-All)                       │   │
+│   └────────────────────────────┬────────────────────────────┘   │
+│                                │                                │
+│                                ┊ Identical                      │
+│                                ┊ Decomposition                  │
+│                                ▼                                │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                      ReduceScatter                      │   │
+│   │                    (All-to-Shards)                      │   │
+│   └────────────────────────────┬────────────────────────────┘   │
+│                                │                                │
+│                                ┊ Followed                       │
+│                                ┊ By                             │
+│                                ▼                                │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                        AllGather                        │   │
+│   │                      (Shards-to-All)                    │   │
+│   └─────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 #### Ring-AllReduce Mechanics

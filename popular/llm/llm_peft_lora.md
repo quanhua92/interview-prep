@@ -35,29 +35,35 @@ Where:
 
 Since $B = 0$ at the start of training, the update $\Delta W = \frac{\alpha}{r} BA = 0$, meaning the adapter starts as a pure no-op, preserving base model behavior exactly.
 
-```mermaid
-graph TD
-    x["Input x (shape: [k])"]
-    subgraph LoRA Layer
-        W0["Frozen Base W₀ (shape: [d, k])"]
-        A["Down-projection A (shape: [r, k])"]
-        B["Up-projection B (shape: [d, r])"]
-        Scale["Scale Factor (α / r)"]
-        Add["Sum (+)"]
-    end
-    
-    x --> W0
-    x --> A
-    W0 -->|W₀·x| Add
-    A -->|A·x| B
-    B -->|B·A·x| Scale
-    Scale -->| (α/r)·B·A·x | Add
-    Add --> y["Output y (shape: [d])"]
-
-    style W0 fill:#eaf2f8,stroke:#2980b9,stroke-width:2px
-    style A fill:#fef9e7,stroke:#f1c40f,stroke-width:2px
-    style B fill:#fef9e7,stroke:#f1c40f,stroke-width:2px
-    style Add fill:#eafaf1,stroke:#27ae60,stroke-width:2px
+```text
+                     Input x (shape: [k])
+                              │
+             ┌────────────────┴────────────────┐
+             ▼                                 ▼
+   ┌───────────────────┐             ┌───────────────────┐
+   │  Frozen Base W₀   │             │ Down-projection A │
+   │  (shape: [d, k])  │             │  (shape: [r, k])  │
+   └─────────┬─────────┘             └─────────┬─────────┘
+             │                                 │ A·x
+             │                                 ▼
+             │                       ┌───────────────────┐
+             │                       │  Up-projection B  │
+             │                       │  (shape: [d, r])  │
+             │                       └─────────┬─────────┘
+             │                                 │ B·A·x
+             │                                 ▼
+             │                       ┌───────────────────┐
+             │                       │   Scale Factor    │
+             │                       │      (α / r)      │
+             │                       └─────────┬─────────┘
+             │ W₀·x                            │ (α/r)·B·A·x
+             ▼                                 ▼
+           ┌─────────────────────────────────────┐
+           │               Sum (+)               │
+           └──────────────────┬──────────────────┘
+                              │
+                              ▼
+                     Output y (shape: [d])
 ```
 
 During inference, if only a single adapter is deployed, we can pre-compute $W_{\text{merged}} = W_0 + \frac{\alpha}{r} BA$ and run a normal linear layer ($y = W_{\text{merged}} x$), introducing **zero** additional inference latency.

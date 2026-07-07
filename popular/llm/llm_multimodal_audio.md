@@ -17,26 +17,56 @@ Think of this transition like translating a live performance:
 * **The Native Multimodal ALM**: A bilingual voice actor listens to the performance and immediately translates it live, preserving the exact tone, laughter, emotion, and pace.
 * **Residual Vector Quantization (RVQ)** is like painting with hierarchical brushes: instead of saving the exact color of every pixel (raw audio), the first brush paints the coarse shapes (Layer 1), the second adds shadows (Layer 2), and the third adds fine details (Layer 3). The final sound is the sum of these layers.
 
-```mermaid
-graph TD
-    %% Native Multimodal Pipeline
-    subgraph Native Multimodal ALM
-        AudioIn[User Speech Waveform] --> Encoder[Audio Encoder: Whisper / AST]
-        Encoder -->|Continuous Features| Projector[Projection Module: MLP / Q-Former]
-        Projector -->|Projected Embeddings| LLM[Decoder-Only LLM Token Space]
-        LLM -->|Discrete Audio Tokens| Vocoder[Neural Vocoder: Vocos / BigVGAN]
-        Vocoder --> AudioOut[Synthesized Speech Waveform]
-    end
-    
-    %% Residual Vector Quantization
-    subgraph RVQ Processing
-        Continuous[Continuous Embedding Z] --> Q1[Quantizer 1: Coarse Index c1]
-        Continuous -->|Subtract| E1[Residual e1]
-        E1 --> Q2[Quantizer 2: Index c2]
-        E1 -->|Subtract| E2[Residual e2]
-        E2 --> Q3[Quantizer 3: Fine Index c3]
-        Q1 & Q2 & Q3 -->|Sum Reconstruction| Reconstructed[Reconstructed Embedding Z_hat]
-    end
+```text
+=== Native Multimodal ALM ===
+     [ User Speech Waveform ]
+                │
+                ▼
+┌───────────────────────────────┐
+│     Audio Encoder: Whisper    │
+└───────────────┬───────────────┘
+                │ Continuous Features
+                ▼
+┌───────────────────────────────┐
+│ Projection: MLP / Q-Former    │
+└───────────────┬───────────────┘
+                │ Projected Embeddings
+                ▼
+┌───────────────────────────────┐
+│ Decoder-Only LLM Token Space  │
+└───────────────┬───────────────┘
+                │ Discrete Audio Tokens
+                ▼
+┌───────────────────────────────┐
+│ Neural Vocoder: Vocos/BigVGAN │
+└───────────────┬───────────────┘
+                │
+                ▼
+    [ Synthesized Speech Wave ]
+
+=== RVQ Processing ===
+       Continuous Embedding Z
+                │
+                ▼
+    ┌───────────────────────┐
+    │  Quantizer 1 (Coarse) │ ──► Index c1 ──┐
+    └───────────┬───────────┘                │
+                │ Subtract                   │
+                ▼                            │
+           Residual e1                       │
+                │                            │
+                ▼                            │
+    ┌───────────────────────┐                ├─► [ Sum Reconstruction ] ──► Z_hat
+    │      Quantizer 2      │ ──► Index c2 ──┤
+    └───────────┬───────────┘                │
+                │ Subtract                   │
+                ▼                            │
+           Residual e2                       │
+                │                            │
+                ▼                            │
+    ┌───────────────────────┐                │
+    │   Quantizer 3 (Fine)  │ ──► Index c3 ──┘
+    └───────────────────────┘
 ```
 
 ### The Problem It Solves

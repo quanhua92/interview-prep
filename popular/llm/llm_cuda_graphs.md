@@ -28,23 +28,23 @@ For small models or small batch sizes, this host latency accounts for **over 50%
 4. **Replay**: At runtime, the engine rounds the active batch size up to the nearest captured bucket, writes input data in-place to pre-allocated tensors, and invokes `graph.replay()`.
 5. **Sentinel Padding**: Unused slots in the rounded batch size are padded with a `-1` sentinel. The attention kernel reads this sentinel and skips VRAM writes for those slots, preventing memory corruption.
 
-```mermaid
-graph TD
-    subgraph Eager Mode (72 Launches)
-        CPU1["CPU: Launch Kernel 1"] -->|10us tax| GPU1["GPU: Execute RMSNorm"]
-        CPU2["CPU: Launch Kernel 2"] -->|10us tax| GPU2["GPU: Execute QKV Proj"]
-        CPU3["CPU: Launch Kernel 3"] -->|10us tax| GPU3["GPU: Execute Attention"]
-        CPU4["CPU: Launch Kernel 72"] -->|10us tax| GPU4["GPU: Execute Softmax"]
-    end
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                        Eager Mode (72 Launches)                        │
+│                                                                        │
+│  CPU: Launch K1 ──────► GPU: RMSNorm   (10us driver tax per launch)     │
+│  CPU: Launch K2 ──────► GPU: QKV Proj                                   │
+│  CPU: Launch K3 ──────► GPU: Attention                                  │
+│  ...                                                                    │
+│  CPU: Launch K72 ─────► GPU: Softmax                                    │
+└────────────────────────────────────────────────────────────────────────┘
 
-    subgraph CUDA Graph Mode (1 Launch)
-        CPUG["CPU: graph.replay()"] -->|5us tax| GPUG["GPU: Run Frozen DAG (72 kernels)"]
-    end
-
-    style CPU1 fill:#fdecea,stroke:#c0392b
-    style CPU2 fill:#fdecea,stroke:#c0392b
-    style CPU4 fill:#fdecea,stroke:#c0392b
-    style CPUG fill:#eafaf1,stroke:#27ae60,stroke-width:2px
+┌────────────────────────────────────────────────────────────────────────┐
+│                       CUDA Graph Mode (1 Launch)                       │
+│                                                                        │
+│  CPU: graph.replay() ──► GPU: Run Frozen DAG (72 kernels in one go)    │
+│                          (Single 5us driver tax)                       │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

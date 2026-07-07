@@ -24,13 +24,30 @@ Continuous batching solves this by immediately evicting Request A when it finish
 
 The scheduler orchestrates execution by running a cycle: **Schedule** $\rightarrow$ **Execute (Model Forward)** $\rightarrow$ **Postprocess**.
 
-```mermaid
-stateDiagram-v2
-    [*] --> WAITING: Request Arrives
-    WAITING --> RUNNING: schedule() -> prefill prompt
-    RUNNING --> WAITING: preempt() -> OOM during decode (re-queue at FRONT)
-    RUNNING --> FINISHED: postprocess() -> EOS or max_tokens reached
-    FINISHED --> [*]: Release KV blocks
+```text
+               [*] (Request Arrives)
+                │
+                ▼
+         ┌─────────────┐
+         │   WAITING   │◄──────────────────────────┐
+         └──────┬──────┘                           │
+                │                                  │
+                │ schedule() ->                    │ preempt() ->
+                │ prefill prompt                   │ OOM during decode
+                ▼                                  │ (re-queue FRONT)
+         ┌─────────────┐                           │
+         │   RUNNING   ├───────────────────────────┘
+         └──────┬──────┘
+                │
+                │ postprocess() ->
+                │ EOS / max_tokens reached
+                ▼
+         ┌─────────────┐
+         │  FINISHED   │
+         └──────┬──────┘
+                │
+                ▼
+               [*] (Release KV blocks)
 ```
 
 * **Prefill Priority**: New prompts in the `WAITING` queue are scheduled before running decodes to minimize Time-to-First-Token (TTFT).

@@ -29,23 +29,39 @@ Consequently, those 9 shared tokens must be recomputed for every request. RadixA
 4. **Insert & Split**: The prompt is inserted. If the match stops mid-edge, the edge is **split**: the matched prefix becomes a new internal node, and the old tail and new query suffix become child branches.
 5. **Reference Counting & LRU Eviction**: Nodes track active generation readers (`ref_count`). When a request finishes, `ref_count` is decremented. When memory is full, the engine evicts the **least-recently-used (LRU) leaf nodes** with `ref_count == 0`, recursively pruning upwards.
 
-```mermaid
-graph TD
-    Root["Root Node<br/>ref_count = 3"]
-    SysNode["Internal Node: [100, 101, 102]<br/>(Shared System Prompt)<br/>ref_count = 3"]
-    Q1Node["Internal Node: [200, 201, 202]<br/>(User: 'what is python')<br/>ref_count = 2"]
-    Q2Node["Leaf Node: [210, 211]<br/>(User: 'what is rust')<br/>ref_count = 1"]
-    Q3Node["Leaf Node: [300, 301]<br/>(User: 'example')<br/>ref_count = 1"]
-
-    Root -->|"[100]"| SysNode
-    SysNode -->|"[200]"| Q1Node
-    SysNode -->|"[210]"| Q2Node
-    Q1Node -->|"[300]"| Q3Node
-
-    style SysNode fill:#eafaf1,stroke:#27ae60,stroke-width:2px
-    style Q1Node fill:#eaf2f8,stroke:#2980b9
-    style Q2Node fill:#f4ecf7,stroke:#8e44ad
-    style Q3Node fill:#fcf3cf,stroke:#f39c12
+```text
+                          ┌──────────────────────┐
+                          │      Root Node       │
+                          │    ref_count = 3     │
+                          └──────────┬───────────┘
+                                     │
+                                     │ "[100]"
+                                     ▼
+                          ┌──────────────────────┐
+                          │    Internal Node     │
+                          │   [100, 101, 102]    │
+                          │ (Shared System Pr.)  │
+                          │    ref_count = 3     │
+                          └────┬────────────┬────┘
+                               │            │
+                               │            │
+                      ┌────────┘            └────────┐
+             "[200]"  ▼                              ▼  "[210]"
+             ┌────────┬────────┐            ┌────────┬────────┐
+             │  Internal Node  │            │    Leaf Node    │
+             │ [200, 201, 202] │            │   [210, 211]    │
+             │ (User: 'python')│            │ (User: 'rust')  │
+             │  ref_count = 2  │            │  ref_count = 1  │
+             └────────┬────────┘            └─────────────────┘
+                      │
+                      │ "[300]"
+                      ▼
+             ┌────────┬────────┐
+             │    Leaf Node    │
+             │   [300, 301]    │
+             │ (User: 'example')│
+             │  ref_count = 1  │
+             └─────────────────┘
 ```
 
 ---

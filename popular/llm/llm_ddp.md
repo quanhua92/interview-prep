@@ -27,24 +27,33 @@ However, replicas will drift if gradients differ. If we do not synchronize, rank
    $$W \leftarrow W - \eta \cdot g_{\text{averaged}}$$
    Because the starting weights $W$ and the gradients $g_{\text{averaged}}$ are identical, the updated weights remain bit-identical on all nodes.
 
-```mermaid
-graph TD
-    subgraph Rank 0 (GPU 0)
-        X0["Batch X0"] --> Fwd0["Forward Pass"]
-        Fwd0 --> Bwd0["Backward Pass"]
-        Bwd0 --> G0["Local Gradient g0"]
-    end
-    subgraph Rank 1 (GPU 1)
-        X1["Batch X1"] --> Fwd1["Forward Pass"]
-        Fwd1 --> Bwd1["Backward Pass"]
-        Bwd1 --> G1["Local Gradient g1"]
-    end
-    
-    G0 --> AR["AllReduce (Average)"]
-    G1 --> AR
-    
-    AR -->|Identical Avg Grad| Step0["SGD Step (W_new)"]
-    AR -->|Identical Avg Grad| Step1["SGD Step (W_new)"]
+```text
+   ┌──────────────────────────────┐    ┌──────────────────────────────┐
+   │        Rank 0 (GPU 0)        │    │        Rank 1 (GPU 1)        │
+   │                              │    │                              │
+   │  Batch X0 ──► Forward Pass   │    │  Batch X1 ──► Forward Pass   │
+   │                      │       │    │                      │       │
+   │                      ▼       │    │                      ▼       │
+   │                Backward Pass │    │                Backward Pass │
+   │                      │       │    │                      │       │
+   │                      ▼       │    │                      ▼       │
+   │                Local Grad g0 │    │                Local Grad g1 │
+   └──────────────┬───────────────┘    └──────────────┬───────────────┘
+                  │                                   │
+                  └──────────┐             ┌──────────┘
+                             ▼             ▼
+                      ┌──────┴────────────┴──────┐
+                      │    AllReduce (Average)   │
+                      └────────────┬─────────────┘
+                                   │
+                  ┌────────────────┴────────────────┐
+                  │                                 │
+                  │ Identical Avg     Identical Avg │
+                  │ Grad              Grad          │
+                  ▼                                 ▼
+   ┌──────────────────────────────┐    ┌──────────────────────────────┐
+   │       SGD Step (W_new)       │    │       SGD Step (W_new)       │
+   └──────────────────────────────┘    └──────────────────────────────┘
 ```
 
 ---

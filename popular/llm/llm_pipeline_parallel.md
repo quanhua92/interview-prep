@@ -16,16 +16,38 @@ To fix this, you split your shipment into many smaller batches (**micro-batches*
 
 In LLM systems, **Pipeline Parallelism (PP)** partitions a model's layers sequentially across $K$ stages (nodes). Rather than executing a whole batch of inputs through the entire model layer-by-layer, PP splits a mini-batch into $M$ micro-batches and streams them through the partitioned stages. The communication is point-to-point: Stage $k$ sends its output activations directly to Stage $k+1$, and sends its gradients back to Stage $k-1$ in reverse.
 
-```mermaid
-graph LR
-    NAIVE["naive pipeline<br/>(one batch, K stages)<br/>75% of GPUs idle"] -->|"split batch into M pieces"| GP["GPipe<br/>(Huang 2019)<br/>fill the pipeline<br/>bubble = (K-1)/(K+M-1)"]
-    GP -->|"start backward EARLY"| F1B["1F1B / PipeDream-Flush<br/>(Narayanan SC21)<br/>SAME bubble<br/>but mem M x -> K x"]
-    F1B -->|"V virtual stages/device"| INT["Interleaved 1F1B<br/>(Megatron-LM)<br/>bubble = (K-1)/(K+M*V-1)"]
-
-    style NAIVE fill:#fdecea,stroke:#c0392b
-    style GP fill:#fef9e7,stroke:#f1c40f
-    style F1B fill:#eaf2f8,stroke:#2980b9
-    style INT fill:#eafaf1,stroke:#27ae60,stroke-width:3px
+```text
+┌───────────────────────────────┐
+│        Naive Pipeline         │
+│     (one batch, K stages)     │
+│       75% of GPUs idle        │
+└───────────────┬───────────────┘
+                │
+                │ split batch into M pieces
+                ▼
+┌───────────────────────────────┐
+│             GPipe             │
+│         (Huang 2019)          │
+│       fill the pipeline       │
+│    bubble = (K-1)/(K+M-1)     │
+└───────────────┬───────────────┘
+                │
+                │ start backward EARLY
+                ▼
+┌───────────────────────────────┐
+│    1F1B / PipeDream-Flush     │
+│       (Narayanan SC21)        │
+│          SAME bubble          │
+│      but mem M x -> K x       │
+└───────────────┬───────────────┘
+                │
+                │ V virtual stages/device
+                ▼
+┌───────────────────────────────┐
+│       Interleaved 1F1B        │
+│         (Megatron-LM)         │
+│   bubble = (K-1)/(K+M*V-1)    │
+└───────────────────────────────┘
 ```
 
 ### The Problem It Solves

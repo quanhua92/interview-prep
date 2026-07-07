@@ -8,18 +8,41 @@ Welcome to the **LLM Systems study guide**. This directory contains 34 deep-dive
 
 To build solid LLM systems intuition, progress through the modules in sequence:
 
-```mermaid
-graph TD
-    classDef step fill:#2d3748,stroke:#4a5568,stroke-width:2px,color:#fff;
-    classDef default fill:#1a202c,stroke:#2d3748,color:#a0aec0;
-
-    S1["Module 1: Transformer Foundations<br>(Math & Layer Basics)"] --> S2["Module 2: Memory & Attention Efficiency<br>(FlashAttention & GQA)"]
-    S2 --> S3["Module 3: Inference & Serving Stack<br>(PagedAttention & Schedulers)"]
-    S3 --> S4["Module 4 & 5: Adaptations & Distributed Training<br>(LoRA, TP, PP, ZeRO)"]
-    S4 --> S5["Module 6: Advanced Scale & Serving<br>(MoE, Speculative Dec, Disaggregated)"]
-    S5 --> S6["Module 7: Conversational & Voice AI<br>(VAD, Streaming ASR/TTS, ALMs)"]
-
-    class S1,S2,S3,S4,S5,S6 step;
+```text
+┌────────────────────────────────────────────────────────┐
+│           Module 1: Transformer Foundations            │
+│                 (Math & Layer Basics)                  │
+└───────────────────────────┬────────────────────────────┘
+                            │
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│         Module 2: Memory & Attention Efficiency        │
+│                 (FlashAttention & GQA)                 │
+└───────────────────────────┬────────────────────────────┘
+                            │
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│           Module 3: Inference & Serving Stack          │
+│              (PagedAttention & Schedulers)             │
+└───────────────────────────┬────────────────────────────┘
+                            │
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│    Module 4 & 5: Adaptations & Distributed Training    │
+│                  (LoRA, TP, PP, ZeRO)                  │
+└───────────────────────────┬────────────────────────────┘
+                            │
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│           Module 6: Advanced Scale & Serving           │
+│          (MoE, Speculative Dec, Disaggregated)         │
+└───────────────────────────┬────────────────────────────┘
+                            │
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│          Module 7: Conversational & Voice AI           │
+│             (VAD, Streaming ASR/TTS, ALMs)             │
+└────────────────────────────────────────────────────────┘
 ```
 
 ---

@@ -28,23 +28,20 @@ Gradient checkpointing splits the $L$ layers of a network into $\approx \sqrt{L}
 1. **Forward Pass**: It computes the full forward pass, but saves (checkpoints) only the boundary inputs at every $\sqrt{L}$-th layer. All intermediate activations within the segments are immediately thrown away.
 2. **Backward Pass**: When backpropagation enters a segment of length $\sqrt{L}$, it takes the saved segment boundary input, runs a local forward pass across the $\sqrt{L}$ layers in that segment to recompute the missing intermediate activations, and then performs the backward pass for that segment. Once the segment's gradients are computed, the recomputed activations are discarded.
 
-```mermaid
-graph TD
-    subgraph Vanilla Backpropagation
-        v0[Layer 0: Store] --> v1[Layer 1: Store] --> v2[Layer 2: Store] --> v3[Layer 3: Store]
-    end
-    subgraph Gradient Checkpointing (√L = 2)
-        c0[Layer 0: CHECKPOINT] --> c1[Layer 1: Discard] --> c2[Layer 2: CHECKPOINT] --> c3[Layer 3: Discard]
-        
-        c0 -.->|recompute| c1
-        c2 -.->|recompute| c3
-    end
-    style c0 fill:#eafaf1,stroke:#27ae60,stroke-width:2px
-    style c2 fill:#eafaf1,stroke:#27ae60,stroke-width:2px
-    style v0 fill:#fdecea,stroke:#c0392b
-    style v1 fill:#fdecea,stroke:#c0392b
-    style v2 fill:#fdecea,stroke:#c0392b
-    style v3 fill:#fdecea,stroke:#c0392b
+```text
+=== Vanilla Backpropagation ===
+┌───────────┐     ┌───────────┐     ┌───────────┐     ┌───────────┐
+│  Layer 0  │ ──► │  Layer 1  │ ──► │  Layer 2  │ ──► │  Layer 3  │
+│  (Store)  │     │  (Store)  │     │  (Store)  │     │  (Store)  │
+└───────────┘     └───────────┘     └───────────┘     └───────────┘
+
+=== Gradient Checkpointing (√L = 2) ===
+┌───────────┐     ┌───────────┐     ┌───────────┐     ┌───────────┐
+│  Layer 0  │ ──► │  Layer 1  │ ──► │  Layer 2  │ ──► │  Layer 3  │
+│[CHECKPT]  │     │ [Discard] │     │ [CHECKPT] │     │ [Discard] │
+└───────────┘     └───────────┘     └───────────┘     └───────────┘
+      │                 ▲                 │                 ▲
+      └─ recompute ─────┘                 └─ recompute ─────┘
 ```
 
 During training, this recomputation runs exactly one extra forward pass for each non-checkpointed layer, introducing a predictable $\sim 33\%$ compute overhead, because a typical training step already costs roughly 3 forward-pass equivalents (1 forward + 1 backward, where the backward pass costs $\approx 2\times$ the forward pass due to calculating gradients for both weights and activations). Adding 1 extra forward pass represents $\frac{1}{3} \approx 33.3\%$ overhead.

@@ -51,21 +51,60 @@ Moving the KV cache over RoCE 400G takes just **0.252 ms**, which is 13.5× fast
 5. **Block Table Mapping**: The pulled bytes are mapped into the local PagedAttention block table (logical page $\rightarrow$ physical page). Once mapped, the attention kernel reads the pages seamlessly; the transfer is fully transparent.
 6. **VRAM Eviction Offloading**: When a node runs low on VRAM, rather than evicting and losing the KV cache, LMCache offloads it down the tier ladder (to DRAM, NVMe, or S3) to be retrieved later.
 
-```mermaid
-graph TD
-    Req["Request prompt arrives on Node 0"] --> VRAM{"1. Local VRAM Hit?"}
-    VRAM -->|"Yes"| Serve["Serve from local VRAM 🔗 PAGED"]
-    VRAM -->|"No"| DRAM{"2. Local CPU DRAM?"}
-    DRAM -->|"Yes"| PullD["Copy DRAM -> VRAM (PCIe)"] --> Serve
-    DRAM -->|"No"| NVME{"3. Local NVMe SSD?"}
-    NVME -->|"Yes"| PullN["Copy NVMe -> VRAM"] --> Serve
-    NVME -->|"No"| GI{"4. Global Index Lookup"}
-    GI -->|"Hit on Node 1 DRAM"| Net["RDMA Pull Node 1 DRAM -> Node 0 VRAM"] --> Serve
-    GI -->|"Miss"| PF["Prefill & write KV cache to VRAM"] --> Serve
-    style VRAM fill:#eaf2f8,stroke:#2980b9
-    style GI fill:#fef9e7,stroke:#f1c40f
-    style Net fill:#eafaf1,stroke:#27ae60,stroke-width:2px
-    style PF fill:#fdecea,stroke:#c0392b
+```text
+           [ Request prompt arrives on Node 0 ]
+                           │
+                           ▼
+                 /───────────────────\
+                <  1. Local VRAM     >
+                <     Hit?           >
+                 \───────────────────/
+                   │               │
+                  No              Yes
+                   │               │
+                   ▼               └──────────────┐
+         /───────────────────\                    │
+        <  2. Local CPU      >                    │
+        <     DRAM?          >                    │
+         \───────────────────/                    │
+           │               │                      │
+          No              Yes                     │
+           │               │                      │
+           │               ▼                      │
+           │     ┌───────────────────┐            │
+           │     │ Copy DRAM ──► VRAM│            │
+           │     │ (PCIe Transfer)   │            │
+           │     └─────────┬─────────┘            │
+           ▼               │                      │
+         /───────────────────\                    │
+        <  3. Local NVMe     >                    │
+        <     SSD?           >                    │
+         \───────────────────/                    │
+           │               │                      │
+          No              Yes                     │
+           │               │                      │
+           │               ▼                      │
+           │     ┌───────────────────┐            │
+           │     │ Copy NVMe ──► VRAM│            │
+           │     └─────────┬─────────┘            │
+           ▼               │                      │
+         /───────────────────\                    │
+        <  4. Global Index   >                    │
+        <     Lookup         >                    │
+         \───────────────────/                    │
+           │               │                      │
+         Miss          Hit Node 1                 │
+           │               │                      │
+           ▼               ▼                      │
+  ┌─────────────────┐ ┌─────────────────┐         │
+  │ Prefill & Write │ │ RDMA Pull       │         │
+  │ KV to VRAM      │ │ Node 1 ──► Node0│         │
+  └────────┬────────┘ └────────┬────────┘         │
+           │               │                      │
+           ▼               ▼                      ▼
+  ┌─────────────────────────────────────────────────┐
+  │         Serve from local VRAM 🔗 PAGED          │
+  └─────────────────────────────────────────────────┘
 ```
 
 ---

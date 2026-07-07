@@ -40,18 +40,32 @@ On a production scale, this parameter-to-FLOPs decoupling is massive:
    - **Router z-loss ($L_z$)**: Penalizes large router logits to prevent softmax saturation and stabilize FP8/FP16 training:
      $$L_z = \frac{1}{N}\sum_{j=1}^N (\log \sum_{i=1}^E e^{H(x_j)_i})^2$$
 
-```mermaid
-graph LR
-    X["Incoming token x"] --> ROUTER{"Router W_g"}
-    ROUTER -->|"1. logits H(x)"| KTK["KeepTopK (k)"]
-    KTK -->|"2. mask non-top-k to -inf"| SM["Softmax"]
-    SM -->|"3. gate weights G"| EXP["Active k Experts"]
-    X --> EXP
-    EXP -->|"4. E_i(x) outputs"| SUM["y = Σ G_i · E_i(x)"]
-    style ROUTER fill:#fef9e7,stroke:#f1c40f,stroke-width:2px
-    style KTK fill:#fef9e7,stroke:#f1c40f
-    style EXP fill:#eafaf1,stroke:#27ae60,stroke-width:2px
-    style SUM fill:#eaf2f8,stroke:#2980b9
+```text
+                         ┌──────────────┐
+                  ┌─────►│  Router W_g  │
+                  │      └──────┬───────┘
+                  │             │ 1. logits H(x)
+                  │             ▼
+                  │      ┌──────────────┐
+                  │      │ KeepTopK (k) │
+                  │      └──────┬───────┘
+                  │             │ 2. mask non-top-k to -inf
+                  │             ▼
+                  │      ┌──────────────┐
+ [ Incoming token x ]    │   Softmax    │
+                  │      └──────┬───────┘
+                  │             │ 3. gate weights G
+                  │             ▼
+                  │      ┌──────────────┐
+                  └─────►│   Active k   │
+                         │   Experts    │
+                         └──────┬───────┘
+                                │ 4. E_i(x) outputs
+                                ▼
+                         ┌──────────────┐
+                         │   y = Σ G_i  │
+                         │   · E_i(x)   │
+                         └──────────────┘
 ```
 
 ---

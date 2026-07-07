@@ -12,23 +12,42 @@
 
 Think of the GPU as a chef working in a kitchen: the GPU's fast on-chip **SRAM** is the cutting board right in front of the chef, while the slow main memory **HBM (High-Bandwidth Memory)** is a pantry at the far end of the kitchen. Standard attention forces the chef to chop a tiny bit of ingredients, walk all the way to the pantry to store them, walk back, retrieve them, and repeat — resulting in the chef spending 95% of their time walking back and forth rather than cooking. **FlashAttention** reorganizes the work so that the chef brings small, bite-sized "tiles" of ingredients to the cutting board, completes all necessary steps (including the tricky softmax normalization) on that board, and only walks to the pantry once to deliver the final dish. By processing the attention matrix in small, local blocks instead of materializing the entire quadratic table in HBM, it eliminates memory round-trips without changing the mathematical output.
 
-```mermaid
-graph LR
-    subgraph Naive["Naive Attention (HBM Bound)"]
-        N1["Compute Q @ Kᵀ"] -->|"Write N² scores to HBM"| H1[("HBM (Slow Main Memory)")]
-        H1 -->|"Read N² scores"| N2["Compute Softmax"]
-        N2 -->|"Write N² probs to HBM"| H2[("HBM (Slow Main Memory)")]
-        H2 -->|"Read N² probs"| N3["Compute Probs @ V"]
-    end
-    
-    subgraph Flash["FlashAttention (SRAM Fused)"]
-        F1["Load Q, K, V tiles to SRAM"] -->|"Compute scores, online softmax & output locally"| F2["Fast SRAM (On-chip cutting board)"]
-        F2 -->|"Write final output [N, d]"| H3[("HBM (Final Write Only)")]
-    end
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                      Naive Attention (HBM Bound)                       │
+│                                                                        │
+│  ┌──────────────────┐  Write N² scores   ┌──────────────────────────┐  │
+│  │ Compute Q @ Kᵀ   │───────────────────►│  HBM (Slow Main Memory)  │  │
+│  └──────────────────┘                    └────────────┬─────────────┘  │
+│                                                       │                │
+│                                                       │ Read N² scores │
+│                                                       ▼                │
+│  ┌──────────────────┐  Write N² probs    ┌──────────────────────────┐  │
+│  │ Compute Softmax  │───────────────────►│  HBM (Slow Main Memory)  │  │
+│  └──────────────────┘                    └────────────┬─────────────┘  │
+│                                                       │                │
+│                                                       │ Read N² probs  │
+│                                                       ▼                │
+│                                          ┌──────────────────────────┐  │
+│                                          │    Compute Probs @ V     │  │
+│                                          └──────────────────────────┘  │
+└────────────────────────────────────────────────────────────────────────┘
 
-    style H1 fill:#fdecea,stroke:#c0392b
-    style H2 fill:#fdecea,stroke:#c0392b
-    style F2 fill:#eafaf1,stroke:#27ae60,stroke-width:2px
+┌────────────────────────────────────────────────────────────────────────┐
+│                      FlashAttention (SRAM Fused)                       │
+│                                                                        │
+│  ┌────────────────────────┐              ┌──────────────────────────┐  │
+│  │ Load Q, K, V           │─────────────►│ Fast SRAM                │  │
+│  │ tiles to SRAM          │  Compute     │ (On-chip cutting board)  │  │
+│  └────────────────────────┘  scores &    └────────────┬─────────────┘  │
+│                              online                   │                │
+│                              softmax                  │ Write final    │
+│                              locally                  │ output [N, d]  │
+│                                                       ▼                │
+│                                          ┌──────────────────────────┐  │
+│                                          │  HBM (Final Write Only)  │  │
+│                                          └──────────────────────────┘  │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### The Problem It Solves

@@ -51,28 +51,54 @@ By increasing $K$, speculative decoding amortizes weight loading, boosting GPU u
      Terminate the verification round.
 4. **KV Cache Rollback**: On rejection at index $R$, the last $K - R$ tokens appended to the target model's KV cache are invalid and must be removed using a `rewind(K - R)` operation.
 
-```mermaid
-graph TD
-    subgraph DRAFTING [1. Draft Model (Serial, Cheap)]
-        D0["draft(t_0) → t_0"] --> D1["draft(t_1) → t_1"]
-        D1 --> D2["..."]
-        D2 --> DK["draft(t_K-1) → t_K-1"]
-    end
-    DK -->|"Proposals"| VERIFY
-    subgraph VERIFY [2. Target Model (1 Parallel Forward)]
-        V["target([t_0..t_K-1]) → p_0..p_K-1"]
-    end
-    V -->|"Rejection Sampling"| REJECT
-    subgraph REJECT [3. Rejection & Resampling]
-        R["u ≤ min(1, p/q) ?"]
-        R -->|"Accept (i < R)"| ACC["Output t_i"]
-        R -->|"Reject at R"| REJ["Discard t_R..t_K-1"]
-        REJ --> RES["Resample t'_R from P_adj"]
-        RES --> RW["KV Cache rewind(K - R)"]
-    end
-    style VERIFY fill:#fef9e7,stroke:#f1c40f,stroke-width:2px
-    style REJECT fill:#eafaf1,stroke:#27ae60,stroke-width:2px
-    style RW fill:#fdecea,stroke:#c0392b
+```text
+┌──────────────────────────────────────────────────────────┐
+│              1. DRAFT MODEL (Serial, Cheap)              │
+│                                                          │
+│  ┌─────────────────┐     ┌─────────────────┐             │
+│  │ draft(t_0) ──►  │ ──► │ draft(t_1) ──►  │ ──► ...     │
+│  │   proposes t_0  │     │   proposes t_1  │             │
+│  └─────────────────┘     └─────────────────┘             │
+│                                                          │
+│  ... ──► ┌───────────────────┐                           │
+│          │ draft(t_K-1) ──►  │                           │
+│          │   proposes t_K-1  │                           │
+│          └─────────┬─────────┘                           │
+└────────────────────┼─────────────────────────────────────┘
+                     │ Proposals: t_0, t_1, ..., t_K-1
+                     ▼
+┌──────────────────────────────────────────────────────────┐
+│        2. TARGET MODEL (1 Parallel Forward Pass)         │
+│                                                          │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │   target([t_0 ... t_K-1]) ──► p_0, p_1, ..., p_K-1 │  │
+│  └─────────────────┬──────────────────────────────────┘  │
+└────────────────────┼─────────────────────────────────────┘
+                     │ Verification Probabilities
+                     ▼
+┌──────────────────────────────────────────────────────────┐
+│                 3. REJECTION & RESAMPLING                │
+│                                                          │
+│                  ┌───────────────────┐                   │
+│                  │  u ≤ min(1, p/q)? │                   │
+│                  └─┬────────────────┬┘                   │
+│                    │                │                    │
+│      Accept (i < R)│                │ Reject (at index R)│
+│                    ▼                ▼                    │
+│              ┌──────────┐     ┌───────────────────┐      │
+│              │Output t_i│     │Discard t_R..t_K-1 │      │
+│              └──────────┘     └─────────┬─────────┘      │
+│                                         │                │
+│                                         ▼                │
+│                               ┌───────────────────┐      │
+│                               │Resample t'_R~P_adj│      │
+│                               └─────────┬─────────┘      │
+│                                         │                │
+│                                         ▼                │
+│                               ┌───────────────────┐      │
+│                               │ KV rewind(K - R)  │      │
+│                               └───────────────────┘      │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ---

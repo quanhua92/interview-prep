@@ -12,24 +12,64 @@
 
 Think of quantization like a digital camera's color depth. A raw image stores millions of precise colors (float16/FP32), which takes huge storage. If you reduce the photo to a 16-color palette (4-bit), the file size shrinks dramatically. You might notice a slight "color banding" in the gradients, but the main features of the photo are still perfectly recognizable. In **W4A16 Group Quantization**, we do exactly this: we round the model's static **weights** to a 16-color palette (4 bits, or $16$ discrete values) per group of weights, while keeping the dynamic **activations** (the actual data passing through the model) at full $16$-bit resolution. Since LLM decoding is limited by how fast we can load weights from memory, compressing the weights to $4$-bit makes the model load $\approx 4\times$ faster, while keeping activations in high-precision protects the model's reasoning quality.
 
-```mermaid
-graph TD
-    subgraph Quantization["Weight Compression (Static, Offline)"]
-        W_FP["Static Weight Matrix [N, E] (FP16, 2 Bytes)"] --> W_GRP["Split into groups (e.g., group_size=128)"]
-        W_GRP --> W_AFF["Find Scale & Bias per group"]
-        W_AFF --> W_Q["Round weights to 0..15 (int4)"]
-        W_Q --> W_PACK["Pack 8 weights into 1 uint32"]
-    end
-
-    subgraph Matmul["Fused Dequantize & Matmul (Dynamic, Runtime)"]
-        X["Activation vector x (FP16, 2 Bytes)"] --> MAC["Fused MAC Loop (inside GPU SRAM)"]
-        W_PACKED["Packed weights uint32[] + Scales/Biases (from HBM)"] -->|"Load 4x faster"| MAC
-        MAC -->|"Unpack uint32 -> 8 nibbles<br/>Dequantize: w = scale * w_int + bias"| MAC_OP["acc += x * w_float"]
-        MAC_OP --> OUT["Output vector (FP16)"]
-    end
-
-    style W_PACK fill:#eafaf1,stroke:#27ae60
-    style MAC fill:#eaf2f8,stroke:#2980b9,stroke-width:2px
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│                       WEIGHT COMPRESSION (OFFLINE)                       │
+│                                                                          │
+│  ┌───────────────────────────────┐                                       │
+│  │     Static Weight Matrix      │                                       │
+│  │       [N, E] (FP16)           │                                       │
+│  └───────────────┬───────────────┘                                       │
+│                 │                                                        │
+│                 ▼                                                        │
+│  ┌───────────────────────────────┐                                       │
+│  │     Split into groups         │                                       │
+│  │      (group_size=128)         │                                       │
+│  └───────────────┬───────────────┘                                       │
+│                 │                                                        │
+│                 ▼                                                        │
+│  ┌───────────────────────────────┐                                       │
+│  │   Find Scale & Bias/group     │                                       │
+│  └───────────────┬───────────────┘                                       │
+│                 │                                                        │
+│                 ▼                                                        │
+│  ┌───────────────────────────────┐                                       │
+│  │   Round weights to 0..15      │                                       │
+│  └───────────────┬───────────────┘                                       │
+│                 │                                                        │
+│                 ▼                                                        │
+│  ┌───────────────────────────────┐                                       │
+│  │    Pack 8 weights -> uint32   │                                       │
+│  │    (Saved to model weight)    │                                       │
+│  └───────────────┬───────────────┘                                       │
+└──────────────────┼───────────────────────────────────────────────────────┘
+                   │
+                   │ (Deploy model: Load weights 4x faster from HBM)
+                   ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│                   FUSED DEQUANTIZE & MATMUL (RUNTIME)                    │
+│                                                                          │
+│  ┌───────────────────────────────┐   ┌───────────────────────────────┐   │
+│  │     Activation Vector x       │   │     Packed weights uint32[]   │   │
+│  │       (FP16, 2 Bytes)         │   │      + Scales/Biases (HBM)    │   │
+│  └───────────────┬───────────────┘   └───────────────┬───────────────┘   │
+│                 │                                   │                    │
+│                 └─────────────────┬─────────────────┘                    │
+│                                   │                                      │
+│                                   ▼                                      │
+│  ┌────────────────────────────────┬──────────────────────────────────┐   │
+│  │                          Fused MAC Loop                           │   │
+│  │                        (inside GPU SRAM)                          │   │
+│  │    - Unpack uint32 -> 8 nibbles                                   │   │
+│  │    - Dequantize: w_float = scale * w_int + bias                   │   │
+│  │    - Compute dot product: acc += x * w_float                      │   │
+│  └────────────────────────────────┬──────────────────────────────────┘   │
+│                                   │                                      │
+│                                   ▼                                      │
+│  ┌───────────────────────────────────────────────────────────────────┐   │
+│  │                       Output Vector (FP16)                        │   │
+│  └───────────────────────────────────────────────────────────────────┘   │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### The Problem It Solves

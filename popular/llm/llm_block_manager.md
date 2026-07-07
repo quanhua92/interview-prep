@@ -30,34 +30,32 @@ In naive servers, this waste accounts for **60% to 80%** of total GPU memory. Th
 5. **Chained Hashing**: To identify shared prefixes, each block's content is fingerprinted using a hash function. To guarantee prefix correctness, block $k$'s hash is chained to block $k-1$'s hash:
    $$\text{Hash}_k = H(\text{Tokens}_k \parallel \text{Hash}_{k-1})$$
 
-```mermaid
-graph TD
-    subgraph Logical Sequences
-        SeqA["Sequence A: [t0..t3]"]
-        SeqB["Sequence B: [t0..t1, t4..t5]"]
-    end
-
-    subgraph Block Tables
-        TableA["Seq A Table:<br/>Logical 0 -> Physical 10<br/>Logical 1 -> Physical 11"]
-        TableB["Seq B Table:<br/>Logical 0 -> Physical 10<br/>Logical 1 -> Physical 12"]
-    end
-
-    subgraph Physical GPU VRAM Pool
-        PB10["Physical Block 10:<br/>Tokens [t0, t1]<br/>ref_count = 2 (SHARED)"]
-        PB11["Physical Block 11:<br/>Tokens [t2, t3]<br/>ref_count = 1 (PRIVATE)"]
-        PB12["Physical Block 12:<br/>Tokens [t4, t5]<br/>ref_count = 1 (PRIVATE)"]
-    end
-
-    SeqA --> TableA
-    SeqB --> TableB
-    TableA --> PB10
-    TableA --> PB11
-    TableB --> PB10
-    TableB --> PB12
-
-    style PB10 fill:#eafaf1,stroke:#27ae60,stroke-width:2px
-    style PB11 fill:#eaf2f8,stroke:#2980b9
-    style PB12 fill:#f4ecf7,stroke:#8e44ad
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                           Logical Sequences                            │
+│                                                                        │
+│        Sequence A: [t0..t3]                 Sequence B: [t0..t1, t4..t5]│
+└─────────────────┬──────────────────────────────────┬───────────────────┘
+                  │                                  │
+                  ▼                                  ▼
+   ┌──────────────────────────────┐   ┌──────────────────────────────┐
+   │         Seq A Table:         │   │         Seq B Table:         │
+   │  Logical 0 ──► Physical 10   │   │  Logical 0 ──► Physical 10   │
+   │  Logical 1 ──► Physical 11   │   │  Logical 1 ──► Physical 12   │
+   └────────┬───────────────┬─────┘   └─────┬───────────────┬────────┘
+            │               │               │               │
+            │               └──┐     ┌──────┘               │
+            ▼                  ▼     ▼                      ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                        Physical GPU VRAM Pool                          │
+│                                                                        │
+│ ┌─────────┴──────────┐  ┌────┴─────┴───────┐  ┌──────────┴─────────┐ │
+│ │Physical Block 11:  │  │Physical Block 10:│  │Physical Block 12:  │ │
+│ │  Tokens [t2, t3]   │  │  Tokens [t0, t1] │  │  Tokens [t4, t5]   │ │
+│ │   ref_count = 1    │  │   ref_count = 2  │  │   ref_count = 1    │ │
+│ │     (PRIVATE)      │  │     (SHARED)     │  │     (PRIVATE)      │ │
+│ └────────────────────┘  └──────────────────┘  └────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

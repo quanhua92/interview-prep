@@ -14,13 +14,22 @@ Imagine you have a warehouse with a pallet of goods that is too wide and heavy t
 
 In LLM systems, **Tensor Parallelism (TP)** applies this sharding strategy to individual weight matrices inside a single Transformer layer. Instead of placing entire layers on different GPUs (which is Pipeline Parallelism), TP cuts each weight matrix along either its output dimension (column-parallel) or its input dimension (row-parallel). GPUs compute their local products in parallel and execute a single collective communication operation (`AllReduce`) to combine their partial results into the correct output.
 
-```mermaid
-graph LR
-    FULL["W : [out, in]<br/>(one GPU, too big)"] --> COL["COLUMN-PARALLEL<br/>split OUTPUT dim<br/>each rank: [out/TP, in]<br/>produces SHARD of output<br/>NO comm in forward"]
-    FULL --> ROW["ROW-PARALLEL<br/>split INPUT dim<br/>each rank: [out, in/TP]<br/>produces PARTIAL SUM<br/>ONE AllReduce"]
-    style FULL fill:#fdecea,stroke:#c0392b
-    style COL fill:#eaf2f8,stroke:#2980b9
-    style ROW fill:#fef9e7,stroke:#e67e22
+```text
+                  ┌─────────────────────────────────┐
+                  │          W : [out, in]          │
+                  │       (one GPU, too big)        │
+                  └────────┬───────────────┬────────┘
+                           │               │
+                  ┌────────┘               └──────────┐
+  Column-Parallel │                                   │ Row-Parallel
+  (split OUTPUT)  ▼                                   ▼ (split INPUT)
+ ┌─────────────────────────────────┐ ┌─────────────────────────────────┐
+ │         COLUMN-PARALLEL         │ │          ROW-PARALLEL           │
+ │        split OUTPUT dim         │ │         split INPUT dim         │
+ │     each rank: [out/TP, in]     │ │     each rank: [out, in/TP]     │
+ │    produces SHARD of output     │ │      produces PARTIAL SUM       │
+ │      NO comm in forward         │ │          ONE AllReduce          │
+ └─────────────────────────────────┘ └─────────────────────────────────┘
 ```
 
 ### The Problem It Solves
@@ -70,22 +79,46 @@ AllReduce: Y = Y_0 + Y_1       -> Shape: [B, L, E] (Identical to unsharded)
 
 Because `GeLU` is an element-wise activation, it can be applied to local shards $Z_r$ independently without needing global information. By feeding the local output of $A$ directly into the row-parallel $B$, the intermediate synchronization is cancelled. **You pay exactly one `AllReduce` for the entire MLP block.**
 
-```mermaid
-graph LR
-    X["X (full, replicated)"] --> A0["A_0 (col-par)<br/>[FFN/TP, E]"]
-    X --> A1["A_1 (col-par)<br/>[FFN/TP, E]"]
-    A0 --> G0["GeLU(X @ A_0.T)<br/>LOCAL, no comm"]
-    A1 --> G1["GeLU(X @ A_1.T)<br/>LOCAL, no comm"]
-    G0 --> B0["B_0 (row-par)<br/>[E, FFN/TP]"]
-    G1 --> B1["B_1 (row-par)<br/>[E, FFN/TP]"]
-    B0 --> Y0["Y_0 = partial"]
-    B1 --> Y1["Y_1 = partial"]
-    Y0 --> AR["AllReduce (sum)<br/>ONE collective"]
-    Y1 --> AR
-    AR --> Y["Y == full GeLU(X@A.T)@B.T"]
-    style G0 fill:#eafaf1,stroke:#27ae60
-    style G1 fill:#eafaf1,stroke:#27ae60
-    style AR fill:#fef9e7,stroke:#f1c40f,stroke-width:3px
+```text
+                      ┌─────────────────────────┐
+                      │  X (full, replicated)   │
+                      └────┬───────────────┬────┘
+                           │               │
+                           ▼               ▼
+                      ┌─────────┐     ┌─────────┐
+                      │   A_0   │     │   A_1   │
+                      │(col-par)│     │(col-par)│
+                      └────┬────┘     └────┬────┘
+                           │               │
+                           ▼               ▼
+                      ┌─────────┐     ┌─────────┐
+                      │  GeLU   │     │  GeLU   │
+                      │ (local) │     │ (local) │
+                      └────┬────┘     └────┬────┘
+                           │               │
+                           ▼               ▼
+                      ┌─────────┐     ┌─────────┐
+                      │   B_0   │     │   B_1   │
+                      │(row-par)│     │(row-par)│
+                      └────┬────┘     └────┬────┘
+                           │               │
+                           ▼               ▼
+                      ┌─────────┐     ┌─────────┐
+                      │   Y_0   │     │   Y_1   │
+                      │(partial)│     │(partial)│
+                      └────┬────┘     └────┬────┘
+                           │               │
+                           └───────┬───────┘
+                                   │
+                                   ▼
+                      ┌────────────┬────────────┐
+                      │     AllReduce (sum)     │
+                      └────────────┬────────────┘
+                                   │
+                                   ▼
+                      ┌─────────────────────────┐
+                      │  Y == GeLU(X@A.T)@B.T   │
+                      └─────────────────────────┘
 ```
 
 #### 4. Attention TP

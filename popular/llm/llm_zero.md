@@ -19,15 +19,39 @@ In LLM systems, the **Zero Redundancy Optimizer (ZeRO)** keeps the data-parallel
 2. **Stage 2**: Also shards the gradients.
 3. **Stage 3**: Also shards the model parameters (weights) themselves.
 
-```mermaid
-graph LR
-    Prob["DDP: 20N/GPU<br/>16N is redundant bookkeeping"] --> S1["ZeRO-1<br/>shard OPTIMIZER STATES<br/>4 + 16/K"]
-    S1 --> S2["ZeRO-2<br/>+ shard GRADIENTS<br/>2 + 14/K"]
-    S2 --> S3["ZeRO-3<br/>+ shard PARAMETERS<br/>16/K"]
-    S3 --> Win["7B on 8 GPUs:<br/>140 GB -> 14 GB / GPU<br/>(fits one A100)"]
-    style S3 fill:#eafaf1,stroke:#27ae60,stroke-width:3px
-    style Win fill:#eafaf1,stroke:#27ae60
-    style Prob fill:#fdecea,stroke:#c0392b
+```text
+┌───────────────────────────────┐
+│        DDP: 20N / GPU         │
+│  (16N redundant bookkeeping)  │
+└───────────────┬───────────────┘
+                │
+                │ shard OPTIMIZER STATES
+                ▼
+┌───────────────────────────────┐
+│            ZeRO-1             │
+│        4 + 16/K bytes         │
+└───────────────┬───────────────┘
+                │
+                │ + shard GRADIENTS
+                ▼
+┌───────────────────────────────┐
+│            ZeRO-2             │
+│        2 + 14/K bytes         │
+└───────────────┬───────────────┘
+                │
+                │ + shard PARAMETERS
+                ▼
+┌───────────────────────────────┐
+│            ZeRO-3             │
+│          16/K bytes           │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│        7B on 8 GPUs:          │
+│   140 GB ──► 14 GB / GPU      │
+│      (fits one A100)          │
+└───────────────────────────────┘
 ```
 
 ### The Problem It Solves
@@ -52,13 +76,36 @@ Of these $20N$ bytes, **$16N$ bytes is identical bookkeeping** duplicated across
 
 ZeRO shards the memory footprint incrementally across the $K$ data-parallel ranks:
 
-```mermaid
-graph LR
-    DDP["DDP<br/>replicate ALL<br/>20N"] -->|"shard opt states"| Z1["ZeRO-1<br/>4 + 16/K<br/>comms 1×"]
-    Z1 -->|"+ shard grads"| Z2["ZeRO-2<br/>2 + 14/K<br/>comms 1×"]
-    Z2 -->|"+ shard params"| Z3["ZeRO-3<br/>16/K<br/>comms 1.5×"]
-    style DDP fill:#fdecea,stroke:#c0392b
-    style Z3 fill:#eafaf1,stroke:#27ae60,stroke-width:3px
+```text
+┌───────────────────────────────┐
+│              DDP              │
+│         replicate ALL         │
+│              20N              │
+└───────────────┬───────────────┘
+                │
+                │ shard opt states
+                ▼
+┌───────────────────────────────┐
+│            ZeRO-1             │
+│          4 + 16/K             │
+│          comms 1x             │
+└───────────────┬───────────────┘
+                │
+                │ + shard grads
+                ▼
+┌───────────────────────────────┐
+│            ZeRO-2             │
+│          2 + 14/K             │
+│          comms 1x             │
+└───────────────┬───────────────┘
+                │
+                │ + shard params
+                ▼
+┌───────────────────────────────┐
+│            ZeRO-3             │
+│             16/K              │
+│          comms 1.5x           │
+└───────────────────────────────┘
 ```
 
 ### 1. ZeRO-1: Optimizer State Partitioning ($P_{os}$)
