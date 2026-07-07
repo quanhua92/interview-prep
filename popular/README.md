@@ -1,8 +1,121 @@
-# High-Performance Systems & Speech LLM Interview Preparation Toolkit: Index of Questions & Solutions
+# High-Performance Systems & Speech LLM Interview Preparation Toolkit
 
-This directory contains **34 comprehensive interview questions and solutions** compiled by our specialized research subagents.
+Two ways to use this directory:
 
-Each file contains complete, self-contained educational resources including question specifications, optimal implementations (C++/Python/SystemVerilog/Triton), complexity analysis, and systems-level, compiler, or hardware-level optimization details.
+- **Speed Run (7 days)** — A cherry-picked ~50-item subset drawn from this folder **and** [`tiers/`](tiers/), optimized for maximum interview yield in minimum time. High-frequency patterns first; niche problems and role-specific files are deferred to a "Future" bucket. See [Speed Run](#speed-run-7-day-cherry-pick) below.
+- **Full Suite** — The complete reference: 34 deep interview question files (Sections 1–6 below) plus 145 LeetCode problems in [`tiers/`](tiers/). Each deep file is self-contained, with optimal C++/Python/SystemVerilog/Triton implementations, complexity analysis, and systems-level / compiler / hardware optimization details. Use this for deep, role-targeted study once the Speed Run is done.
+
+---
+
+## Speed Run: 7-Day Cherry-Pick
+
+**Scope:** ~50 items from `popular/` root + `popular/tiers/`. Total ~26 hours (~4 h/day).
+**Goal:** Pattern recognition + 1 working solution per high-frequency pattern. Not mastery.
+**Skip rule:** If a file is not for your target role, drop it and reclaim the time for drilling cold solves on Day 7.
+
+### Per-file protocol (5 minutes max)
+
+1. Read **Question Description** + approach paragraph only.
+2. Write **pattern name + 1-line trigger** to a flashcard (this is the real deliverable).
+3. Skim the solution code just enough to verify your mental model. Stop.
+4. Skip Q&A sections, deep systems highlights, and complexity proofs unless role-critical.
+
+### Day 1 — Linear structures: Two Pointers + Sliding Window
+
+- [ ] [tiers/foundation/coding_two_sum.md](tiers/foundation/coding_two_sum.md) — Two Sum II (sorted two-pointer)
+- [ ] [tiers/foundation/coding_three_sum.md](tiers/foundation/coding_three_sum.md) — 3Sum (sort + two-pointer + skip duplicates)
+- [ ] [tiers/foundation/coding_container_water.md](tiers/foundation/coding_container_water.md) — Container With Most Water (greedy shrink)
+- [ ] [tiers/foundation/coding_longest_substring.md](tiers/foundation/coding_longest_substring.md) — Longest Substring No Repeats (variable window)
+- [ ] [tiers/foundation/coding_find_anagrams.md](tiers/foundation/coding_find_anagrams.md) — Find All Anagrams (fixed-width window)
+- [ ] [tiers/foundation/coding_longest_repeating_char.md](tiers/foundation/coding_longest_repeating_char.md) — Longest Repeating Char Replacement
+- [ ] [tiers/foundation/coding_permutation_in_string.md](tiers/foundation/coding_permutation_in_string.md) — Permutation in String (freq match)
+
+### Day 2 — Intervals + Hashmap + BFS/DFS on grids
+
+- [ ] [tiers/foundation/coding_merge_intervals.md](tiers/foundation/coding_merge_intervals.md)
+- [ ] [tiers/foundation/coding_insert_interval.md](tiers/foundation/coding_insert_interval.md)
+- [ ] [tiers/foundation/coding_meeting_rooms.md](tiers/foundation/coding_meeting_rooms.md) — Meeting Rooms II (sweep line + heap)
+- [ ] [tiers/foundation/coding_level_order.md](tiers/foundation/coding_level_order.md) — Binary Tree Level Order
+- [ ] [tiers/foundation/coding_rotting_oranges.md](tiers/foundation/coding_rotting_oranges.md) — Multi-source BFS
+- [ ] [tiers/intermediate/coding_number_of_islands.md](tiers/intermediate/coding_number_of_islands.md) — DFS/BFS on grid
+- [ ] [tiers/foundation/coding_linked_list_cycle.md](tiers/foundation/coding_linked_list_cycle.md) — Floyd's cycle detection
+
+### Day 3 — Binary Search + DP + Stack + Top K
+
+- [ ] [tiers/intermediate/coding_binary_search.md](tiers/intermediate/coding_binary_search.md)
+- [ ] [tiers/intermediate/coding_first_bad_version.md](tiers/intermediate/coding_first_bad_version.md)
+- [ ] [tiers/advanced/coding_koko_bananas.md](tiers/advanced/coding_koko_bananas.md) — Binary search on the answer
+- [ ] [tiers/intermediate/coding_climbing_stairs.md](tiers/intermediate/coding_climbing_stairs.md) — 1D DP
+- [ ] [tiers/intermediate/coding_house_robber.md](tiers/intermediate/coding_house_robber.md)
+- [ ] [tiers/intermediate/coding_coin_change.md](tiers/intermediate/coding_coin_change.md) — Unbounded DP
+- [ ] [tiers/intermediate/coding_valid_parentheses.md](tiers/intermediate/coding_valid_parentheses.md) — Stack
+- [ ] [tiers/intermediate/coding_min_stack.md](tiers/intermediate/coding_min_stack.md)
+- [ ] [tiers/intermediate/coding_kth_largest.md](tiers/intermediate/coding_kth_largest.md) — Heap
+- [ ] [tiers/intermediate/coding_top_k_frequent.md](tiers/intermediate/coding_top_k_frequent.md) — Bucket sort / heap
+
+### Day 4 — Subsets + Trie + Graph + Greedy + Monotonic Stack
+
+- [ ] [tiers/advanced/coding_subsets.md](tiers/advanced/coding_subsets.md) — Cascading backtracking
+- [ ] [tiers/advanced/coding_permutations.md](tiers/advanced/coding_permutations.md)
+- [ ] [tiers/advanced/coding_combination_sum.md](tiers/advanced/coding_combination_sum.md)
+- [ ] [tiers/advanced/coding_implement_trie.md](tiers/advanced/coding_implement_trie.md)
+- [ ] [tiers/advanced/coding_word_search_ii.md](tiers/advanced/coding_word_search_ii.md) — Trie + DFS
+- [ ] [tiers/expert/coding_course_schedule.md](tiers/expert/coding_course_schedule.md) — Topological sort
+- [ ] [tiers/expert/coding_course_schedule_ii.md](tiers/expert/coding_course_schedule_ii.md)
+- [ ] [tiers/expert/coding_jump_game.md](tiers/expert/coding_jump_game.md) — Greedy
+- [ ] [tiers/expert/coding_gas_station.md](tiers/expert/coding_gas_station.md)
+- [ ] [tiers/expert/coding_daily_temperatures.md](tiers/expert/coding_daily_temperatures.md) — Monotonic stack
+
+### Day 5 — Core deep files (role-agnostic)
+
+- [ ] [hackerrank_and_inperson_coding.md](hackerrank_and_inperson_coding.md) — OA + onsite playbook
+- [ ] [behavioral_star_intellectual_honesty.md](behavioral_star_intellectual_honesty.md)
+- [ ] [behavioral_star_one_team.md](behavioral_star_one_team.md)
+- [ ] [coding_lru_cache.md](coding_lru_cache.md) — Design + custom linked list
+- [ ] [coding_merge_intervals.md](coding_merge_intervals.md) — Deep C++/Python analysis
+- [ ] [coding_number_of_islands.md](coding_number_of_islands.md) — Deep version
+- [ ] [system_lowlevel_python_gil_concurrency.md](system_lowlevel_python_gil_concurrency.md)
+- [ ] [system_lowlevel_python_memory_gc.md](system_lowlevel_python_memory_gc.md)
+
+### Day 6 — System design + role-specific (pick 4–6 by role)
+
+Default set (general SWE / AI infra):
+
+- [ ] [system_design_task_scheduler_multiple_machines.md](system_design_task_scheduler_multiple_machines.md)
+- [ ] [system_design_triton_inference_server.md](system_design_triton_inference_server.md)
+- [ ] [system_design_gpu_microservices_bottleneck.md](system_design_gpu_microservices_bottleneck.md)
+- [ ] [system_lowlevel_concurrency_producer_consumer.md](system_lowlevel_concurrency_producer_consumer.md)
+- [ ] [system_lowlevel_memory_aligned_malloc.md](system_lowlevel_memory_aligned_malloc.md)
+- [ ] [system_lowlevel_python_c_bindings_ctypes.md](system_lowlevel_python_c_bindings_ctypes.md)
+
+Role swaps:
+
+- **GPU / CUDA role:** swap in [system_lowlevel_cuda_warp_divergence.md](system_lowlevel_cuda_warp_divergence.md) + [system_lowlevel_cuda_global_memory_coalescing.md](system_lowlevel_cuda_global_memory_coalescing.md) + [system_design_distributed_gpu_training.md](system_design_distributed_gpu_training.md).
+- **Speech / voice role:** swap in [speech_llm_voice_agent_architecture.md](speech_llm_voice_agent_architecture.md) + [speech_llm_latency_optimization.md](speech_llm_latency_optimization.md) + [speech_llm_nemo_riva_stack.md](speech_llm_nemo_riva_stack.md).
+- **AV / robotics role:** swap in [system_design_autonomous_driving_perception.md](system_design_autonomous_driving_perception.md) + [system_design_realtime_video_analytics.md](system_design_realtime_video_analytics.md).
+- **DL infra role:** swap in [system_lowlevel_pytorch_systems_optimization.md](system_lowlevel_pytorch_systems_optimization.md) + [system_design_distributed_gpu_training.md](system_design_distributed_gpu_training.md).
+- **QA role:** swap in [qa_automate_test_environment.md](qa_automate_test_environment.md) + [qa_cpu_gpu_bottleneck_isolation.md](qa_cpu_gpu_bottleneck_isolation.md) + [qa_debug_hardware_software_integration.md](qa_debug_hardware_software_integration.md).
+- **ASIC / verification role:** swap in [qa_vietnam_hardware_verification.md](qa_vietnam_hardware_verification.md) + [system_lowlevel_concurrency_lock_free_queue.md](system_lowlevel_concurrency_lock_free_queue.md).
+
+### Day 7 — Drill + review (no new reading)
+
+- [ ] Pick **5 problems** from Days 1–4 and solve them cold using the repo's stubs (`tiers/<tier>/problems/`) — do not peek at the solution first. Verify with `docker exec interview-prep uv run python run.py <pattern> --problems`.
+- [ ] Review every flashcard from Days 1–6. Mark the ones you forgot and re-skim only those files.
+- [ ] Practice both STAR stories out loud, timed to 2 minutes each.
+- [ ] Re-read just the MCQ section of [hackerrank_and_inperson_coding.md](hackerrank_and_inperson_coding.md) once.
+
+### Future bucket (defer until after the 7-day run)
+
+Low interview yield or highly specialized. Return only with spare time, or if the file matches your role exactly.
+
+**Coding (niche / low frequency):**
+
+- *Math puzzles:* `coding_largest_palindrome_product`, `coding_smallest_good_base`, `coding_perfect_rectangle`, `coding_find_the_closest_palindrome`, `coding_optimal_division`
+- *Randomized / probability:* `coding_random_pick_index`, `coding_random_pick_with_weight`, `coding_random_point_in_non_overlapping_rectangles`, `coding_random_flip_matrix`, `coding_linked_list_random_node`, `coding_implement_rand10_using_rand7`, `coding_poor_pigs`, `coding_generate_random_point_in_a_circle`
+- *Esoteric hards:* `coding_zuma_game`, `coding_super_egg_drop`, `coding_freedom_trail`, `coding_russian_doll_envelopes`, `coding_count_the_repetitions`, `coding_frog_jump`, `coding_out_of_boundary_paths`, `coding_unique_substrings_in_wraparound_string`, `coding_reverse_pairs`, `coding_student_attendance_record_ii`
+- *Low-yield easies:* `coding_detect_capital`, `coding_keyboard_row`, `coding_license_key_formatting`, `coding_number_of_segments_in_a_string`, `coding_longest_uncommon_subsequence_i`, `coding_longest_uncommon_subsequence_ii`, `coding_distribute_candies`, `coding_number_of_boomerangs`, `coding_teemo_attacking`
+
+**Deep files (specialized):** any role-specific file you did **not** pick on Day 6 — typically all `speech_llm_*` (non-speech), all `system_lowlevel_cuda_*` (non-GPU), `system_design_autonomous_driving_perception` (non-AV), `system_lowlevel_pytorch_systems_optimization` (non-DL-infra), `qa_vietnam_hardware_verification` (non-ASIC), and `system_lowlevel_concurrency_lock_free_queue` (unless explicitly required).
 
 ---
 
