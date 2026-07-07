@@ -22,20 +22,32 @@ Without position encoding, `"The cat sat"` and `"sat cat The"` produce identical
 
 ### How It Works
 
-```mermaid
-graph LR
-    Prob["Problem:\nQ·K ignores token order"] --> Fam1["ADDITIVE family\n(absolute)"]
-    Prob --> Fam2["ROTARY family\n(RoPE)"]
-
-    Fam1 --> A1["Stamp each token with its\nSEAT NUMBER as a fixed barcode,\nADD it ONCE at the input"]
-    Fam1 --> A2["Examples: learned wpe\n(nanoGPT), sinusoidal\n(original Transformer)"]
-
-    Fam2 --> B1["Give each token a COMPASS NEEDLE;\nits SEAT tells it how far to ROTATE.\nHappens INSIDE every attention layer"]
-    Fam2 --> B2["Examples: Llama, Qwen,\nMistral, Gemma"]
-
-    style Fam1 fill:#fdecea,stroke:#c0392b
-    style Fam2 fill:#eafaf1,stroke:#27ae60
-    style Prob fill:#fef9e7,stroke:#f1c40f
+```text
+                  ┌──────────────────────────────────────┐
+                  │   Problem: Q·K ignores token order   │
+                  └──────────────────┬───────────────────┘
+                                     │
+            ┌────────────────────────┴────────────────────────┐
+            ▼                                               ▼
+ ┌────────────────────────┐                    ┌────────────────────────┐
+ │  ADDITIVE family       │                    │  ROTARY family         │
+ │  (absolute)            │                    │  (RoPE)                │
+ └───────────┬────────────┘                    └───────────┬────────────┘
+             │                                             │
+     ┌───────┴───────┐                             ┌───────┴────────┐
+     ▼               ▼                             ▼                ▼
+┌────────────┐ ┌──────────────┐             ┌──────────────┐ ┌────────────┐
+│Stamp each  │ │Examples:     │             │Give each     │ │Examples:   │
+│token with  │ │learned wpe   │             │token a       │ │Llama, Qwen,│
+│its SEAT    │ │(nanoGPT),    │             │COMPASS       │ │Mistral,    │
+│NUMBER as a │ │sinusoidal    │             │NEEDLE; its   │ │Gemma       │
+│fixed       │ │(original     │             │SEAT tells it │ │            │
+│barcode,    │ │Transformer)  │             │how far to    │ │            │
+│ADD ONCE at │ │              │             │ROTATE.       │ │            │
+│the input   │ │              │             │INSIDE every  │ │            │
+│            │ │              │             │attention     │ │            │
+│            │ │              │             │layer.        │ │            │
+└────────────┘ └──────────────┘             └──────────────┘ └────────────┘
 ```
 
 ---
@@ -46,14 +58,22 @@ graph LR
 
 Applied **once** at the input embedding, to the **full model dimension `E`**:
 
-```mermaid
-graph LR
-    Tok["token id"] --> EMB["token embedding\nwte[m] : [E]"]
-    POS["seat number m"] --> WPE["position barcode\npe[m] : [E]"]
-    EMB --> ADD["stamp + add"]
-    WPE --> ADD
-    ADD --> OUT["x : [B, L, E]\nfeeds transformer blocks"]
-    style ADD fill:#fef9e7,stroke:#f1c40f,stroke-width:3px
+```text
+┌──────────┐     ┌──────────────────┐
+│ token id │───> │ token embedding  │
+└──────────┘     │ wte[m] : [E]     │──┐
+                 └──────────────────┘  │
+                                       v
+                                ┌──────────────┐     ┌────────────────────┐
+                                │ stamp + add  │───> │ x : [B, L, E]      │
+                                │              │     │ feeds transformer  │
+                                └──────────────┘     │ blocks             │
+                                       ▲             └────────────────────┘
+                                       │
+┌──────────┐     ┌──────────────────┐  │
+│ seat num │───> │ position barcode │──┘
+│    m     │     │ pe[m] : [E]      │
+└──────────┘     └──────────────────┘
 ```
 
 This is the defining property: absolute PE operates on `[B, L, E]`, added **once** before any block. Contrast with RoPE, which operates on `[B, L, H, D]` inside every block.
@@ -222,19 +242,64 @@ Same gap → identical score, regardless of absolute seat. This is the property 
 
 ### Where RoPE Operates: The Tensor Shape Dance
 
-```mermaid
-graph LR
-    X["x : [B, L, E]"] --> Lin["wq / wk / wv\nlinear projection"]
-    Lin --> QKV["q,k,v : [B, L, H, D]"]
-    QKV --> QKnorm["QK-Norm per-head RMSNorm\n[B, L, H, D]"]
-    QKnorm --> ROPE["**RoPE here**\napply on [B, L, H, D]"]
-    ROPE --> T["transpose\n→ [B, H, L, D]"]
-    T --> ATTN["attention Q·K^T\n+ causal mask"]
-    ATTN --> OUT["out : [B, H, L, D]"]
-    OUT --> T2["transpose back\n→ [B, L, H, D]"]
-    T2 --> WO["wo projection"]
-    style ROPE fill:#eafaf1,stroke:#27ae60,stroke-width:3px
-    style T fill:#fef9e7,stroke:#f1c40f
+```text
+  ┌────────────────────┐
+  │ x : [B, L, E]      │
+  └─────────┬──────────┘
+            │
+            v
+  ┌────────────────────┐
+  │ wq / wk / wv       │
+  │ linear projection  │
+  └─────────┬──────────┘
+            │
+            v
+  ┌────────────────────┐
+  │ q, k, v :          │
+  │ [B, L, H, D]       │
+  └─────────┬──────────┘
+            │
+            v
+  ┌────────────────────┐
+  │ QK-Norm per-head   │
+  │ RMSNorm            │
+  │ [B, L, H, D]       │
+  └─────────┬──────────┘
+            │
+            v
+  ┌════════════════════┐   <<< RoPE applied HERE
+  ║ ** RoPE here **    ║
+  ║ apply on           ║
+  ║ [B, L, H, D]       ║
+  └─────────┬──────────┘
+            │
+            v
+  ┌────────────────────┐
+  │ transpose          │
+  │ -> [B, H, L, D]    │
+  └─────────┬──────────┘
+            │
+            v
+  ┌────────────────────┐
+  │ attention Q.K^T    │
+  │ + causal mask      │
+  └─────────┬──────────┘
+            │
+            v
+  ┌────────────────────┐
+  │ out : [B, H, L, D] │
+  └─────────┬──────────┘
+            │
+            v
+  ┌────────────────────┐
+  │ transpose back     │
+  │ -> [B, L, H, D]    │
+  └─────────┬──────────┘
+            │
+            v
+  ┌────────────────────┐
+  │ wo projection      │
+  └────────────────────┘
 ```
 
 **Critical**: RoPE must be applied **while still in `[B, L, H, D]`**, BEFORE the transpose to `[B, H, L, D]`. The position axis is `L`, and cos/sin tables index by `L`. After transposing, the L axis is in the wrong slot for a clean per-position lookup.

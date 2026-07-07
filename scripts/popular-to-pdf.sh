@@ -41,11 +41,13 @@ done
 # Shared pandoc options
 # --------------------------------------------------------------------------- #
 PANDOC_OPTS=(
-  --from markdown
+  --from markdown-smart
   --pdf-engine=xelatex
+  --lua-filter="$SCRIPT_DIR/strip-emoji.lua"
   --variable=geometry:"margin=0.75in"
   --variable=fontsize:"11pt"
   --variable=fontfamily:"helvet"
+  --variable=monofont:"Menlo"
   --variable=linkcolor:"blue"
   --variable=urlcolor:"blue"
   --variable=linestretch:"1.15"

@@ -20,19 +20,36 @@ Without a strategy you face two failure modes:
 
 ### How It Works
 
-```mermaid
-graph LR
-    L["LM-head logits z : [V]"] --> T["1. divide by temp"]
-    T --> K["2. top-k mask<br/>keep k highest, rest -inf"]
-    K --> P["3. top-p mask<br/>cumsum(probs) >= p, rest -inf"]
-    P --> S["4. categorical draw<br/>(ONLY random step)"]
-    L -->|"temp==0"| G["greedy: argmax<br/>(no RNG)"]
-
-    style G fill:#fdecea,stroke:#c0392b
-    style T fill:#fef9e7,stroke:#f1c40f
-    style K fill:#eaf2f8,stroke:#2980b9
-    style P fill:#eafaf1,stroke:#27ae60,stroke-width:3px
-    style S fill:#f4f6f6,stroke:#999
+```text
+┌──────────────────────────┐
+│ LM-head logits z : [V]   │
+└────────────┬─────────────┘
+             │
+             ├──( temp == 0 )──▶ ┌────────────────────┐
+             │                   │ greedy: argmax     │
+             │                   │ (no RNG)           │
+             │                   └────────────────────┘
+             ▼
+┌──────────────────────────┐
+│ 1. divide by temp        │
+└────────────┬─────────────┘
+             ▼
+┌──────────────────────────┐
+│ 2. top-k mask            │
+│    keep k highest,       │
+│    rest -inf             │
+└────────────┬─────────────┘
+             ▼
+┌──────────────────────────┐
+│ 3. top-p mask            │
+│    cumsum(probs) >= p,   │
+│    rest -inf             │
+└────────────┬─────────────┘
+             ▼
+┌──────────────────────────┐
+│ 4. categorical draw      │
+│    (ONLY random step)    │
+└──────────────────────────┘
 ```
 
 **Production pipeline order** (from `make_sampler`):

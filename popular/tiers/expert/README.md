@@ -8,16 +8,29 @@ Welcome to the **Expert (Tier 4) Coding Roadmap**. This directory serves as your
 
 To build expert problem-solving intuition, start with spatial 2D matrix indexes, progress to network graphs and connectivity structures, then explore greedy choice intervals and monotonic boundary limits.
 
-```mermaid
-graph TD
-    classDef step fill:#2d3748,stroke:#4a5568,stroke-width:2px,color:#fff;
-    classDef default fill:#1a202c,stroke:#2d3748,color:#a0aec0;
-
-    S1["Step 1: Spatial Indices<br>(Matrix Traversal)"] --> S2["Step 2: Dependency & Connectivity<br>(Graph & Union Find)"]
-    S2 --> S3["Step 3: Interval Choice & Scheduling<br>(Greedy Algorithms)"]
-    S3 --> S4["Step 4: Boundary Limits<br>(Monotonic Stack)"]
-
-    class S1,S2,S3,S4 step;
+```text
+┌────────────────────────────────────────┐
+│  Step 1: Spatial Indices               │
+│  (Matrix Traversal)                    │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 2: Dependency & Connectivity     │
+│  (Graph & Union Find)                  │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 3: Interval Choice & Scheduling  │
+│  (Greedy Algorithms)                   │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 4: Boundary Limits               │
+│  (Monotonic Stack)                     │
+└────────────────────────────────────────┘
 ```
 
 ---

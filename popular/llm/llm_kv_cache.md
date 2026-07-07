@@ -19,25 +19,28 @@ Think of autoregressive decoding like a student writing an essay one word at a t
 
 ### How It Works
 
-```mermaid
-graph LR
-    Prob["Decode: token t needs K,V of tokens 0..t-1"] --> R["1. NO cache
-recompute all K,V every step
-O(L²) total"]
-    Prob --> D["2. DENSE cache
-pre-alloc slab up-front
-O(1)/step but wastes 1-used/max"]
-    Prob --> P["3. PAGED cache (PagedAttention)
-OS virtual memory model
-logical→physical page table
-waste less than page_size tokens"]
-
-    R -.->|"too slow"| D
-    D -.->|"93%+ wasted"| P
-
-    style R fill:#fdecea,stroke:#c0392b
-    style D fill:#fef9e7,stroke:#e67e22
-    style P fill:#eafaf1,stroke:#27ae60,stroke-width:3px
+```text
+                ┌────────────────────────────────────────┐
+                │ Decode: token t needs K,V of 0..t-1    │
+                └───────────────────┬────────────────────┘
+                                    │
+            ┌───────────────────────┼───────────────────────┐
+            v                       v                       v
+  ┌─────────────────────┐ ┌─────────────────────┐ ┌─────────────────────┐
+  │ 1. NO cache         │ │ 2. DENSE cache      │ │ 3. PAGED cache      │
+  │                     │ │                     │ │ (PagedAttention)    │
+  │ recompute all       │ │ pre-alloc slab      │ │                     │
+  │ K,V every step      │ │ up-front            │ │ OS virtual memory   │
+  │                     │ │                     │ │ model               │
+  │ O(L^2) total        │ │ O(1)/step but       │ │ logical->physical   │
+  │                     │ │ wastes 1-used/max   │ │ page table          │
+  │                     │ │                     │ │                     │
+  │                     │ │                     │ │ waste less than     │
+  │                     │ │                     │ │ page_size tokens    │
+  └─────────────────────┘ └─────────────────────┘ └─────────────────────┘
+         |                       |                       ^
+         |     "too slow"        |    "93%+ wasted"      |
+         +---------------------->+---------------------->+
 ```
 
 **Dense cache decode loop (step by step):**
@@ -49,29 +52,23 @@ waste less than page_size tokens"]
 
 **Paged cache (PagedAttention):**
 
-```mermaid
-graph TD
-    subgraph pool["Physical page pool (shared)"]
-        P0["page 0"]
-        P1["page 1"]
-        P2["page 2"]
-        P3["page 3"]
-    end
-    subgraph reqA["Request A block table"]
-        LA0["logical 0 → phys 0"]
-        LA1["logical 1 → phys 2"]
-    end
-    subgraph reqB["Request B block table"]
-        LB0["logical 0 → phys 1"]
-        LB1["logical 1 → phys 3"]
-    end
-    LA0 --> P0
-    LA1 --> P2
-    LB0 --> P1
-    LB1 --> P3
-    style reqA fill:#eaf2f8,stroke:#2980b9
-    style reqB fill:#f4ecf7,stroke:#8e44ad
-    style pool fill:#eafaf1,stroke:#27ae60
+```text
+┌────────────────────────────────────────────────────────────────────┐
+│ Physical page pool (shared)                                         │
+│                                                                     │
+│    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐       │
+│    │ page 0  │    │ page 1  │    │ page 2  │    │ page 3  │       │
+│    └────▲────┘    └────▲────┘    └────▲────┘    └────▲────┘       │
+└─────────┼──────────────┼──────────────┼──────────────┼─────────────┘
+          │              │              │              │
+       LA0│           LB0│           LA1│           LB1│
+          │              │              │              │
+┌─────────┴────────────────────────┐ ┌──┴───────────────────────────┐
+│ Request A block table            │ │ Request B block table        │
+│                                  │ │                              │
+│   logical 0 -> phys 0   (LA0)   │ │   logical 0 -> phys 1  (LB0)│
+│   logical 1 -> phys 2   (LA1)   │ │   logical 1 -> phys 3  (LB1)│
+└──────────────────────────────────┘ └──────────────────────────────┘
 ```
 
 Key mechanics:

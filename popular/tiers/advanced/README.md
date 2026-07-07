@@ -8,16 +8,29 @@ Welcome to the **Advanced (Tier 3) Coding Roadmap**. This directory serves as yo
 
 To build advanced algorithmic intuition, start with linear index-cycle logic, move to threshold binary searches, then explore backtracking state-spaces and prefix structures.
 
-```mermaid
-graph TD
-    classDef step fill:#2d3748,stroke:#4a5568,stroke-width:2px,color:#fff;
-    classDef default fill:#1a202c,stroke:#2d3748,color:#a0aec0;
-
-    S1["Step 1: Cycle Indexing<br>(Cyclic Sort)"] --> S2["Step 2: Search Thresholds<br>(Modified Binary Search)"]
-    S2 --> S3["Step 3: State-Space Traversals<br>(Backtracking & Subsets)"]
-    S3 --> S4["Step 4: Prefix Retrieval Systems<br>(Trie)"]
-
-    class S1,S2,S3,S4 step;
+```text
+┌────────────────────────────────────────┐
+│  Step 1: Cycle Indexing                │
+│  (Cyclic Sort)                         │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 2: Search Thresholds             │
+│  (Modified Binary Search)              │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 3: State-Space Traversals        │
+│  (Backtracking & Subsets)              │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 4: Prefix Retrieval Systems      │
+│  (Trie)                                │
+└────────────────────────────────────────┘
 ```
 
 ---

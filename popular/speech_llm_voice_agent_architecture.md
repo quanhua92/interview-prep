@@ -68,38 +68,30 @@ To hit the $500\text{ ms}$ budget, we partition the latency across the pipeline 
      - Truncates the agent's conversation history in the session state at the exact word index where the user interrupted.
      - Triggers an immediate ASR session for the new user input.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User as User Microphone / Speaker
-    participant Client as Client Client-Side SDK
-    participant Orch as Async Orchestrator
-    participant ASR as Streaming ASR (Riva)
-    participant LLM as TensorRT-LLM Engine
-    participant TTS as Streaming TTS (Riva)
-
-    Note over User, Client: User starts speaking
-    User->>Client: Raw Audio Stream
-    Client->>Orch: WebSocket: Binary Audio Frames
-    Orch->>ASR: Stream Audio Chunks
-    ASR-->>Orch: Partial Transcript Chunks
-    Orch->>LLM: Stream Tokens to Prompt
-    LLM-->>Orch: Streamed Generated Tokens
-    Orch->>TTS: Stream Phrase-level Text Chunks
-    TTS-->>Orch: Streamed Audio Waveform Chunks
-    Orch->>Client: Send Audio Chunks
-    Client->>User: Playback Audio
-
-    Note over User, Client: User Interrupts (Barge-In)
-    User->>Client: User starts talking
-    Client->>Client: Mute speaker & Flush local buffer
-    Client->>Orch: WebSocket: "USER_INTERRUPTED" signal
-    activate Orch
-    Orch->>LLM: Cancel active inference task
-    Orch->>TTS: Cancel active synthesis task
-    Orch->>Client: Send "CLEAR_BUFFER" signal
-    Orch->>Orch: Truncate agent context in DB
-    deactivate Orch
+```text
+ User   Client    Orch      ASR      LLM      TTS
+  │        │        │        │        │        │
+  │───1───▶│        │        │        │        │   Raw Audio Stream
+  │        │───2───▶│        │        │        │   WebSocket: Audio Frames
+  │        │        │───3───▶│        │        │   Stream Audio Chunks
+  │        │        │◀───4───│        │        │   Partial Transcript Chunks
+  │        │        │───5────────────▶│        │   Stream Tokens to Prompt
+  │        │        │◀───6────────────│        │   Streamed Generated Tokens
+  │        │        │───7─────────────────────▶│  Phrase-level Text Chunks
+  │        │        │◀───8─────────────────────│  Audio Waveform Chunks
+  │        │◀───9───│        │        │        │   Send Audio Chunks
+  │◀──10───│        │        │        │        │   Playback Audio
+  │        │        │        │        │        │
+══════════════════ User Interrupts (Barge-In) ═════════════════
+  │──11───▶│        │        │        │        │   User starts talking
+  │        │──12───▶│        │        │        │   WS: "USER_INTERRUPTED"
+  │        │        ║        │        │        │   [Orch activated]
+  │        │        ║──13────────────▶│        │   Cancel active inference
+  │        │        ║──14─────────────────────▶│  Cancel active synthesis
+  │        │◀──15───║        │        │        │   Send "CLEAR_BUFFER"
+  │        │        ║──16──┐ │        │        │   Truncate context in DB
+  │        │        ║◀─────┘ │        │        │
+  │        │        │        │        │        │   [Orch deactivated]
 ```
 
 ### 3.6 Dual-Model Responder Architectures
@@ -217,7 +209,7 @@ class VoiceAgentOrchestrator:
 
     async def handle_barge_in(self):
         """Immediately interrupts and cancels all pipeline operations."""
-        logger.warning("🚨 BARGE-IN DETECTED! Cancelling active streams.")
+        logger.warning("BARGE-IN DETECTED! Cancelling active streams.")
         self.interrupted_event.set()
         
         # 1. Cancel all active downstream processing tasks

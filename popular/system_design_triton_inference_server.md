@@ -25,63 +25,65 @@ Design a production-grade inference service to serve a Large Language Model (e.g
 
 To achieve low-latency LLM serving, we leverage **NVIDIA Triton Inference Server** integrated with the **TensorRT-LLM** backend. The system uses a decoupled Gateway-Compute model, utilizing dynamic in-flight batching and shared memory IPC.
 
-### Request Lifecycle & Triton Pipeline (Mermaid)
+### Request Lifecycle & Triton Pipeline
 
-```mermaid
-graph TD
-    %% Clients
-    Users[Clients / Users]
-
-    %% Gateway
-    subgraph Gateway ["Gateway Layer"]
-        LB[API Gateway / Load Balancer]
-        Router[Prompt-Caching Router]
-    end
-
-    %% Triton Pod
-    subgraph TritonPod ["Triton Inference Pod (TP=4 H100 SXM5)"]
-        gRPC[gRPC Streaming Interface]
-        
-        subgraph BLS ["Business Logic Scripting (BLS) Engine"]
-            Tokenize[Rust-based C++ Tokenizer]
-            Detokenize[Rust-based C++ Detokenizer]
-        end
-
-        subgraph Core ["Triton Core Scheduler"]
-            Queue[Prioritized Input Queue]
-            Batcher[In-Flight / Continuous Batcher]
-            KVMgr[Paged KV Cache Manager]
-        end
-
-        subgraph Engines ["Execution Engine (TensorRT-LLM)"]
-            GPU0[H100 GPU 0]
-            GPU1[H100 GPU 1]
-            GPU2[H100 GPU 2]
-            GPU3[H100 GPU 3]
-        end
-    end
-
-    %% Connections
-    Users -->|HTTPS / gRPC Streams| LB
-    LB --> Router
-    Router -->|Session-Bound Stream| gRPC
-    gRPC --> Tokenize
-    Tokenize -->|Token IDs| Queue
-    Queue --> Batcher
-    
-    Batcher -->|Prefill & Decode Interleaved| Engines
-    Engines <-->|Page Pointers| KVMgr
-    Engines -->|Logits| Detokenize
-    Detokenize -->|Streamed SSE Text| gRPC
-
-    %% GPU Interconnect
-    GPU0 <-->|900 GB/s NVLink| GPU1
-    GPU1 <-->|900 GB/s NVLink| GPU2
-    GPU2 <-->|900 GB/s NVLink| GPU3
-
-    style TritonPod fill:#ffe6cc,stroke:#d79b00,stroke-width:2px
-    style BLS fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px
-    style Core fill:#d5e8d4,stroke:#82b366,stroke-width:2px
+```text
+  ┌────────────┐  HTTPS / gRPC Streams  ┌──────────────────────┐
+  │ Clients /  │ ─────────────────────> │ API Gateway /        │
+  │ Users      │                        │ Load Balancer        │
+  └────────────┘                        └──────────┬───────────┘
+                                                   │
+                                                   ▼
+                                        ┌──────────────────────┐
+                                        │ Prompt-Caching Router│
+                                        └──────────┬───────────┘
+                                          Session- │ Bound Stream
+                                                   ▼
+┌─ Gateway Layer ──────────────────────────────────────────────────────┘
+                                                                       
+┌─ Triton Inference Pod (TP=4 H100 SXM5) ─────────────────────────────┐
+│                                                                      │
+│   ┌────────────────────────────────────────┐                         │
+│   │ gRPC Streaming Interface               │                         │
+│   └───────────────────┬────────────────────┘                         │
+│                       │                                              │
+│   ┌─ Business Logic Scripting (BLS) Engine ───────────────────────┐  │
+│   │   ┌──────────────────────────┐    ┌────────────────────────┐  │  │
+│   │   │ Rust-based C++ Tokenizer │    │ Rust-based C++         │  │  │
+│   │   │                          │    │ Detokenizer            │  │  │
+│   │   └──────────────────────────┘    └───────────┬────────────┘  │  │
+│   └──────────────┬─────────────────────────────────┼───────────────┘  │
+│           Token IDs│                                │ Logits          │
+│                  ▼                                 │                  │
+│   ┌─ Triton Core Scheduler ────────────────────────┼───────────────┐  │
+│   │   ┌──────────────────────┐                     │               │  │
+│   │   │ Prioritized Input    │                     │               │  │
+│   │   │ Queue                │                     │               │  │
+│   │   └──────────┬───────────┘                     │               │  │
+│   │              ▼                                 │               │  │
+│   │   ┌──────────────────────────┐                 │               │  │
+│   │   │ In-Flight / Continuous   │                 │               │  │
+│   │   │ Batcher                  │                 │               │  │
+│   │   └──────────┬───────────────┘                 │               │  │
+│   │              │  Prefill & Decode Interleaved   │               │  │
+│   │              ▼                                 │               │  │
+│   │   ┌─ Execution Engine (TensorRT-LLM) ──────────┼────────────┐  │  │
+│   │   │  ┌────────┐  ┌────────┐  ┌────────┐  ┌────┴────────┐   │  │  │
+│   │   │  │ H100   │<>│ H100   │<>│ H100   │<>│ H100 GPU 3  │   │  │  │
+│   │   │  │ GPU 0  │NV│ GPU 1  │NV│ GPU 2  │NV│             │   │  │  │
+│   │   │  └────────┘  └────────┘  └────────┘  └─────────────┘   │  │  │
+│   │   │      900 GB/s NVLink between adjacent GPUs              │  │  │
+│   │   └────────────────────────────┬────────────────────────────┘  │  │
+│   │                  Page Pointers │ <──> KVMgr                    │  │
+│   │                                 ▼                               │  │
+│   │   ┌──────────────────────────────────────────┐                 │  │
+│   │   │ Paged KV Cache Manager                  │                 │  │
+│   │   └──────────────────────────────────────────┘                 │  │
+│   └────────────────────────────────────────────────────────────────┘  │
+│         ▲ Logits (to Detokenizer above)                               │
+│                                                                       │
+│   Detokenizer ──> Streamed SSE Text ──> gRPC ──> Client              │
+└───────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

@@ -8,18 +8,41 @@ Welcome to the **Foundation (Tier 1) Coding Roadmap**. This directory serves as 
 
 To build strong algorithmic intuition, we recommend following a progressive learning order. Rather than jumping randomly between topics, master them sequentially as each builds on the mathematical and structural concepts of the previous one.
 
-```mermaid
-graph TD
-    classDef step fill:#2d3748,stroke:#4a5568,stroke-width:2px,color:#fff;
-    classDef default fill:#1a202c,stroke:#2d3748,color:#a0aec0;
-
-    S1["Step 1: Arrays & Strings<br>(Two Pointers & String)"] --> S2["Step 2: Linear Structures<br>(Fast & Slow Pointers)"]
-    S2 --> S3["Step 3: Subarrays & Substrings<br>(Sliding Window)"]
-    S3 --> S4["Step 4: Coordinate Ranges<br>(Merge Intervals)"]
-    S4 --> S5["Step 5: Hash & Value Lookups<br>(Hashmap)"]
-    S5 --> S6["Step 6: Tree & Graph Traversal<br>(Breadth-First Search)"]
-
-    class S1,S2,S3,S4,S5,S6 step;
+```text
+┌────────────────────────────────────────┐
+│  Step 1: Arrays & Strings              │
+│  (Two Pointers & String)               │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 2: Linear Structures             │
+│  (Fast & Slow Pointers)                │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 3: Subarrays & Substrings        │
+│  (Sliding Window)                      │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 4: Coordinate Ranges             │
+│  (Merge Intervals)                     │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 5: Hash & Value Lookups          │
+│  (Hashmap)                             │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 6: Tree & Graph Traversal        │
+│  (Breadth-First Search)                │
+└────────────────────────────────────────┘
 ```
 
 ---

@@ -28,70 +28,81 @@ Design a real-time, low-latency onboard perception pipeline for a Level 3/Level 
 
 To meet the rigid $50\text{ ms}$ latency budget, we must avoid CPU-GPU context switches, host-to-device memory copies ($H2D$/$D2H$), and serialization overhead. We design a **heterogeneous compute pipeline** using GMSL2 (Gigabit Multimedia Serial Link) for cameras, PCIe Gen4/10G Ethernet for LiDAR, and shared memory (`NvSciBuf`/`NvSciSync`) for zero-copy inter-process communication (IPC).
 
-### Data Flow Diagram (Mermaid)
+### Data Flow Diagram
 
-```mermaid
-graph TD
-    %% Sensors
-    subgraph Sensors ["Sensors & Hardware Interface"]
-        Cam[8x 8MP Cameras @ 30Hz]
-        Lidar[2x LiDAR @ 10Hz]
-        Radar[5x Radar @ 20Hz]
-        IMU[IMU/GPS @ 100Hz]
-    end
-
-    %% HW Ingestion & Processing
-    subgraph SoC ["NVIDIA DRIVE SoC (Orin/Thor)"]
-        ISP[Hardware ISP / PVA]
-        DLA[Deep Learning Accelerator]
-        GPU[GPU Core (TensorRT)]
-        CPU[Arm Cortex-A78AE CPU]
-        
-        subgraph Mem ["Zero-Copy Memory Layer"]
-            NvSciBuf[NvSciBuf Shared Memory Pool]
-            NvSciSync[NvSciSync Hardware Semaphores]
-        end
-    end
-
-    subgraph MCU ["Safety Microcontroller"]
-        Aurix[Infineon AURIX TC397 (ASIL-D)]
-    end
-
-    %% Software Processes
-    subgraph Software ["Perception Pipeline Stack"]
-        Sync[Spatial-Temporal Sync Engine]
-        ObjDet[Camera Object Detection DLA]
-        LidarNet[LiDAR PointCloud Net GPU]
-        Fusion[BEV Spatial-Temporal Fusion GPU]
-        Track[Object Tracking & Occupancy Grid GPU]
-    end
-
-    %% Connections
-    Cam -->|GMSL2 / Deserializer| ISP
-    ISP -->|DMA Zero-Copy Write| NvSciBuf
-    Lidar -->|10G Ethernet / GPUDirect RDMA| NvSciBuf
-    Radar -->|CAN-FD / PCIe| Sync
-    IMU -->|CAN-FD| Sync
-
-    NvSciBuf -.->|Hardware Sync| NvSciSync
-    Sync -->|Synchronized Camera Tensors| ObjDet
-    Sync -->|Synchronized PointCloud Tensors| LidarNet
-    
-    ObjDet -->|DLA Shared Tensor| Fusion
-    LidarNet -->|GPU Shared Tensor| Fusion
-    
-    Fusion --> Track
-    Track -->|3D World State| Plan[Trajectory Planning & Control]
-    
-    %% Safety Watchdogs
-    CPU -->|Heartbeat / SPI| Aurix
-    GPU -->|Diagnostics| Aurix
-    Aurix -->|ASIL-D Safe State Actuation| Plan
-
-    style Mem fill:#ffe6cc,stroke:#d79b00,stroke-width:2px
-    style DLA fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px
-    style GPU fill:#d5e8d4,stroke:#82b366,stroke-width:2px
-    style Aurix fill:#f8cecc,stroke:#b85450,stroke-width:2px
+```text
+┌─ Sensors & Hardware Interface ───────────────────────────────────────┐
+│   ┌─────────────────┐   ┌─────────────┐   ┌────────────┐            │
+│   │ 8x 8MP Cameras  │   │ 2x LiDAR    │   │ 5x Radar   │            │
+│   │ @ 30Hz          │   │ @ 10Hz      │   │ @ 20Hz     │            │
+│   └────────┬────────┘   └──────┬──────┘   └─────┬──────┘            │
+│   ┌────────┴────────┐          │                │                   │
+│   │ IMU/GPS @ 100Hz │          │                │                   │
+│   └────────┬────────┘          │                │                   │
+└────────────┼───────────────────┼────────────────┼───────────────────┘
+             │ GMSL2/Deserializer│ 10G Ethernet/  │ CAN-FD / PCIe
+             │                   │ GPUDirect RDMA │ CAN-FD
+             ▼                   ▼                │   │
+┌─ NVIDIA DRIVE SoC (Orin/Thor) ─┼────────────────┼───┼───────────────┐
+│                                │                │   │               │
+│  ┌─ Hardware Engines ──────────┼────────────────┘   │               │
+│  │ ┌────────────────┐  ┌─────────────────┐          │               │
+│  │ │ Hardware ISP / │  │ Deep Learning   │          │               │
+│  │ │ PVA            │  │ Accelerator     │          │               │
+│  │ └───────┬────────┘  └─────────────────┘          │               │
+│  │  DMA Zero│Copy Write                             │               │
+│  └──────────┼───────────────────────────────────────┼───────────────┘│
+│             ▼             ▼                          │               │
+│  ┌─ Zero-Copy Memory Layer ─────────────────────────┘               │
+│  │   ┌──────────────────────────────────────┐                       │
+│  │   │ NvSciBuf Shared Memory Pool          │                       │
+│  │   └──────────────────────────────────────┘                       │
+│  │             ╎ Hardware Sync                                       │
+│  │   ┌──────────────────────────────────────┐                       │
+│  │   │ NvSciSync Hardware Semaphores        │                       │
+│  │   └──────────────────────────────────────┘                       │
+│  └──────────────────────────────────────────────────────────────────┘│
+│                                                                      │
+│  ┌─ Perception Pipeline Stack ───────────────────────────────────┐   │
+│  │   ┌──────────────────────────────────────┐ <── CAN-FD (Radar)│   │
+│  │   │ Spatial-Temporal Sync Engine         │ <── CAN-FD (IMU)  │   │
+│  │   └────┬──────────────────────┬──────────┘                   │   │
+│  │   Sync│Camera Tensors   Sync │PointCloud Tensors             │   │
+│  │       ▼                      ▼                               │   │
+│  │  ┌──────────────────┐  ┌──────────────────┐                  │   │
+│  │  │ Camera Object    │  │ LiDAR PointCloud │                  │   │
+│  │  │ Detection (DLA)  │  │ Net (GPU)        │                  │   │
+│  │  └────────┬─────────┘  └────────┬─────────┘                  │   │
+│  │   DLA Shared│Tensor      GPU Shared│Tensor                    │   │
+│  │            ▼                      ▼                          │   │
+│  │      ┌──────────────────────────────────┐                    │   │
+│  │      │ BEV Spatial-Temporal Fusion (GPU)│                    │   │
+│  │      └────────────────┬─────────────────┘                    │   │
+│  │                       ▼                                      │   │
+│  │      ┌──────────────────────────────────┐                    │   │
+│  │      │ Object Tracking & Occupancy      │                    │   │
+│  │      │ Grid (GPU)                       │                    │   │
+│  │      └────────────────┬─────────────────┘                    │   │
+│  └───────────────────────┼──────────────────────────────────────┘   │
+│                          │ 3D World State                            │
+│  ┌────────────────────┐  │  ┌────────────────────┐                  │
+│  │ Arm Cortex-A78AE   │  │  │ GPU Core (TensorRT)│                  │
+│  │ CPU                │  │  │                    │                  │
+│  └────────┬───────────┘  │  └────────┬───────────┘                  │
+└───────────┼──────────────┼───────────┼──────────────────────────────┘
+   Heartbeat│/SPI          Diagnostics │
+            ▼                          ▼
+┌─ Safety Microcontroller ─────────────────────────────────────────────┐
+│   ┌──────────────────────────────────────────────┐                   │
+│   │ Infineon AURIX TC397 (ASIL-D)                │                   │
+│   └──────────────────────────────┬───────────────┘                   │
+└──────────────────────────────────┼────────────────────────────────────┘
+                  ASIL-D Safe State│Actuation
+                                  ▼
+                      ┌────────────────────────┐  <── 3D World State
+                      │ Trajectory Planning &  │      (from Tracker)
+                      │ Control                │
+                      └────────────────────────┘
 ```
 
 ---

@@ -8,18 +8,41 @@ Welcome to the **Intermediate (Tier 2) Coding Roadmap**. This directory contains
 
 To tackle intermediate problems, follow a systematic progression that moves from linear sum/search concepts into trees, priority queues, and advanced memoization.
 
-```mermaid
-graph TD
-    classDef step fill:#2d3748,stroke:#4a5568,stroke-width:2px,color:#fff;
-    classDef default fill:#1a202c,stroke:#2d3748,color:#a0aec0;
-
-    S1["Step 1: Ranges & Bounds<br>(Prefix Sum & Binary Search)"] --> S2["Step 2: Non-Linear Traversal<br>(Stack & DFS)"]
-    S2 --> S3["Step 3: Heap & Sorting<br>(D&C, Two Heaps & Top K)"]
-    S3 --> S4["Step 4: Machine State<br>(Bit Manipulation)"]
-    S4 --> S5["Step 5: Probability & Coordinates<br>(Math & Randomized)"]
-    S5 --> S6["Step 6: Optimized Choices<br>(DP & Object Design)"]
-
-    class S1,S2,S3,S4,S5,S6 step;
+```text
+┌────────────────────────────────────────┐
+│  Step 1: Ranges & Bounds               │
+│  (Prefix Sum & Binary Search)          │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 2: Non-Linear Traversal          │
+│  (Stack & DFS)                         │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 3: Heap & Sorting                │
+│  (D&C, Two Heaps & Top K)              │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 4: Machine State                 │
+│  (Bit Manipulation)                    │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 5: Probability & Coordinates     │
+│  (Math & Randomized)                   │
+└────────────────────┬───────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────┐
+│  Step 6: Optimized Choices             │
+│  (DP & Object Design)                  │
+└────────────────────────────────────────┘
 ```
 
 ---

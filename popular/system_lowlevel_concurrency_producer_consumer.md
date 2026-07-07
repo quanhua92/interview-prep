@@ -220,11 +220,30 @@ int main() {
 
 A **Spurious Wakeup** occurs when a thread waiting on a condition variable is scheduled to run by the OS kernel even though no other thread called `notify_one()` or `notify_all()`.
 
-```mermaid
-graph TD
-    Running["Running State"] -->|Blocks on cv.wait, releases Mutex| Waiting["Waiting State (Blocked)"]
-    Waiting -->|Signal/Broadcast from other thread| Ready["Ready State (In OS Run-queue)"]
-    Ready -->|Acquires Mutex, scheduled by OS| Running
+```text
+  ┌─────────────────┐
+  │  Running State  │◀─────────────────────────────────┐
+  └────────┬────────┘                                  │
+           │                                          │
+           │ Blocks on cv.wait,                       │
+           │ releases Mutex                           │
+           ▼                                          │
+  ┌─────────────────┐                                 │
+  │  Waiting State  │                                 │
+  │   (Blocked)     │                                 │
+  └────────┬────────┘                                 │
+           │                                          │
+           │ Signal/Broadcast                         │
+           │ from other thread                        │
+           ▼                                          │
+  ┌─────────────────┐                                 │
+  │   Ready State   │                                 │
+  │ (In OS Run-queue)│                                │
+  └────────┬────────┘                                 │
+           │                                          │
+           │ Acquires Mutex,                          │
+           │ scheduled by OS                          │
+           └──────────────────────────────────────────┘
 ```
 
 ### Why Spurious Wakeups Happen:

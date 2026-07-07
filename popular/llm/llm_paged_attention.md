@@ -18,15 +18,35 @@ Dense KV caching pre-allocates `[B, H_kv, max_seq_len, d]` per request up front.
 
 ### How It Works
 
-```mermaid
-graph LR
-    Prob["Decode: each request needs growing K,V"] --> D["DENSE cache<br/>pre-alloc [B,H_kv,max_len,d]<br/>per request up-front<br/>wastes up to 93%"]
-    Prob --> P["PAGED cache<br/>shared pool [num_pages,H_kv,page_size,d]<br/>block_table: logical->physical<br/>waste < 1/page_size"]
-    D -.->|"60-80% system-wide waste"| P
-    P -.->|"near-zero waste<br/>+ prefix sharing"| Win["2-4x throughput<br/>vs prior SOTA"]
-    style D fill:#fdecea,stroke:#c0392b
-    style P fill:#eafaf1,stroke:#27ae60,stroke-width:3px
-    style Win fill:#eafaf1,stroke:#27ae60
+```text
+┌──────────────────────────────────┐
+│ Decode: each request needs       │
+│                growing K,V       │
+└────────────────┬─────────────────┘
+                 │
+       ┌─────────┴─────────┐
+       ▼                   ▼
+┌──────────────────┐  ┌──────────────────────────┐
+│ DENSE cache      │  │ PAGED cache              │
+│  pre-alloc       │  │  shared pool             │
+│  [B,H_kv,        │  │  [num_pages,H_kv,        │
+│   max_len,d]     │  │   page_size,d]           │
+│  per request     │  │  block_table:            │
+│   up-front       │  │   logical -> physical    │
+│  wastes up to    │  │  waste < 1/page_size     │
+│   93%            │  └─────────────┬────────────┘
+└────────┬─────────┘                │
+         │                          │
+         │   60-80% system-wide     │
+         │   waste (replaced by)    │
+         └────────────┬─────────────┘
+                      │  near-zero waste
+                      │  + prefix sharing
+                      ▼
+         ┌────────────────────────────┐
+         │ 2-4x throughput            │
+         │ vs prior SOTA              │
+         └────────────────────────────┘
 ```
 
 ---
@@ -97,27 +117,23 @@ key_pages shape: (4, 2, 2, 8)  = [num_pages, H_kv, page_size, D]
 
 **Analogy**: each request gets an *index card* listing which physical pages hold their tokens IN ORDER. Pages can be scattered anywhere in the pool.
 
-```mermaid
-graph TD
-    subgraph pool["Physical page pool (shared 'RAM') — ids 0..7"]
-        P0["page 0<br/>(A's notes)"]
-        P1["page 1<br/>(B's notes)"]
-        P2["page 2<br/>(A's notes)"]
-        P3["pages 3..7<br/>free"]
-    end
-    subgraph reqA["Request A — block table (index card)"]
-        LA0["logical 0 -> phys 0"]
-        LA1["logical 1 -> phys 2"]
-    end
-    subgraph reqB["Request B — block table"]
-        LB0["logical 0 -> phys 1"]
-    end
-    LA0 --> P0
-    LA1 --> P2
-    LB0 --> P1
-    style reqA fill:#eaf2f8,stroke:#2980b9
-    style reqB fill:#f4ecf7,stroke:#8e44ad
-    style pool fill:#eafaf1,stroke:#27ae60,stroke-width:2px
+```text
+┌─ Request A — block table (index card) ─────────┐
+│   logical 0  ───────────────────────▶ page 0   │
+│   logical 1  ───────────────────────▶ page 2   │
+└────────────────────────────────────────────────┘
+
+┌─ Request B — block table ─────────────────────┐
+│   logical 0  ───────────────────────▶ page 1   │
+└────────────────────────────────────────────────┘
+
+┌─ Physical page pool (shared 'RAM') — ids 0..7 ──────────────┐
+│                                                              │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│  │   page 0     │  │   page 1     │  │   page 2     │  │  pages 3..7  │
+│  │ (A's notes)  │  │ (B's notes)  │  │ (A's notes)  │  │  free        │
+│  └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘
+└──────────────────────────────────────────────────────────────┘
 ```
 
 From the output (interleaved allocation so storage is scattered):

@@ -21,19 +21,32 @@ In NVIDIA GPUs, parallel execution is driven by the SIMT (Single Instruction, Mu
 
 To master warp divergence, we must look at the Streaming Multiprocessor (SM) internal scheduling and execution pipelines.
 
-```mermaid
-graph TD
-    subgraph SM Sub-Core (Processing Block)
-        WS["Warp Scheduler"] --> DU["Instruction Dispatch Unit"]
-        DU --> RF["Register File (16,384 x 32-bit registers)"]
-        DU --> EX["Execution Units"]
-        subgraph Execution Units
-            FP32["FP32 Core (1 instruction/cycle)"]
-            INT32["INT32 Core"]
-            SFU["SFU (Special Function Unit)"]
-            TC["Tensor Core"]
-        end
-    end
+```text
+┌─ SM Sub-Core (Processing Block) ────────────────────────────────────┐
+│                                                                     │
+│   ┌────────────────┐       ┌──────────────────────┐                 │
+│   │ Warp Scheduler │──────▶│ Instruction Dispatch │                 │
+│   └────────────────┘       │       Unit           │                 │
+│                            └──────────┬───────────┘                 │
+│                            ┌──────────┴───────────┐                 │
+│                            │                      │                 │
+│                            ▼                      ▼                 │
+│          ┌─────────────────────────┐  ┌──────────────────────┐     │
+│          │  Register File          │  │   Execution Units     │     │
+│          │  (16,384 x 32-bit regs) │  │  ┌────────────────┐   │     │
+│          └─────────────────────────┘  │  │ FP32 Core      │   │     │
+│                                        │  │ (1 inst/cycle) │   │     │
+│                                        │  ├────────────────┤   │     │
+│                                        │  │ INT32 Core     │   │     │
+│                                        │  ├────────────────┤   │     │
+│                                        │  │ SFU (Special   │   │     │
+│                                        │  │ Function Unit) │   │     │
+│                                        │  ├────────────────┤   │     │
+│                                        │  │ Tensor Core    │   │     │
+│                                        │  └────────────────┘   │     │
+│                                        └──────────────────────┘     │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ### The Warp Scheduler Execution Model
@@ -58,17 +71,38 @@ Prior to the Volta architecture (Pascal, Maxwell, etc.), a warp shared a single 
 ### Volta+: Independent Thread Scheduling (ITS)
 Starting with Volta (and continuing through Ampere, Hopper, and Blackwell), NVIDIA introduced **Independent Thread Scheduling (ITS)**.
 
-```mermaid
-graph TD
-    subgraph Pre-Volta SIMT
-        A["Single PC & Call Stack per Warp"]
-        A --> B["Forces strict serialization of branched execution"]
-    end
-    subgraph Volta+ Independent Thread Scheduling (ITS)
-        C["Individual PC & Call Stack per Thread"]
-        C --> D["Hardware Convergence Optimizer groups threads dynamically"]
-        C --> E["Prevents lock-free synchronization deadlock"]
-    end
+```text
+┌─ Pre-Volta SIMT ─────────────────────────────┐
+│                                              │
+│  ┌──────────────────────────────────────┐    │
+│  │  Single PC & Call Stack per Warp     │    │
+│  └────────────────┬─────────────────────┘    │
+│                   │                          │
+│                   ▼                          │
+│  ┌──────────────────────────────────────┐    │
+│  │ Forces strict serialization of       │    │
+│  │ branched execution                   │    │
+│  └──────────────────────────────────────┘    │
+│                                              │
+└──────────────────────────────────────────────┘
+
+┌─ Volta+ Independent Thread Scheduling (ITS) ─┐
+│                                              │
+│  ┌──────────────────────────────────────┐    │
+│  │  Individual PC & Call Stack per      │    │
+│  │             Thread                   │    │
+│  └────────────────┬─────────────────────┘    │
+│              ┌───┴────┐                       │
+│              ▼        ▼                       │
+│  ┌────────────────┐ ┌──────────────────────┐ │
+│  │   Hardware     │ │ Prevents lock-free   │ │
+│  │  Convergence   │ │ sync deadlock        │ │
+│  │  Optimizer     │ │                      │ │
+│  │ groups threads │ │                      │ │
+│  │   dynamically  │ │                      │ │
+│  └────────────────┘ └──────────────────────┘ │
+│                                              │
+└──────────────────────────────────────────────┘
 ```
 
 *   **Per-Thread State**: Each thread in a warp has its own PC and call stack. Threads can diverge and yield execution to other threads in the same warp at an instruction-level granularity.

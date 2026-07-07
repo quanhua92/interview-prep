@@ -18,15 +18,41 @@ A character-level vocabulary (26 letters) makes sequences impossibly long. A wor
 
 ### How It Works
 
-```mermaid
-graph LR
-    R["Raw text"] --> N["1. Normalize\nNFD / NFKC / none"]
-    N --> P["2. Pre-tokenize\nGPT-2 regex split"]
-    P --> M["3. Subword Model\nBPE / WordPiece / Unigram"]
-    M --> Po["4. Post-processor\nadd special tokens"]
-    Po --> ID["Token IDs\n→ embedding table"]
-    style M fill:#eafaf1,stroke:#27ae60,stroke-width:3px
-    style ID fill:#fef9e7,stroke:#f1c40f
+```text
+┌──────────┐
+│ Raw text │
+└────┬─────┘
+     │
+     ▼
+┌────────────────────────┐
+│ 1. Normalize           │
+│    NFD / NFKC / none   │
+└────────────┬───────────┘
+             │
+             ▼
+┌────────────────────────┐
+│ 2. Pre-tokenize        │
+│    GPT-2 regex split   │
+└────────────┬───────────┘
+             │
+             ▼
+┌────────────────────────┐   ◀── the 3 algorithm families
+│ 3. Subword Model       │       (BPE / WordPiece / Unigram)
+│    BPE / WordPiece /   │       live here
+│    Unigram             │
+└────────────┬───────────┘
+             │
+             ▼
+┌────────────────────────┐
+│ 4. Post-processor      │
+│    add special tokens  │
+└────────────┬───────────┘
+             │
+             ▼
+┌────────────────────────┐
+│ Token IDs              │
+│   -> embedding table   │
+└────────────────────────┘
 ```
 
 **BPE Training algorithm** (Sennrich et al. 2016):
@@ -98,15 +124,37 @@ IDs: low=11, est=13  =>  [11, 13]
 
 ### WordPiece vs BPE (Section D)
 
-```mermaid
-graph LR
-    W["word: newer"] --> L1["longest prefix in vocab?\n'newer'? no · 'new'? YES"]
-    L1 --> P1["emit 'new' (bare)"]
-    P1 --> L2["remaining 'er' · longest ## match?\n'##er'? YES"]
-    L2 --> P2["emit '##er'"]
-    P2 --> Done["['new','##er']"]
-    style L1 fill:#fef9e7,stroke:#f1c40f
-    style L2 fill:#fef9e7,stroke:#f1c40f
+```text
+┌──────────────┐
+│ word: newer  │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────────────────────────────┐
+│ longest prefix in vocab?             │
+│    'newer'? no  ·  'new'? YES        │
+└──────────────────┬───────────────────┘
+                   │
+                   ▼
+           ┌────────────────────┐
+           │ emit 'new' (bare)  │
+           └─────────┬──────────┘
+                     │
+                     ▼
+┌──────────────────────────────────────┐
+│ remaining 'er' · longest ## match?   │
+│    '##er'? YES                       │
+└──────────────────┬───────────────────┘
+                   │
+                   ▼
+           ┌──────────────┐
+           │ emit '##er'  │
+           └──────┬───────┘
+                  │
+                  ▼
+       ┌────────────────────┐
+       │ ['new', '##er']    │
+       └────────────────────┘
 ```
 
 | word | BPE pieces | WordPiece pieces | key difference |

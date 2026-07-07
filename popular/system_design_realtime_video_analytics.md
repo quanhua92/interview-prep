@@ -18,61 +18,66 @@ Design a scalable, real-time video analytics platform to process **1,000 RTSP ca
 
 A naive OpenCV/Python pipeline would saturate CPU decoders and memory bandwidth immediately. We design a pipeline leveraging **NVIDIA DeepStream** (built on GStreamer) and **Triton Inference Server**, utilizing zero-copy memory and dedicated hardware decoding engines (NVDEC).
 
-### End-to-End Pipeline & GStreamer Elements (Mermaid)
+### End-to-End Pipeline & GStreamer Elements
 
-```mermaid
-graph TD
-    %% Cameras & Ingestion
-    subgraph Ingestion ["Ingestion & Load Balancing"]
-        Cam[1,000x RTSP Cameras]
-        LB[Nginx RTSP Proxy / Live555]
-    end
-
-    %% DeepStream Processing Node
-    subgraph DSNode ["DeepStream Processing Node (1 of 30)"]
-        Src[uridecodebin / rtspsrc]
-        NVDEC[Hardware Decoders - NVDEC]
-        Mux[nvstreammux - Batcher]
-        Infer[nvinferserver - Triton Client]
-        Tracker[nvtracker - NvDCF GPU Tracker]
-        OSD[nvds_osd - On-Screen Display]
-        MsgConv[nvmsgconv - Metadata Converter]
-        Broker[nvmsgbroker - Kafka Sink]
-    end
-
-    %% Inference Node
-    subgraph TritonPool ["Triton Inference Pods"]
-        Triton[Triton Inference Server]
-        TRT[TensorRT YOLOv8 Engine INT8]
-    end
-
-    %% Downstream
-    subgraph Downstream ["Egress & Analytics"]
-        Kafka[(Kafka Cluster)]
-        DB[(ClickHouse Time-Series)]
-    end
-
-    %% Data Flow
-    Cam -->|RTSP / RTP packets| LB
-    LB -->|Load Balanced RTSP| Src
-    Src -->|H.264 Raw Bitstream| NVDEC
-    NVDEC -->|NVMM Zero-Copy Pointer YUV420| Mux
-    Mux -->|Batched NvBufSurface Tensors| Infer
-    
-    %% Shared Memory IPC
-    Infer <-->|CUDA IPC Shared Memory| Triton
-    Triton <--> TRT
-    
-    Infer -->|Updated NvDsBatchMeta| Tracker
-    Tracker -->|Tracks & IDs| OSD
-    OSD --> MsgConv
-    MsgConv --> Broker
-    Broker -->|JSON Metadata over TCP| Kafka
-    Kafka --> DB
-
-    style DSNode fill:#ffe6cc,stroke:#d79b00,stroke-width:2px
-    style TritonPool fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px
-    style NVDEC fill:#d5e8d4,stroke:#82b366,stroke-width:2px
+```text
+┌─ Ingestion & Load Balancing ──────────────────────────────┐
+│   ┌──────────────────────┐       ┌──────────────────────┐ │
+│   │ 1,000x RTSP Cameras  │──────>│ Nginx RTSP Proxy /   │ │
+│   │                      │ RTSP /│ Live555              │ │
+│   │                      │RTP pkt└──────────┬───────────┘ │
+│   └──────────────────────┘                  │             │
+└─────────────────────────────────────────────┼─────────────┘
+                                              │ Load Balanced RTSP
+                                              ▼
+┌─ DeepStream Processing Node (1 of 30) ────────────────────────────────┐
+│                                                                       │
+│   ┌────────────────────────────────────────┐                          │
+│   │ uridecodebin / rtspsrc                 │                          │
+│   └───────────────────┬────────────────────┘                          │
+│              H.264 Raw│Bitstream                                    │
+│                       ▼                                               │
+│   ┌────────────────────────────────────────┐                          │
+│   │ Hardware Decoders - NVDEC              │                          │
+│   └───────────────────┬────────────────────┘                          │
+│     NVMM Zero-Copy    │Pointer YUV420                                │
+│                       ▼                                               │
+│   ┌────────────────────────────────────────┐                          │
+│   │ nvstreammux - Batcher                  │                          │
+│   └───────────────────┬────────────────────┘                          │
+│     Batched NvBufSurface│Tensors                                     │
+│                       ▼             ┌────────────────────────────────┐│
+│   ┌────────────────────────────────┐│ CUDA IPC Shared Memory         ││
+│   │ nvinferserver -                │< memory >                      ││
+│   │ Triton Client                  │└────────────┬───────────────────┘│
+│   └───────────────────┬────────────┘             │                    │
+│         Updated NvDs  │BatchMeta                 │                    │
+│                       ▼                          ▼                    │
+│   ┌────────────────────────────────┐   ┌─ Triton Inference Pods ───┐ │
+│   │ nvtracker - NvDCF GPU Tracker  │   │ ┌────────────────────┐    │ │
+│   └───────────────────┬────────────┘   │ │ Triton Inference   │    │ │
+│              Tracks & │IDs             │ │ Server             │    │ │
+│                       ▼                │ └─────────┬──────────┘    │ │
+│   ┌────────────────────────────────┐   │           │               │ │
+│   │ nvds_osd - On-Screen Display   │   │ ┌─────────┴──────────┐    │ │
+│   └───────────────────┬────────────┘   │ │ TensorRT YOLOv8    │    │ │
+│                       ▼                │ │ Engine INT8        │    │ │
+│   ┌────────────────────────────────┐   │ └────────────────────┘    │ │
+│   │ nvmsgconv - Metadata Converter│   └────────────────────────────┘ │
+│   └───────────────────┬────────────┘                                  │
+│                       ▼                                                │
+│   ┌────────────────────────────────┐                                  │
+│   │ nvmsgbroker - Kafka Sink       │                                  │
+│   └───────────────────┬────────────┘                                  │
+└───────────────────────┼───────────────────────────────────────────────┘
+                JSON    │ Metadata over TCP
+                        ▼
+┌─ Egress & Analytics ─────────────────────────────────────┐
+│   ┌────────────────────┐       ┌──────────────────────┐  │
+│   │ (Kafka Cluster)    │──────>│ (ClickHouse          │  │
+│   │                    │       │  Time-Series)        │  │
+│   └────────────────────┘       └──────────────────────┘  │
+└───────────────────────────────────────────────────────────┘
 ```
 
 ---

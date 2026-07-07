@@ -322,28 +322,52 @@ To clear the bar, you must demonstrate comfort across the entire spectrum.
 
 ### Architectural Layout of Concurrent Sharded Key-Value Store
 
-```mermaid
-graph TD
-    Client[Client Request: get/put] --> HashFn["Hash Function: Hash(Key) % M"]
-    HashFn --> Bucket0[Bucket 0]
-    HashFn --> Bucket1[Bucket 1]
-    HashFn --> BucketN["Bucket M-1"]
+```text
+   ┌──────────┐         ┌─────────────────────┐
+   │  Client  │────────▶│   Hash Function:    │
+   │ Request: │         │    Hash(Key) % M    │
+   │ get/put  │         └──┬──────┬───────┬───┘
+   └────┬─────┘            │      │       │
+        │                  ▼      ▼       ▼
+        │            ┌────────┐┌──────┐┌────────┐
+        │            │Bucket 0││Bkt 1 ││Bucket  │
+        │            └───┬────┘└──────┘│ M-1    │
+        │                │             └────────┘
+        │                ▼
+        │       ┌──────────────────────────────────────────┐
+        │       │ Bucket Structure                          │
+        │       │ ┌──────────────────────────────────────┐ │
+        │       │ │ std::shared_mutex (aligned to 64B)   │ │
+        │       │ └──────────────────────────────────────┘ │
+        │       │ ┌──────────────────────────────────────┐ │
+        │       │ │ std::unordered_map<Key, CacheEntry>  │◀┼─┐
+        │       │ └──────────────────┬───────────────────┘ │ │
+        │       └────────────────────┼─────────────────────┘ │
+        │                            ▼                       │
+        │       ┌──────────────────────────────────────────┐ │
+        │       │ Cache Entry                               │ │
+        │       │ ┌──────────────────────────────────────┐ │ │
+        │       │ │ Value & Expiry Timestamp             │ │ │
+        │       │ └──────────────────────────────────────┘ │ │
+        │       └──────────────────────────────────────────┘ │
+        │                                                  │
+        │       Passive Eviction on get                    │
+        └──────────────────────────────────────────────────┘
 
-    subgraph Bucket Structure
-        Bucket0 --> Lock0["std::shared_mutex (aligned to 64B)"]
-        Bucket0 --> Map0["std::unordered_map<Key, CacheEntry>"]
-    end
 
-    subgraph Cache Entry
-        Map0 --> Entry["Value & Expiry Timestamp"]
-    end
-
-    subgraph Eviction Mechanics
-        GC[Background Active Eviction Thread] -->|Locks & Samples| Bucket0
-        GC -->|Locks & Samples| Bucket1
-        GC -->|Locks & Samples| BucketN
-        Client -->|Passive Eviction on get| Map0
-    end
+┌──────────────────────────────────────────────────────────────┐
+│  Eviction Mechanics (Active)                                 │
+│                                                              │
+│   ┌──────────────────────────────┐                           │
+│   │ Background Active Eviction   │                           │
+│   │      Thread (GC)             │                           │
+│   └──┬──────────┬──────────┬─────┘                           │
+│      │ Locks &  │ Locks &  │ Locks &                         │
+│      │ Samples  │ Samples  │ Samples                         │
+│      ▼          ▼          ▼                                 │
+│   [Bucket 0] [Bucket 1] [Bucket M-1]                         │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---
