@@ -10,7 +10,7 @@ Two ways to use this directory:
 
 ## Speed Run: 7-Day Cherry-Pick
 
-**Scope:** ~50 items from `popular/` root + `popular/tiers/`. Total ~26 hours (~4 h/day).
+**Scope:** ~50 items from `playbook/` root + `playbook/tiers/`. Total ~26 hours (~4 h/day).
 **Goal:** Pattern recognition + 1 working solution per high-frequency pattern. Not mastery.
 **Skip rule:** If a file is not for your target role, drop it and reclaim the time for drilling cold solves on Day 7.
 

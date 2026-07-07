@@ -61,4 +61,4 @@ Clickable, collapsible flashcards. Click the bold text to reveal the answer. Cli
 
 ---
 
-[Back to popular/ README](../README.md)
+[Back to playbook/ README](../README.md)

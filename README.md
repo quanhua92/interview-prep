@@ -5,7 +5,7 @@ A comprehensive interview preparation toolkit covering coding patterns, system d
 > **[DSA Cheatsheet](DSA_CHEATSHEET.md)** — a single-page reference for all 29 coding patterns across 4 tiers: a signal-to-pattern selection table, per-topic mindset + algorithm skeleton + complexity + the #1 gotcha, every problem mapped, and cross-cutting disambiguation (greedy vs DP, BFS vs topo-sort vs union-find, etc.).
 
 > [!NOTE]
-> **[`popular/`](popular/)** is a separate, standalone resource — it is **not** part of the 144 tracked coding problems or 145 tracked topics below. It contains 34+ deep technical interview guides (C++/Python), a complete **34-guide LLM Systems Engineering curriculum** ([`popular/llm/`](popular/llm/)), compiled PDF bundles ([`popular/pdfs/`](popular/pdfs/)), and paired flashcard decks ([`popular/flash_cards/`](popular/flash_cards/)). Start with [`popular/README.md`](popular/README.md) for the 7-day speed run and the post-speed-run LLM deep dive.
+> **[`playbook/`](playbook/)** is a separate, standalone resource — it is **not** part of the 144 tracked coding problems or 145 tracked topics below. It contains 34+ deep technical interview guides (C++/Python), a complete **34-guide LLM Systems Engineering curriculum** ([`playbook/llm/`](playbook/llm/)), compiled PDF bundles ([`playbook/pdfs/`](playbook/pdfs/)), and paired flashcard decks ([`playbook/flash_cards/`](playbook/flash_cards/)). Start with [`playbook/README.md`](playbook/README.md) for the 7-day speed run and the post-speed-run LLM deep dive.
 
 **Features:**
 - **WASM sandbox** — user code runs safely inside wasmtime with fuel-based CPU limits, memory caps, wall-clock timeout, and no network/filesystem access

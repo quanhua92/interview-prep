@@ -2,17 +2,17 @@
 # Convert interview prep guides to PDFs via Pandoc + XeLaTeX.
 #
 # Outputs:
-#   popular/pdfs/popular.pdf         — curated cross-topic study guide
-#   popular/pdfs/foundation.pdf      — Tier 1: Foundation (39 problems)
-#   popular/pdfs/intermediate.pdf    — Tier 2: Intermediate (63 problems)
-#   popular/pdfs/advanced.pdf        — Tier 3: Advanced (19 problems)
-#   popular/pdfs/expert.pdf          — Tier 4: Expert (24 problems)
-#   popular/pdfs/llm.pdf             — LLM Systems (34 topics)
+#   playbook/pdfs/playbook.pdf         — curated cross-topic study guide
+#   playbook/pdfs/foundation.pdf      — Tier 1: Foundation (39 problems)
+#   playbook/pdfs/intermediate.pdf    — Tier 2: Intermediate (63 problems)
+#   playbook/pdfs/advanced.pdf        — Tier 3: Advanced (19 problems)
+#   playbook/pdfs/expert.pdf          — Tier 4: Expert (24 problems)
+#   playbook/pdfs/llm.pdf             — LLM Systems (34 topics)
 #
 # Usage:
-#   ./scripts/popular-to-pdf.sh              # build all 6 PDFs
-#   ./scripts/popular-to-pdf.sh --tiers-only # skip popular.pdf, build 5 tier/topic PDFs
-#   ./scripts/popular-to-pdf.sh --main-only  # build popular.pdf only
+#   ./scripts/playbook-to-pdf.sh              # build all 6 PDFs
+#   ./scripts/playbook-to-pdf.sh --tiers-only # skip playbook.pdf, build 5 tier/topic PDFs
+#   ./scripts/playbook-to-pdf.sh --main-only  # build playbook.pdf only
 #
 # Requirements: pandoc, xelatex (MacTeX or TeX Live)
 #   brew install pandoc && brew install --cask mactex
@@ -21,7 +21,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-POPULAR_DIR="$ROOT_DIR/popular"
+POPULAR_DIR="$ROOT_DIR/playbook"
 TIERS_DIR="$POPULAR_DIR/tiers"
 PDFS_DIR="$POPULAR_DIR/pdfs"
 
@@ -80,10 +80,10 @@ compile_pdf() {
 }
 
 # --------------------------------------------------------------------------- #
-# 1. popular.pdf — curated cross-topic guide (unchanged)
+# 1. playbook.pdf — curated cross-topic guide (unchanged)
 # --------------------------------------------------------------------------- #
 if $BUILD_MAIN; then
-  MAIN_OUTPUT="$PDFS_DIR/popular.pdf"
+  MAIN_OUTPUT="$PDFS_DIR/playbook.pdf"
   MAIN_FILES=(
     # Directory Index & Study Roadmap
     "$POPULAR_DIR/README.md"
@@ -130,7 +130,7 @@ if $BUILD_MAIN; then
     "$POPULAR_DIR/system_design_gpu_microservices_bottleneck.md"
     "$POPULAR_DIR/system_design_task_scheduler_multiple_machines.md"
   )
-  echo "[1/6] Building popular.pdf ..."
+  echo "[1/6] Building playbook.pdf ..."
   compile_pdf "$MAIN_OUTPUT" "${MAIN_FILES[@]}"
 fi
 
