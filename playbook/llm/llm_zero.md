@@ -157,10 +157,10 @@ Using $N=8$ parameters, $K=4$ ranks (each rank owns a chunk of 2 parameters), le
 
 - **Step 1: `ReduceScatter(grads)`**
   Ranks sum and average the gradients for their assigned parameter index:
-  - Rank 0 owns $[0:2]$: $\text{avg\_grad} = [-0.0676, +0.1332]$
-  - Rank 1 owns $[2:4]$: $\text{avg\_grad} = [-0.3748, -0.1394]$
-  - Rank 2 owns $[4:6]$: $\text{avg\_grad} = [-0.1153, +0.1003]$
-  - Rank 3 owns $[6:8]$: $\text{avg\_grad} = [+0.0495, -0.1000]$
+  - Rank 0 owns $[0:2]$: $\text{avgGrad} = [-0.0676, +0.1332]$
+  - Rank 1 owns $[2:4]$: $\text{avgGrad} = [-0.3748, -0.1394]$
+  - Rank 2 owns $[4:6]$: $\text{avgGrad} = [-0.1153, +0.1003]$
+  - Rank 3 owns $[6:8]$: $\text{avgGrad} = [+0.0495, -0.1000]$
 
 - **Step 2: Local Optimizer Update**
   Each rank updates its assigned parameter shard using its local FP32 optimizer state:

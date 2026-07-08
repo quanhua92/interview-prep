@@ -28,8 +28,8 @@ Co-located serving causes severe **phase interference**. Eager schedulers priori
 
 Disaggregated serving resolves this by separating the compute resources. The prefill pool is configured with Tensor Parallelism (TP) for fast matrix multiplication to minimize TTFT, while the decode pool uses Data Parallelism (DP) and large batching to maximize throughput and keep ITL low and flat. The only overhead is the network transfer of the KV cache.
 
-For a Llama-3-8B model ($layers=32, n\_q\_heads=32, n\_kv\_heads=8, head\_dim=128$, prompt length $S=512$ tokens), the KV cache size is:
-$$\text{Size}_{\text{KV}} = 2 \cdot \text{layers} \cdot \text{n}_{\text{kv\_heads}} \cdot \text{head\_dim} \cdot S \cdot \text{bytes} = 2 \cdot 32 \cdot 8 \cdot 128 \cdot 512 \cdot 2 = 67,108,864\text{ bytes } (\approx 64.0\text{ MiB})$$
+For a Llama-3-8B model ($\text{layers}=32, \text{nQHeads}=32, \text{nKvHeads}=8, \text{headDim}=128$, prompt length $S=512$ tokens), the KV cache size is:
+$$\text{Size}_{\text{KV}} = 2 \cdot \text{layers} \cdot \text{n}_{\text{kvHeads}} \cdot \text{headDim} \cdot S \cdot \text{bytes} = 2 \cdot 32 \cdot 8 \cdot 128 \cdot 512 \cdot 2 = 67,108,864\text{ bytes } (\approx 64.0\text{ MiB})$$
 
 We compare the network transfer latency of this 64.0 MiB KV cache against the prefill roofline floor on an NVIDIA A100 GPU (peak FP16 TFLOPS = 312, crossover = 156 FLOP/B):
 
@@ -120,7 +120,7 @@ Node 0 transfers the KV cache to the decode pool:
 | Metric | Complexity / Value | Notes |
 |---|---|---|
 | **Routing Overhead** | $\mathcal{O}(L \cdot \text{RTT}_{index})$ | Router checks prefix catalog before dispatching. |
-| **KV Transfer Complexity** | $\mathcal{O}(\text{Size\_KV})$ | Linear with prompt length and layer dimension. |
+| **KV Transfer Complexity** | $\mathcal{O}(\text{SizeKV})$ | Linear with prompt length and layer dimension. |
 | **SLO Goodput Ratio** | Up to 7.4× improvement | Eliminating ITL variance increases overall compliant throughput. |
 | **GPU Hardware Overhead** | High (decoupled pool) | Requires setting aside separate clusters. If prefill:decode ratio is misconfigured, one pool idles. |
 

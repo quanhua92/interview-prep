@@ -52,11 +52,11 @@ Modern MLP blocks evolved along two independent axes: activation functions and n
    - $\text{gate}(x) = x W_{\text{gate}}$
    - $\text{up}(x) = x W_{\text{up}}$
 2. **Gating Nonlinearity**: Apply the SiLU activation function only to the gate path:
-   - $\text{silu\_gate} = \text{silu}(\text{gate}(x)) = \text{gate}(x) \cdot \sigma(\text{gate}(x))$
+   - $\text{siluGate} = \text{silu}(\text{gate}(x)) = \text{gate}(x) \cdot \sigma(\text{gate}(x))$
 3. **Element-wise Multiplication (Gated Fusion)**: Multiply the activated gate and raw up-projection to let the gate regulate the features:
-   - $\text{gated\_features} = \text{silu\_gate} \odot \text{up}(x)$
+   - $\text{gatedFeatures} = \text{siluGate} \odot \text{up}(x)$
 4. **Output Projection**: Mix and project the gated features back to the model dimension $E$:
-   - $\text{output} = \text{gated\_features} W_{\text{down}}$
+   - $\text{output} = \text{gatedFeatures} W_{\text{down}}$
 
 ---
 
@@ -143,4 +143,4 @@ Swapping the branches to compute `silu(up) * gate` instead of `silu(gate) * up` 
 
 - **Demonstrate Kernel-Level Awareness**: Explain that in production serving stacks (like vLLM or Hugging Face's TGI), the gate and up projections are always concatenated. Cite the parameter mapping: `gate_up_proj = nn.Linear(hidden_size, 2 * intermediate_size)`. Mention that you know that in Triton, you slice the output of this linear layer along the last dimension, apply SiLU to the first half, multiply by the second half, and write only the fused result back to global memory.
 - **Trace the Activation Lineage Accurately**: Clarify that **SiLU** was actually introduced and named in the original **GELU paper** (Hendrycks & Gimpel 2016, Section 2) as the "Sigmoid Linear Unit", before being popularized as **Swish** with $\beta=1$ by Google (Ramachandran et al. 2017). Showing you know this historical detail demonstrates deep literature reading.
-- **Reference Gold Values**: Memorize and quote specific values to show you have worked with the code: e.g., $\text{SiLU}(1.0) = \mathbf{0.7311}$ and $\text{GELU\_tanh}(1.0) = \mathbf{0.8412}$.
+- **Reference Gold Values**: Memorize and quote specific values to show you have worked with the code: e.g., $\text{SiLU}(1.0) = \mathbf{0.7311}$ and $\text{GELUtanh}(1.0) = \mathbf{0.8412}$.

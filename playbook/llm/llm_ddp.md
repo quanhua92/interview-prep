@@ -106,10 +106,10 @@ In FP16 mixed precision training, small gradients underflow to zero due to FP16'
 - Underflow example: $10^{-8}$ rounds to `0.0` in FP16, whereas it survives in BF16 (which matches FP32's exponent range).
 - **GradScaler Solution**:
   1. Multiply the loss by a scaling factor $S = 2^{16} = 65536$:
-     $$\text{scaled\_grad} = 10^{-8} \times 65536 = 0.00065536\text{ (survives in FP16)}$$
+     $$\text{scaledGrad} = 10^{-8} \times 65536 = 0.00065536\text{ (survives in FP16)}$$
   2. Perform backward pass to propagate scaled gradients in FP16.
   3. Divide gradients by $S$ (unscale) back to FP32 before the optimizer step:
-     $$\text{unscaled\_grad} = 0.00065536 / 65536 \approx 9.997 \cdot 10^{-9}\text{ (recovered!)}$$
+     $$\text{unscaledGrad} = 0.00065536 / 65536 \approx 9.997 \cdot 10^{-9}\text{ (recovered!)}$$
 
 ### 4. Memory Bill (Mixed Precision + Adam)
 Under mixed precision training, the memory overhead per parameter is **$20\text{ bytes}$**:
@@ -127,7 +127,7 @@ Under mixed precision training, the memory overhead per parameter is **$20\text{
 For LLaMA-3 8B, DDP requires **$160\text{ GB}$** of memory per GPU just for the parameters, gradients, and optimizer states, which is why ZeRO sharding is necessary at scale.
 
 ### 5. Cosine LR Schedule with Warmup
-To train stable large batches (Goyal et al. 2017), the learning rate is scaled linearly with batch size, warmed up from 0 to peak over the first $W$ steps, and then decayed to $\text{min\_lr}$ using a cosine function over $T$ steps.
+To train stable large batches (Goyal et al. 2017), the learning rate is scaled linearly with batch size, warmed up from 0 to peak over the first $W$ steps, and then decayed to $\text{minLR}$ using a cosine function over $T$ steps.
 With Peak LR = 1.0, min_lr = 0.1, warmup = 10 steps, decay = 50 steps:
 - Iter 0: $0.0909$ (Warmup)
 - Iter 6: $0.6364$ (Warmup)

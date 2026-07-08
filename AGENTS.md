@@ -216,3 +216,35 @@ These files are hand-crafted LeetCode problems. A single wrong automated edit ca
 6. SOLUTION EXISTS: corresponding solutions/pXXX.* file present with implementation?
 7. CROSS-LANGUAGE: same stdin/stdout contract as other language versions?
 ```
+
+---
+
+## Markdown / LaTeX Conventions (playbook docs)
+
+### The GitHub Math Underscore Bug
+
+GitHub's markdown renderer runs a CommonMark backslash-escape pass **before** handing `$...$` / `$$...$$` content to MathJax/KaTeX. This strips the `\` from `\_`, so:
+
+```latex
+%% BROKEN on GitHub — renders as bare _ -> "'_' allowed only in math mode" error
+\text{bytes\_per\_element}
+```
+
+arrives at the math engine as `\text{bytes_per_element}` → a bare `_` in text mode → **render failure**. The same applies to bare identifiers in inline math like `$n\_q\_heads=32$`.
+
+### Fix: use camelCase (never an underscore) inside `\text{}` / math
+
+Never put a literal or escaped underscore inside `\text{}` or as a bare identifier in math mode. Use **camelCase** (spaces also work for prose-style labels):
+
+```latex
+% CORRECT — survives GitHub markdown + renders everywhere
+\text{bytesPerElement}
+\text{sharedMemoryBudget}
+$\text{nQHeads}=32$
+```
+
+Rules of thumb:
+- `_` as a **real math subscript** is fine — e.g. `\text{Tile}_q`, `m_{\text{old}}`, `o_{\text{new}}`.
+- `\_` **inside `\text{}`** is the trap — GitHub eats the backslash. Use camelCase instead.
+- Bare `\_`-joined identifiers in `$...$` (e.g. `head\_dim`) hit the same bug — wrap in `\text{}` with camelCase.
+- When auditing/creating playbook `.md` files, `rg -n '\\_' <file>` should return **nothing** in math contexts.

@@ -166,5 +166,5 @@ Comparing the output from our tiled implementation against standard attention:
 
 - **Warp-level Scheduling & Asynchronous Copies**: In interviews, stand out by discussing how FlashAttention partitions work across CUDA thread blocks and warps. SRAM tiles (like $B_r = B_c = 128$) are loaded using hardware asynchronous copy commands (e.g., `cp.async` on NVIDIA Ampere/Hopper) to bypass registers and fetch data directly from HBM to SRAM. While one warp group computes matmuls on the current tile, another warp group prefetches the next tile in the background, overlapping compute and memory access.
 - **SRAM Budget Calculation**: Demonstrate system design maturity by showing how to select tile sizes based on head dimension $d$. On an NVIDIA A100 with $96\text{ KB}$ of shared memory per SM:
-  $$(\text{Tile}_q \times d + \text{Tile}_k \times d) \times \text{bytes\_per\_element} \le \text{shared\_memory\_budget}$$
+  $$(\text{Tile}_q \times d + \text{Tile}_k \times d) \times \text{bytesPerElement} \le \text{sharedMemoryBudget}$$
   If $d = 128$ and we use FP16 (2 bytes), a tile size of $B_r=128, B_c=64$ consumes $(128 \times 128 + 64 \times 128) \times 2 = 48\text{ KB}$, leaving plenty of space for accumulators and double-buffering. If $d$ increases, the tile size must be scaled down accordingly.

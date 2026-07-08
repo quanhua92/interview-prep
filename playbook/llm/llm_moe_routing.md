@@ -121,8 +121,8 @@ From the routing decisions above:
 
 ### 5. Token Dropping under Expert Capacity $C$
 When running distributed training using **Expert Parallelism (EP)**, experts reside on different GPUs. GPUs allocate static buffers using an **Expert Capacity** factor to cap memory and transfer size:
-$$C = \text{capacity\_factor} \cdot \frac{N \cdot k}{E}$$
-For $\text{capacity\_factor} = 1.0$, $N=4$, $k=2$, $E=4$, we get $C = 2.0$.
+$$C = \text{capacityFactor} \cdot \frac{N \cdot k}{E}$$
+For $\text{capacityFactor} = 1.0$, $N=4$, $k=2$, $E=4$, we get $C = 2.0$.
 - Expert 0 receives 3 tokens ($t_0, t_2, t_3$) $\rightarrow$ **drops 1 token** (only 2 run; dropped token passes through residual only).
 - Expert 1 receives 2 tokens ($t_0, t_1$) $\rightarrow$ exact fit.
 - Expert 2 receives 1 token ($t_1$) $\rightarrow$ **padded with 1 zero**.

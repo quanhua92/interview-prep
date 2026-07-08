@@ -101,8 +101,8 @@ This comprises 2 logical blocks:
 - Block 1: `[12]` (PARTIAL — 1 of 2 slots filled)
 
 During post-step processing, the manager maps:
-$$\text{start} = \frac{\text{cached\_tokens}}{\text{block\_size}} = \frac{0}{2} = 0$$
-$$\text{end} = \frac{\text{cached\_tokens} + \text{scheduled\_tokens}}{\text{block\_size}} = \frac{3}{2} = 1$$
+$$\text{start} = \frac{\text{cachedTokens}}{\text{blockSize}} = \frac{0}{2} = 0$$
+$$\text{end} = \frac{\text{cachedTokens} + \text{scheduledTokens}}{\text{blockSize}} = \frac{3}{2} = 1$$
 
 The manager registers blocks in the range `[0..1)`, which means it registers **Block 0 only**. Block 1 is skipped because it is partial.
 > [!IMPORTANT]
@@ -136,8 +136,8 @@ Request D skips prefill compute for **4 tokens** (`num_cached_tokens = 4`), savi
 
 | Metric | Value / Behavior | Notes |
 |---|---|---|
-| **Metadata Overhead** | $\mathcal{O}\left(\frac{\text{seq\_len}}{\text{block\_size}}\right)$ | Memory needed to store the block tables (very small; e.g., 4 bytes per block mapping). |
-| **Lookup Cost** | $\mathcal{O}(\text{num\_blocks})$ | Traversing chained block hashes to find cache hits during admission. |
+| **Metadata Overhead** | $\mathcal{O}\left(\frac{\text{seqLen}}{\text{blockSize}}\right)$ | Memory needed to store the block tables (very small; e.g., 4 bytes per block mapping). |
+| **Lookup Cost** | $\mathcal{O}(\text{numBlocks})$ | Traversing chained block hashes to find cache hits during admission. |
 | **Block Size = 16** | Default in vLLM | Balance between memory overhead and sharing granularity. |
 | **Block Size = 2** | Used in code simulation | Maximizes prefix-sharing opportunities at the cost of larger block tables. |
 
@@ -157,7 +157,7 @@ Request D skips prefill compute for **4 tokens** (`num_cached_tokens = 4`), savi
 - **Answer**: The block manager allocates fixed-size physical blocks from a pre-allocated memory pool on demand. Sequences do not get contiguous virtual memory; they write to pages scattered across VRAM, mapped via a block table. If a decode step needs a new block and the pool is exhausted (OOM), the block manager returns an OOM signal to the scheduler. The scheduler must then preempt one or more active sequences, transitioning them back to `WAITING` or `SWAPPED`. The block manager frees the preempted sequence's blocks by decrementing their `ref_count`. Blocks with `ref_count == 0` are placed back on the free list.
 
 ### Q2: Why must we use chained hashes instead of hashing each block's content individually?
-- **Answer**: If we hashed each block's content in isolation (e.g., $H(\text{block\_tokens})$), two completely unrelated requests that happen to contain the same words in a single block would be mapped to the same physical page. This would result in incorrect sharing. Hashing a block chained to the hash of the preceding block ($H(\text{block\_tokens} \parallel \text{prev\_hash})$) ensures that a block's fingerprint represents the **entire sequence of tokens up to that block**. This guarantees cache hits only occur on true prefix matches.
+- **Answer**: If we hashed each block's content in isolation (e.g., $H(\text{blockTokens})$), two completely unrelated requests that happen to contain the same words in a single block would be mapped to the same physical page. This would result in incorrect sharing. Hashing a block chained to the hash of the preceding block ($H(\text{blockTokens} \parallel \text{prevHash})$) ensures that a block's fingerprint represents the **entire sequence of tokens up to that block**. This guarantees cache hits only occur on true prefix matches.
 
 ---
 
