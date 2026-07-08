@@ -99,7 +99,7 @@ Because new prefills (`seq1` and `seq2`) have priority over active decodes to ke
 
 | Metric | Value / Behavior | Notes |
 |---|---|---|
-| **Scheduling Overhead** | $\mathcal{O}(\text{active\_sequences})$ | Executed on the CPU every step. Must be kept $< 1$ ms to avoid stalling the GPU. |
+| **Scheduling Overhead** | $\mathcal{O}(\text{activeSequences})$ | Executed on the CPU every step. Must be kept $< 1$ ms to avoid stalling the GPU. |
 | **Budget Limit** | `max_num_batched_tokens` | Limits the number of tokens processed in a single forward pass to prevent GPU out-of-memory. |
 | **Preemption Recovery** | **Recomputation** (Default) | Discards KV cache and re-prefills. Wastes GPU compute but requires no PCIe transfer overhead. |
 | **Preemption Recovery** | **Swapping** | Swaps KV cache to CPU RAM. Saves compute but introduces high PCIe copy latency. |

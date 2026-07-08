@@ -49,19 +49,19 @@ $$\text{RTF} = \frac{\text{Execution Time}}{\text{Audio Duration}}$$
 #### Time-to-First-Audio (TTFA)
 The core user experience metric, defined as the duration between the user finishing speaking and the first sample of synthesized audio playing back.
 
-$$\text{TTFA} = t_{\text{VAD}} + t_{\text{ASR\_chunk}} + t_{\text{ASR\_model}} + t_{\text{IPC\_H2D}} + t_{\text{LLM\_prefill}} + t_{\text{LLM\_chunk}} + t_{\text{TTS\_acoustic}} + t_{\text{TTS\_vocoder}} + t_{\text{IPC\_D2H}} + t_{\text{client\_buffer}}$$
+$$\text{TTFA} = t_{\text{VAD}} + t_{\text{ASRChunk}} + t_{\text{ASRModel}} + t_{\text{IPCH2D}} + t_{\text{LLMPrefill}} + t_{\text{LLMChunk}} + t_{\text{TTSAcoustic}} + t_{\text{TTSVocoder}} + t_{\text{IPCD2H}} + t_{\text{clientBuffer}}$$
 
 Where:
 * $t_{\text{VAD}}$: Voice Activity Detection latency ($\approx 20\text{ ms}$).
-* $t_{\text{ASR\_chunk}}$: ASR lookahead/chunk accumulation time ($\approx 80\text{ ms}$).
-* $t_{\text{ASR\_model}}$: Acoustic neural network forward pass ($\approx 20\text{ ms}$).
-* $t_{\text{IPC\_H2D}}$: Host-to-Device tensor transfer over PCIe ($\approx 5\text{ ms}$).
-* $t_{\text{LLM\_prefill}}$: Prefill time to generate the first LLM token ($\approx 150\text{ ms}$).
-* $t_{\text{LLM\_chunk}}$: Time needed to generate a buffer of tokens suitable for TTS ($\approx 50\text{ ms}$).
-* $t_{\text{TTS\_acoustic}}$: Acoustic model synthesis of mel-spectrogram ($\approx 60\text{ ms}$).
-* $t_{\text{TTS\_vocoder}}$: Neural vocoder waveform generation ($\approx 30\text{ ms}$).
-* $t_{\text{IPC\_D2H}}$: Device-to-Host transfer of raw audio bytes ($\approx 5\text{ ms}$).
-* $t_{\text{client\_buffer}}$: Jitter buffer size ($\approx 30\text{ ms}$).
+* $t_{\text{ASRChunk}}$: ASR lookahead/chunk accumulation time ($\approx 80\text{ ms}$).
+* $t_{\text{ASRModel}}$: Acoustic neural network forward pass ($\approx 20\text{ ms}$).
+* $t_{\text{IPCH2D}}$: Host-to-Device tensor transfer over PCIe ($\approx 5\text{ ms}$).
+* $t_{\text{LLMPrefill}}$: Prefill time to generate the first LLM token ($\approx 150\text{ ms}$).
+* $t_{\text{LLMChunk}}$: Time needed to generate a buffer of tokens suitable for TTS ($\approx 50\text{ ms}$).
+* $t_{\text{TTSAcoustic}}$: Acoustic model synthesis of mel-spectrogram ($\approx 60\text{ ms}$).
+* $t_{\text{TTSVocoder}}$: Neural vocoder waveform generation ($\approx 30\text{ ms}$).
+* $t_{\text{IPCD2H}}$: Device-to-Host transfer of raw audio bytes ($\approx 5\text{ ms}$).
+* $t_{\text{clientBuffer}}$: Jitter buffer size ($\approx 30\text{ ms}$).
 
 $$\text{Total TTFA} \approx 20 + 80 + 20 + 5 + 150 + 50 + 60 + 30 + 5 + 30 = \mathbf{450\text{ ms}}$$
 
@@ -99,7 +99,7 @@ A neural vocoder (e.g., HiFi-GAN) takes a mel-spectrogram chunk and runs upsampl
 * For streaming TTS, we process chunks of $80$ frames of mel-spectrograms at a time (representing $\approx 1\text{ second}$ of audio).
 * The vocoder weights must be loaded from HBM to synthesize the waveform. HiFi-GAN has $\approx 14\text{ million}$ parameters ($28\text{ MB}$ in FP16).
 * If processed one chunk at a time on an L4 GPU ($B_{\text{mem}} = 300\text{ GB/s}$), the weight-loading overhead is:
-  $$t_{\text{vocoder\_load}} = \frac{28\text{ MB}}{300\text{ GB/s}} = 0.093\text{ ms}$$
+  $$t_{\text{vocoderLoad}} = \frac{28\text{ MB}}{300\text{ GB/s}} = 0.093\text{ ms}$$
 * While $0.093\text{ ms}$ is tiny, running vocoder steps repeatedly for every chunk across 1,000 parallel user streams saturates the memory bus if instance placement is not managed properly.
 
 ---

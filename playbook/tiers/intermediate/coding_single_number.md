@@ -40,7 +40,7 @@ To solve this in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space, we use the pr
 If we XOR all the elements in the array:
 $$\text{result} = nums[0] \oplus nums[1] \oplus \dots \oplus nums[n-1]$$
 Since every number except one appears exactly twice, all pairs will cancel each other out to $0$. We are left with:
-$$\text{result} = 0 \oplus \text{single\_number} = \text{single\_number}$$
+$$\text{result} = 0 \oplus \text{singleNumber} = \text{singleNumber}$$
 
 ### Standard C++ Production Code
 
@@ -136,9 +136,9 @@ class Solution:
     ```
 
 ### Q2: What if there are two single numbers instead of one? (LeetCode 260)
-* **Answer**: If there are two single numbers $x$ and $y$, XORing all elements yields $xor\_val = x \oplus y$. Since $x \ne y$, $xor\_val$ must have at least one set bit.
+* **Answer**: If there are two single numbers $x$ and $y$, XORing all elements yields $\text{xorVal} = x \oplus y$. Since $x \ne y$, $\text{xorVal}$ must have at least one set bit.
   * **Solution**:
-    1. Find the rightmost set bit of $xor\_val$ using `diff = xor_val & -xor_val`.
+    1. Find the rightmost set bit of $\text{xorVal}$ using `diff = xor_val & -xor_val`.
     2. Divide all numbers in the array into two groups: those that have this bit set and those that don't.
     3. XORing all numbers in each group independently will cancel out the duplicates, leaving $x$ in one group and $y$ in the other.
 

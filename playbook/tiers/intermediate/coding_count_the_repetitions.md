@@ -50,8 +50,8 @@ We can optimize this to run in $\mathcal{O}(|s_1| \cdot |s_2|)$ time by detectin
 *   The length of the cycle in terms of $s_1$ blocks is `cycle_len = i - prev_i`.
 *   The number of times we matched $s_2$ completely within one cycle is `cycle_count = count - prev_count`.
 *   We can skip matching for the remaining copies of $s_1$ mathematically:
-    $$\text{full\_cycles} = \frac{n_1 - 1 - i}{\text{cycle\_len}}$$
-    $$\text{count} \leftarrow \text{count} + \text{full\_cycles} \times \text{cycle\_count}$$
+    $$\text{fullCycles} = \frac{n_1 - 1 - i}{\text{cycleLen}}$$
+    $$\text{count} \leftarrow \text{count} + \text{fullCycles} \times \text{cycleCount}$$
 *   Finally, we simulate the remaining fractional cycle of $s_1$ copies.
 
 ### Standard C++ Production Code

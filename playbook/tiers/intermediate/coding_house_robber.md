@@ -133,8 +133,8 @@ class Solution:
 
 ### Q2: What if the houses are organized in a binary tree? (House Robber III - LeetCode 337)
 *   **Answer**: This is solved using Tree DP. For each node, we return a pair of values:
-    *   The maximum money if we rob this node: $\text{node.val} + \text{left.not\_robbed} + \text{right.not\_robbed}$
-    *   The maximum money if we do not rob this node: $\max(\text{left.robbed}, \text{left.not\_robbed}) + \max(\text{right.robbed}, \text{right.not\_robbed})$
+    *   The maximum money if we rob this node: $\text{node.val} + \text{left.notRobbed} + \text{right.notRobbed}$
+    *   The maximum money if we do not rob this node: $\max(\text{left.robbed}, \text{left.notRobbed}) + \max(\text{right.robbed}, \text{right.notRobbed})$
     This can be calculated bottom-up using Post-order Traversal in $\mathcal{O}(n)$ time and $\mathcal{O}(h)$ space (call stack depth).
 
 ---

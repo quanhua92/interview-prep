@@ -36,7 +36,7 @@ You need to implement the class `Solution` with the following methods:
 To implement weighted random selection efficiently:
 1. **Prefix Sum Construction**: Compute the running prefix sums of weights. For example, if weights are `[1, 3]`, prefix sums are `[1, 4]`.
 2. The total sum of weights is `prefix.back()`.
-3. **Random Selection**: Generate a random integer `t` in the range $[1, \text{total\_sum}]$.
+3. **Random Selection**: Generate a random integer `t` in the range $[1, \text{totalSum}]$.
 4. **Binary Search**: Since the prefix sums are strictly increasing (weights are positive integers), we can perform binary search to find the first index `i` where `prefix[i] >= t`. This can be done in $\mathcal{O}(\log n)$ time using `std::lower_bound`.
 
 ### Standard C++ Production Code

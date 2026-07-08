@@ -38,7 +38,7 @@ The town judge problem can be modeled as finding a node in a directed graph with
 *   This edge increases the out-degree of $A$ and increases the in-degree of $B$.
 
 Rather than tracking in-degree and out-degree separately, we can compute a single **trust score** for each person:
-$$\text{trust\_score}[i] = \text{in\_degree}[i] - \text{out\_degree}[i]$$
+$$\text{trustScore}[i] = \text{inDegree}[i] - \text{outDegree}[i]$$
 
 *   If person $i$ trusts someone, we decrement their score: `scores[a]--`.
 *   If person $i$ is trusted by someone, we increment their score: `scores[b]++`.

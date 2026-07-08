@@ -150,7 +150,7 @@ However, unlike sum or product operations, bitwise OR does not have an inverse. 
 3. When expanding the window by adding `nums[right]`:
    * Update the bit counts by iterating through all 32 bits of `nums[right]`.
 4. We can reconstruct the window's bitwise OR value in $\mathcal{O}(32)$ time:
-   * $\text{OR\_value} = \sum_{i=0}^{31} (1 \ll i) \text{ if } \text{bitCounts}[i] > 0$.
+   * $\text{ORValue} = \sum_{i=0}^{31} (1 \ll i) \text{ if } \text{bitCounts}[i] > 0$.
 5. If the current OR value is at least `k`:
    * Update the minimum subarray length.
    * Shrink the window from the left by removing `nums[left]` and updating `bitCounts`. Repeat this until the OR value falls below `k`.

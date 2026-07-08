@@ -78,7 +78,7 @@ Without automated voice benchmarking frameworks:
    $$\text{WER} = \frac{S + D + I}{N}$$
    where $S$ = substitutions, $D$ = deletions, $I$ = insertions, and $N$ = reference word count.
 3. **Latency Benchmarking**:
-   TTFT measures server token generation onset. TTFA measures the full loop: client silence onset ($T_{\text{EOS}}$) to client speaker playback activation ($T_{\text{playback\_start}}$).
+   TTFT measures server token generation onset. TTFA measures the full loop: client silence onset ($T_{\text{EOS}}$) to client speaker playback activation ($T_{\text{playbackStart}}$).
 4. **Conversation Flow Metrics**:
    * **Barge-In Success Rate**: Percentage of times the agent halts playback and flushes downstream network buffers within $150\text{ ms}$ of user speech detection.
    * **Turn-Taking Accuracy**: Measures false-interruptions (agent cut off user mid-thought) and sluggish turns (agent waited $> 1.0$ second to respond).
@@ -128,9 +128,9 @@ $$\text{MCD} = \frac{10\sqrt{2}}{\ln 10} \frac{1}{T} \sum_{t=1}^{T} \sqrt{\sum_{
   * We cannot rely on server logs because they omit network transit and client-side playback buffering. To measure TTFA:
     1. **Inject Timestamp Markers**: When the client-side VAD detects the end of the user's speech, it records a local microsecond timestamp ($T_{\text{EOS}}$) and sends a metadata frame containing this timestamp to the orchestrator.
     2. **Propagate Markers**: The orchestrator carries this start timestamp through the pipeline. When the first synthesized audio chunk is generated, the server tags the binary WebSocket frame with the original $T_{\text{EOS}}$.
-    3. **Client Playback Logging**: When the client-side audio hardware player callback processes the very first PCM sample of this tagged frame, the client records the current local clock time ($T_{\text{playback\_start}}$).
+    3. **Client Playback Logging**: When the client-side audio hardware player callback processes the very first PCM sample of this tagged frame, the client records the current local clock time ($T_{\text{playbackStart}}$).
     4. **Calculate Loop Latency**:
-       $$\text{TTFA} = T_{\text{playback\_start}} - T_{\text{EOS}}$$
+       $$\text{TTFA} = T_{\text{playbackStart}} - T_{\text{EOS}}$$
        This measures the actual end-to-end user experience, including all networking and hardware overhead.
 
 ### Q2: How do you evaluate the robustness of a voice agent's VAD and turn-taking behavior before deploying it to production?

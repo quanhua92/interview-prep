@@ -29,7 +29,7 @@ Return `true` if you can reach the last index, or `false` otherwise.
 The problem can be solved in a single pass using a **Greedy Algorithm**. We maintain a variable `max_reach` representing the farthest index we can reach at any point in time.
 1. We iterate through the array from left to right.
 2. At each index `i`, we first check if `i` is greater than `max_reach`. If it is, then index `i` is unreachable, meaning we cannot proceed further or reach the end. We immediately return `false`.
-3. Otherwise, we update `max_reach` to be $\max(\text{max\_reach}, i + \text{nums}[i])$.
+3. Otherwise, we update `max_reach` to be $\max(\text{maxReach}, i + \text{nums}[i])$.
 4. If the loop completes successfully, it means we could reach every index along the way, including the last one. We return `true`.
 
 ### Standard C++ Production Code

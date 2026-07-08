@@ -20,8 +20,9 @@ In a multi-node serving cluster, load balancing requests randomly distributes ma
 - **Without LMCache**: A request landing on a cold node triggers a full prefill, loading all model weights (e.g., 2.08 GB for a 1.04B parameter GQA model) to perform attention math.
 - **With LMCache**: The cold node pulls the precomputed KV cache instead. 
 
-For a GQA model ($\text{layers}=24$, $n_{\text{q\_heads}}=16$, $n_{\text{kv\_heads}}=2$, $\text{head\_dim}=128$, prompt length $S=512$ tokens), the KV cache size is:
-$$\text{Size}_{\text{KV}} = 2 \cdot \text{layers} \cdot n_{\text{kv\_heads}} \cdot \text{head\_dim} \cdot S \cdot \text{bytes} = 2 \cdot 24 \cdot 2 \cdot 128 \cdot 512 \cdot 2 = 12,582,912 \text{ bytes} \approx 12.00 \text{ MiB}$$
+For a GQA model ($\text{layers}=24$, $n_{\text{qHeads}}=16$, $n_{\text{kvHeads}}=2$, $\text{headDim}=128$, prompt length $S=512$ tokens), the KV cache size is:
+
+$$\text{Size}_{\text{KV}} = 2 \cdot \text{layers} \cdot n_{\text{kvHeads}} \cdot \text{headDim} \cdot S \cdot \text{bytes} = 2 \cdot 24 \cdot 2 \cdot 128 \cdot 512 \cdot 2 = 12,582,912 \text{ bytes} \approx 12.00 \text{ MiB}$$
 
 We compare the transfer latency of this 12.00 MiB KV cache against the target model's prefill roofline floor at batch size 1:
 
@@ -155,7 +156,7 @@ Under LMCache, when Node 1 processes Request 3:
 | **Local Index Lookup** | $\mathcal{O}(L)$ | Walk local radix tree or probe hash table. |
 | **Global Index Lookup** | $\mathcal{O}(L \cdot \text{RTT}_{Redis})$ | Network round-trip to the distributed index. |
 | **KV Copy Bandwidth** | Up to 50 GB/s (RoCEv2) | Transfer latency is linear with the chunk size and prompt length. |
-| **Metadata Overhead** | $\mathcal{O}(S / \text{chunk\_size})$ | Small chunk sizes allow fine-grained matches but explode index metadata size. |
+| **Metadata Overhead** | $\mathcal{O}(S / \text{chunkSize})$ | Small chunk sizes allow fine-grained matches but explode index metadata size. |
 
 ---
 

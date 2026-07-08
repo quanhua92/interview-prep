@@ -36,10 +36,10 @@ The problem can be solved mathematically by focusing on the most frequent tasks.
 2. To schedule $A$ with a gap of at least $n$ intervals, we create `max_freq - 1` partitions. Each partition must have a size of `n + 1` (containing $A$ itself followed by $n$ slots for other tasks or idle periods).
 3. The last partition only needs to accommodate the final occurrences of the tasks that share the maximum frequency (`max_count`).
 4. Thus, the minimum length of the layout is:
-   $$\text{Formula} = (\text{max\_freq} - 1) \times (n + 1) + \text{max\_count}$$
+   $$\text{Formula} = (\text{maxFreq} - 1) \times (n + 1) + \text{maxCount}$$
 5. If we have more tasks than can fit in these empty slots, we can insert them into the slots without increasing the required length beyond `tasks.size()`. Since there are enough distinct tasks, the scheduling will always be possible without any idle slots.
 6. Therefore, the minimum intervals required is:
-   $$\max(\text{tasks.size()}, (\text{max\_freq} - 1) \times (n + 1) + \text{max\_count})$$
+   $$\max(\text{tasks.size()}, (\text{maxFreq} - 1) \times (n + 1) + \text{maxCount})$$
 
 ### Standard C++ Production Code
 

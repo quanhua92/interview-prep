@@ -259,8 +259,8 @@ int main() {
 
 *   **Time Complexity**: $\mathcal{O}(\text{Width} \times \text{Height})$ for both.
 *   **Space Complexity**:
-    *   Conflicting: $\text{TILE\_DIM} \times \text{TILE\_DIM} \times 4\text{ bytes} = 4096\text{ bytes}$ per block.
-    *   Padded: $\text{TILE\_DIM} \times (\text{TILE\_DIM} + 1) \times 4\text{ bytes} = 4224\text{ bytes}$ per block.
+    *   Conflicting: $\text{tileDim} \times \text{tileDim} \times 4\text{ bytes} = 4096\text{ bytes}$ per block.
+    *   Padded: $\text{tileDim} \times (\text{tileDim} + 1) \times 4\text{ bytes} = 4224\text{ bytes}$ per block.
 *   **Memory Overhead**: The padding increases Shared Memory utilization by only $\approx 3.1\%$, which has zero impact on occupancy (block execution limits per SM).
 
 ---

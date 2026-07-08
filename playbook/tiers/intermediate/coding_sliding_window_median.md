@@ -42,7 +42,7 @@ Unlike standard median finding in a continuous stream, elements in a sliding win
 1. When an element falls out of the sliding window, we record its index (or value) in a hash map `delayed` representing elements scheduled for deletion.
 2. We decrement the active size counters of the respective heap (`small_sz` or `large_sz`).
 3. Whenever we access the top element of either heap, we check if it is in `delayed`. If it is, we pop it (prune the heap) and decrement the delayed count until we find a non-deleted top element.
-4. We then rebalance the active sizes of the heaps so that $\text{small\_sz} \in [\text{large\_sz}, \text{large\_sz} + 1]$.
+4. We then rebalance the active sizes of the heaps so that $\text{smallSz} \in [\text{largeSz}, \text{largeSz} + 1]$.
 
 ### Standard C++ Production Code
 

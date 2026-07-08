@@ -396,7 +396,7 @@ class SolutionDSU:
 *   **Answer**: Apply an **out-of-core / chunked processing** algorithm.
     1. Divide the massive grid into horizontal slices or tiles that comfortably fit in system memory.
     2. Process each slice independently to count local islands. Keep track of the active components along the boundary borders.
-    3. Use a Union-Find system to reconcile and merge components that cross slice borders as adjacent slices are compared. This allows streaming computation, keeping memory overhead limited to $\mathcal{O}(\text{slice\_width})$ rather than the full size of the grid.
+    3. Use a Union-Find system to reconcile and merge components that cross slice borders as adjacent slices are compared. This allows streaming computation, keeping memory overhead limited to $\mathcal{O}(\text{sliceWidth})$ rather than the full size of the grid.
 
 ### Q2: What if the grid is dynamically updated (cells turn from water to land in real-time)?
 *   **Answer**: Recursive DFS is highly inefficient for dynamic grids, as updating it would require running a full $\mathcal{O}(M \times N)$ traversal for every change.

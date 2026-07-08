@@ -16,7 +16,7 @@ Think of training a deep neural network like embarking on a long hike where you 
 
 Training a modern LLM stores three primary pools of memory: model weights + optimizer states (which scale as $20N$ bytes per parameter for DDP), gradients, and intermediate activations.
 The activation memory scales linearly with depth, batch size, sequence length, and hidden dimension:
-$$\text{Activation Memory} = L \times B \times S \times D \times \text{dtype\_bytes}$$
+$$\text{Activation Memory} = L \times B \times S \times D \times \text{dtypeBytes}$$
 
 At a standard LLaMA-3 8B configuration (depth $L = 32$, batch size $B = 32$, sequence length $S = 4096$, hidden dimension $D = 4096$), a single layer’s intermediate activation is:
 $$1 \times 32 \times 4096 \times 4096 \times 2\text{ bytes (in fp16/bf16)} = 1073.74\text{ MB} \approx 1.07\text{ GB}$$

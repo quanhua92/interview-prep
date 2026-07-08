@@ -45,10 +45,10 @@ This problem can be modeled as finding the shortest path through a multi-stage d
 *   **State**: `dp[pos]` represents the minimum steps needed to spell the remaining suffix of the `key` (from index `ki` to the end) when the dial is currently aligned at index `pos` of the `ring`.
 *   **Transition**: To spell the character `key[ki]`, we must rotate the dial from the current position `pos` to some target position `target` where `ring[target] == key[ki]`.
     *   The cost to rotate from `pos` to `target` in a circular ring of length $n$ is:
-        $$\text{rotation\_steps} = \min(|pos - target|, n - |pos - target|)$$
-    *   The total cost for this step is $\text{rotation\_steps} + 1$ (1 step for spelling/pressing the button).
+        $$\text{rotationSteps} = \min(|pos - target|, n - |pos - target|)$$
+    *   The total cost for this step is $\text{rotationSteps} + 1$ (1 step for spelling/pressing the button).
     *   Therefore, the transition is:
-        $$\text{new\_dp}[pos] = \min_{\text{target s.t. } \text{ring}[\text{target}] = \text{key}[ki]} \Big( \text{rotation\_steps} + 1 + \text{dp}[target] \Big)$$
+        $$\text{newDp}[pos] = \min_{\text{target s.t. } \text{ring}[\text{target}] = \text{key}[ki]} \Big( \text{rotationSteps} + 1 + \text{dp}[target] \Big)$$
 
 We compute the states bottom-up starting from the last character of the `key` ($ki = \text{key.length} - 1$ down to $0$). Finally, we return `dp[0]` because the ring starts aligned at index $0$.
 

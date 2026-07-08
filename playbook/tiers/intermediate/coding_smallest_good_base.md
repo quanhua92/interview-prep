@@ -182,7 +182,7 @@ class Solution:
 
 ## Common Follow-Up Questions & How to Answer
 
-### Q1: Why do we search from $m = \text{max\_m}$ down to $2$, rather than $2$ up to $\text{max\_m}$?
+### Q1: Why do we search from $m = \text{maxM}$ down to $2$, rather than $2$ up to $\text{maxM}$?
 * **Answer**: We are looking for the **smallest** base $k$. Since a smaller base $k$ results in a larger number of digits $m$, we must find the **largest** $m$ that satisfies the condition. Iterating from largest $m$ downwards allows us to return the first matching base immediately, optimizing execution time.
 
 ### Q2: What mathematical approximation can we use to skip binary search?

@@ -59,7 +59,7 @@ To ensure that each integer point across all rectangles is equally likely to be 
     We create a prefix sum array `prefix_` where `prefix_[i]` stores the cumulative number of points in rectangles $0$ through $i$. The total number of points is `total_ = prefix_.back()`.
 3.  **Binary Search for Rectangle Selection**:
     When calling `pick()`:
-    *   We pick a random integer $t$ in the range $[0, \text{total\_} - 1]$.
+    *   We pick a random integer $t$ in the range $[0, \text{totalPoints} - 1]$.
     *   We use binary search (`std::upper_bound` or standard binary search template) to locate the rectangle corresponding to $t$.
 4.  **Uniform Point Generation within Rectangle**:
     Once the rectangle is selected, we independently pick a random $x$ from $[x_1, x_2]$ and a random $y$ from $[y_1, y_2]$ using a uniform random generator.
@@ -187,7 +187,7 @@ class Solution:
 ### Q2: What if we can't store the rectangles in memory (Streaming / Reservoir Sampling)?
 * **Answer**: If we receive rectangles in a data stream, we can use **Reservoir Sampling** to select the rectangle:
   * Maintain the current `total_points` seen so far.
-  * For each new rectangle with $A$ points, we select it as our candidate with probability $\frac{A}{\text{total\_points}}$.
+  * For each new rectangle with $A$ points, we select it as our candidate with probability $\frac{A}{\text{totalPoints}}$.
   * Once the stream ends, we sample a point from the selected candidate rectangle.
 
 ---

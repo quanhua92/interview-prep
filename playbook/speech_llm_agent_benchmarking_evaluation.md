@@ -89,7 +89,7 @@ User Audio Start
 To measure TTFA accurately, we inject markers into the streaming WebSocket connection:
 1. **Timestamp A**: Client marks the end of speech ($T_{EOS}$) based on VAD state transition to silence.
 2. **Timestamp B**: The first audio buffer block ($20\text{ ms}$ of PCM) is received and processed by the client speaker callback.
-3. $$\text{TTFA} = T_{playback\_start} - T_{EOS}$$
+3. $$\text{TTFA} = T_{\text{playbackStart}} - T_{EOS}$$
 
 ### 3.3 Reliability & Conversation Flow Metrics
 * **Barge-In Success Rate**: The percentage of times the system successfully mutes the speaker, halts server-side processing, and flushes the buffer within $150\text{ ms}$ of the user starting to interrupt.

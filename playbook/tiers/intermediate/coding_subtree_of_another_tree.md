@@ -158,7 +158,7 @@ class Solution:
 
 ### Q2: What is the Tree Hashing / Merkle Tree approach?
 *   **Answer**: We can compute a unique hash for each node's subtree in a bottom-up traversal:
-    $$\text{hash}(node) = \text{hash\_function}(node.val, \text{hash}(node.left), \text{hash}(node.right))$$
+    $$\text{hash}(node) = \text{hashFunction}(node.val, \text{hash}(node.left), \text{hash}(node.right))$$
     *   Store the hash values of all subtrees in a hash set.
     *   Compute the hash of `subRoot`.
     *   Check if `subRoot`'s hash exists in our set in $\mathcal{O}(1)$ time.

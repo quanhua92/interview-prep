@@ -156,7 +156,7 @@ class Solution:
 
 ### Q2: What if we can place a limited number of heaters anywhere to minimize the radius?
 * **Answer**: This is a different problem (related to LeetCode 410 / Split Array Largest Sum). We would binary search over the *radius* itself. 
-* The search space for radius ranges from $0$ to $\text{max\_pos} - \text{min\_pos}$. For a mid radius, we use a greedy pass to see if we can cover all houses with at most $k$ heaters.
+* The search space for radius ranges from $0$ to $\text{maxPos} - \text{minPos}$. For a mid radius, we use a greedy pass to see if we can cover all houses with at most $k$ heaters.
 
 ---
 

@@ -130,8 +130,8 @@ class Solution:
 If constraints were different (e.g. numbers could be fractions or negative, where greedy logic fails), we would use Dynamic Programming similar to Matrix Chain Multiplication:
 *   **State**: For subarray `nums[i...j]`, store both `max_val` (with its string representation) and `min_val` (with its string representation).
 *   **Transition**: 
-    $$\text{max\_val}(i, j) = \max_{i \le k < j} \left( \frac{\text{max\_val}(i, k)}{\text{min\_val}(k+1, j)} \right)$$
-    $$\text{min\_val}(i, j) = \min_{i \le k < j} \left( \frac{\text{min\_val}(i, k)}{\text{max\_val}(k+1, j)} \right)$$
+    $$\text{maxVal}(i, j) = \max_{i \le k < j} \left( \frac{\text{maxVal}(i, k)}{\text{minVal}(k+1, j)} \right)$$
+    $$\text{minVal}(i, j) = \min_{i \le k < j} \left( \frac{\text{minVal}(i, k)}{\text{maxVal}(k+1, j)} \right)$$
 *   Time complexity of this DP approach would be $\mathcal{O}(n^3)$. Given $N \le 10$, this DP is highly feasible but mathematically redundant here.
 
 ---

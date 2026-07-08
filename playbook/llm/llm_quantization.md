@@ -163,10 +163,10 @@ For one linear layer weight matrix of shape $[896, 896]$:
 ## The Sign-Convention Pitfall (The #1 Quantization Bug)
 There are two major dequantization standards in the LLM ecosystem:
 1. **MLX Affine**: $w = \text{scale} \times w_{\text{int}} + \text{bias}$ (where `bias` is stored in **float** units).
-2. **Textbook Zero-Point (GPTQ/AWQ)**: $w = \text{scale} \times (w_{\text{int}} - \text{zero\_point})$ (where `zero_point` is stored in **integer** units).
+2. **Textbook Zero-Point (GPTQ/AWQ)**: $w = \text{scale} \times (w_{\text{int}} - \text{zeroPoint})$ (where `zero_point` is stored in **integer** units).
 
 They are equivalent *only* if:
-$$\text{zero\_point} = -\frac{\text{bias}}{\text{scale}}$$
+$$\text{zeroPoint} = -\frac{\text{bias}}{\text{scale}}$$
 If a developer plugs an MLX float `bias` ($-1.8$) into a textbook-style implementation (e.g. `(w_int + bias) * scale`), it scrambles the weights:
 
 | Variant | Equation | Result for $w_{\text{int}} = 12$ | Verdict |
