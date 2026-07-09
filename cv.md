@@ -11,18 +11,19 @@ Senior AI Engineer (10+ years) specializing in multimodal AI systems, agentic LL
 
 ### Experience
 
-**Jun 2026 – Present: OpenVideoKit - <https://www.openvideokit.com/>** - **Creator**
+**Oct 2025 – Present: Independent Founder — Open-Source AI Products**
 
-  * Scene-based, AI-first video editor: built the multimodal rendering pipeline (Python/FastAPI → animated HTML → neural TTS voiceover via edge-tts → MP4 export via FFmpeg/HyperFrames) with low-latency SSE streaming for real-time agent feedback.
-  * Designed a LangGraph copilot that proposes human-gated edits streamed over SSE — AI and human edits share the same pipeline, keeping humans in control of generative output (human-in-the-loop safety pattern).
-  * Exposed a 28-tool FastMCP server enabling tool-augmented LLM agents to drive the editor from any MCP-compatible client.
+Building and shipping two open-source AI products end-to-end.
 
-**Oct 2025 – Present: AIPriceAction - <https://www.aipriceaction.com/>** - **Creator**
+  **OpenVideoKit - <https://www.openvideokit.com/>**
 
-  * Engineered a Rust backend (Axum, PostgreSQL, Redis) with 22 workers syncing 574 global tickers across Vietnamese stocks, crypto, and global markets.
-  * Designed a multi-agent research pipeline (Supervisor → Workers → Aggregator → Reviewer) with automated quality gates in Python.
-  * Shipped a React 19 + TypeScript SPA with charts and a backtesting playground.
-  * Published a Python SDK + CLI ([aipriceaction](https://pypi.org/project/aipriceaction/), [aipa-cli](https://pypi.org/project/aipa-cli/)) with AI analysis, plus 3 installable Agent Skills for Claude Code, Cursor, and OpenCode.
+  * Built an AI-first video editor with a multimodal rendering pipeline (FastAPI → animated HTML → neural TTS → MP4) and low-latency SSE streaming.
+  * Designed a LangGraph copilot that proposes human-gated edits, exposed via a 28-tool FastMCP server for tool-augmented LLM agents.
+
+  **AIPriceAction - <https://www.aipriceaction.com/>**
+
+  * Engineered a Rust backend (Axum, PostgreSQL, Redis) with 22 workers syncing 574 global tickers, plus a multi-agent research pipeline with automated quality gates.
+  * Shipped a React 19 + TypeScript SPA and a Python SDK + CLI ([aipriceaction](https://pypi.org/project/aipriceaction/), [aipa-cli](https://pypi.org/project/aipa-cli/)) with 3 Agent Skills for Claude Code, Cursor, and OpenCode.
 
 **2017 – Oct 2025: BodiData, Inc - <https://www.bodidata.com/>**
 **Senior Machine Learning Engineer**
